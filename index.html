@@ -2,45 +2,56 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Catequesis Tarija V8</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
         :root { --blue: #151b4d; --gold: #ffc107; }
-        body { background: #f0f2f5; font-family: sans-serif; padding-bottom: 80px; }
+        body { background: #f0f2f5; font-family: sans-serif; margin: 0; padding-bottom: 80px; }
+        .login-screen { position: fixed; inset: 0; background: var(--blue); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .app-header { background: var(--blue); color: white; padding: 20px; border-bottom: 5px solid var(--gold); border-radius: 0 0 25px 25px; text-align: center; }
         .progress-circle-v { position: relative; width: 80px; height: 80px; margin: 0 auto; }
-        .jesus-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 30px; }
+        .jesus-box { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 30px; z-index: 10; }
         .card { border-radius: 20px; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin: 10px; }
-        .login-screen { position: fixed; inset: 0; background: var(--blue); z-index: 1000; display: flex; align-items: center; justify-content: center; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); border-radius: 15px 15px 0 0; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); border-radius: 15px 15px 0 0; z-index: 1000; }
         .nav-item { text-align: center; color: #888; font-size: 11px; cursor: pointer; flex: 1; }
         .nav-item.active { color: var(--blue); font-weight: bold; }
         .hidden { display: none !important; }
         @keyframes jump { 0%, 100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, -80%); } }
         .happy { animation: jump 0.6s infinite; }
+        circle { transition: stroke-dashoffset 0.5s ease; }
     </style>
 </head>
 <body>
 
 <div id="login-box" class="login-screen">
     <div class="card p-4 text-center" style="width: 90%; max-width: 350px;">
-        <h3 class="fw-bold mb-4">✝️ Acceso V8</h3>
-        <select id="u-rol" class="form-select mb-3 rounded-pill">
-            <option value="Maycol">Maycol</option>
-            <option value="Yoselin">Yoselin</option>
-            <option value="Joven">Joven</option>
-        </select>
-        <input type="password" id="u-pass" class="form-control mb-4 rounded-pill" placeholder="Contraseña">
-        <button onclick="checkLogin()" class="btn btn-primary w-100 rounded-pill py-2">ENTRAR</button>
+        <h3 class="fw-bold mb-4" style="color: var(--blue)">✝️ Catequesis V8</h3>
+        <div class="mb-3 text-start">
+            <label class="small fw-bold">Usuario:</label>
+            <select id="u-rol" class="form-select rounded-pill">
+                <option value="Maycol">Maycol</option>
+                <option value="Yoselin">Yoselin</option>
+                <option value="Joven">Joven</option>
+            </select>
+        </div>
+        <div class="mb-4 text-start">
+            <label class="small fw-bold">Contraseña:</label>
+            <input type="password" id="u-pass" class="form-control rounded-pill" placeholder="•••••">
+        </div>
+        <button type="button" onclick="checkLogin()" class="btn btn-primary w-100 rounded-pill py-2 fw-bold">ENTRAR AL SISTEMA</button>
     </div>
 </div>
 
 <div id="app-content" class="hidden">
     <div class="app-header">
         <div class="progress-circle-v">
-            <svg width="80" height="80"><circle cx="40" cy="40" r="35" fill="none" stroke="#eee" stroke-width="5"/><circle id="bar" cx="40" cy="40" r="35" fill="none" stroke="#ffc107" stroke-width="5" stroke-dasharray="220" stroke-dashoffset="220" style="transition:0.5s" transform="rotate(-90 40 40)"/></svg>
+            <svg width="80" height="80">
+                <circle cx="40" cy="40" r="35" fill="none" stroke="#eee" stroke-width="5"/>
+                <circle id="bar" cx="40" cy="40" r="35" fill="none" stroke="#ffc107" stroke-width="5" 
+                        stroke-dasharray="220" stroke-dashoffset="220" transform="rotate(-90 40 40)"/>
+            </svg>
             <div id="jesus" class="jesus-box">🙏</div>
         </div>
         <h6 class="mt-2 mb-0">MISIÓN: <span id="perc">0</span>%</h6>
@@ -48,89 +59,116 @@
 
     <div id="s-com" class="seccion p-2">
         <div class="card p-3">
+            <h6 class="fw-bold text-primary">Aviso WhatsApp</h6>
             <input type="text" id="w-t" class="form-control mb-2" placeholder="EVENTO">
             <input type="text" id="w-l" class="form-control mb-2" placeholder="📍 LUGAR">
             <textarea id="w-m" class="form-control mb-3" placeholder="Detalles..."></textarea>
-            <button onclick="sendWA()" class="btn btn-success w-100 rounded-pill">WHATSAPP</button>
+            <button onclick="sendWA()" class="btn btn-success w-100 rounded-pill fw-bold">ENVIAR AHORA</button>
         </div>
     </div>
 
     <div id="s-age" class="seccion hidden p-2">
         <div id="adm-a" class="card p-3 bg-light">
-            <input type="text" id="a-t" class="form-control mb-2" placeholder="¿Qué hay que hacer?">
-            <button onclick="addT()" class="btn btn-primary btn-sm rounded-pill">Añadir Tarea</button>
+            <h6 class="fw-bold">Nueva Misión</h6>
+            <input type="text" id="a-t" class="form-control mb-2" placeholder="¿Qué tarea hay?">
+            <button onclick="addT()" class="btn btn-primary btn-sm rounded-pill w-100">AÑADIR</button>
         </div>
         <div id="list-t"></div>
     </div>
 
     <div id="s-inv" class="seccion hidden p-2">
         <div class="card p-3">
-            <button class="btn btn-outline-primary mb-3" onclick="addI()">+ Nuevo Item</button>
+            <button class="btn btn-outline-primary mb-3 w-100" onclick="addI()">+ NUEVO ITEM</button>
             <div id="list-i"></div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <div onclick="tab('com')" id="n-com" class="nav-item active"><i class="bi bi-chat"></i><br>Avisos</div>
-        <div onclick="tab('age')" id="n-age" class="nav-item"><i class="bi bi-check-circle"></i><br>Tareas</div>
-        <div onclick="tab('inv')" id="n-inv" class="nav-item"><i class="bi bi-box"></i><br>Equipo</div>
+        <div onclick="tab('com')" id="n-com" class="nav-item active"><i class="bi bi-chat-heart fs-4"></i><br>Avisos</div>
+        <div onclick="tab('age')" id="n-age" class="nav-item"><i class="bi bi-check2-circle fs-4"></i><br>Tareas</div>
+        <div onclick="tab('inv')" id="n-inv" class="nav-item"><i class="bi bi-box-seam fs-4"></i><br>Equipo</div>
     </div>
 </div>
 
 <script>
     const USERS = { 'Maycol':'coord_2026', 'Yoselin':'sub_tarija', 'Joven':'cate_2026' };
-    let curU = "";
 
     function checkLogin() {
         const r = document.getElementById('u-rol').value;
         const p = document.getElementById('u-pass').value;
+        
+        console.log("Intentando entrar con:", r, p); // Para pruebas
+
         if(p === USERS[r]) {
-            curU = r;
             document.getElementById('login-box').classList.add('hidden');
             document.getElementById('app-content').classList.remove('hidden');
+            
             if(r === 'Joven') { 
-                document.getElementById('n-inv').remove(); 
-                document.getElementById('adm-a').remove();
+                if(document.getElementById('n-inv')) document.getElementById('n-inv').remove(); 
+                if(document.getElementById('adm-a')) document.getElementById('adm-a').remove();
                 tab('age');
             }
-        } else { alert("Clave mal puesta"); }
+        } else { 
+            alert("⚠️ Contraseña incorrecta para " + r); 
+        }
     }
 
     function tab(id) {
         document.querySelectorAll('.seccion').forEach(s => s.classList.add('hidden'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('s-' + id).classList.remove('hidden');
+        const target = document.getElementById('s-' + id);
+        if(target) target.classList.remove('hidden');
         document.getElementById('n-' + id).classList.add('active');
     }
 
     function upP() {
         const ck = document.querySelectorAll('.ck');
+        const total = ck.length;
         const done = Array.from(ck).filter(c => c.checked).length;
-        const p = ck.length > 0 ? (done / ck.length) * 100 : 0;
+        const p = total > 0 ? (done / total) * 100 : 0;
+        
         document.getElementById('bar').style.strokeDashoffset = 220 - (220 * p / 100);
         document.getElementById('perc').innerText = Math.round(p);
+        
         const j = document.getElementById('jesus');
-        if(p === 100) { j.innerText = "🙌"; j.classList.add('happy'); }
-        else { j.innerText = "🙏"; j.classList.remove('happy'); }
+        if(p === 100 && total > 0) { 
+            j.innerText = "🙌"; 
+            j.classList.add('happy'); 
+        } else { 
+            j.innerText = "🙏"; 
+            j.classList.remove('happy'); 
+        }
     }
 
     function addT() {
         const t = document.getElementById('a-t').value;
         if(!t) return;
-        document.getElementById('list-t').innerHTML += `<div class="card p-3 mb-2 d-flex flex-row align-items-center"><input type="checkbox" class="ck me-3" onchange="upP()" style="width:20px;height:20px"><span>${t}</span></div>`;
+        const div = document.createElement('div');
+        div.className = "card p-3 mb-2 d-flex flex-row align-items-center shadow-sm";
+        div.innerHTML = `<input type="checkbox" class="ck me-3" onchange="upP()" style="width:22px;height:22px"><span>${t}</span>`;
+        document.getElementById('list-t').prepend(div);
         document.getElementById('a-t').value = "";
         upP();
     }
 
     function addI() {
-        document.getElementById('list-i').innerHTML += `<div class="mb-2 border-bottom pb-2"><input class="form-control mb-1 border-0 fw-bold" placeholder="Nombre item"><select class="form-select form-select-sm border-0 bg-light"><option>Bueno</option><option>Regular</option><option>Dañado</option></select></div>`;
+        const div = document.createElement('div');
+        div.className = "mb-3 p-2 bg-light rounded-3 border";
+        div.innerHTML = `
+            <input class="form-control mb-1 border-0 fw-bold bg-transparent" placeholder="Nombre del material">
+            <select class="form-select form-select-sm border-0">
+                <option>✅ Estado: Bueno</option>
+                <option>⚠️ Estado: Regular</option>
+                <option>❌ Estado: Dañado</option>
+            </select>`;
+        document.getElementById('list-i').appendChild(div);
     }
 
     function sendWA() {
         const t = document.getElementById('w-t').value;
         const l = document.getElementById('w-l').value;
         const m = document.getElementById('w-m').value;
-        let b = `*🔔 ${t || 'AVISO'}*%0A%0A*📍 LUGAR:* ${l}%0A*📝:* ${m}`;
+        let b = `*🔔 ${t.toUpperCase() || 'AVISO'}*%0A%0A*📍 LUGAR:* ${l}%0A*📝 DETALLE:* ${m}`;
         window.open(`https://wa.me/?text=${b}`, '_blank');
     }
 </script>
