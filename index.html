@@ -9,7 +9,7 @@
     <style>
         :root { --blue: #1a237e; --gold: #ffd600; --bg: #f0f2f5; }
         
-        /* BLOQUEO DE SALIDA POR SCROLL */
+        /* PROTECCIÓN DE INTERFAZ Y SCROLL */
         html, body { 
             background: var(--bg); 
             font-family: 'Segoe UI', sans-serif; 
@@ -25,13 +25,14 @@
             height: 100vh;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            padding-bottom: 90px;
+            padding-bottom: 100px;
         }
 
         #login-screen { position: fixed; inset: 0; background: var(--blue); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .app-header { background: var(--blue); color: white; padding: 20px; border-bottom: 6px solid var(--gold); border-radius: 0 0 35px 35px; text-align: center; position: relative; }
         
-        .logout-btn { position: absolute; right: 20px; top: 20px; font-size: 1.5rem; color: white; cursor: pointer; display: none; }
+        /* BOTÓN SALIR / CAMBIAR CUENTA */
+        .logout-btn { position: absolute; right: 15px; top: 15px; font-size: 0.75rem; color: white; cursor: pointer; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); }
         
         .card { border-radius: 20px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin: 12px; background: white; overflow: hidden; }
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 12px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); border-radius: 25px 25px 0 0; z-index: 1000; }
@@ -72,16 +73,14 @@
 
 <div id="app" class="hidden">
     <div class="app-header">
-        <i class="bi bi-box-arrow-right logout-btn" id="btn-logout" onclick="salir()"></i>
+        <div class="logout-btn" onclick="salir()"><i class="bi bi-box-arrow-left"></i> Salir</div>
         <h5 class="fw-bold mb-0">CATEQUESIS TARIJA</h5>
         <div id="u-tag" class="badge bg-light text-dark mt-2"></div>
     </div>
 
     <div id="sec-home" class="seccion p-2">
         <div class="card p-0">
-            <div class="ratio ratio-16x9">
-                <iframe id="v-frame" src="about:blank" allowfullscreen></iframe>
-            </div>
+            <div class="ratio ratio-16x9"><iframe id="v-frame" src="about:blank" allowfullscreen></iframe></div>
             <div class="admin-only p-2 bg-dark">
                 <input type="text" id="v-id" class="form-control form-control-sm mb-1" placeholder="ID de Video YouTube">
                 <button onclick="setVid()" class="btn btn-warning btn-sm w-100">Cambiar Video</button>
@@ -115,6 +114,11 @@
     <div id="sec-lib" class="seccion hidden p-2">
         <div class="card p-3">
             <h6 class="fw-bold text-primary"><i class="bi bi-book"></i> Biblioteca Virtual</h6>
+            <div class="admin-only mb-3 p-2 bg-light rounded">
+                <input type="text" id="l-tit" class="form-control mb-1" placeholder="Nombre Libro">
+                <input type="text" id="l-url" class="form-control mb-1" placeholder="Link (Drive/PDF)">
+                <button onclick="addLib()" class="btn btn-primary btn-sm w-100">Subir Recurso</button>
+            </div>
             <div id="lista-lib"></div>
         </div>
     </div>
@@ -123,12 +127,24 @@
         <div class="card p-4 bg-primary text-white text-center">
             <small>SALDO CAJA</small>
             <h2 id="s-bs">Bs. 0.00</h2>
+            <button class="btn btn-light btn-sm mt-2" onclick="rep()">Bajar Reporte .txt</button>
+        </div>
+        <div class="card p-3">
+            <h6 class="fw-bold">Movimientos e Inventario</h6>
+            <input type="number" id="c-mon" class="form-control mb-1" placeholder="Bs.">
+            <input type="text" id="c-det" class="form-control mb-2" placeholder="Detalle / Artículo">
+            <div class="d-flex gap-2 mb-3">
+                <button onclick="mon(1)" class="btn btn-success w-100">Ingreso / Alta</button>
+                <button onclick="mon(-1)" class="btn btn-danger w-100">Egreso / Baja</button>
+            </div>
+            <div id="lista-inv" class="small"></div>
         </div>
     </div>
 
     <div id="sec-chat" class="seccion hidden p-2">
         <div class="card p-3">
             <h6 class="fw-bold text-primary">Buzón para Maycol</h6>
+            <div id="lista-msg" class="mb-2 small"></div>
             <textarea id="j-msg" class="form-control mb-2" placeholder="Escribe tu duda aquí..."></textarea>
             <button onclick="sendMsg()" class="btn btn-primary w-100">Enviar Consulta</button>
         </div>
@@ -144,14 +160,13 @@
 
 <script>
     const P = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Catequista":"cate_2026" };
-    
-    // 1. BLOQUEO DE NAVEGACIÓN (Evita que el botón atrás cierre la app)
-    window.history.pushState(null, null, window.location.href);
-    window.onpopstate = function() {
-        window.history.pushState(null, null, window.location.href);
-    };
+    let total = 0;
 
-    // 2. PERSISTENCIA: Cargar sesión al iniciar
+    // BLOQUEO DE BOTÓN ATRÁS
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function() { window.history.pushState(null, null, window.location.href); };
+
+    // PERSISTENCIA: CARGAR AL INICIAR
     window.onload = function() {
         const guardado = localStorage.getItem('cate_session');
         if(guardado) {
@@ -160,60 +175,42 @@
         }
     };
 
-    function checkRol(v) {
-        document.getElementById('p-box').classList.toggle('hidden', v === 'Joven');
-    }
+    function checkRol(v) { document.getElementById('p-box').classList.toggle('hidden', v === 'Joven'); }
 
     function togglePass() {
         const input = document.getElementById('p-pass');
         const icon = document.getElementById('eye-icon');
-        if(input.type === "password") {
-            input.type = "text";
-            icon.classList.replace('bi-eye', 'bi-eye-slash');
-        } else {
-            input.type = "password";
-            icon.classList.replace('bi-eye-slash', 'bi-eye');
-        }
+        input.type = (input.type === "password") ? "text" : "password";
+        icon.classList.toggle('bi-eye'); icon.classList.toggle('bi-eye-slash');
     }
 
     function entrar() {
         const r = document.getElementById('rol-select').value;
         const pass = document.getElementById('p-pass').value;
-        
         if(r === "Joven") {
-            const data = {t:"MODO LECTURA", a:false, c:false, rol:"Joven"};
+            const data = {t:"MODO JOVEN", a:false, c:false, rol:"Joven"};
             localStorage.setItem('cate_session', JSON.stringify(data));
             run(data.t, data.a, data.c, data.rol);
         } else if(pass === P[r]) {
-            // Para administradores podrías elegir no guardar para más seguridad, 
-            // pero si quieres que también se guarde, descomenta la siguiente línea:
-            // localStorage.setItem('cate_session', JSON.stringify({t:r, a:true, c:true, rol:r}));
             run(r, r!=="Catequista", true, r);
-        } else {
-            alert("Clave Incorrecta");
-        }
+        } else { alert("Contraseña Incorrecta"); }
     }
 
     function run(t, a, c, rol) {
         document.getElementById('login-screen').style.display='none';
         document.getElementById('app').classList.remove('hidden');
         document.getElementById('u-tag').innerText = t;
-        
-        // El botón salir NO sale para Jóvenes (persistencia total)
-        if(rol !== "Joven") {
-            document.getElementById('btn-logout').style.display = 'block';
-        }
-
         if(a) document.querySelectorAll('.admin-only').forEach(e => e.style.setProperty('display','block','important'));
         if(c) document.querySelectorAll('.cate-only').forEach(e => e.style.setProperty('display','block','important'));
     }
 
     function salir() {
-        localStorage.removeItem('cate_session');
-        location.reload();
+        if(confirm("¿Cerrar sesión y volver al menú principal?")) {
+            localStorage.removeItem('cate_session');
+            location.reload();
+        }
     }
 
-    // --- FUNCIONES DE INTERFAZ ---
     function tab(id) {
         document.querySelectorAll('.seccion').forEach(s => s.classList.add('hidden'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -234,21 +231,37 @@
         document.getElementById('t-not').value=""; document.getElementById('m-not').value="";
     }
 
-    function wsNot() {
-        window.open(`https://wa.me/?text=${encodeURIComponent("*"+document.getElementById('t-not').value+"*\n"+document.getElementById('m-not').value)}`);
-    }
+    function wsNot() { window.open(`https://wa.me/?text=${encodeURIComponent("*"+document.getElementById('t-not').value+"*\n"+document.getElementById('m-not').value)}`); }
 
     function addCum() {
         const n = document.getElementById('c-nom').value, f = document.getElementById('c-fec').value;
         if(!n || !f) return;
         const id = "c"+Date.now();
         document.getElementById('lista-cum').insertAdjacentHTML('afterbegin', `<div class="cumple-item" id="${id}"><span>🎂 <b>${n}</b> (${f})</span><i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i></div>`);
+        document.getElementById('c-nom').value="";
     }
 
-    function sendMsg() {
-        alert("Consulta enviada a Maycol");
-        document.getElementById('j-msg').value="";
+    function addLib() {
+        const t = document.getElementById('l-tit').value, u = document.getElementById('l-url').value;
+        if(!t || !u) return;
+        const id = "l"+Date.now();
+        document.getElementById('lista-lib').insertAdjacentHTML('afterbegin', `<div class="d-flex justify-content-between p-3 border-bottom align-items-center" id="${id}"><a href="${u}" target="_blank" class="text-dark small"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>${t}</a><i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i></div>`);
     }
+
+    function mon(v) {
+        const m = parseFloat(document.getElementById('c-mon').value);
+        if(!m) return;
+        total += (m * v);
+        document.getElementById('s-bs').innerText = "Bs. " + total.toFixed(2);
+        document.getElementById('lista-inv').insertAdjacentHTML('afterbegin', `<div class="border-bottom py-1">${document.getElementById('c-det').value}: ${m*v} Bs.</div>`);
+    }
+
+    function rep() {
+        const b = new Blob(["REPORTE\nSaldo: "+total+" Bs."], {type:"text/plain"});
+        const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "reporte.txt"; a.click();
+    }
+
+    function sendMsg() { alert("Consulta enviada"); document.getElementById('j-msg').value=""; }
 </script>
 </body>
 </html>
