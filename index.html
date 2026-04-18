@@ -7,122 +7,71 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root { 
-            --blue-deep: #1a237e; 
-            --blue-light: #3949ab;
-            --gold: #ffd600; 
-            --bg: #f8f9fa; 
-            --glass: rgba(255, 255, 255, 0.9);
-        }
+        :root { --blue: #1a237e; --blue-light: #3949ab; --gold: #ffd600; --bg: #f0f2f5; }
         
-        /* PROTECCIÓN DE INTERFAZ Y NAVEGACIÓN */
-        html, body { 
-            background: var(--bg); 
-            font-family: 'Inter', sans-serif; 
-            margin: 0; padding: 0;
-            overscroll-behavior-y: contain; 
-            overscroll-behavior-x: none;    
-            height: 100%;
-            overflow: hidden; 
-        }
+        /* PROTECCIÓN Y ESTRUCTURA */
+        html, body { background: var(--bg); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; height: 100%; overflow: hidden; overscroll-behavior: none; }
+        #app { height: 100vh; overflow-y: auto; padding-bottom: 110px; -webkit-overflow-scrolling: touch; }
 
-        #app {
-            height: 100vh;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 120px;
-        }
-
-        #login-screen { 
-            position: fixed; inset: 0; 
-            background: linear-gradient(135deg, var(--blue-deep) 0%, #0d1240 100%); 
-            z-index: 9999; display: flex; align-items: center; justify-content: center; 
-        }
-
-        .app-header { 
-            background: var(--blue-deep); 
-            color: white; padding: 25px 20px; 
-            border-bottom: 5px solid var(--gold); 
-            border-radius: 0 0 40px 40px; 
-            text-align: center; position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
+        /* LOGIN */
+        #login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--blue) 0%, #0d1240 100%); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         
-        .logout-btn { 
-            position: absolute; right: 20px; top: 20px; 
-            font-size: 0.7rem; color: white; cursor: pointer; 
-            background: rgba(255,255,255,0.1); padding: 6px 14px; 
-            border-radius: 50px; border: 1px solid rgba(255,255,255,0.2);
-            backdrop-filter: blur(5px);
-        }
-
-        .card { 
-            border-radius: 24px; border: none; 
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05); 
-            margin: 15px; background: white; 
-            overflow: hidden;
-        }
-
-        .bottom-nav { 
-            position: fixed; bottom: 15px; left: 15px; right: 15px;
-            background: var(--glass); 
-            display: flex; padding: 10px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-            border-radius: 30px; z-index: 1000; 
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .nav-item { 
-            text-align: center; color: #8e8e93; flex: 1; 
-            cursor: pointer; font-size: 10px; font-weight: 600;
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .nav-item i { font-size: 1.4rem; margin-bottom: 2px; }
-        .nav-item.active { color: var(--blue-deep); }
-
-        .admin-only, .cate-only, .hidden { display: none !important; }
-        .section-title { font-weight: 800; color: var(--blue-deep); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        /* HEADER PROFESIONAL */
+        .app-header { background: var(--blue); color: white; padding: 35px 20px 25px; border-bottom: 5px solid var(--gold); border-radius: 0 0 40px 40px; text-align: center; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         
-        /* ESTILO GRUPOS */
-        .group-card { border-left: 6px solid var(--blue-light); padding: 15px; margin-bottom: 10px; background: #f1f3f9; border-radius: 15px; }
-        .joven-tag { background: white; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; display: inline-block; margin: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        /* BOTÓN CERRAR SESIÓN UBICADO CORRECTAMENTE */
+        .logout-btn { position: absolute; top: 10px; right: 20px; color: rgba(255,255,255,0.7); font-size: 1.2rem; cursor: pointer; }
+
+        /* TARJETAS Y SECCIONES */
+        .card { border-radius: 25px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.08); margin: 15px; background: white; }
+        .section-title { font-weight: 800; color: var(--blue); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
+        
+        /* NAVEGACIÓN INFERIOR ESTILO APP */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 10px 5px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); border-radius: 30px 30px 0 0; z-index: 1000; }
+        .nav-item { text-align: center; color: #999; flex: 1; cursor: pointer; font-size: 10px; font-weight: 600; transition: 0.3s; }
+        .nav-item i { font-size: 1.5rem; display: block; margin-bottom: 2px; }
+        .nav-item.active { color: var(--blue); transform: translateY(-3px); }
+
+        .hidden, .admin-only, .cate-only { display: none !important; }
+        .badge-rol { background: var(--gold); color: var(--blue); font-weight: bold; padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; }
+        
+        /* ESTILO MENSAJES */
+        .msg-bubble { background: #e8eaf6; padding: 10px 15px; border-radius: 15px 15px 15px 0; margin-bottom: 10px; font-size: 0.9rem; border-left: 4px solid var(--blue-light); }
+        .group-card { background: #f8f9fa; border-radius: 15px; padding: 12px; margin-bottom: 10px; border-left: 5px solid var(--blue); }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <div class="card p-4 text-center" style="width: 90%; max-width: 400px; border-radius: 32px;">
-        <h3 class="fw-bold mb-1" style="color: var(--blue-deep)">MISIÓN TARIJA</h3>
-        <p class="small text-muted mb-4">Gestión 2026</p>
-        
-        <select id="rol-select" class="form-select border-0 bg-light rounded-pill p-3 mb-3" onchange="checkRol(this.value)">
+    <div class="card p-4 text-center" style="width: 90%; max-width: 380px;">
+        <h4 class="fw-bold mb-1" style="color: var(--blue)">✝️ MISIÓN TARIJA</h4>
+        <p class="small text-muted mb-4">Gestión Catequística 2026</p>
+        <select id="rol-select" class="form-select mb-3 rounded-pill p-2" onchange="checkRol(this.value)">
             <option value="Joven">Modo Joven (Invitado)</option>
             <option value="Maycol">Maycol (Coordinador)</option>
             <option value="Yoselin">Yoselin (Sub-Coord)</option>
-            <option value="Catequista">Catequista (Titular)</option>
+            <option value="Catequista">Catequista (Equipo)</option>
         </select>
-
-        <div id="p-box" class="hidden text-start mb-4">
-            <input type="password" id="p-pass" class="form-control border-0 bg-light rounded-pill p-3" placeholder="Contraseña">
+        <div id="p-box" class="hidden">
+            <input type="password" id="p-pass" class="form-control mb-3 rounded-pill" placeholder="Contraseña">
         </div>
-
-        <button onclick="entrar()" class="btn btn-primary w-100 py-3 rounded-pill fw-bold">INGRESAR</button>
+        <button onclick="entrar()" class="btn btn-primary w-100 py-2 rounded-pill fw-bold">INGRESAR</button>
     </div>
 </div>
 
 <div id="app" class="hidden">
     <div class="app-header">
-        <div class="logout-btn" onclick="salir()">Cerrar Sesión</div>
-        <h5 class="fw-bold mb-0">CATEQUESIS TARIJA</h5>
-        <div id="u-tag" class="badge bg-white text-primary rounded-pill mt-2"></div>
+        <div class="logout-btn" onclick="salir()" title="Cerrar Sesión"><i class="bi bi-power"></i></div>
+        <h5 class="fw-bold mb-1">CATEQUESIS TARIJA</h5>
+        <span id="u-tag" class="badge-rol"></span>
     </div>
 
     <div id="sec-home" class="seccion p-2">
         <div class="card p-3">
-            <h6 class="section-title"><i class="bi bi-megaphone-fill"></i> Comunicados</h6>
-            <div class="admin-only mb-3">
-                <input type="text" id="t-not" class="form-control mb-2 rounded-pill" placeholder="Título">
-                <button onclick="addNot()" class="btn btn-primary btn-sm w-100 rounded-pill">Publicar</button>
+            <h6 class="section-title"><i class="bi bi- megaphone-fill"></i> Blog de Avisos</h6>
+            <div class="admin-only mb-3 bg-light p-2 rounded-4">
+                <input type="text" id="t-not" class="form-control mb-2 rounded-pill" placeholder="Título del aviso">
+                <button onclick="addNot()" class="btn btn-primary btn-sm w-100 rounded-pill">Publicar en el Blog</button>
             </div>
             <div id="lista-not"></div>
         </div>
@@ -130,62 +79,75 @@
 
     <div id="sec-grupos" class="seccion hidden p-2">
         <div class="card p-3">
-            <h6 class="section-title"><i class="bi bi-people-fill"></i> Gestión de Grupos</h6>
-            
-            <div class="admin-only bg-light p-3 rounded-4 mb-4">
-                <p class="small fw-bold">Asignar Nuevo Grupo</p>
-                <input type="text" id="g-nom" class="form-control mb-2" placeholder="Nombre del Grupo (Ej: Confirmación 1)">
+            <h6 class="section-title"><i class="bi bi-people-fill"></i> Grupos y Jóvenes</h6>
+            <div class="admin-only bg-light p-3 rounded-4 mb-3">
+                <input type="text" id="g-nom" class="form-control mb-2" placeholder="Nombre del Grupo">
                 <select id="g-cat" class="form-select mb-2">
-                    <option value="Maycol">Maycol</option>
-                    <option value="Yoselin">Yoselin</option>
-                    <option value="Catequista">Otro Catequista</option>
+                    <option value="Maycol">Asignar a Maycol</option>
+                    <option value="Yoselin">Asignar a Yoselin</option>
+                    <option value="Catequista">Asignar a Catequista</option>
                 </select>
-                <button onclick="addGroup()" class="btn btn-primary btn-sm w-100 rounded-pill">Crear y Asignar</button>
+                <button onclick="addGroup()" class="btn btn-primary btn-sm w-100 rounded-pill">Crear Grupo</button>
             </div>
-
             <div id="lista-grupos"></div>
         </div>
     </div>
 
-    <div id="sec-lib" class="seccion hidden p-2">
-        <div class="card p-3">
-            <h6 class="section-title"><i class="bi bi-folder-fill"></i> Biblioteca</h6>
-            <div id="lista-lib"></div>
-        </div>
-    </div>
-
-    <div id="sec-adm" class="seccion hidden admin-only p-2">
-        <div class="card p-4 bg-primary text-white text-center shadow-lg" style="background: linear-gradient(135deg, var(--blue-deep), var(--blue-light)) !important;">
-            <p class="small mb-1">SALDO TOTAL</p>
-            <h1 id="s-bs" class="fw-bold">Bs. 0.00</h1>
+    <div id="sec-caja" class="seccion hidden admin-only p-2">
+        <div class="card p-4 bg-primary text-white text-center shadow-lg" style="background: linear-gradient(135deg, #1a237e, #3949ab) !important;">
+            <small class="opacity-75">SALDO EN CAJA</small>
+            <h2 id="s-bs" class="fw-bold">Bs. 0.00</h2>
         </div>
         <div class="card p-3">
-            <h6 class="section-title"><i class="bi bi-journal-text"></i> Inventario y Caja</h6>
-            <input type="number" id="c-mon" class="form-control mb-2" placeholder="Bs.">
-            <input type="text" id="c-det" class="form-control mb-2" placeholder="Detalle">
+            <h6 class="section-title"><i class="bi bi-cash-coin"></i> Movimientos de Dinero</h6>
+            <input type="number" id="c-mon" class="form-control mb-2" placeholder="Monto Bs.">
+            <input type="text" id="c-det" class="form-control mb-2" placeholder="Concepto/Motivo">
             <div class="d-flex gap-2">
                 <button onclick="mon(1)" class="btn btn-success w-100 rounded-pill">Ingreso</button>
                 <button onclick="mon(-1)" class="btn btn-danger w-100 rounded-pill">Egreso</button>
             </div>
-            <div id="lista-inv" class="mt-3 small"></div>
+            <div id="lista-caja" class="mt-3 small"></div>
+        </div>
+    </div>
+
+    <div id="sec-inv" class="seccion hidden admin-only p-2">
+        <div class="card p-3">
+            <h6 class="section-title"><i class="bi bi-box-seam"></i> Inventario de Materiales</h6>
+            <div class="bg-light p-3 rounded-4 mb-3">
+                <input type="text" id="i-item" class="form-control mb-2" placeholder="Nombre del objeto">
+                <input type="number" id="i-cant" class="form-control mb-2" placeholder="Cantidad">
+                <button onclick="addInv()" class="btn btn-dark btn-sm w-100 rounded-pill">Registrar en Inventario</button>
+            </div>
+            <div id="lista-inv"></div>
+        </div>
+    </div>
+
+    <div id="sec-msg" class="seccion hidden p-2">
+        <div class="card p-3">
+            <h6 class="section-title"><i class="bi bi-chat-dots-fill"></i> Buzón de Consultas</h6>
+            <div id="lista-msg" class="mb-3" style="max-height: 300px; overflow-y: auto;"></div>
+            <div class="input-group">
+                <textarea id="j-msg" class="form-control rounded-start-4" placeholder="Escribe a Maycol..."></textarea>
+                <button onclick="sendMsg()" class="btn btn-primary px-3"><i class="bi bi-send"></i></button>
+            </div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-house-door"></i>Inicio</div>
+        <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-house-door"></i>Blog</div>
         <div onclick="tab('grupos')" id="n-grupos" class="nav-item"><i class="bi bi-people"></i>Grupos</div>
-        <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-book"></i>Libros</div>
-        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-wallet2"></i>Caja</div>
+        <div onclick="tab('caja')" id="n-caja" class="nav-item admin-only"><i class="bi bi-wallet2"></i>Caja</div>
+        <div onclick="tab('inv')" id="n-inv" class="nav-item admin-only"><i class="bi bi-box-seam"></i>Inv.</div>
+        <div onclick="tab('msg')" id="n-msg" class="nav-item"><i class="bi bi-chat-left-text"></i>Mensajes</div>
     </div>
 </div>
 
 <script>
     const P = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Catequista":"cate_2026" };
-    let userActual = "";
-    let totalCaja = 0;
+    let userAct = ""; let caja = 0;
 
     window.onload = function() {
-        const d = JSON.parse(localStorage.getItem('mision_data_v3'));
+        const d = JSON.parse(localStorage.getItem('cate_v4_data'));
         if(d) run(d.t, d.a, d.c, d.rol);
     };
 
@@ -194,27 +156,24 @@
     function entrar() {
         const r = document.getElementById('rol-select').value;
         const p = document.getElementById('p-pass').value;
-        if(r === "Joven") {
-            const d = {t:"INVITADO", a:false, c:false, rol:"Joven"};
-            localStorage.setItem('mision_data_v3', JSON.stringify(d));
+        if(r === "Joven" || p === P[r]) {
+            const d = {t:r.toUpperCase(), a:(r!=='Joven'&&r!=='Catequista'), c:(r!=='Joven'), rol:r};
+            localStorage.setItem('cate_v4_data', JSON.stringify(d));
             run(d.t, d.a, d.c, d.rol);
-        } else if(p === P[r]) {
-            const d = {t:r, a:true, c:true, rol:r};
-            localStorage.setItem('mision_data_v3', JSON.stringify(d));
-            run(d.t, d.a, d.c, d.rol);
-        } else { alert("Clave incorrecta"); }
+        } else { alert("Clave Incorrecta"); }
     }
 
     function run(t, a, c, rol) {
-        userActual = rol;
+        userAct = rol;
         document.getElementById('login-screen').style.display='none';
         document.getElementById('app').classList.remove('hidden');
-        document.getElementById('u-tag').innerText = "ROL: " + t;
+        document.getElementById('u-tag').innerText = t;
         if(a) document.querySelectorAll('.admin-only').forEach(e => e.style.setProperty('display','block','important'));
+        if(c) document.querySelectorAll('.cate-only').forEach(e => e.style.setProperty('display','block','important'));
         tab('home');
     }
 
-    function salir() { localStorage.removeItem('mision_data_v3'); location.reload(); }
+    function salir() { localStorage.removeItem('cate_v4_data'); location.reload(); }
 
     function tab(id) {
         document.querySelectorAll('.seccion').forEach(s => s.classList.add('hidden'));
@@ -223,50 +182,43 @@
         document.getElementById('n-'+id).classList.add('active');
     }
 
-    // --- LÓGICA DE GRUPOS ---
-    function addGroup() {
-        const nom = document.getElementById('g-nom').value;
-        const cat = document.getElementById('g-cat').value;
-        if(!nom) return;
-        const id = "g"+Date.now();
-        const html = `
-            <div class="group-card" id="${id}" data-asignado="${cat}">
-                <div class="d-flex justify-content-between">
-                    <h6 class="fw-bold text-primary mb-1">${nom}</h6>
-                    <small class="badge bg-secondary">${cat}</small>
-                </div>
-                <div id="list-j-${id}" class="mb-2"></div>
-                
-                <div class="input-group input-group-sm mt-2 zone-add" style="display: ${ (userActual===cat || userActual==='Maycol') ? 'flex' : 'none' }">
-                    <input type="text" id="in-${id}" class="form-control" placeholder="Nombre del joven">
-                    <button class="btn btn-dark" onclick="addJoven('${id}')">+</button>
-                </div>
-            </div>`;
-        document.getElementById('lista-grupos').insertAdjacentHTML('beforeend', html);
-        document.getElementById('g-nom').value = "";
-    }
-
-    function addJoven(gid) {
-        const nom = document.getElementById('in-'+gid).value;
-        if(!nom) return;
-        document.getElementById('list-j-'+gid).insertAdjacentHTML('beforeend', `<span class="joven-tag">👤 ${nom}</span>`);
-        document.getElementById('in-'+gid).value = "";
+    // LÓGICA DE CADA COSA APARTE
+    function addNot() {
+        const t = document.getElementById('t-not').value; if(!t) return;
+        document.getElementById('lista-not').insertAdjacentHTML('afterbegin', `<div class="p-3 border-bottom"><b>📌 ${t}</b></div>`);
+        document.getElementById('t-not').value = "";
     }
 
     function mon(v) {
-        const m = parseFloat(document.getElementById('c-mon').value);
-        if(!m) return;
-        totalCaja += (m * v);
-        document.getElementById('s-bs').innerText = "Bs. " + totalCaja.toFixed(2);
+        const m = parseFloat(document.getElementById('c-mon').value); if(!m) return;
+        caja += (m * v);
+        document.getElementById('s-bs').innerText = "Bs. " + caja.toFixed(2);
         const color = v > 0 ? 'text-success' : 'text-danger';
-        document.getElementById('lista-inv').insertAdjacentHTML('afterbegin', `<div class="p-2 border-bottom ${color}"><b>${v>0?'+':'-'}${m} Bs.</b> - ${document.getElementById('c-det').value}</div>`);
+        document.getElementById('lista-caja').insertAdjacentHTML('afterbegin', `<div class="border-bottom py-1 ${color}">${v>0?'+':'-'}${m} Bs. - ${document.getElementById('c-det').value}</div>`);
     }
 
-    function addNot() {
-        const t = document.getElementById('t-not').value;
-        if(!t) return;
-        document.getElementById('lista-not').insertAdjacentHTML('afterbegin', `<div class="p-3 border-bottom"><b>📢 ${t}</b></div>`);
-        document.getElementById('t-not').value = "";
+    function addInv() {
+        const it = document.getElementById('i-item').value, ca = document.getElementById('i-cant').value;
+        if(!it || !ca) return;
+        document.getElementById('lista-inv').insertAdjacentHTML('afterbegin', `<div class="p-2 border-bottom d-flex justify-content-between"><span>${it}</span><span class="badge bg-dark">${ca}</span></div>`);
+    }
+
+    function addGroup() {
+        const n = document.getElementById('g-nom').value, c = document.getElementById('g-cat').value;
+        const id = "g"+Date.now();
+        document.getElementById('lista-grupos').insertAdjacentHTML('beforeend', `<div class="group-card"><b>${n}</b> <small>(${c})</small><div id="list-j-${id}"></div><div class="input-group mt-2" style="display: ${ (userAct===c || userAct==='Maycol') ? 'flex' : 'none' }"><input type="text" id="in-${id}" class="form-control form-control-sm" placeholder="Joven..."><button class="btn btn-sm btn-primary" onclick="addJoven('${id}')">+</button></div></div>`);
+    }
+
+    function addJoven(id) {
+        const v = document.getElementById('in-'+id).value; if(!v) return;
+        document.getElementById('list-j-'+id).insertAdjacentHTML('beforeend', `<div class="small text-muted">• ${v}</div>`);
+        document.getElementById('in-'+id).value = "";
+    }
+
+    function sendMsg() {
+        const m = document.getElementById('j-msg').value; if(!m) return;
+        document.getElementById('lista-msg').insertAdjacentHTML('beforeend', `<div class="msg-bubble"><b>${userAct}:</b><br>${m}</div>`);
+        document.getElementById('j-msg').value = "";
     }
 </script>
 </body>
