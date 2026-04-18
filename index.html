@@ -9,14 +9,14 @@
     <style>
         :root { --blue: #1a237e; --gold: #ffd600; --bg: #f0f2f5; }
         
-        /* PROTECCIÓN DE INTERFAZ Y SCROLL */
+        /* PROTECCIÓN DE INTERFAZ */
         html, body { 
             background: var(--bg); 
             font-family: 'Segoe UI', sans-serif; 
             margin: 0; 
             padding: 0;
-            overscroll-behavior-y: contain; /* Evita pull-to-refresh */
-            overscroll-behavior-x: none;    /* Evita gesto de 'atrás' lateral */
+            overscroll-behavior-y: contain; 
+            overscroll-behavior-x: none;    
             height: 100%;
             overflow: hidden; 
         }
@@ -31,8 +31,20 @@
         #login-screen { position: fixed; inset: 0; background: var(--blue); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .app-header { background: var(--blue); color: white; padding: 20px; border-bottom: 6px solid var(--gold); border-radius: 0 0 35px 35px; text-align: center; position: relative; }
         
-        /* BOTÓN SALIR / CAMBIAR CUENTA */
-        .logout-btn { position: absolute; right: 15px; top: 15px; font-size: 0.75rem; color: white; cursor: pointer; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); }
+        /* BOTÓN PARA VOLVER AL LOGIN */
+        .logout-btn { 
+            position: absolute; 
+            right: 15px; 
+            top: 15px; 
+            font-size: 0.75rem; 
+            color: white; 
+            cursor: pointer; 
+            background: rgba(255,255,255,0.2); 
+            padding: 5px 12px; 
+            border-radius: 20px; 
+            border: 1px solid rgba(255,255,255,0.4);
+            z-index: 1001;
+        }
         
         .card { border-radius: 20px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin: 12px; background: white; overflow: hidden; }
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 12px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); border-radius: 25px 25px 0 0; z-index: 1000; }
@@ -43,7 +55,6 @@
         .btn-del { color: #dc3545; cursor: pointer; font-size: 1.1rem; }
         .cumple-item { background: #fff9c4; border-left: 5px solid #fbc02d; padding: 10px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* ESTILO OJITO CONTRASEÑA */
         .pass-container { position: relative; width: 100%; }
         .toggle-pass { position: absolute; right: 15px; top: 10px; z-index: 100; cursor: pointer; color: #666; font-size: 1.2rem; }
     </style>
@@ -73,7 +84,7 @@
 
 <div id="app" class="hidden">
     <div class="app-header">
-        <div class="logout-btn" onclick="salir()"><i class="bi bi-box-arrow-left"></i> Salir</div>
+        <div class="logout-btn" onclick="salir()">Cambiar Cuenta</div>
         <h5 class="fw-bold mb-0">CATEQUESIS TARIJA</h5>
         <div id="u-tag" class="badge bg-light text-dark mt-2"></div>
     </div>
@@ -94,18 +105,17 @@
                 <textarea id="m-not" class="form-control mb-2" placeholder="Mensaje..."></textarea>
                 <div class="d-flex gap-2">
                     <button onclick="addNot()" class="btn btn-primary btn-sm w-100">Publicar</button>
-                    <button onclick="wsNot()" class="btn btn-success btn-sm"><i class="bi bi-whatsapp"></i></button>
                 </div>
             </div>
             <div id="lista-not"></div>
         </div>
 
         <div class="card p-3">
-            <h6 class="fw-bold text-warning">🎂 Cumpleaños del Equipo</h6>
+            <h6 class="fw-bold text-warning">🎂 Cumpleaños</h6>
             <div class="cate-only mb-3 bg-light p-2 rounded">
-                <input type="text" id="c-nom" class="form-control mb-1" placeholder="Tu Nombre">
+                <input type="text" id="c-nom" class="form-control mb-1" placeholder="Nombre">
                 <input type="date" id="c-fec" class="form-control mb-1">
-                <button onclick="addCum()" class="btn btn-warning btn-sm w-100">Registrar mi Cumple</button>
+                <button onclick="addCum()" class="btn btn-warning btn-sm w-100">Registrar</button>
             </div>
             <div id="lista-cum"></div>
         </div>
@@ -113,11 +123,11 @@
 
     <div id="sec-lib" class="seccion hidden p-2">
         <div class="card p-3">
-            <h6 class="fw-bold text-primary"><i class="bi bi-book"></i> Biblioteca Virtual</h6>
-            <div class="admin-only mb-3 p-2 bg-light rounded">
+            <h6 class="fw-bold text-primary">Biblioteca Virtual</h6>
+            <div class="admin-only mb-3">
                 <input type="text" id="l-tit" class="form-control mb-1" placeholder="Nombre Libro">
-                <input type="text" id="l-url" class="form-control mb-1" placeholder="Link (Drive/PDF)">
-                <button onclick="addLib()" class="btn btn-primary btn-sm w-100">Subir Recurso</button>
+                <input type="text" id="l-url" class="form-control mb-1" placeholder="Link">
+                <button onclick="addLib()" class="btn btn-primary btn-sm w-100">Subir</button>
             </div>
             <div id="lista-lib"></div>
         </div>
@@ -127,26 +137,15 @@
         <div class="card p-4 bg-primary text-white text-center">
             <small>SALDO CAJA</small>
             <h2 id="s-bs">Bs. 0.00</h2>
-            <button class="btn btn-light btn-sm mt-2" onclick="rep()">Bajar Reporte .txt</button>
         </div>
         <div class="card p-3">
-            <h6 class="fw-bold">Movimientos e Inventario</h6>
             <input type="number" id="c-mon" class="form-control mb-1" placeholder="Bs.">
-            <input type="text" id="c-det" class="form-control mb-2" placeholder="Detalle / Artículo">
-            <div class="d-flex gap-2 mb-3">
-                <button onclick="mon(1)" class="btn btn-success w-100">Ingreso / Alta</button>
-                <button onclick="mon(-1)" class="btn btn-danger w-100">Egreso / Baja</button>
+            <input type="text" id="c-det" class="form-control mb-2" placeholder="Detalle">
+            <div class="d-flex gap-2">
+                <button onclick="mon(1)" class="btn btn-success w-100">Ingreso</button>
+                <button onclick="mon(-1)" class="btn btn-danger w-100">Egreso</button>
             </div>
-            <div id="lista-inv" class="small"></div>
-        </div>
-    </div>
-
-    <div id="sec-chat" class="seccion hidden p-2">
-        <div class="card p-3">
-            <h6 class="fw-bold text-primary">Buzón para Maycol</h6>
-            <div id="lista-msg" class="mb-2 small"></div>
-            <textarea id="j-msg" class="form-control mb-2" placeholder="Escribe tu duda aquí..."></textarea>
-            <button onclick="sendMsg()" class="btn btn-primary w-100">Enviar Consulta</button>
+            <div id="lista-inv" class="mt-2 small"></div>
         </div>
     </div>
 
@@ -154,7 +153,6 @@
         <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-house"></i>Inicio</div>
         <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-book"></i>Libros</div>
         <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-cash-coin"></i>Gestión</div>
-        <div onclick="tab('chat')" id="n-chat" class="nav-item"><i class="bi bi-chat-left-dots"></i>Dudas</div>
     </div>
 </div>
 
@@ -162,13 +160,13 @@
     const P = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Catequista":"cate_2026" };
     let total = 0;
 
-    // BLOQUEO DE BOTÓN ATRÁS
+    // BLOQUEO BOTÓN ATRÁS
     window.history.pushState(null, null, window.location.href);
     window.onpopstate = function() { window.history.pushState(null, null, window.location.href); };
 
-    // PERSISTENCIA: CARGAR AL INICIAR
+    // AL CARGAR: Verificar si hay sesión guardada
     window.onload = function() {
-        const guardado = localStorage.getItem('cate_session');
+        const guardado = localStorage.getItem('sesion_activa');
         if(guardado) {
             const d = JSON.parse(guardado);
             run(d.t, d.a, d.c, d.rol);
@@ -179,20 +177,21 @@
 
     function togglePass() {
         const input = document.getElementById('p-pass');
-        const icon = document.getElementById('eye-icon');
         input.type = (input.type === "password") ? "text" : "password";
-        icon.classList.toggle('bi-eye'); icon.classList.toggle('bi-eye-slash');
     }
 
     function entrar() {
         const r = document.getElementById('rol-select').value;
         const pass = document.getElementById('p-pass').value;
+        
         if(r === "Joven") {
             const data = {t:"MODO JOVEN", a:false, c:false, rol:"Joven"};
-            localStorage.setItem('cate_session', JSON.stringify(data));
+            localStorage.setItem('sesion_activa', JSON.stringify(data));
             run(data.t, data.a, data.c, data.rol);
         } else if(pass === P[r]) {
-            run(r, r!=="Catequista", true, r);
+            const data = {t:r, a:true, c:true, rol:r};
+            localStorage.setItem('sesion_activa', JSON.stringify(data));
+            run(data.t, data.a, data.c, data.rol);
         } else { alert("Contraseña Incorrecta"); }
     }
 
@@ -200,13 +199,18 @@
         document.getElementById('login-screen').style.display='none';
         document.getElementById('app').classList.remove('hidden');
         document.getElementById('u-tag').innerText = t;
+        
+        // Resetear visibilidad
+        document.querySelectorAll('.admin-only, .cate-only').forEach(e => e.style.setProperty('display','none','important'));
+        
         if(a) document.querySelectorAll('.admin-only').forEach(e => e.style.setProperty('display','block','important'));
         if(c) document.querySelectorAll('.cate-only').forEach(e => e.style.setProperty('display','block','important'));
     }
 
+    // FUNCIÓN CLAVE: Permite borrar la memoria y volver a la pantalla de roles
     function salir() {
-        if(confirm("¿Cerrar sesión y volver al menú principal?")) {
-            localStorage.removeItem('cate_session');
+        if(confirm("¿Cerrar sesión para entrar con otro rol?")) {
+            localStorage.removeItem('sesion_activa');
             location.reload();
         }
     }
@@ -224,28 +228,23 @@
     }
 
     function addNot() {
-        const t = document.getElementById('t-not').value, m = document.getElementById('m-not').value;
+        const t = document.getElementById('t-not').value;
         if(!t) return;
-        const id = "n"+Date.now();
-        document.getElementById('lista-not').insertAdjacentHTML('afterbegin', `<div class="p-2 border-bottom mb-2 bg-white" id="${id}"><b>${t}</b> <i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i><br><small>${m}</small></div>`);
-        document.getElementById('t-not').value=""; document.getElementById('m-not').value="";
+        document.getElementById('lista-not').insertAdjacentHTML('afterbegin', `<div class="p-2 border-bottom mb-2 bg-white"><b>${t}</b></div>`);
+        document.getElementById('t-not').value="";
     }
 
-    function wsNot() { window.open(`https://wa.me/?text=${encodeURIComponent("*"+document.getElementById('t-not').value+"*\n"+document.getElementById('m-not').value)}`); }
-
     function addCum() {
-        const n = document.getElementById('c-nom').value, f = document.getElementById('c-fec').value;
-        if(!n || !f) return;
-        const id = "c"+Date.now();
-        document.getElementById('lista-cum').insertAdjacentHTML('afterbegin', `<div class="cumple-item" id="${id}"><span>🎂 <b>${n}</b> (${f})</span><i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i></div>`);
+        const n = document.getElementById('c-nom').value;
+        if(!n) return;
+        document.getElementById('lista-cum').insertAdjacentHTML('afterbegin', `<div class="cumple-item"><span>🎂 ${n}</span></div>`);
         document.getElementById('c-nom').value="";
     }
 
     function addLib() {
         const t = document.getElementById('l-tit').value, u = document.getElementById('l-url').value;
         if(!t || !u) return;
-        const id = "l"+Date.now();
-        document.getElementById('lista-lib').insertAdjacentHTML('afterbegin', `<div class="d-flex justify-content-between p-3 border-bottom align-items-center" id="${id}"><a href="${u}" target="_blank" class="text-dark small"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>${t}</a><i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i></div>`);
+        document.getElementById('lista-lib').insertAdjacentHTML('afterbegin', `<div class="p-2 border-bottom"><a href="${u}" target="_blank">${t}</a></div>`);
     }
 
     function mon(v) {
@@ -253,15 +252,9 @@
         if(!m) return;
         total += (m * v);
         document.getElementById('s-bs').innerText = "Bs. " + total.toFixed(2);
-        document.getElementById('lista-inv').insertAdjacentHTML('afterbegin', `<div class="border-bottom py-1">${document.getElementById('c-det').value}: ${m*v} Bs.</div>`);
+        document.getElementById('lista-inv').insertAdjacentHTML('afterbegin', `<div>${document.getElementById('c-det').value}: ${m*v}</div>`);
     }
-
-    function rep() {
-        const b = new Blob(["REPORTE\nSaldo: "+total+" Bs."], {type:"text/plain"});
-        const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "reporte.txt"; a.click();
-    }
-
-    function sendMsg() { alert("Consulta enviada"); document.getElementById('j-msg').value=""; }
 </script>
 </body>
-</html>
+    </html>
+    
