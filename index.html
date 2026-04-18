@@ -35,7 +35,10 @@
         /* ESTILOS ESPECÍFICOS */
         .msg-bubble { background: #e8eaf6; padding: 12px; border-radius: 15px 15px 15px 0; margin-bottom: 10px; border-left: 4px solid var(--blue-light); }
         .cat-card { border-left: 5px solid var(--gold); background: #f8f9fa; padding: 10px; border-radius: 12px; margin-bottom: 8px; }
-        .media-card { border-radius: 15px; overflow: hidden; border: 1px solid #eee; margin-bottom: 15px; }
+        .media-card { border-radius: 15px; overflow: hidden; border: 1px solid #eee; margin-bottom: 15px; background: white; }
+        .check-item { background: #fdfdfd; border: 1px solid #eee; padding: 10px; border-radius: 15px; margin-bottom: 8px; }
+        .agenda-item { border-left: 4px solid var(--blue); background: #f0f2f5; margin-bottom: 10px; padding: 10px; border-radius: 10px; }
+        .done { text-decoration: line-through; opacity: 0.6; }
     </style>
 </head>
 <body>
@@ -68,8 +71,12 @@
         <div class="card">
             <h6 class="section-title"><i class="bi bi-megaphone"></i> Blog y Comunicados</h6>
             <div class="admin-only mb-3">
-                <input type="text" id="m-tit" class="form-control mb-2" placeholder="Título del comunicado/Arte">
-                <input type="text" id="m-url" class="form-control mb-2" placeholder="Link de Imagen o Video">
+                <input type="text" id="m-tit" class="form-control mb-2" placeholder="Título del comunicado">
+                <div class="mb-2">
+                    <label class="small fw-bold text-muted">Subir Imagen de Galería:</label>
+                    <input type="file" id="m-img-file" class="form-control" accept="image/*">
+                </div>
+                <input type="text" id="m-url" class="form-control mb-2" placeholder="ID de Video YouTube (Opcional)">
                 <button onclick="addMedia()" class="btn btn-primary w-100 rounded-pill">Publicar</button>
             </div>
             <div id="lista-media"></div>
@@ -94,6 +101,33 @@
             <div id="lista-equipo"></div>
             <hr>
             <div id="lista-grupos"></div>
+        </div>
+    </div>
+
+    <div id="sec-asistencia" class="seccion hidden p-2">
+        <div class="card">
+            <h6 class="section-title"><i class="bi bi-person-check"></i> Control de Jóvenes</h6>
+            <div id="admin-jovenes" class="bg-light p-3 rounded-4 mb-3">
+                <p class="small fw-bold mb-1">Registrar Nuevo Joven:</p>
+                <input type="text" id="j-nom-reg" class="form-control mb-1" placeholder="Nombre Completo">
+                <select id="j-grupo-reg" class="form-select mb-2"></select>
+                <button onclick="addJoven()" class="btn btn-primary btn-sm w-100 rounded-pill">Registrar Joven</button>
+            </div>
+            <select id="filtro-grupo" class="form-select mb-3 shadow-sm" onchange="actualizarListaJovenes()">
+                <option value="">Filtrar por Grupo...</option>
+            </select>
+            <div id="tabla-jovenes"></div>
+        </div>
+    </div>
+
+    <div id="sec-agenda" class="seccion hidden admin-only p-2">
+        <div class="card">
+            <h6 class="section-title"><i class="bi bi-calendar-check"></i> Agenda de Coordinación</h6>
+            <div class="bg-light p-3 rounded-4 mb-3">
+                <input type="text" id="a-task" class="form-control mb-2" placeholder="Nueva tarea o pendiente...">
+                <button onclick="addAgenda()" class="btn btn-primary w-100 rounded-pill btn-sm">Agregar a Agenda</button>
+            </div>
+            <div id="lista-agenda"></div>
         </div>
     </div>
 
@@ -148,17 +182,18 @@
 
     <div class="bottom-nav">
         <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-megaphone"></i>Blog</div>
-        <div onclick="tab('equipo')" id="n-equipo" class="nav-item"><i class="bi bi-people"></i>Equipo</div>
-        <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-book"></i>Libros</div>
-        <div onclick="tab('msg')" id="n-msg" class="nav-item"><i class="bi bi-chat-dots"></i>Mensajes</div>
+        <div onclick="tab('asistencia'); actualizarListaJovenes();" id="n-asistencia" class="nav-item"><i class="bi bi-person-check"></i>Jóvenes</div>
+        <div onclick="tab('agenda')" id="n-agenda" class="nav-item admin-only"><i class="bi bi-calendar-check"></i>Agenda</div>
+        <div onclick="tab('msg')" id="n-msg" class="nav-item"><i class="bi bi-chat-dots"></i>Msgs</div>
         <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-gear"></i>Admin</div>
+        <div onclick="tab('equipo')" id="n-equipo" class="nav-item"><i class="bi bi-people"></i>Equipo</div>
     </div>
 </div>
 
 <script>
     const P = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Catequista":"cate_2026" };
     let DATA = JSON.parse(localStorage.getItem('CATE_SISTEMA_TOTAL')) || {
-        media: [], catequistas: [], grupos: [], libros: [], mensajes: [], caja: [], inventario: [], saldo: 0
+        media: [], catequistas: [], grupos: [], libros: [], mensajes: [], caja: [], inventario: [], saldo: 0, jovenes: [], agenda: []
     };
     let userAct = "";
 
@@ -211,25 +246,33 @@
 
     function actualizarTodo() {
         // Blog/Media
-        document.getElementById('lista-media').innerHTML = DATA.media.map(m => `
-            <div class="media-card">
-                <img src="${m.u}" class="w-100" style="height:150px; object-fit:cover" onerror="this.src='https://placehold.co/400x200?text=Arte+o+Video'">
-                <div class="p-2"><b>${m.t}</b></div>
-            </div>`).join('');
+        document.getElementById('lista-media').innerHTML = DATA.media.map(m => {
+            let contenido = '';
+            if(m.vId) {
+                contenido = `<iframe width="100%" height="200" src="https://www.youtube.com/embed/${m.vId}" frameborder="0" allowfullscreen></iframe>`;
+            } else {
+                contenido = `<img src="${m.u}" class="w-100" style="height:200px; object-fit:cover" onerror="this.src='https://placehold.co/400x200?text=CREATIX+Tarija'">`;
+            }
+            return `<div class="media-card">${contenido}<div class="p-2"><b>${m.t}</b></div></div>`;
+        }).join('');
 
-        // Catequistas y Selector de Grupos
+        // Equipo y Selectores
         document.getElementById('lista-equipo').innerHTML = DATA.catequistas.map(c => `
-            <div class="cat-card d-flex justify-content-between">
+            <div class="cat-card d-flex justify-content-between align-items-center">
                 <span><b>${c.n}</b><br><small>🎂 ${c.f}</small></span>
                 <a href="https://wa.me/591${c.t}" class="text-success fs-4"><i class="bi bi-whatsapp"></i></a>
             </div>`).join('');
         
+        const optGrupos = DATA.grupos.map(g => `<option value="${g.n}">${g.n}</option>`).join('');
         document.getElementById('g-cat').innerHTML = '<option value="">Asignar a...</option>' + 
             DATA.catequistas.map(c => `<option value="${c.n}">${c.n}</option>`).join('');
+        
+        document.getElementById('j-grupo-reg').innerHTML = optGrupos;
+        document.getElementById('filtro-grupo').innerHTML = '<option value="">Filtrar por Grupo...</option>' + optGrupos;
 
         // Grupos
         document.getElementById('lista-grupos').innerHTML = DATA.grupos.map(g => `
-            <div class="p-2 border rounded-3 mb-2 bg-white">
+            <div class="p-2 border rounded-3 mb-2 bg-white shadow-sm">
                 <b>${g.n}</b> <span class="badge bg-primary float-end">${g.c}</span>
             </div>`).join('');
 
@@ -249,36 +292,95 @@
         document.getElementById('lista-inv').innerHTML = DATA.inventario.map(i => `
             <div class="d-flex justify-content-between p-2 border-bottom"><span>${i.n}</span><b>${i.c}</b></div>`).join('');
 
+        // Agenda Coordinadores
+        document.getElementById('lista-agenda').innerHTML = DATA.agenda.map(a => `
+            <div class="agenda-item d-flex justify-content-between align-items-center ${a.done?'done':''}">
+                <span>${a.t}</span>
+                <input type="checkbox" ${a.done?'checked':''} onclick="toggleAgenda(${a.id})">
+            </div>`).join('');
+
         // Mensajes
         document.getElementById('lista-msg').innerHTML = DATA.mensajes.map(m => `
             <div class="msg-bubble"><b>${m.u}:</b><br>${m.t}</div>`).join('');
+            
+        actualizarListaJovenes();
     }
 
-    // ACCIONES
+    // --- ACCIONES PUBLICIDAD ---
     function addMedia() {
-        const t = document.getElementById('m-tit').value, u = document.getElementById('m-url').value;
-        if(!t || !u) return; DATA.media.unshift({t, u}); save();
-        document.getElementById('m-tit').value=""; document.getElementById('m-url').value="";
+        const t = document.getElementById('m-tit').value;
+        const vId = document.getElementById('m-url').value;
+        const file = document.getElementById('m-img-file').files[0];
+        if(!t) return alert("Pon un título");
+        const pushData = (imgUrl) => {
+            DATA.media.unshift({t, u: imgUrl, vId});
+            save();
+            document.getElementById('m-tit').value=""; document.getElementById('m-url').value=""; document.getElementById('m-img-file').value="";
+        };
+        if(file) {
+            const reader = new FileReader();
+            reader.onloadend = () => pushData(reader.result);
+            reader.readAsDataURL(file);
+        } else { pushData(""); }
     }
 
+    // --- ACCIONES JÓVENES ---
+    function addJoven() {
+        const n = document.getElementById('j-nom-reg').value;
+        const g = document.getElementById('j-grupo-reg').value;
+        if(!n || !g) return alert("Nombre y Grupo requeridos");
+        DATA.jovenes.unshift({id: Date.now(), nombre: n, grupo: g, presente: false, tarea: false});
+        save();
+        document.getElementById('j-nom-reg').value = "";
+    }
+
+    function toggleCheck(id, campo) {
+        const j = DATA.jovenes.find(x => x.id === id);
+        if(j) { j[campo] = !j[campo]; save(); }
+    }
+
+    function actualizarListaJovenes() {
+        const filtro = document.getElementById('filtro-grupo').value;
+        const lista = filtro ? DATA.jovenes.filter(j => j.grupo === filtro) : DATA.jovenes;
+        document.getElementById('tabla-jovenes').innerHTML = lista.map(j => `
+            <div class="check-item d-flex justify-content-between align-items-center">
+                <div style="flex:1"><b>${j.nombre}</b><br><small class="text-muted">${j.grupo}</small></div>
+                <div class="d-flex gap-3 text-center">
+                    <div><small class="d-block">LISTA</small><input type="checkbox" ${j.presente?'checked':''} onclick="toggleCheck(${j.id},'presente')"></div>
+                    <div><small class="d-block">TAREA</small><input type="checkbox" ${j.tarea?'checked':''} onclick="toggleCheck(${j.id},'tarea')"></div>
+                </div>
+            </div>`).join('');
+    }
+
+    // --- ACCIONES AGENDA ---
+    function addAgenda() {
+        const t = document.getElementById('a-task').value;
+        if(!t) return;
+        DATA.agenda.unshift({id: Date.now(), t, done: false});
+        save();
+        document.getElementById('a-task').value = "";
+    }
+
+    function toggleAgenda(id) {
+        const a = DATA.agenda.find(x => x.id === id);
+        if(a) { a.done = !a.done; save(); }
+    }
+    // --- RESTO DE ACCIONES ---
     function addCate() {
         const n = document.getElementById('cat-nom').value, t = document.getElementById('cat-tel').value, f = document.getElementById('cat-cum').value;
         if(!n || !t) return; DATA.catequistas.unshift({n, t, f}); save();
         document.getElementById('cat-nom').value=""; document.getElementById('cat-tel').value="";
     }
-
     function addGroup() {
         const n = document.getElementById('g-nom').value, c = document.getElementById('g-cat').value;
         if(!n || !c) return; DATA.grupos.unshift({n, c}); save();
         document.getElementById('g-nom').value="";
     }
-
     function addLib() {
         const t = document.getElementById('l-tit').value, u = document.getElementById('l-url').value;
         if(!t || !u) return; DATA.libros.unshift({t, u}); save();
         document.getElementById('l-tit').value=""; document.getElementById('l-url').value="";
     }
-
     function mon(v) {
         const m = parseFloat(document.getElementById('c-mon').value);
         const d = document.getElementById('c-det').value;
@@ -288,13 +390,11 @@
         save();
         document.getElementById('c-mon').value=""; document.getElementById('c-det').value="";
     }
-
     function addInv() {
         const n = document.getElementById('i-item').value, c = document.getElementById('i-cant').value;
         if(!n || !c) return; DATA.inventario.unshift({n, c}); save();
         document.getElementById('i-item').value=""; document.getElementById('i-cant').value="";
     }
-
     function sendMsg() {
         const t = document.getElementById('j-msg').value;
         if(!t) return; DATA.mensajes.push({u: userAct, t}); save();
@@ -303,3 +403,4 @@
 </script>
 </body>
 </html>
+    
