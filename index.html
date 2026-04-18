@@ -3,230 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CATEQUESIS TARIJA - SISTEMA INTEGRAL</title>
+    <title>CATEQUESIS TARIJA V13</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root { --blue: #1a237e; --gold: #ffd600; --bg: #f0f2f5; }
-        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; padding-bottom: 100px; margin: 0; }
-        
-        /* Login Forzado al inicio */
-        #login-screen { position: fixed; inset: 0; background: var(--blue); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        
-        .app-header { background: var(--blue); color: white; padding: 25px 20px; border-bottom: 6px solid var(--gold); border-radius: 0 0 40px 40px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .card { border-radius: 25px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.06); margin: 15px; background: white; overflow: hidden; }
-        
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 15px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); border-radius: 30px 30px 0 0; z-index: 1000; }
-        .nav-item { text-align: center; color: #bbb; flex: 1; cursor: pointer; font-size: 11px; font-weight: 600; }
-        .nav-item.active { color: var(--blue); }
-        .nav-item i { font-size: 24px; display: block; margin-bottom: 2px; }
-
-        /* Elementos de Bloqueo */
+        :root { --blue: #1a237e; --gold: #ffd600; }
+        body { background: #f4f7f9; font-family: sans-serif; padding-bottom: 80px; }
+        .app-header { background: var(--blue); color: white; padding: 20px; border-bottom: 5px solid var(--gold); border-radius: 0 0 30px 30px; text-align: center; }
+        .card { border-radius: 15px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: 10px; background: white; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 10px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); z-index: 1000; }
+        .nav-item { text-align: center; color: #bbb; flex: 1; font-size: 11px; cursor: pointer; }
+        .nav-item.active { color: var(--blue); font-weight: bold; }
+        .nav-item i { font-size: 20px; display: block; }
         .admin-only, .cate-only, .hidden { display: none !important; }
-        .post-card { border-left: 5px solid var(--blue); padding: 15px; margin-bottom: 10px; background: #fff; }
+        .btn-del { color: #dc3545; cursor: pointer; }
+        .cumple-item { background: #fff9c4; padding: 10px; border-radius: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
-<div id="login-screen">
-    <div class="card p-4 text-center" style="width: 90%; max-width: 380px;">
-        <h3 class="fw-bold mb-1" style="color: var(--blue)">✝️ MISIÓN TARIJA</h3>
-        <p class="text-muted small mb-4">Gestión 2026 - Coordinación</p>
-        
-        <select id="rol-select" class="form-select mb-3 rounded-pill p-3 border-0 bg-light shadow-sm" onchange="togglePass()">
-            <option value="Joven">Modo Joven (Invitado)</option>
-            <option value="Maycol">Maycol (Coordinador)</option>
-            <option value="Yoselin">Yoselin (Coordinadora)</option>
-            <option value="Catequista">Catequista (14 Grupos)</option>
+<div id="login-screen" style="position:fixed; inset:0; background:var(--blue); z-index:9999; display:flex; align-items:center; justify-content:center;">
+    <div class="card p-4 text-center" style="width:90%; max-width:350px;">
+        <h4 class="fw-bold mb-3" style="color:var(--blue)">✝️ MISIÓN TARIJA</h4>
+        <select id="rol-select" class="form-select mb-3" onchange="document.getElementById('p-box').classList.toggle('hidden', this.value=='Joven')">
+            <option value="Joven">Modo Joven</option>
+            <option value="Maycol">Maycol (Admin)</option>
+            <option value="Yoselin">Yose (Admin)</option>
+            <option value="Catequista">Catequista</option>
         </select>
-
-        <div id="pass-container" class="hidden">
-            <input type="password" id="pass-input" class="form-control mb-3 rounded-pill p-3 border-0 bg-light shadow-sm" placeholder="Contraseña">
-        </div>
-
-        <button onclick="acceder()" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow">INGRESAR AL SISTEMA</button>
+        <div id="p-box" class="hidden"><input type="password" id="p-pass" class="form-control mb-3" placeholder="Contraseña"></div>
+        <button onclick="entrar()" class="btn btn-primary w-100 fw-bold">INGRESAR</button>
     </div>
 </div>
 
-<div id="app-content" class="hidden">
-    <div class="app-header">
-        <h5 class="fw-bold mb-0">CATEQUESIS TARIJA</h5>
-        <div id="user-display" class="badge bg-light text-dark rounded-pill mt-2 px-3 p-2 small"></div>
-    </div>
+<div id="app" class="hidden">
+    <div class="app-header"><h5 class="fw-bold m-0">CATEQUESIS TARIJA</h5><div id="u-tag" class="badge bg-light text-dark mt-2"></div></div>
 
     <div id="sec-home" class="seccion p-2">
-        <div class="admin-only card p-3 bg-light border-primary mb-3">
-            <h6 class="fw-bold text-primary">Subir Publicidad (Imagen)</h6>
-            <input type="text" id="img-input" class="form-control mb-2" placeholder="Pegar enlace de imagen">
-            <button onclick="ponerAnuncio()" class="btn btn-primary btn-sm w-100 rounded-pill">Publicar Banner</button>
-        </div>
-
-        <div id="anuncio-box" class="hidden text-center mb-3">
-            <img id="anuncio-img" src="" class="w-100 rounded-4 shadow">
-        </div>
-
-        <div class="card p-0">
-            <div class="ratio ratio-16x9">
-                <iframe id="video-frame" src="http://googleusercontent.com/youtube.com/8" allowfullscreen></iframe>
+        <div class="card p-3">
+            <h6 class="fw-bold text-primary">Comunicados</h6>
+            <div class="admin-only mb-2">
+                <input type="text" id="t-not" class="form-control mb-1" placeholder="Título">
+                <textarea id="m-not" class="form-control mb-1" placeholder="Mensaje"></textarea>
+                <div class="d-flex gap-2">
+                    <button onclick="addNot()" class="btn btn-primary btn-sm w-100">Publicar</button>
+                    <button onclick="wsNot()" class="btn btn-success btn-sm"><i class="bi bi-whatsapp"></i></button>
+                </div>
             </div>
-            <div class="admin-only p-2 bg-dark">
-                <input type="text" id="vid-input" class="form-control form-control-sm mb-1" placeholder="ID de YouTube">
-                <button onclick="ponerVideo()" class="btn btn-warning btn-sm w-100 rounded-pill">Actualizar Video</button>
-            </div>
+            <div id="lista-not"></div>
         </div>
 
         <div class="card p-3">
-            <h6 class="fw-bold text-primary">Comunicados del Blog</h6>
-            <div class="admin-only mb-3">
-                <input type="text" id="b-tit" class="form-control mb-1" placeholder="Título">
-                <textarea id="b-msg" class="form-control mb-2" rows="2" placeholder="Mensaje..."></textarea>
-                <button onclick="subirNoticia()" class="btn btn-primary btn-sm w-100 rounded-pill">Subir Noticia</button>
+            <h6 class="fw-bold text-warning">🎂 Cumpleaños</h6>
+            <div class="cate-only mb-2">
+                <input type="text" id="c-nom" class="form-control mb-1" placeholder="Tu Nombre">
+                <input type="date" id="c-fec" class="form-control mb-1">
+                <button onclick="addCum()" class="btn btn-warning btn-sm w-100">Registrarme</button>
             </div>
-            <div id="blog-lista"></div>
+            <div id="lista-cum"></div>
         </div>
     </div>
 
     <div id="sec-lib" class="seccion hidden p-2">
         <div class="card p-3">
-            <h6 class="fw-bold text-primary"><i class="bi bi-book me-2"></i>Biblioteca Virtual</h6>
-            <div class="admin-only p-2 bg-light rounded mb-3">
-                <input type="text" id="l-tit" class="form-control mb-1" placeholder="Nombre del Libro">
-                <input type="text" id="l-url" class="form-control mb-1" placeholder="Enlace Drive/PDF">
-                <button onclick="subirLibro()" class="btn btn-primary btn-sm w-100 rounded-pill">Agregar a Biblioteca</button>
+            <h6 class="fw-bold text-primary">Biblioteca Virtual</h6>
+            <div class="admin-only mb-2">
+                <input type="text" id="l-tit" class="form-control mb-1" placeholder="Nombre">
+                <input type="text" id="l-url" class="form-control mb-1" placeholder="Link">
+                <button onclick="addLib()" class="btn btn-primary btn-sm w-100">Subir</button>
             </div>
-            <div id="lib-lista"></div>
+            <div id="lista-lib"></div>
         </div>
     </div>
 
-    <div id="sec-grupo" class="seccion hidden p-2">
-        <div class="cate-only card p-3 border-success mb-3">
-            <h6 class="fw-bold text-success">Llamar Lista: <span id="grupo-txt"></span></h6>
-            <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
-                <span>Estudiante Ejemplo</span>
-                <button class="btn btn-outline-success btn-sm" onclick="this.className='btn btn-success btn-sm'">P</button>
-            </div>
-            <button class="btn btn-success w-100 rounded-pill mt-3">Guardar Asistencia</button>
+    <div id="sec-adm" class="seccion hidden p-2 admin-only">
+        <div class="card p-4 bg-primary text-white text-center">
+            <small>SALDO</small><h2 id="s-bs">Bs. 0.00</h2>
+            <button class="btn btn-light btn-sm" onclick="rep()">Reporte .txt</button>
         </div>
         <div class="card p-3">
-            <h6 class="fw-bold text-warning">Órdenes de Coordinación</h6>
-            <div id="misiones-feed" class="small text-muted">No hay misiones asignadas...</div>
-        </div>
-    </div>
-
-    <div id="sec-admin" class="seccion hidden admin-only p-2">
-        <div class="card p-4 bg-primary text-white text-center shadow">
-            <small class="opacity-75">SALDO ACTUAL GESTIÓN</small>
-            <h2 class="fw-bold" id="saldo-bs">Bs. 0.00</h2>
-        </div>
-        
-        <div class="card p-3 border-warning mb-3">
-            <h6 class="fw-bold text-warning">Asignar Misión a Catequistas</h6>
-            <input type="text" id="m-input" class="form-control mb-2" placeholder="¿Qué deben hacer hoy?">
-            <button onclick="mandarMision()" class="btn btn-warning btn-sm w-100 rounded-pill fw-bold text-dark">ENVIAR TAREA</button>
-        </div>
-
-        <div class="card p-3 mb-3">
-            <h6 class="fw-bold">Contabilidad de Caja</h6>
-            <input type="number" id="c-monto" class="form-control mb-1" placeholder="Monto Bs.">
-            <input type="text" id="c-motivo" class="form-control mb-2" placeholder="Detalle">
-            <div class="d-flex gap-2">
-                <button onclick="caja(1)" class="btn btn-success w-100 rounded-pill">Ingreso</button>
-                <button onclick="caja(-1)" class="btn btn-danger w-100 rounded-pill">Egreso</button>
+            <input type="number" id="c-mon" class="form-control mb-1" placeholder="Bs.">
+            <input type="text" id="c-det" class="form-control mb-2" placeholder="Detalle/Inventario">
+            <div class="d-flex gap-2 mb-2">
+                <button onclick="mon(1)" class="btn btn-success w-100">Ingreso</button>
+                <button onclick="mon(-1)" class="btn btn-danger w-100">Egreso</button>
             </div>
+            <div id="lista-inv" class="small"></div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-house-door"></i>Inicio</div>
-        <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-bookmark-star"></i>Libros</div>
-        <div onclick="tab('grupo')" id="n-grupo" class="nav-item cate-only"><i class="bi bi-people"></i>Grupo</div>
-        <div onclick="tab('admin')" id="n-admin" class="nav-item admin-only"><i class="bi bi-shield-lock"></i>Caja</div>
+        <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-house"></i>Inicio</div>
+        <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-book"></i>Libros</div>
+        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-cash-coin"></i>Caja</div>
     </div>
 </div>
 
 <script>
-    const KEYS = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Catequista":"cate_2026" };
-    let saldo = 0;
+    const P = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Catequista":"cate_2026" };
+    let total = 0;
 
-    function togglePass() {
+    function entrar() {
         const r = document.getElementById('rol-select').value;
-        if(r === "Joven") document.getElementById('pass-container').classList.add('hidden');
-        else document.getElementById('pass-container').classList.remove('hidden');
+        const pass = document.getElementById('p-pass').value;
+        if(r === "Joven") run("JOVEN", 0, 0);
+        else if(pass === P[r] || (r==="Maycol" && pass===P["Maycol"])) run(r, r!=="Catequista", 1);
+        else alert("Error");
     }
 
-    function acceder() {
-        const rol = document.getElementById('rol-select').value;
-        const pass = document.getElementById('pass-input').value;
-        const tag = document.getElementById('user-display');
-
-        if(rol === "Joven") {
-            activarModo("MODO LECTURA", false, false);
-        } else if ((rol === "Maycol" || rol === "Yoselin") && pass === KEYS[rol]) {
-            activarModo("COORDINADOR: " + rol, true, true);
-        } else if (rol === "Catequista" && pass === KEYS["Catequista"]) {
-            activarModo("CATEQUISTA: GRUPO X", false, true);
-        } else {
-            alert("Contraseña Incorrecta");
-        }
-    }
-
-    function activarModo(txt, admin, cate) {
-        document.getElementById('login-screen').style.display = 'none';
-        document.getElementById('app-content').classList.remove('hidden');
-        document.getElementById('user-display').innerText = txt;
-
-        if(admin) {
-            document.querySelectorAll('.admin-only').forEach(e => e.style.setProperty('display', 'block', 'important'));
-            document.querySelectorAll('.cate-only').forEach(e => e.style.setProperty('display', 'block', 'important'));
-            document.getElementById('n-grupo').style.setProperty('display', 'none', 'important'); // El admin no necesita ver su propio grupo
-        } else if(cate) {
-            document.querySelectorAll('.cate-only').forEach(e => e.style.setProperty('display', 'block', 'important'));
-        }
+    function run(t, a, c) {
+        document.getElementById('login-screen').style.display='none';
+        document.getElementById('app').classList.remove('hidden');
+        document.getElementById('u-tag').innerText = t;
+        if(a) document.querySelectorAll('.admin-only').forEach(e => e.style.setProperty('display','block','important'));
+        if(c) document.querySelectorAll('.cate-only').forEach(e => e.style.setProperty('display','block','important'));
     }
 
     function tab(id) {
         document.querySelectorAll('.seccion').forEach(s => s.classList.add('hidden'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('sec-' + id).classList.remove('hidden');
-        document.getElementById('n-' + id).classList.add('active');
+        document.getElementById('sec-'+id).classList.remove('hidden');
+        document.getElementById('n-'+id).classList.add('active');
     }
 
-    // --- ACCIONES ADMIN ---
-    function ponerAnuncio() {
-        const url = document.getElementById('img-input').value;
-        document.getElementById('anuncio-img').src = url;
-        document.getElementById('anuncio-box').classList.remove('hidden');
+    function addNot() {
+        const t = document.getElementById('t-not').value, m = document.getElementById('m-not').value;
+        if(!t) return;
+        const id = "n"+Date.now();
+        document.getElementById('lista-not').insertAdjacentHTML('afterbegin', `<div class="p-2 border-bottom" id="${id}"><b>${t}</b> <i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i><br><small>${m}</small></div>`);
+        document.getElementById('t-not').value=""; document.getElementById('m-not').value="";
     }
 
-    function ponerVideo() {
-        const id = document.getElementById('vid-input').value;
-        document.getElementById('video-frame').src = "http://googleusercontent.com/youtube.com/9" + id;
+    function wsNot() {
+        const t = document.getElementById('t-not').value, m = document.getElementById('m-not').value;
+        window.open(`https://wa.me/?text=${encodeURIComponent("*"+t+"*\n"+m)}`);
     }
 
-    function subirNoticia() {
-        const t = document.getElementById('b-tit').value;
-        const m = document.getElementById('b-msg').value;
-        if(!t || !m) return;
-        document.getElementById('blog-lista').insertAdjacentHTML('afterbegin', `<div class="post-card shadow-sm"><h6>${t}</h6><p class="small text-muted mb-0">${m}</p></div>`);
-        document.getElementById('b-tit').value = ""; document.getElementById('b-msg').value = "";
+    function addCum() {
+        const n = document.getElementById('c-nom').value, f = document.getElementById('c-fec').value;
+        if(!n || !f) return;
+        const id = "c"+Date.now();
+        document.getElementById('lista-cum').insertAdjacentHTML('afterbegin', `<div class="cumple-item" id="${id}"><span>🎂 <b>${n}</b> (${f})</span><div><i class="bi bi-whatsapp text-success me-2 admin-only" onclick="fel('${n}')"></i><i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i></div></div>`);
+        document.getElementById('c-nom').value="";
     }
 
-    function subirLibro() {
-        const t = document.getElementById('l-tit').value;
-        const u = document.getElementById('l-url').value;
-        document.getElementById('lib-lista').insertAdjacentHTML('afterbegin', `<a href="${u}" target="_blank" class="d-block p-3 border-bottom text-decoration-none text-dark small"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>${t}</a>`);
+    function fel(n) { window.open(`https://wa.me/?text=${encodeURIComponent("🎉 ¡Feliz Cumple "+n+"! Dios te bendiga ✝️")}`); }
+
+    function addLib() {
+        const t = document.getElementById('l-tit').value, u = document.getElementById('l-url').value;
+        const id = "l"+Date.now();
+        document.getElementById('lista-lib').insertAdjacentHTML('afterbegin', `<div class="d-flex justify-content-between p-2 border-bottom" id="${id}"><a href="${u}" target="_blank" class="text-dark small">${t}</a><i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i></div>`);
     }
 
-    function mandarMision() {
-        const m = document.getElementById('m-input').value;
-        document.getElementById('misiones-feed').insertAdjacentHTML('afterbegin', `<div class="p-2 border-bottom text-dark bg-light mb-1 border-start border-warning border-4">${m}</div>`);
-    }
-
-    function caja(tipo) {
-        const m = parseFloat(document.getElementById('c-monto').value);
+    function mon(v) {
+        const m = parseFloat(document.getElementById('c-mon').value), d = document.getElementById('c-det').value;
         if(!m) return;
-        saldo += (m * tipo);
-        document.getElementById('saldo-bs').innerText = "Bs. " + saldo.toFixed(2);
+        total += (m * v);
+        document.getElementById('s-bs').innerText = "Bs. " + total.toFixed(2);
+        document.getElementById('lista-inv').insertAdjacentHTML('afterbegin', `<div>${d}: ${m*v}</div>`);
+    }
+
+    function rep() {
+        const blob = new Blob(["REPORTE TARIJA\nSaldo: " + total], {type:"text/plain"});
+        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "reporte.txt"; a.click();
     }
 </script>
 </body>
