@@ -3,130 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Misión Catequesis Tarija</title>
+    <title>Catequesis Tarija - Gestión V10</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root { --blue: #1a237e; --gold: #ffd600; --bg: #f8f9fa; }
+        :root { --blue: #1a237e; --gold: #ffd600; --bg: #f0f2f5; }
         body { background: var(--bg); font-family: 'Segoe UI', sans-serif; padding-bottom: 90px; }
         .app-header { background: var(--blue); color: white; padding: 20px; border-bottom: 5px solid var(--gold); border-radius: 0 0 30px 30px; text-align: center; }
-        .card { border-radius: 20px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin: 10px; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 12px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); border-radius: 20px 20px 0 0; z-index: 1000; }
+        .card { border-radius: 20px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.08); margin: 12px; overflow: hidden; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 12px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); border-radius: 25px 25px 0 0; z-index: 1000; }
         .nav-item { text-align: center; color: #bbb; flex: 1; cursor: pointer; font-size: 11px; }
         .nav-item.active { color: var(--blue); font-weight: bold; }
-        .admin-only, .cate-only { display: none; }
-        .hidden { display: none !important; }
-        .asistencia-btn { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #ddd; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
-        .presente { background: #28a745; color: white; border-color: #28a745; }
+        .admin-only, .hidden { display: none !important; }
+        .blog-post { border-left: 5px solid var(--blue); background: #fff; padding: 15px; border-radius: 15px; margin-bottom: 15px; }
+        .money-card { background: linear-gradient(135deg, #1a237e, #3949ab); color: white; padding: 20px; text-align: center; border-radius: 20px; }
     </style>
 </head>
 <body>
 
-<div id="lock" onclick="openLogin()" style="position:fixed; top:10px; right:10px; opacity:0.3; color:white; z-index:2000;"><i class="bi bi-shield-lock-fill"></i></div>
+<div onclick="document.getElementById('login-modal').classList.remove('hidden')" style="position:fixed; top:10px; right:10px; width:40px; height:40px; z-index:2000; opacity:0.1">.</div>
 
 <div id="login-modal" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:3000; display:flex; align-items:center; justify-content:center;">
     <div class="card p-4 text-center" style="width: 85%; max-width: 350px;">
-        <h5 class="fw-bold">Acceso Catequista / Admin</h5>
-        <select id="user-sel" class="form-select mb-3 rounded-pill">
-            <option value="Maycol">Maycol (Coordinador)</option>
-            <option value="Yoselin">Yoselin (Sub)</option>
-            <optgroup label="Catequistas">
-                <option value="Grupo1">Catequista Grupo 1</option>
-                <option value="Grupo2">Catequista Grupo 2</option>
-                </optgroup>
-        </select>
+        <h5 class="fw-bold mb-3">Acceso Coordinación</h5>
         <input type="password" id="pass-in" class="form-control mb-3 rounded-pill" placeholder="Contraseña">
-        <button onclick="login()" class="btn btn-primary w-100 rounded-pill">ENTRAR</button>
-        <button onclick="closeLogin()" class="btn btn-link btn-sm mt-2 text-muted">Volver</button>
+        <button onclick="login()" class="btn btn-primary w-100 rounded-pill py-2">ACCEDER</button>
+        <button onclick="document.getElementById('login-modal').classList.add('hidden')" class="btn btn-link btn-sm mt-2 text-muted">Cancelar</button>
     </div>
 </div>
 
 <div id="app">
     <div class="app-header">
-        <h6 class="fw-bold mb-0">CATEQUESIS TARIJA 2026</h6>
-        <div id="role-tag" class="badge bg-light text-dark rounded-pill mt-1">MODO JOVEN</div>
+        <h5 class="fw-bold mb-0">CATEQUESIS TARIJA</h5>
+        <div id="role-tag" class="badge bg-light text-dark rounded-pill mt-1 small">MODO JOVEN</div>
     </div>
 
-    <div id="sec-home" class="seccion p-2">
-        <div class="card p-3">
-            <h6 class="fw-bold text-primary"><i class="bi bi-megaphone"></i> Avisos del Blog</h6>
-            <div id="muro" style="max-height: 200px; overflow-y: auto;">
-                <p class="small text-muted">Los jóvenes pueden preguntar aquí...</p>
-            </div>
-            <div class="input-group mt-2">
-                <input type="text" id="q-name" class="form-control form-control-sm" placeholder="Nombre">
-                <input type="text" id="q-msg" class="form-control form-control-sm w-50" placeholder="¿Duda o pregunta?">
-                <button onclick="sendQ()" class="btn btn-primary btn-sm"><i class="bi bi-send"></i></button>
-            </div>
+    <div id="sec-blog" class="seccion p-2">
+        <div class="admin-only card p-3 bg-light border-primary mb-3">
+            <h6 class="fw-bold text-primary">Crear Nueva Publicación</h6>
+            <input type="text" id="blog-tit" class="form-control mb-2 rounded-3" placeholder="Título de la noticia">
+            <textarea id="blog-body" class="form-control mb-2 rounded-3" rows="3" placeholder="Escribe aquí el comunicado o blog..."></textarea>
+            <button onclick="publicarBlog()" class="btn btn-primary btn-sm w-100 rounded-pill">PUBLICAR EN EL MURO</button>
         </div>
-    </div>
 
-    <div id="sec-grupo" class="seccion hidden p-2">
-        <div class="cate-only card p-3 border-primary">
-            <h6 class="fw-bold">Llamar Lista - <span id="grupo-name"></span></h6>
-            <div id="lista-asistencia">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span>Joven Ejemplo 1</span>
-                    <div class="asistencia-btn" onclick="toggleAsis(this)">P</div>
-                </div>
+        <div id="feed-blog">
+            <div class="blog-post shadow-sm">
+                <h6 class="fw-bold mb-1">Bienvenida Gestión 2026</h6>
+                <p class="small text-muted mb-2">Publicado por Maycol</p>
+                <div class="small">Bienvenidos a nuestra nueva plataforma digital. Aquí verán sus tareas y avisos.</div>
             </div>
-            <button class="btn btn-success btn-sm w-100 mt-2 rounded-pill">Guardar Asistencia</button>
         </div>
         
-        <div class="card p-3">
-            <h6 class="fw-bold text-warning">Tareas del Grupo</h6>
-            <div class="cate-only mb-2">
-                <input type="text" id="task-in" class="form-control form-control-sm mb-1" placeholder="Asignar tarea...">
-                <button onclick="addTask()" class="btn btn-primary btn-sm w-100 rounded-pill">Asignar</button>
+        <div class="card p-0">
+            <div class="ratio ratio-16x9" id="video-container">
+                <iframe id="yt-player" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
             </div>
-            <div id="task-list"></div>
+            <div class="admin-only p-2">
+                <input type="text" id="vid-id" class="form-control form-control-sm mb-1" placeholder="ID Video YouTube (Ej: abc123xyz)">
+                <button onclick="actualizarVideo()" class="btn btn-dark btn-sm w-100 rounded-pill">Cambiar Video</button>
+            </div>
         </div>
     </div>
 
-    <div id="sec-admin" class="seccion hidden p-2 admin-only">
-        <div class="card p-3">
-            <h6 class="fw-bold">Control General (14 Grupos)</h6>
-            <div class="list-group small">
-                <div class="list-group-item">Grupo 1: 85% Asistencia</div>
-                <div class="list-group-item">Grupo 2: 90% Asistencia</div>
-                </div>
+    <div id="sec-tasks" class="seccion hidden p-2">
+        <div class="admin-only card p-3 border-warning">
+            <h6 class="fw-bold">Misión para Catequistas (14 Grupos)</h6>
+            <input type="text" id="t-admin" class="form-control mb-2 rounded-pill" placeholder="¿Qué deben hacer los catequistas?">
+            <button onclick="addMision()" class="btn btn-warning btn-sm w-100 rounded-pill fw-bold">ENVIAR COMUNICADO</button>
+        </div>
+        <div id="misiones-list"></div>
+    </div>
+
+    <div id="sec-money" class="seccion hidden p-2 admin-only">
+        <div class="money-card mb-3 shadow">
+            <small>SALDO TOTAL EN CAJA</small>
+            <h2 class="fw-bold" id="total-bs">Bs. 0.00</h2>
         </div>
         <div class="card p-3">
+            <h6 class="fw-bold">Registrar Movimiento</h6>
+            <input type="number" id="monto" class="form-control mb-2" placeholder="Monto Bs.">
+            <input type="text" id="motivo" class="form-control mb-3" placeholder="Motivo (Ej: Compra de velas)">
+            <div class="d-flex gap-2">
+                <button onclick="contabilizar(1)" class="btn btn-success flex-grow-1 rounded-pill">INGRESO</button>
+                <button onclick="contabilizar(-1)" class="btn btn-danger flex-grow-1 rounded-pill">EGRESO</button>
+            </div>
+        </div>
+        <div id="caja-historial" class="p-2 small"></div>
+    </div>
+
+    <div id="sec-inv" class="seccion hidden p-2 admin-only">
+        <div class="card p-3">
             <h6 class="fw-bold">Inventario Parroquial</h6>
-            <div id="inv-list"></div>
-            <button onclick="addInv()" class="btn btn-sm btn-outline-primary mt-2">+ Item</button>
+            <div id="inv-lista"></div>
+            <button onclick="addInv()" class="btn btn-outline-primary btn-sm w-100 mt-2 rounded-pill">+ Añadir Item</button>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-house fs-4"></i><br>Blog</div>
-        <div onclick="tab('grupo')" id="n-grupo" class="nav-item"><i class="bi bi-people fs-4"></i><br>Mi Grupo</div>
-        <div id="n-admin" onclick="tab('admin')" class="nav-item admin-only"><i class="bi bi-shield-check fs-4"></i><br>Admin</div>
+        <div onclick="tab('blog')" id="n-blog" class="nav-item active"><i class="bi bi-newspaper fs-4"></i><br>Blog</div>
+        <div onclick="tab('tasks')" id="n-tasks" class="nav-item"><i class="bi bi-card-checklist fs-4"></i><br>Misiones</div>
+        <div onclick="tab('money')" id="n-money" class="nav-item admin-only"><i class="bi bi-cash-stack fs-4"></i><br>Caja</div>
+        <div onclick="tab('inv')" id="n-inv" class="nav-item admin-only"><i class="bi bi-box-seam fs-4"></i><br>Equipo</div>
     </div>
 </div>
 
 <script>
-    const PASS = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Grupo":"cate_2026" };
-    let role = "joven";
-
-    function openLogin() { document.getElementById('login-modal').classList.remove('hidden'); }
-    function closeLogin() { document.getElementById('login-modal').classList.add('hidden'); }
+    let saldoTotal = 0;
+    const ADMIN_KEY = "coord_2026";
+    const SUB_KEY = "sub_tarija";
 
     function login() {
-        const u = document.getElementById('user-sel').value;
         const p = document.getElementById('pass-in').value;
-        
-        if(p === PASS["Maycol"] || p === PASS["Yoselin"]) {
-            role = "admin";
-            document.querySelectorAll('.admin-only, .cate-only').forEach(e => e.style.display = 'block');
+        if(p === ADMIN_KEY || p === SUB_KEY) {
+            document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('admin-only'));
             document.getElementById('role-tag').innerText = "COORDINADOR";
-            closeLogin();
-        } else if (p === PASS["Grupo"]) {
-            role = "cate";
-            document.querySelectorAll('.cate-only').forEach(e => e.style.display = 'block');
-            document.getElementById('grupo-name').innerText = u;
-            document.getElementById('role-tag').innerText = "CATEQUISTA";
-            closeLogin();
+            document.getElementById('role-tag').className = "badge bg-warning text-dark rounded-pill mt-1 small";
+            document.getElementById('login-modal').classList.add('hidden');
         } else { alert("Clave Incorrecta"); }
     }
 
@@ -137,26 +129,50 @@
         document.getElementById('n-' + id).classList.add('active');
     }
 
-    function sendQ() {
-        const n = document.getElementById('q-name').value || "Joven";
-        const m = document.getElementById('q-msg').value;
-        if(!m) return;
-        const html = `<div class="p-2 border-bottom"><small class="fw-bold text-primary">${n}:</small> <span class="small">${m}</span></div>`;
-        document.getElementById('muro').insertAdjacentHTML('afterbegin', html);
-        document.getElementById('q-msg').value = "";
+    function publicarBlog() {
+        const tit = document.getElementById('blog-tit').value;
+        const msg = document.getElementById('blog-body').value;
+        if(!tit || !msg) return;
+        const html = `
+            <div class="blog-post shadow-sm border-start border-primary border-4">
+                <h6 class="fw-bold mb-1">${tit}</h6>
+                <p class="small text-muted mb-2">Enviado ahora por Coordinación</p>
+                <div class="small">${msg}</div>
+            </div>`;
+        document.getElementById('feed-blog').insertAdjacentHTML('afterbegin', html);
+        document.getElementById('blog-tit').value = "";
+        document.getElementById('blog-body').value = "";
+        tab('blog');
     }
 
-    function toggleAsis(btn) { btn.classList.toggle('presente'); }
+    function contabilizar(tipo) {
+        const m = parseFloat(document.getElementById('monto').value);
+        const d = document.getElementById('motivo').value;
+        if(!m || !d) return;
+        const final = m * tipo;
+        saldoTotal += final;
+        document.getElementById('total-bs').innerText = "Bs. " + saldoTotal.toFixed(2);
+        const item = `<div class="d-flex justify-content-between border-bottom py-1"><span>${d}</span><b class="${tipo > 0 ? 'text-success' : 'text-danger'}">${final.toFixed(2)}</b></div>`;
+        document.getElementById('caja-historial').insertAdjacentHTML('afterbegin', item);
+        document.getElementById('monto').value = "";
+        document.getElementById('motivo').value = "";
+    }
 
-    function addTask() {
-        const t = document.getElementById('task-in').value;
+    function addMision() {
+        const t = document.getElementById('t-admin').value;
         if(!t) return;
-        document.getElementById('task-list').innerHTML += `<div class="small p-2 bg-light rounded mb-1 border-start border-primary border-4">${t}</div>`;
-        document.getElementById('task-in').value = "";
+        const html = `<div class="card p-3 mb-2 d-flex flex-row align-items-center"><input type="checkbox" class="me-3" style="width:20px;height:20px"><span>${t}</span></div>`;
+        document.getElementById('misiones-list').insertAdjacentHTML('afterbegin', html);
+        document.getElementById('t-admin').value = "";
+    }
+
+    function actualizarVideo() {
+        const id = document.getElementById('vid-id').value;
+        if(id) document.getElementById('yt-player').src = "http://googleusercontent.com/youtube.com/3" + id;
     }
 
     function addInv() {
-        document.getElementById('inv-list').innerHTML += `<div class="d-flex justify-content-between small border-bottom py-1"><span>Nuevo Item</span><span class="text-success">Bueno</span></div>`;
+        document.getElementById('inv-lista').innerHTML += `<div class="d-flex justify-content-between border-bottom py-2"><span>Nuevo Material</span><span class="badge bg-success">Bueno</span></div>`;
     }
 </script>
 </body>
