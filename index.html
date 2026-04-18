@@ -153,10 +153,10 @@
 
     <div id="sec-msg" class="seccion hidden p-2">
         <div class="card">
-            <h6 class="section-title"><i class="bi bi-chat-dots"></i> Chat</h6>
+            <h6 class="section-title"><i class="bi bi-chat-dots"></i> Chat Comunidad</h6>
             <div id="lista-msg" style="max-height: 300px; overflow-y: auto;" class="mb-3"></div>
             <div class="input-group">
-                <input type="text" id="j-msg" class="form-control" placeholder="Mensaje...">
+                <input type="text" id="j-msg" class="form-control" placeholder="Escribe un mensaje...">
                 <button onclick="sendMsg()" class="btn btn-primary"><i class="bi bi-send"></i></button>
             </div>
         </div>
@@ -165,10 +165,10 @@
     <div class="bottom-nav">
         <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-megaphone"></i>Blog</div>
         <div onclick="tab('asistencia'); actualizarListaJovenes();" id="n-asistencia" class="nav-item"><i class="bi bi-person-check"></i>Lista</div>
-        <div onclick="tab('agenda')" id="n-agenda" class="nav-item hidden-joven"><i class="bi bi-calendar-check"></i>Agenda</div>
+        <div onclick="tab('agenda')" id="n-agenda" class="nav-item hidden-joven hidden"><i class="bi bi-calendar-check"></i>Agenda</div>
         <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-book"></i>Libros</div>
         <div onclick="tab('equipo')" id="n-equipo" class="nav-item"><i class="bi bi-people"></i>Equipo</div>
-        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-gear"></i>Caja</div>
+        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only hidden"><i class="bi bi-gear"></i>Caja</div>
         <div onclick="tab('msg')" id="n-msg" class="nav-item"><i class="bi bi-chat-dots"></i>Chat</div>
     </div>
 </div>
@@ -195,18 +195,29 @@
         document.getElementById('app').classList.remove('hidden');
         document.getElementById('u-tag').innerText = rol.toUpperCase();
 
+        // Limpiar visibilidad por defecto
+        document.querySelectorAll('.admin-only, .hidden-joven, #can-publish, #can-register-joven, #admin-equipo, #admin-agenda-form, #admin-lib').forEach(e => e.classList.add('hidden'));
+
         if(rol !== 'Joven') {
             document.getElementById('can-publish').classList.remove('hidden');
             document.getElementById('can-register-joven').classList.remove('hidden');
-            document.getElementById('sec-agenda').classList.remove('hidden');
             document.querySelectorAll('.hidden-joven').forEach(e => e.classList.remove('hidden'));
         }
+        
         if(rol === 'Maycol' || rol === 'Yoselin') {
             document.getElementById('admin-equipo').classList.remove('hidden');
             document.getElementById('admin-agenda-form').classList.remove('hidden');
             document.getElementById('admin-lib').classList.remove('hidden');
             document.querySelectorAll('.admin-only').forEach(e => e.classList.remove('hidden'));
         }
+
+        // Si es joven, forzamos que no vea el selector de filtros para que no espíe otros grupos
+        if(rol === 'Joven') {
+            document.getElementById('filtro-grupo').classList.add('hidden');
+        } else {
+            document.getElementById('filtro-grupo').classList.remove('hidden');
+        }
+
         actualizarTodo();
     }
 
@@ -231,7 +242,7 @@
             return `<div class="media-card">${mH}<div class="p-2"><b>${m.t}</b></div></div>`;
         }).join('');
 
-        // EQUIPO CON WHATSAPP VISIBLE
+        // EQUIPO
         document.getElementById('lista-equipo').innerHTML = DATA.catequistas.map(c => `
             <div class="cat-card">
                 <div><b>${c.n}</b><br><small class="text-muted">Catequista</small></div>
@@ -240,13 +251,13 @@
         
         document.getElementById('lista-grupos').innerHTML = DATA.grupos.map(g => `<div class="p-2 border mb-1 rounded bg-white"><b>${g.n}</b> - ${g.c}</div>`).join('');
         
-        // SELECTORES DINÁMICOS
+        // SELECTORES
         const gOpts = DATA.grupos.map(g => `<option value="${g.n}">${g.n}</option>`).join('');
         document.getElementById('g-cat').innerHTML = DATA.catequistas.map(c => `<option value="${c.n}">${c.n}</option>`).join('');
         document.getElementById('j-grupo-reg').innerHTML = gOpts;
-        document.getElementById('filtro-grupo').innerHTML = '<option value="">Todos los grupos</option>' + gOpts;
+        document.getElementById('filtro-grupo').innerHTML = '<option value="">Seleccionar Grupo</option>' + gOpts;
 
-        // LIBROS, AGENDA, CAJA, INV, MSGS
+        // OTROS
         document.getElementById('lista-lib').innerHTML = DATA.libros.map(l => `<div class="p-2 border-bottom d-flex justify-content-between"><span>${l.t}</span><a href="${l.u}" target="_blank" class="btn btn-sm btn-outline-primary">Abrir</a></div>`).join('');
         document.getElementById('lista-agenda').innerHTML = DATA.agenda.map(a => `<div class="agenda-item d-flex justify-content-between ${a.done?'done':''}"><span>${a.t}</span><input type="checkbox" ${a.done?'checked':''} onclick="toggleAgenda(${a.id})"></div>`).join('');
         document.getElementById('s-bs').innerText = "Bs. " + DATA.saldo.toFixed(2);
@@ -254,6 +265,31 @@
         document.getElementById('lista-inv').innerHTML = DATA.inventario.map(i => `<div class="d-flex justify-content-between border-bottom p-1"><span>${i.n}</span><b>${i.c}</b></div>`).join('');
         document.getElementById('lista-msg').innerHTML = DATA.mensajes.map(m => `<div class="msg-bubble"><b>${m.u}:</b> ${m.t}</div>`).join('');
         actualizarListaJovenes();
+    }
+
+    function actualizarListaJovenes() {
+        const f = document.getElementById('filtro-grupo').value;
+        // Si no hay filtro seleccionado y es joven, no mostramos nada por privacidad
+        if(userAct === 'Joven' && !f) {
+            document.getElementById('tabla-jovenes').innerHTML = "<p class='text-center p-3'>Selecciona tu grupo arriba para ver la lista.</p>";
+            document.getElementById('filtro-grupo').classList.remove('hidden'); // Permitir que el joven elija SU grupo
+            return;
+        }
+
+        const l = f ? DATA.jovenes.filter(j => j.grupo === f) : DATA.jovenes;
+        
+        document.getElementById('tabla-jovenes').innerHTML = l.map(j => `
+            <div class="check-item d-flex justify-content-between align-items-center">
+                <div><b>${j.nombre}</b><br><small>${j.grupo}</small></div>
+                <div class="d-flex gap-2 text-center">
+                    ${userAct !== 'Joven' ? `
+                        <div><small class="d-block">LISTA</small><input type="checkbox" ${j.presente?'checked':''} onclick="tglJ(${j.id},'presente')"></div>
+                        <div><small class="d-block">TAREA</small><input type="checkbox" ${j.tarea?'checked':''} onclick="tglJ(${j.id},'tarea')"></div>
+                    ` : `
+                        <span class="badge ${j.presente ? 'bg-success' : 'bg-secondary'}">${j.presente ? 'Presente' : 'Ausente'}</span>
+                    `}
+                </div>
+            </div>`).join('');
     }
 
     function addMedia() {
@@ -267,30 +303,14 @@
         if(n && g) { DATA.jovenes.unshift({id:Date.now(), nombre:n, grupo:g, presente:false, tarea:false}); save(); document.getElementById('j-nom-reg').value=""; }
     }
 
-    function actualizarListaJovenes() {
-        const f = document.getElementById('filtro-grupo').value;
-        const l = f ? DATA.jovenes.filter(j => j.grupo === f) : DATA.jovenes;
-        document.getElementById('tabla-jovenes').innerHTML = l.map(j => `
-            <div class="check-item d-flex justify-content-between align-items-center">
-                <div><b>${j.nombre}</b><br><small>${j.grupo}</small></div>
-                <div class="d-flex gap-2 text-center">
-                    <div><small class="d-block">LISTA</small><input type="checkbox" ${j.presente?'checked':''} onclick="tglJ(${j.id},'presente')"></div>
-                    <div><small class="d-block">TAREA</small><input type="checkbox" ${j.tarea?'checked':''} onclick="tglJ(${j.id},'tarea')"></div>
-                </div>
-            </div>`).join('');
-    }
-
-    function tglJ(id, k) { const j = DATA.jovenes.find(x => x.id === id); if(j){ j[k]=!j[k]; save(); } }
+    function tglJ(id, k) { if(userAct === 'Joven') return; const j = DATA.jovenes.find(x => x.id === id); if(j){ j[k]=!j[k]; save(); } }
     function addAgenda() { const t = document.getElementById('a-task').value; if(t){ DATA.agenda.unshift({id:Date.now(), t, done:false}); save(); document.getElementById('a-task').value=""; } }
-    function toggleAgenda(id) { const a = DATA.agenda.find(x => x.id === id); if(a){ a.done=!a.done; save(); } }
+    function toggleAgenda(id) { if(userAct === 'Joven') return; const a = DATA.agenda.find(x => x.id === id); if(a){ a.done=!a.done; save(); } }
     function addCate() { const n = document.getElementById('cat-nom').value, t = document.getElementById('cat-tel').value; DATA.catequistas.unshift({n, t}); save(); }
     function addGroup() { const n = document.getElementById('g-nom').value, c = document.getElementById('g-cat').value; DATA.grupos.unshift({n, c}); save(); }
     function addLib() { const t = document.getElementById('l-tit').value, u = document.getElementById('l-url').value; DATA.libros.unshift({t, u}); save(); }
     function mon(v) { const m = parseFloat(document.getElementById('c-mon').value), d = document.getElementById('c-det').value; DATA.saldo+=(m*v); DATA.caja.unshift({m:m*v, d}); save(); }
     function addInv() { const n = document.getElementById('i-item').value, c = document.getElementById('i-cant').value; DATA.inventario.unshift({n, c}); save(); }
-    function sendMsg() { const t = document.getElementById('j-msg').value; DATA.mensajes.push({u: userAct, t}); save(); document.getElementById('j-msg').value=""; }
+    function sendMsg() { const t = document.getElementById('j-msg').value; if(!t) return; DATA.mensajes.push({u: userAct, t}); save(); document.getElementById('j-msg').value=""; }
 
-    window.onload = () => { const s = JSON.parse(localStorage.getItem('SESION_TOTAL')); if(s) run(s.rol); else actualizarTodo(); };
-</script>
-</body>
-</html>
+    window.onload = () => { const s = JSON.parse(localStorage.getItem('SESION_TOTAL')); if(s) run(s.rol)
