@@ -3,32 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA MAESTRO - CATEQUESIS TARIJA</title>
+    <title>SISTEMA MAESTRO CATEQUESIS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root { --blue: #1a237e; --blue-light: #303f9f; --gold: #ffd600; --bg: #f4f7f9; }
-        html, body { background: var(--bg); font-family: 'Inter', sans-serif; margin: 0; padding: 0; height: 100%; overflow: hidden; }
-        #app { height: 100vh; overflow-y: auto; padding-bottom: 110px; -webkit-overflow-scrolling: touch; }
+        :root { --blue: #1a237e; --gold: #ffd600; --bg: #f0f2f5; }
+        html, body { background: var(--bg); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; height: 100%; overflow: hidden; }
+        #app { height: 100vh; overflow-y: auto; padding-bottom: 110px; }
         
-        /* LOGIN */
-        #login-screen { position: fixed; inset: 0; background: linear-gradient(45deg, var(--blue), #000); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        #login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--blue), #000); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .pass-group { position: relative; }
         .toggle-password { position: absolute; right: 15px; top: 12px; cursor: pointer; color: #666; z-index: 10; }
 
-        /* HEADER */
         .app-header { background: var(--blue); color: white; padding: 30px 20px; border-bottom: 5px solid var(--gold); border-radius: 0 0 40px 40px; text-align: center; position: relative; }
         .logout-btn { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: white; cursor: pointer; }
 
-        /* CARDS */
-        .card { border-radius: 25px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin: 15px; background: white; padding: 18px; }
+        .card { border-radius: 25px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin: 15px; background: white; padding: 18px; }
         .section-title { font-weight: 800; color: var(--blue); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         
-        /* MULTIMEDIA */
-        .media-card { border-radius: 20px; overflow: hidden; margin-bottom: 15px; border: 1px solid #eee; }
-        .media-img { width: 100%; height: 180px; object-fit: cover; background: #ddd; }
-
-        /* NAV */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 12px 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); border-radius: 30px 30px 0 0; z-index: 1000; }
         .nav-item { text-align: center; color: #999; flex: 1; cursor: pointer; font-size: 10px; font-weight: 600; }
         .nav-item i { font-size: 1.5rem; display: block; }
@@ -36,117 +28,95 @@
 
         .hidden, .admin-only { display: none !important; }
         
-        /* CALENDARIO LITURGICO */
-        .liturgia { padding: 10px; border-radius: 15px; color: white; text-align: center; font-weight: bold; margin-bottom: 10px; }
-        .tiempo-ordinario { background: #2e7d32; }
-        .cuaresma { background: #7b1fa2; }
-        .pascua { background: #fbc02d; color: black; }
+        .cat-card { background: #fff; border-radius: 15px; border-left: 5px solid var(--gold); padding: 12px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .btn-ws { color: #25d366; font-size: 1.2rem; text-decoration: none; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div class="card text-center" style="width: 90%; max-width: 380px;">
-        <div class="mb-3"><i class="bi bi-cross text-primary" style="font-size: 3rem;"></i></div>
-        <h4 class="fw-bold mb-4">CATEQUESIS TARIJA</h4>
-        <select id="rol-select" class="form-select mb-3 rounded-pill p-2" onchange="checkRol(this.value)">
+        <h4 class="fw-bold mb-4">✝️ CATEQUESIS TARIJA</h4>
+        <select id="rol-select" class="form-select mb-3 rounded-pill" onchange="checkRol(this.value)">
             <option value="Joven">Soy Joven</option>
             <option value="Maycol">Maycol (Director)</option>
             <option value="Yoselin">Yoselin (Coordinadora)</option>
             <option value="Catequista">Catequista</option>
         </select>
         <div id="p-box" class="hidden pass-group mb-3">
-            <input type="password" id="p-pass" class="form-control rounded-pill p-2" placeholder="Contraseña">
+            <input type="password" id="p-pass" class="form-control rounded-pill" placeholder="Contraseña">
             <i class="bi bi-eye toggle-password" onclick="togglePass()"></i>
         </div>
-        <button onclick="entrar()" class="btn btn-primary w-100 py-2 rounded-pill fw-bold">INGRESAR</button>
+        <button onclick="entrar()" class="btn btn-primary w-100 py-2 rounded-pill fw-bold">ENTRAR</button>
     </div>
 </div>
 
 <div id="app" class="hidden">
     <div class="app-header">
-        <div class="logout-btn" onclick="salir()"><i class="bi bi-box-arrow-right"></i></div>
-        <h5 class="fw-bold mb-1">CATEQUESIS TARIJA</h5>
-        <span id="u-tag" class="badge bg-warning text-dark rounded-pill"></span>
+        <div class="logout-btn" onclick="salir()"><i class="bi bi-door-closed"></i></div>
+        <h5 class="fw-bold mb-0">SISTEMA INTEGRAL</h5>
+        <span id="u-tag" class="badge bg-warning text-dark mt-2"></span>
     </div>
 
-    <div id="sec-home" class="seccion p-2">
+    <div id="sec-lib" class="seccion p-2">
         <div class="card">
-            <h6 class="section-title"><i class="bi bi-collection-play"></i> Blog & Multimedia</h6>
+            <h6 class="section-title"><i class="bi bi-book"></i> Biblioteca de Libros</h6>
             <div class="admin-only bg-light p-3 rounded-4 mb-3">
-                <input type="text" id="m-tit" class="form-control mb-2" placeholder="Título del Arte/Video">
-                <input type="text" id="m-url" class="form-control mb-2" placeholder="URL de Imagen o YouTube">
-                <button onclick="addMedia()" class="btn btn-primary w-100 rounded-pill">Subir Contenido</button>
+                <input type="text" id="l-tit" class="form-control mb-2" placeholder="Nombre del Libro">
+                <input type="text" id="l-url" class="form-control mb-2" placeholder="Link (Drive o Web)">
+                <button onclick="addLib()" class="btn btn-primary btn-sm w-100 rounded-pill">Subir Libro</button>
             </div>
-            <div id="lista-media"></div>
+            <div id="lista-lib"></div>
         </div>
     </div>
 
-    <div id="sec-grupos" class="seccion hidden p-2">
+    <div id="sec-equipo" class="seccion hidden p-2">
         <div class="card">
-            <h6 class="section-title"><i class="bi bi-person-badge"></i> Asignación de Grupos</h6>
+            <h6 class="section-title"><i class="bi bi-person-heart"></i> Mi Equipo de Catequistas</h6>
             <div class="admin-only bg-light p-3 rounded-4 mb-3">
-                <input type="text" id="g-nom" class="form-control mb-2" placeholder="Nombre del Grupo">
-                <select id="g-cat" class="form-select mb-2">
-                    <option value="">Seleccionar Catequista...</option>
-                    <option value="Maycol">Maycol</option>
-                    <option value="Yoselin">Yoselin</option>
-                    <option value="Pedro">Pedro</option>
-                    <option value="Maria">Maria</option>
-                </select>
-                <button onclick="addGroup()" class="btn btn-primary w-100 rounded-pill">Crear y Asignar</button>
+                <input type="text" id="cat-nom" class="form-control mb-2" placeholder="Nombre Completo">
+                <input type="number" id="cat-tel" class="form-control mb-2" placeholder="Celular (WhatsApp)">
+                <input type="date" id="cat-cum" class="form-control mb-2">
+                <button onclick="addCate()" class="btn btn-dark btn-sm w-100 rounded-pill">Registrar Catequista</button>
             </div>
-            <div id="lista-grupos"></div>
-        </div>
-    </div>
-
-    <div id="sec-cal" class="seccion hidden p-2">
-        <div class="card">
-            <h6 class="section-title"><i class="bi bi-calendar3-event"></i> Tiempo Litúrgico</h6>
-            <div class="liturgia pascua">TIEMPO DE PASCUA<br><small>¡Aleluya, Cristo ha resucitado!</small></div>
-            <div class="mt-3">
-                <h6>Próximos Eventos:</h6>
-                <div class="border-start border-4 border-warning ps-2 mb-3">
-                    <b>Pentecostés</b><br><small class="text-muted">Venida del Espíritu Santo</small>
-                </div>
-            </div>
+            <div id="lista-cate"></div>
         </div>
     </div>
 
     <div id="sec-adm" class="seccion hidden admin-only p-2">
         <div class="card bg-primary text-white text-center">
-            <small>CAJA CHICA</small>
+            <small>SALDO CAJA</small>
             <h2 id="s-bs" class="fw-bold">Bs. 0.00</h2>
         </div>
         <div class="card">
-            <h6 class="section-title"><i class="bi bi-list-task"></i> Tareas a Catequistas</h6>
+            <h6 class="section-title"><i class="bi bi-box-seam"></i> Inventario de Cosas</h6>
             <div class="d-flex gap-2 mb-3">
-                <input type="text" id="t-tarea" class="form-control" placeholder="Nueva tarea...">
-                <button onclick="addTarea()" class="btn btn-dark">+</button>
+                <input type="text" id="i-item" class="form-control" placeholder="Objeto">
+                <input type="number" id="i-cant" class="form-control" style="width: 70px;">
+                <button onclick="addInv()" class="btn btn-dark">+</button>
             </div>
-            <div id="lista-tareas"></div>
+            <div id="lista-inv"></div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-house-door"></i>Inicio</div>
-        <div onclick="tab('grupos')" id="n-grupos" class="nav-item"><i class="bi bi-people"></i>Grupos</div>
-        <div onclick="tab('cal')" id="n-cal" class="nav-item"><i class="bi bi-calendar3"></i>Liturgia</div>
-        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-gear-fill"></i>Admin</div>
+        <div onclick="tab('lib')" id="n-lib" class="nav-item active"><i class="bi bi-book"></i>Libros</div>
+        <div onclick="tab('equipo')" id="n-equipo" class="nav-item"><i class="bi bi-people"></i>Equipo</div>
+        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-wallet2"></i>Caja/Inv</div>
     </div>
 </div>
 
 <script>
     const P = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Catequista":"cate_2026" };
-    let DATA = JSON.parse(localStorage.getItem('CATE_MASTER_DATA')) || {
-        media: [], grupos: [], tareas: [], saldo: 0
+    let DATA = JSON.parse(localStorage.getItem('SISTEMA_V6')) || {
+        libros: [], catequistas: [], inventario: [], saldo: 0
     };
     let userAct = "";
 
     window.onload = () => {
-        const s = JSON.parse(localStorage.getItem('SESION_MASTER'));
+        const s = JSON.parse(localStorage.getItem('SESION_V6'));
         if(s) run(s.rol);
-        actualizar();
+        render();
     };
 
     function togglePass() {
@@ -160,9 +130,9 @@
         const r = document.getElementById('rol-select').value;
         const p = document.getElementById('p-pass').value;
         if(r === "Joven" || p === P[r]) {
-            localStorage.setItem('SESION_MASTER', JSON.stringify({rol: r}));
+            localStorage.setItem('SESION_V6', JSON.stringify({rol: r}));
             run(r);
-        } else { alert("Error de acceso"); }
+        } else { alert("Acceso denegado"); }
     }
 
     function run(rol) {
@@ -173,10 +143,10 @@
         if(rol === 'Maycol' || rol === 'Yoselin') {
             document.querySelectorAll('.admin-only').forEach(e => e.style.setProperty('display','block','important'));
         }
-        tab('home');
+        tab('lib');
     }
 
-    function salir() { localStorage.removeItem('SESION_MASTER'); location.reload(); }
+    function salir() { localStorage.removeItem('SESION_V6'); location.reload(); }
 
     function tab(id) {
         document.querySelectorAll('.seccion').forEach(s => s.classList.add('hidden'));
@@ -185,63 +155,69 @@
         document.getElementById('n-'+id).classList.add('active');
     }
 
-    function guardar() {
-        localStorage.setItem('CATE_MASTER_DATA', JSON.stringify(DATA));
-        actualizar();
-    }
+    function save() { localStorage.setItem('SISTEMA_V6', JSON.stringify(DATA)); render(); }
 
-    function actualizar() {
-        // Multimedia
-        document.getElementById('lista-media').innerHTML = DATA.media.map(m => `
-            <div class="media-card">
-                <img src="${m.u}" class="media-img" onerror="this.src='https://placehold.co/600x400?text=Video+o+Arte'">
-                <div class="p-2"><b>${m.t}</b></div>
-            </div>`).join('');
-
-        // Grupos
-        document.getElementById('lista-grupos').innerHTML = DATA.grupos.map(g => `
-            <div class="p-3 border rounded-4 mb-2 bg-light">
-                <div class="d-flex justify-content-between">
-                    <b>${g.n}</b> <span class="badge bg-primary">${g.c}</span>
+    function render() {
+        // Libros
+        document.getElementById('lista-lib').innerHTML = DATA.libros.map((l, i) => `
+            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+                <div><i class="bi bi-file-earmark-pdf text-danger me-2"></i><b>${l.t}</b></div>
+                <div class="d-flex gap-2">
+                    <a href="${l.u}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">Ver</a>
+                    ${(userAct==='Maycol') ? `<i class="bi bi-trash text-danger" onclick="elim('libros', ${i})"></i>` : ''}
                 </div>
             </div>`).join('');
 
-        // Tareas
-        document.getElementById('lista-tareas').innerHTML = DATA.tareas.map((t, i) => `
-            <div class="p-2 border-bottom d-flex justify-content-between align-items-center">
-                <span><i class="bi bi-check2-circle me-2"></i>${t}</span>
-                <i class="bi bi-x-circle text-danger" onclick="eliminar('tareas', ${i})"></i>
+        // Catequistas
+        document.getElementById('lista-cate').innerHTML = DATA.catequistas.map((c, i) => `
+            <div class="cat-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="mb-0 fw-bold">${c.n}</h6>
+                        <small class="text-muted"><i class="bi bi-cake"></i> Cumple: ${c.f}</small>
+                    </div>
+                    <a href="https://wa.me/591${c.t}" target="_blank" class="btn-ws"><i class="bi bi-whatsapp"></i></a>
+                </div>
+                ${(userAct==='Maycol') ? `<div class="text-end"><small class="text-danger" onclick="elim('catequistas', ${i})">Eliminar</small></div>` : ''}
+            </div>`).join('');
+
+        // Inventario
+        document.getElementById('lista-inv').innerHTML = DATA.inventario.map((inv, i) => `
+            <div class="d-flex justify-content-between p-2 border-bottom">
+                <span>${inv.n}</span> <span class="badge bg-dark">${inv.c}</span>
             </div>`).join('');
 
         document.getElementById('s-bs').innerText = "Bs. " + DATA.saldo.toFixed(2);
     }
 
-    // ACCIONES DE MAYCOL
-    function addMedia() {
-        const t = document.getElementById('m-tit').value, u = document.getElementById('m-url').value;
+    // ACCIONES
+    function addLib() {
+        const t = document.getElementById('l-tit').value, u = document.getElementById('l-url').value;
         if(!t || !u) return;
-        DATA.media.unshift({t: t, u: u});
-        document.getElementById('m-tit').value=""; document.getElementById('m-url').value="";
-        guardar();
+        DATA.libros.unshift({t: t, u: u});
+        document.getElementById('l-tit').value=""; document.getElementById('l-url').value="";
+        save();
     }
 
-    function addGroup() {
-        const n = document.getElementById('g-nom').value, c = document.getElementById('g-cat').value;
-        if(!n || !c) return alert("Completa los datos del grupo");
-        DATA.grupos.unshift({n: n, c: c});
-        document.getElementById('g-nom').value="";
-        guardar();
+    function addCate() {
+        const n = document.getElementById('cat-nom').value;
+        const t = document.getElementById('cat-tel').value;
+        const f = document.getElementById('cat-cum').value;
+        if(!n || !t) return;
+        DATA.catequistas.unshift({n: n, t: t, f: f});
+        document.getElementById('cat-nom').value=""; document.getElementById('cat-tel').value="";
+        save();
     }
 
-    function addTarea() {
-        const t = document.getElementById('t-tarea').value;
-        if(!t) return;
-        DATA.tareas.unshift(t);
-        document.getElementById('t-tarea').value="";
-        guardar();
+    function addInv() {
+        const n = document.getElementById('i-item').value, c = document.getElementById('i-cant').value;
+        if(!n || !c) return;
+        DATA.inventario.unshift({n: n, c: c});
+        document.getElementById('i-item').value=""; document.getElementById('i-cant').value="";
+        save();
     }
 
-    function eliminar(tipo, i) { DATA[tipo].splice(i, 1); guardar(); }
+    function elim(tipo, i) { DATA[tipo].splice(i, 1); save(); }
 </script>
 </body>
 </html>
