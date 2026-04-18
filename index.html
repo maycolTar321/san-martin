@@ -3,202 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Catequesis Tarija - Misión 2026</title>
+    <title>Catequesis Tarija</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root { --p-blue: #1a237e; --p-gold: #ffd600; --p-bg: #f8f9fa; }
-        body { background: var(--p-bg); font-family: 'Segoe UI', sans-serif; padding-bottom: 90px; }
-        
-        /* Header con Jesús y Rueda */
-        .app-header { background: var(--p-blue); color: white; padding: 30px 15px; border-bottom: 6px solid var(--p-gold); border-radius: 0 0 35px 35px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .progress-circle { position: relative; width: 90px; height: 90px; margin: 0 auto; }
-        .jesus-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 35px; transition: 0.5s; z-index: 5; }
-        .happy-jesus { animation: jump 0.6s infinite; }
-        @keyframes jump { 0%, 100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, -80%); } }
-        
-        circle { transition: stroke-dashoffset 0.6s ease; stroke-linecap: round; }
-        
-        /* Estilos de Tarjetas */
-        .card { border-radius: 25px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.08); margin: 15px; overflow: hidden; }
-        .card-header-p { background: var(--p-blue); color: white; padding: 12px; font-weight: bold; font-size: 14px; }
-        
-        /* Pantalla Login */
-        .login-screen { position: fixed; inset: 0; background: var(--p-blue); z-index: 10000; display: flex; align-items: center; justify-content: center; transition: 0.5s; }
-        
-        /* Navegación */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 999; border-radius: 25px 25px 0 0; }
-        .nav-item { text-align: center; color: #aaa; font-size: 11px; cursor: pointer; flex: 1; transition: 0.3s; }
-        .nav-item.active { color: var(--p-blue); font-weight: bold; transform: translateY(-5px); }
-        .nav-item i { font-size: 24px; display: block; }
-
+        :root { --blue: #1a237e; --gold: #ffd600; }
+        body { background: #f4f7f9; font-family: 'Segoe UI', sans-serif; padding-bottom: 90px; }
+        .app-header { background: var(--blue); color: white; padding: 25px; border-bottom: 6px solid var(--gold); border-radius: 0 0 30px 30px; text-align: center; }
+        .progress-circle { position: relative; width: 80px; height: 80px; margin: 0 auto; }
+        .jesus-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 30px; }
+        circle { transition: stroke-dashoffset 0.5s; stroke-linecap: round; }
+        .card { border-radius: 20px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.05); margin: 15px; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 12px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); border-radius: 20px 20px 0 0; z-index: 1000; }
+        .nav-item { text-align: center; color: #bbb; flex: 1; cursor: pointer; font-size: 11px; }
+        .nav-item.active { color: var(--blue); font-weight: bold; }
+        .nav-item i { font-size: 22px; display: block; }
         .hidden { display: none !important; }
-        .btn-gold { background: var(--p-gold); color: #000; font-weight: bold; border-radius: 50px; }
-        .btn-wa { background: #25D366; color: white; border-radius: 50px; }
+        .admin-only { display: none; } /* Oculto por defecto */
+        #admin-access { position: fixed; top: 10px; right: 10px; opacity: 0.1; z-index: 2000; color: white; }
     </style>
 </head>
 <body>
 
-<div id="login-box" class="login-screen">
-    <div class="card p-4 text-center" style="width: 90%; max-width: 380px;">
-        <h2 class="fw-bold mb-3" style="color: var(--p-blue)">✝️ Misión Tarija</h2>
-        <p class="text-muted small">Acceso para Coordinadores</p>
-        <input type="password" id="u-pass" class="form-control mb-3 rounded-pill p-3 border-0 bg-light shadow-sm" placeholder="Contraseña de Coordinador">
-        <button onclick="login()" class="btn btn-primary w-100 py-3 rounded-pill fw-bold mb-2">ENTRAR COMO COORDI</button>
-        <hr>
-        <button onclick="entrarInvitado()" class="btn btn-outline-secondary w-100 py-2 rounded-pill">ENTRAR COMO JOVEN (Solo Ver)</button>
+<div id="admin-access" onclick="showLogin()"><i class="bi bi-shield-lock"></i></div>
+
+<div id="login-box" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:3000; display:flex; align-items:center; justify-content:center;">
+    <div class="card p-4 text-center" style="width: 85%;">
+        <h5 class="fw-bold">Acceso Coordinador</h5>
+        <input type="password" id="pass" class="form-control my-3 rounded-pill" placeholder="Contraseña">
+        <button onclick="validaAdmin()" class="btn btn-primary w-100 rounded-pill">ENTRAR</button>
+        <button onclick="hideLogin()" class="btn btn-link btn-sm mt-2 text-muted">Cancelar</button>
     </div>
 </div>
 
-<div id="app-main" class="hidden">
+<div id="app">
     <div class="app-header">
         <div class="progress-circle">
-            <svg width="90" height="90">
-                <circle cx="45" cy="45" r="40" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="6"/>
-                <circle id="bar" cx="45" cy="45" r="40" fill="none" stroke="var(--p-gold)" stroke-width="6" 
-                        stroke-dasharray="251" stroke-dashoffset="251" transform="rotate(-90 45 45)"/>
-            </svg>
+            <svg width="80" height="80"><circle cx="40" cy="40" r="35" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="5"/><circle id="bar" cx="40" cy="40" r="35" fill="none" stroke="var(--gold)" stroke-width="5" stroke-dasharray="220" stroke-dashoffset="220" transform="rotate(-90 40 40)"/></svg>
             <div id="jesus" class="jesus-icon">🙏</div>
         </div>
-        <h4 class="mt-3 fw-bold mb-0">PROGRESO MISIÓN: <span id="perc">0</span>%</h4>
-        <div id="user-tag" class="badge mt-2 p-2 px-3 rounded-pill" style="background: rgba(255,255,255,0.2)"></div>
+        <h6 class="mt-2 fw-bold">MISIÓN CATEQUESIS: <span id="perc">0</span>%</h6>
+        <div id="status-tag" class="badge bg-light text-dark rounded-pill">MODO JOVEN (LECTURA)</div>
     </div>
 
-    <div id="s-home" class="seccion">
-        <div class="card p-4">
-            <h6 class="fw-bold text-primary"><i class="bi bi-star-fill me-2"></i>Avisos Importantes</h6>
-            <div id="avisos-lista">
-                <p class="text-muted small">No hay avisos recientes...</p>
-            </div>
-        </div>
-        <div class="card p-0">
-            <div class="card-header-p"><i class="bi bi-play-circle me-2"></i>Recursos y Videos</div>
-            <div class="p-3">
-                <div class="ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm">
-                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video Formación" allowfullscreen></iframe>
-                </div>
-                <p class="mt-2 mb-0 small text-center fw-bold">Mira este video para la formación del sábado.</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="s-tareas" class="seccion hidden">
-        <div id="admin-tools" class="card p-3 bg-light border hidden">
-            <h6 class="fw-bold mb-3">Asignar Trabajo</h6>
-            <input type="text" id="t-nom" class="form-control mb-2 rounded-pill border-0 shadow-sm" placeholder="Tarea">
-            <input type="text" id="t-gru" class="form-control mb-2 rounded-pill border-0 shadow-sm" placeholder="¿Para qué grupo? (Ej: Grupo 1)">
-            <input type="text" id="t-lug" class="form-control mb-2 rounded-pill border-0 shadow-sm" placeholder="📍 Lugar">
-            <div class="row g-2">
-                <div class="col-6"><button onclick="addTarea()" class="btn btn-primary w-100 rounded-pill btn-sm">Añadir</button></div>
-                <div class="col-6"><button onclick="sendWA()" class="btn btn-wa w-100 rounded-pill btn-sm">WhatsApp</button></div>
-            </div>
-        </div>
-        <div id="lista-tareas"></div>
-    </div>
-
-    <div id="s-inv" class="seccion hidden">
+    <div id="sec-home" class="seccion p-2">
         <div class="card p-3">
-            <h6 class="fw-bold">Control de Materiales</h6>
-            <div id="lista-inv"></div>
-            <button onclick="addInv()" class="btn btn-primary w-100 rounded-pill mt-3">+ Nuevo Item</button>
+            <h6 class="fw-bold text-primary">📢 Últimos Avisos</h6>
+            <div id="avisos-p">Aquí saldrán las tareas que Maycol asigne...</div>
+        </div>
+        <div class="card p-3">
+            <h6 class="fw-bold text-danger"><i class="bi bi-youtube me-2"></i>Formación en Video</h6>
+            <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
+                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="sec-tareas" class="seccion hidden p-2">
+        <div class="admin-only card p-3 bg-light border-warning">
+            <h6 class="fw-bold">Asignar Nueva Tarea</h6>
+            <input type="text" id="t-n" class="form-control mb-2 rounded-pill" placeholder="Tarea">
+            <input type="text" id="t-g" class="form-control mb-2 rounded-pill" placeholder="Grupo (Ej: San Pedro)">
+            <input type="text" id="t-l" class="form-control mb-2 rounded-pill" placeholder="📍 Lugar">
+            <button onclick="nuevaT()" class="btn btn-primary w-100 rounded-pill btn-sm">PUBLICAR</button>
+        </div>
+        <div id="lista-t"></div>
+    </div>
+
+    <div id="sec-inv" class="seccion hidden p-2 admin-only">
+        <div class="card p-3">
+            <h6 class="fw-bold">Inventario de Materiales</h6>
+            <div id="lista-i"></div>
+            <button onclick="nuevoI()" class="btn btn-outline-primary w-100 rounded-pill btn-sm mt-3">+ Item</button>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <div id="n-home" class="nav-item active" onclick="tab('home')"><i class="bi bi-house-door"></i>Cartelera</div>
-        <div id="n-tareas" class="nav-item" onclick="tab('tareas')"><i class="bi bi-people"></i>Grupos</div>
-        <div id="n-inv" class="nav-item hidden" onclick="tab('inv')"><i class="bi bi-box-seam"></i>Equipo</div>
+        <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-house"></i>Inicio</div>
+        <div onclick="tab('tareas')" id="n-tareas" class="nav-item"><i class="bi bi-people"></i>Grupos</div>
+        <div id="btn-inv-nav" onclick="tab('inv')" class="nav-item admin-only"><i class="bi bi-box-seam"></i>Equipo</div>
     </div>
 </div>
 
 <script>
-    const ADMIN_PASS = "coord_2026";
-    const YOSE_PASS = "sub_tarija";
-    let isAdmin = false;
+    const CLAVES = ["coord_2026", "sub_tarija"];
+    let esAdmin = false;
 
-    function login() {
-        const p = document.getElementById('u-pass').value;
-        if(p === ADMIN_PASS || p === YOSE_PASS) {
-            isAdmin = true;
-            document.getElementById('user-tag').innerText = "COORDINADOR";
-            document.getElementById('admin-tools').classList.remove('hidden');
-            document.getElementById('n-inv').classList.remove('hidden');
-            entrar();
-        } else { alert("Clave incorrecta para coordinadores."); }
-    }
+    function showLogin() { document.getElementById('login-box').classList.remove('hidden'); }
+    function hideLogin() { document.getElementById('login-box').classList.add('hidden'); }
 
-    function entrarInvitado() {
-        isAdmin = false;
-        document.getElementById('user-tag').innerText = "JOVEN / VISITANTE";
-        entrar();
-    }
-
-    function entrar() {
-        document.getElementById('login-box').style.opacity = "0";
-        setTimeout(() => {
-            document.getElementById('login-box').classList.add('hidden');
-            document.getElementById('app-main').classList.remove('hidden');
-        }, 500);
+    function validaAdmin() {
+        const p = document.getElementById('pass').value;
+        if(CLAVES.includes(p)) {
+            esAdmin = true;
+            document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+            document.getElementById('status-tag').innerText = "MODO COORDINADOR";
+            document.getElementById('status-tag').className = "badge bg-warning text-dark rounded-pill";
+            hideLogin();
+            alert("Acceso concedido, Michael.");
+        } else { alert("Error."); hideLogin(); }
     }
 
     function tab(id) {
         document.querySelectorAll('.seccion').forEach(s => s.classList.add('hidden'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('s-' + id).classList.remove('hidden');
+        document.getElementById('sec-' + id).classList.remove('hidden');
         document.getElementById('n-' + id).classList.add('active');
     }
 
     function updateP() {
-        const ck = document.querySelectorAll('.t-ck');
-        const total = ck.length;
-        const done = Array.from(ck).filter(c => c.checked).length;
-        const p = total > 0 ? (done / total) * 100 : 0;
-        document.getElementById('bar').style.strokeDashoffset = 251 - (251 * p / 100);
+        const cks = document.querySelectorAll('.t-ck');
+        const done = Array.from(cks).filter(c => c.checked).length;
+        const p = cks.length > 0 ? (done / cks.length) * 100 : 0;
+        document.getElementById('bar').style.strokeDashoffset = 220 - (220 * p / 100);
         document.getElementById('perc').innerText = Math.round(p);
-        const j = document.getElementById('jesus');
-        if(p === 100 && total > 0) { j.innerText = "🙌"; j.classList.add('happy-jesus'); }
-        else { j.innerText = "🙏"; j.classList.remove('happy-jesus'); }
+        document.getElementById('jesus').innerText = p === 100 ? "🙌" : "🙏";
     }
 
-    function addTarea() {
-        const n = document.getElementById('t-nom').value;
-        const g = document.getElementById('t-gru').value;
-        const l = document.getElementById('t-lug').value;
+    function nuevaT() {
+        const n = document.getElementById('t-n').value;
+        const g = document.getElementById('t-g').value;
+        const l = document.getElementById('t-l').value;
         if(!n) return;
-        
-        const card = document.createElement('div');
-        card.className = "card p-3 mb-2 d-flex flex-row align-items-center shadow-sm";
-        card.innerHTML = `
-            <input type="checkbox" class="t-ck form-check-input me-3" ${!isAdmin ? 'disabled' : ''} onchange="updateP()" style="width:25px;height:25px">
-            <div class="flex-grow-1">
-                <small class="text-primary fw-bold">${g} - 📍 ${l}</small>
-                <div class="fw-bold">${n}</div>
-            </div>
-            <button onclick="saveCal('${n}','${l}')" class="btn btn-sm text-primary"><i class="bi bi-calendar-plus fs-4"></i></button>
-        `;
-        document.getElementById('lista-tareas').prepend(card);
+        const html = `
+            <div class="card p-3 mb-2 d-flex flex-row align-items-center">
+                <input type="checkbox" class="t-ck form-check-input me-3" ${!esAdmin ? 'disabled' : ''} onchange="updateP()" style="width:25px;height:25px">
+                <div class="flex-grow-1">
+                    <small class="text-primary fw-bold">${g} - 📍 ${l}</small>
+                    <div class="fw-bold">${n}</div>
+                </div>
+                <button onclick="window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&text=${n}&location=${l}')" class="btn btn-link p-0"><i class="bi bi-calendar-plus fs-4"></i></button>
+            </div>`;
+        document.getElementById('lista-t').insertAdjacentHTML('afterbegin', html);
         updateP();
     }
 
-    function saveCal(t, l) {
-        const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(t)}&location=${encodeURIComponent(l)}`;
-        window.open(url, '_blank');
-    }
-
-    function addInv() {
-        const item = `
-            <div class="mb-2 p-2 bg-light rounded-3 d-flex justify-content-between">
-                <input class="border-0 bg-transparent fw-bold" placeholder="Item">
-                <select class="border-0 bg-white rounded-pill small"><option>Bueno</option><option>Dañado</option></select>
-            </div>`;
-        document.getElementById('lista-inv').insertAdjacentHTML('beforeend', item);
-    }
-
-    function sendWA() {
-        const n = document.getElementById('t-nom').value;
-        const l = document.getElementById('t-lug').value;
-        const g = document.getElementById('t-gru').value;
-        window.open(`https://wa.me/?text=*MISIÓN CATEQUESIS*%0A*Tarea:* ${n}%0A*Grupo:* ${g}%0A*Lugar:* ${l}`, '_blank');
+    function nuevoI() {
+        document.getElementById('lista-i').innerHTML += `<div class="p-2 border-bottom d-flex justify-content-between"><input class="border-0 bg-transparent" placeholder="Item..."><select class="border-0 small"><option>Bueno</option><option>Dañado</option></select></div>`;
     }
 </script>
 </body>
