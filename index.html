@@ -3,48 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CATEQUESIS TARIJA V13</title>
+    <title>SISTEMA INTEGRAL CATEQUESIS TARIJA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root { --blue: #1a237e; --gold: #ffd600; }
-        body { background: #f4f7f9; font-family: sans-serif; padding-bottom: 80px; }
-        .app-header { background: var(--blue); color: white; padding: 20px; border-bottom: 5px solid var(--gold); border-radius: 0 0 30px 30px; text-align: center; }
-        .card { border-radius: 15px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: 10px; background: white; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 10px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); z-index: 1000; }
-        .nav-item { text-align: center; color: #bbb; flex: 1; font-size: 11px; cursor: pointer; }
+        :root { --blue: #1a237e; --gold: #ffd600; --bg: #f0f2f5; }
+        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; padding-bottom: 90px; margin: 0; }
+        #login-screen { position: fixed; inset: 0; background: var(--blue); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .app-header { background: var(--blue); color: white; padding: 20px; border-bottom: 6px solid var(--gold); border-radius: 0 0 35px 35px; text-align: center; }
+        .card { border-radius: 20px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin: 12px; background: white; overflow: hidden; }
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 12px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); border-radius: 25px 25px 0 0; z-index: 1000; }
+        .nav-item { text-align: center; color: #bbb; flex: 1; cursor: pointer; font-size: 11px; }
         .nav-item.active { color: var(--blue); font-weight: bold; }
-        .nav-item i { font-size: 20px; display: block; }
         .admin-only, .cate-only, .hidden { display: none !important; }
-        .btn-del { color: #dc3545; cursor: pointer; }
-        .cumple-item { background: #fff9c4; padding: 10px; border-radius: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .btn-del { color: #dc3545; cursor: pointer; font-size: 1.1rem; }
+        .cumple-item { background: #fff9c4; border-left: 5px solid #fbc02d; padding: 10px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
     </style>
 </head>
 <body>
 
-<div id="login-screen" style="position:fixed; inset:0; background:var(--blue); z-index:9999; display:flex; align-items:center; justify-content:center;">
-    <div class="card p-4 text-center" style="width:90%; max-width:350px;">
-        <h4 class="fw-bold mb-3" style="color:var(--blue)">✝️ MISIÓN TARIJA</h4>
-        <select id="rol-select" class="form-select mb-3" onchange="document.getElementById('p-box').classList.toggle('hidden', this.value=='Joven')">
-            <option value="Joven">Modo Joven</option>
-            <option value="Maycol">Maycol (Admin)</option>
-            <option value="Yoselin">Yose (Admin)</option>
-            <option value="Catequista">Catequista</option>
+<div id="login-screen">
+    <div class="card p-4 text-center" style="width: 90%; max-width: 360px;">
+        <h4 class="fw-bold mb-1" style="color: var(--blue)">✝️ MISIÓN TARIJA</h4>
+        <p class="small text-muted mb-3">Sistema de Gestión 2026</p>
+        <select id="rol-select" class="form-select mb-3 rounded-pill" onchange="document.getElementById('p-box').classList.toggle('hidden', this.value=='Joven')">
+            <option value="Joven">Modo Joven (Invitado)</option>
+            <option value="Maycol">Maycol (Coordinador)</option>
+            <option value="Yoselin">Yoselin (Sub-Coord)</option>
+            <option value="Catequista">Catequista (Equipo)</option>
         </select>
-        <div id="p-box" class="hidden"><input type="password" id="p-pass" class="form-control mb-3" placeholder="Contraseña"></div>
-        <button onclick="entrar()" class="btn btn-primary w-100 fw-bold">INGRESAR</button>
+        <div id="p-box" class="hidden"><input type="password" id="p-pass" class="form-control mb-3 rounded-pill" placeholder="Contraseña"></div>
+        <button onclick="entrar()" class="btn btn-primary w-100 py-2 rounded-pill fw-bold">INGRESAR</button>
     </div>
 </div>
 
 <div id="app" class="hidden">
-    <div class="app-header"><h5 class="fw-bold m-0">CATEQUESIS TARIJA</h5><div id="u-tag" class="badge bg-light text-dark mt-2"></div></div>
+    <div class="app-header"><h5 class="fw-bold mb-0">CATEQUESIS TARIJA</h5><div id="u-tag" class="badge bg-light text-dark mt-2"></div></div>
 
     <div id="sec-home" class="seccion p-2">
+        <div class="card p-0">
+            <div class="ratio ratio-16x9"><iframe id="v-frame" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe></div>
+            <div class="admin-only p-2 bg-dark">
+                <input type="text" id="v-id" class="form-control form-control-sm mb-1" placeholder="ID de Video YouTube">
+                <button onclick="setVid()" class="btn btn-warning btn-sm w-100">Cambiar Video</button>
+            </div>
+        </div>
+
         <div class="card p-3">
-            <h6 class="fw-bold text-primary">Comunicados</h6>
-            <div class="admin-only mb-2">
+            <h6 class="fw-bold text-primary"><i class="bi bi-megaphone"></i> Comunicados</h6>
+            <div class="admin-only mb-3">
                 <input type="text" id="t-not" class="form-control mb-1" placeholder="Título">
-                <textarea id="m-not" class="form-control mb-1" placeholder="Mensaje"></textarea>
+                <textarea id="m-not" class="form-control mb-2" placeholder="Mensaje..."></textarea>
                 <div class="d-flex gap-2">
                     <button onclick="addNot()" class="btn btn-primary btn-sm w-100">Publicar</button>
                     <button onclick="wsNot()" class="btn btn-success btn-sm"><i class="bi bi-whatsapp"></i></button>
@@ -54,11 +63,11 @@
         </div>
 
         <div class="card p-3">
-            <h6 class="fw-bold text-warning">🎂 Cumpleaños</h6>
-            <div class="cate-only mb-2">
+            <h6 class="fw-bold text-warning">🎂 Cumpleaños del Equipo</h6>
+            <div class="cate-only mb-3 bg-light p-2 rounded">
                 <input type="text" id="c-nom" class="form-control mb-1" placeholder="Tu Nombre">
                 <input type="date" id="c-fec" class="form-control mb-1">
-                <button onclick="addCum()" class="btn btn-warning btn-sm w-100">Registrarme</button>
+                <button onclick="addCum()" class="btn btn-warning btn-sm w-100">Registrar mi Cumple</button>
             </div>
             <div id="lista-cum"></div>
         </div>
@@ -66,36 +75,48 @@
 
     <div id="sec-lib" class="seccion hidden p-2">
         <div class="card p-3">
-            <h6 class="fw-bold text-primary">Biblioteca Virtual</h6>
-            <div class="admin-only mb-2">
-                <input type="text" id="l-tit" class="form-control mb-1" placeholder="Nombre">
-                <input type="text" id="l-url" class="form-control mb-1" placeholder="Link">
-                <button onclick="addLib()" class="btn btn-primary btn-sm w-100">Subir</button>
+            <h6 class="fw-bold text-primary"><i class="bi bi-book"></i> Biblioteca Virtual</h6>
+            <div class="admin-only mb-3 p-2 bg-light rounded">
+                <input type="text" id="l-tit" class="form-control mb-1" placeholder="Nombre Libro">
+                <input type="text" id="l-url" class="form-control mb-1" placeholder="Link (Drive/PDF)">
+                <button onclick="addLib()" class="btn btn-primary btn-sm w-100">Subir Recurso</button>
             </div>
             <div id="lista-lib"></div>
         </div>
     </div>
 
-    <div id="sec-adm" class="seccion hidden p-2 admin-only">
+    <div id="sec-adm" class="seccion hidden admin-only p-2">
         <div class="card p-4 bg-primary text-white text-center">
-            <small>SALDO</small><h2 id="s-bs">Bs. 0.00</h2>
-            <button class="btn btn-light btn-sm" onclick="rep()">Reporte .txt</button>
+            <small>SALDO CAJA</small>
+            <h2 id="s-bs">Bs. 0.00</h2>
+            <button class="btn btn-light btn-sm mt-2" onclick="rep()">Bajar Reporte .txt</button>
         </div>
         <div class="card p-3">
+            <h6 class="fw-bold">Movimientos e Inventario</h6>
             <input type="number" id="c-mon" class="form-control mb-1" placeholder="Bs.">
-            <input type="text" id="c-det" class="form-control mb-2" placeholder="Detalle/Inventario">
-            <div class="d-flex gap-2 mb-2">
-                <button onclick="mon(1)" class="btn btn-success w-100">Ingreso</button>
-                <button onclick="mon(-1)" class="btn btn-danger w-100">Egreso</button>
+            <input type="text" id="c-det" class="form-control mb-2" placeholder="Detalle / Artículo">
+            <div class="d-flex gap-2 mb-3">
+                <button onclick="mon(1)" class="btn btn-success w-100">Ingreso / Alta</button>
+                <button onclick="mon(-1)" class="btn btn-danger w-100">Egreso / Baja</button>
             </div>
             <div id="lista-inv" class="small"></div>
+        </div>
+    </div>
+
+    <div id="sec-chat" class="seccion hidden p-2">
+        <div class="card p-3">
+            <h6 class="fw-bold text-primary">Buzón para Maycol</h6>
+            <div id="lista-msg" class="mb-2 small"></div>
+            <textarea id="j-msg" class="form-control mb-2" placeholder="Escribe tu duda aquí..."></textarea>
+            <button onclick="sendMsg()" class="btn btn-primary w-100">Enviar Consulta</button>
         </div>
     </div>
 
     <div class="bottom-nav">
         <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-house"></i>Inicio</div>
         <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-book"></i>Libros</div>
-        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-cash-coin"></i>Caja</div>
+        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-cash-coin"></i>Gestión</div>
+        <div onclick="tab('chat')" id="n-chat" class="nav-item"><i class="bi bi-chat-left-dots"></i>Dudas</div>
     </div>
 </div>
 
@@ -106,9 +127,9 @@
     function entrar() {
         const r = document.getElementById('rol-select').value;
         const pass = document.getElementById('p-pass').value;
-        if(r === "Joven") run("JOVEN", 0, 0);
-        else if(pass === P[r] || (r==="Maycol" && pass===P["Maycol"])) run(r, r!=="Catequista", 1);
-        else alert("Error");
+        if(r === "Joven") run("MODO LECTURA", false, false);
+        else if(pass === P[r] || (r==="Maycol" && pass===P["Maycol"])) run(r, r!=="Catequista", true);
+        else alert("Clave Incorrecta");
     }
 
     function run(t, a, c) {
@@ -126,17 +147,21 @@
         document.getElementById('n-'+id).classList.add('active');
     }
 
+    function setVid() {
+        const id = document.getElementById('v-id').value;
+        document.getElementById('v-frame').src = "https://www.youtube.com/embed/" + id;
+    }
+
     function addNot() {
         const t = document.getElementById('t-not').value, m = document.getElementById('m-not').value;
         if(!t) return;
         const id = "n"+Date.now();
-        document.getElementById('lista-not').insertAdjacentHTML('afterbegin', `<div class="p-2 border-bottom" id="${id}"><b>${t}</b> <i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i><br><small>${m}</small></div>`);
+        document.getElementById('lista-not').insertAdjacentHTML('afterbegin', `<div class="p-2 border-bottom shadow-sm mb-2 bg-white" id="${id}"><b>${t}</b> <i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i><br><small class="text-muted">${m}</small></div>`);
         document.getElementById('t-not').value=""; document.getElementById('m-not').value="";
     }
 
     function wsNot() {
-        const t = document.getElementById('t-not').value, m = document.getElementById('m-not').value;
-        window.open(`https://wa.me/?text=${encodeURIComponent("*"+t+"*\n"+m)}`);
+        window.open(`https://wa.me/?text=${encodeURIComponent("*"+document.getElementById('t-not').value+"*\n"+document.getElementById('m-not').value)}`);
     }
 
     function addCum() {
@@ -147,12 +172,13 @@
         document.getElementById('c-nom').value="";
     }
 
-    function fel(n) { window.open(`https://wa.me/?text=${encodeURIComponent("🎉 ¡Feliz Cumple "+n+"! Dios te bendiga ✝️")}`); }
+    function fel(n) { window.open(`https://wa.me/?text=${encodeURIComponent("🎉 ¡Feliz Cumpleaños "+n+"! Dios te bendiga mucho ✝️")}`); }
 
     function addLib() {
         const t = document.getElementById('l-tit').value, u = document.getElementById('l-url').value;
+        if(!t || !u) return;
         const id = "l"+Date.now();
-        document.getElementById('lista-lib').insertAdjacentHTML('afterbegin', `<div class="d-flex justify-content-between p-2 border-bottom" id="${id}"><a href="${u}" target="_blank" class="text-dark small">${t}</a><i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i></div>`);
+        document.getElementById('lista-lib').insertAdjacentHTML('afterbegin', `<div class="d-flex justify-content-between p-3 border-bottom align-items-center" id="${id}"><a href="${u}" target="_blank" class="text-dark small"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>${t}</a><i class="bi bi-trash btn-del admin-only" onclick="document.getElementById('${id}').remove()"></i></div>`);
     }
 
     function mon(v) {
@@ -160,12 +186,19 @@
         if(!m) return;
         total += (m * v);
         document.getElementById('s-bs').innerText = "Bs. " + total.toFixed(2);
-        document.getElementById('lista-inv').insertAdjacentHTML('afterbegin', `<div>${d}: ${m*v}</div>`);
+        document.getElementById('lista-inv').insertAdjacentHTML('afterbegin', `<div class="border-bottom py-1">${d}: ${m*v} Bs.</div>`);
     }
 
     function rep() {
-        const blob = new Blob(["REPORTE TARIJA\nSaldo: " + total], {type:"text/plain"});
-        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "reporte.txt"; a.click();
+        const b = new Blob(["REPORTE CATEQUESIS TARIJA\nSaldo Final: "+total+" Bs."], {type:"text/plain"});
+        const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "reporte.txt"; a.click();
+    }
+
+    function sendMsg() {
+        const m = document.getElementById('j-msg').value;
+        if(!m) return;
+        document.getElementById('lista-msg').insertAdjacentHTML('afterbegin', `<div class="p-2 bg-light border rounded mb-2"><b>Joven pregunta:</b> ${m}</div>`);
+        document.getElementById('j-msg').value=""; alert("Enviado");
     }
 </script>
 </body>
