@@ -26,7 +26,7 @@
         .hidden { display: none !important; }
         
         .cat-card { border-left: 5px solid var(--gold); background: #f8f9fa; padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .wa-btn { background: #25d366; color: white; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; text-decoration: none; box-shadow: 0 4px 10px rgba(37,211,102,0.3); }
+        .wa-btn { background: #25d366; color: white; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; text-decoration: none; }
         
         .media-card { border-radius: 15px; overflow: hidden; border: 1px solid #eee; margin-bottom: 15px; background: white; }
         .check-item { background: #fdfdfd; border: 1px solid #eee; padding: 10px; border-radius: 15px; margin-bottom: 8px; }
@@ -94,7 +94,7 @@
         <div class="card">
             <h6 class="section-title"><i class="bi bi-person-check"></i> Registro y Lista</h6>
             <div id="can-register-joven" class="hidden bg-light p-3 rounded-4 mb-3">
-                <input type="text" id="j-nom-reg" class="form-control mb-1" placeholder="Nombre completo del Joven">
+                <input type="text" id="j-nom-reg" class="form-control mb-1" placeholder="Nombre completo">
                 <select id="j-grupo-reg" class="form-select mb-2"></select>
                 <button onclick="addJoven()" class="btn btn-primary btn-sm w-100 rounded-pill">Inscribir Joven</button>
             </div>
@@ -105,7 +105,7 @@
 
     <div id="sec-agenda" class="seccion hidden p-2">
         <div class="card">
-            <h6 class="section-title"><i class="bi bi-calendar-check"></i> Agenda de Coordinación</h6>
+            <h6 class="section-title"><i class="bi bi-calendar-check"></i> Agenda</h6>
             <div id="admin-agenda-form" class="hidden bg-light p-3 rounded-4 mb-3">
                 <input type="text" id="a-task" class="form-control mb-2" placeholder="Pendiente...">
                 <button onclick="addAgenda()" class="btn btn-primary w-100 rounded-pill btn-sm">Agregar</button>
@@ -153,10 +153,10 @@
 
     <div id="sec-msg" class="seccion hidden p-2">
         <div class="card">
-            <h6 class="section-title"><i class="bi bi-chat-dots"></i> Chat Comunidad</h6>
+            <h6 class="section-title"><i class="bi bi-chat-dots"></i> Chat</h6>
             <div id="lista-msg" style="max-height: 300px; overflow-y: auto;" class="mb-3"></div>
             <div class="input-group">
-                <input type="text" id="j-msg" class="form-control" placeholder="Escribe un mensaje...">
+                <input type="text" id="j-msg" class="form-control" placeholder="Mensaje...">
                 <button onclick="sendMsg()" class="btn btn-primary"><i class="bi bi-send"></i></button>
             </div>
         </div>
@@ -165,10 +165,10 @@
     <div class="bottom-nav">
         <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-megaphone"></i>Blog</div>
         <div onclick="tab('asistencia'); actualizarListaJovenes();" id="n-asistencia" class="nav-item"><i class="bi bi-person-check"></i>Lista</div>
-        <div onclick="tab('agenda')" id="n-agenda" class="nav-item hidden-joven hidden"><i class="bi bi-calendar-check"></i>Agenda</div>
+        <div onclick="tab('agenda')" id="n-agenda" class="nav-item hidden-joven"><i class="bi bi-calendar-check"></i>Agenda</div>
         <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-book"></i>Libros</div>
         <div onclick="tab('equipo')" id="n-equipo" class="nav-item"><i class="bi bi-people"></i>Equipo</div>
-        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only hidden"><i class="bi bi-gear"></i>Caja</div>
+        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-gear"></i>Caja</div>
         <div onclick="tab('msg')" id="n-msg" class="nav-item"><i class="bi bi-chat-dots"></i>Chat</div>
     </div>
 </div>
@@ -195,29 +195,26 @@
         document.getElementById('app').classList.remove('hidden');
         document.getElementById('u-tag').innerText = rol.toUpperCase();
 
-        // Limpiar visibilidad por defecto
-        document.querySelectorAll('.admin-only, .hidden-joven, #can-publish, #can-register-joven, #admin-equipo, #admin-agenda-form, #admin-lib').forEach(e => e.classList.add('hidden'));
+        // REINICIAR VISIBILIDAD
+        document.querySelectorAll('.admin-only, .hidden-joven, #can-publish, #can-register-joven, #admin-equipo, #admin-agenda-form, #admin-lib').forEach(el => el.classList.add('hidden'));
 
-        if(rol !== 'Joven') {
+        if(rol === 'Joven') {
+            document.getElementById('n-adm').classList.add('hidden');
+            document.getElementById('n-agenda').classList.add('hidden');
+            // El joven puede elegir su grupo para ver la lista
+            document.getElementById('filtro-grupo').classList.remove('hidden'); 
+        } else {
             document.getElementById('can-publish').classList.remove('hidden');
             document.getElementById('can-register-joven').classList.remove('hidden');
             document.querySelectorAll('.hidden-joven').forEach(e => e.classList.remove('hidden'));
         }
-        
+
         if(rol === 'Maycol' || rol === 'Yoselin') {
             document.getElementById('admin-equipo').classList.remove('hidden');
             document.getElementById('admin-agenda-form').classList.remove('hidden');
             document.getElementById('admin-lib').classList.remove('hidden');
             document.querySelectorAll('.admin-only').forEach(e => e.classList.remove('hidden'));
         }
-
-        // Si es joven, forzamos que no vea el selector de filtros para que no espíe otros grupos
-        if(rol === 'Joven') {
-            document.getElementById('filtro-grupo').classList.add('hidden');
-        } else {
-            document.getElementById('filtro-grupo').classList.remove('hidden');
-        }
-
         actualizarTodo();
     }
 
@@ -226,8 +223,10 @@
     function tab(id) {
         document.querySelectorAll('.seccion').forEach(s => s.classList.add('hidden'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('sec-'+id).classList.remove('hidden');
-        document.getElementById('n-'+id).classList.add('active');
+        const target = document.getElementById('sec-'+id);
+        if(target) target.classList.remove('hidden');
+        const nav = document.getElementById('n-'+id);
+        if(nav) nav.classList.add('active');
     }
 
     function save() {
@@ -238,8 +237,8 @@
     function actualizarTodo() {
         // BLOG
         document.getElementById('lista-media').innerHTML = DATA.media.map(m => {
-            let mH = m.vId ? `<iframe width="100%" height="200" src="https://www.youtube.com/embed/${m.vId}" frameborder="0"></iframe>` : `<img src="${m.u}" class="w-100" style="height:200px; object-fit:cover;">`;
-            return `<div class="media-card">${mH}<div class="p-2"><b>${m.t}</b></div></div>`;
+            let mediaContent = m.vId ? `<iframe width="100%" height="200" src="https://www.youtube.com/embed/${m.vId}" frameborder="0" allowfullscreen></iframe>` : `<img src="${m.u}" class="w-100" style="height:200px; object-fit:cover;">`;
+            return `<div class="media-card">${mediaContent}<div class="p-2"><b>${m.t}</b></div></div>`;
         }).join('');
 
         // EQUIPO
@@ -255,9 +254,9 @@
         const gOpts = DATA.grupos.map(g => `<option value="${g.n}">${g.n}</option>`).join('');
         document.getElementById('g-cat').innerHTML = DATA.catequistas.map(c => `<option value="${c.n}">${c.n}</option>`).join('');
         document.getElementById('j-grupo-reg').innerHTML = gOpts;
-        document.getElementById('filtro-grupo').innerHTML = '<option value="">Seleccionar Grupo</option>' + gOpts;
+        document.getElementById('filtro-grupo').innerHTML = '<option value="">Seleccionar Grupo...</option>' + gOpts;
 
-        // OTROS
+        // OTROS DATOS
         document.getElementById('lista-lib').innerHTML = DATA.libros.map(l => `<div class="p-2 border-bottom d-flex justify-content-between"><span>${l.t}</span><a href="${l.u}" target="_blank" class="btn btn-sm btn-outline-primary">Abrir</a></div>`).join('');
         document.getElementById('lista-agenda').innerHTML = DATA.agenda.map(a => `<div class="agenda-item d-flex justify-content-between ${a.done?'done':''}"><span>${a.t}</span><input type="checkbox" ${a.done?'checked':''} onclick="toggleAgenda(${a.id})"></div>`).join('');
         document.getElementById('s-bs').innerText = "Bs. " + DATA.saldo.toFixed(2);
@@ -268,17 +267,13 @@
     }
 
     function actualizarListaJovenes() {
-        const f = document.getElementById('filtro-grupo').value;
-        // Si no hay filtro seleccionado y es joven, no mostramos nada por privacidad
-        if(userAct === 'Joven' && !f) {
-            document.getElementById('tabla-jovenes').innerHTML = "<p class='text-center p-3'>Selecciona tu grupo arriba para ver la lista.</p>";
-            document.getElementById('filtro-grupo').classList.remove('hidden'); // Permitir que el joven elija SU grupo
+        const filter = document.getElementById('filtro-grupo').value;
+        if(userAct === 'Joven' && !filter) {
+            document.getElementById('tabla-jovenes').innerHTML = "<p class='text-center p-3'>Selecciona un grupo para ver la lista.</p>";
             return;
         }
-
-        const l = f ? DATA.jovenes.filter(j => j.grupo === f) : DATA.jovenes;
-        
-        document.getElementById('tabla-jovenes').innerHTML = l.map(j => `
+        const list = filter ? DATA.jovenes.filter(j => j.grupo === filter) : DATA.jovenes;
+        document.getElementById('tabla-jovenes').innerHTML = list.map(j => `
             <div class="check-item d-flex justify-content-between align-items-center">
                 <div><b>${j.nombre}</b><br><small>${j.grupo}</small></div>
                 <div class="d-flex gap-2 text-center">
@@ -292,25 +287,31 @@
             </div>`).join('');
     }
 
+    // FUNCIONES DE ACCIÓN
     function addMedia() {
         const t = document.getElementById('m-tit').value, v = document.getElementById('m-url').value, f = document.getElementById('m-img-file').files[0];
-        const p = (u) => { DATA.media.unshift({t, u, vId:v}); save(); };
-        if(f) { const r = new FileReader(); r.onloadend = () => p(r.result); r.readAsDataURL(f); } else { p(""); }
+        const cb = (u) => { DATA.media.unshift({t, u, vId:v}); save(); };
+        if(f) { const r = new FileReader(); r.onloadend = () => cb(r.result); r.readAsDataURL(f); } else { cb(""); }
     }
-
     function addJoven() {
         const n = document.getElementById('j-nom-reg').value, g = document.getElementById('j-grupo-reg').value;
         if(n && g) { DATA.jovenes.unshift({id:Date.now(), nombre:n, grupo:g, presente:false, tarea:false}); save(); document.getElementById('j-nom-reg').value=""; }
     }
-
     function tglJ(id, k) { if(userAct === 'Joven') return; const j = DATA.jovenes.find(x => x.id === id); if(j){ j[k]=!j[k]; save(); } }
     function addAgenda() { const t = document.getElementById('a-task').value; if(t){ DATA.agenda.unshift({id:Date.now(), t, done:false}); save(); document.getElementById('a-task').value=""; } }
     function toggleAgenda(id) { if(userAct === 'Joven') return; const a = DATA.agenda.find(x => x.id === id); if(a){ a.done=!a.done; save(); } }
     function addCate() { const n = document.getElementById('cat-nom').value, t = document.getElementById('cat-tel').value; DATA.catequistas.unshift({n, t}); save(); }
     function addGroup() { const n = document.getElementById('g-nom').value, c = document.getElementById('g-cat').value; DATA.grupos.unshift({n, c}); save(); }
     function addLib() { const t = document.getElementById('l-tit').value, u = document.getElementById('l-url').value; DATA.libros.unshift({t, u}); save(); }
-    function mon(v) { const m = parseFloat(document.getElementById('c-mon').value), d = document.getElementById('c-det').value; DATA.saldo+=(m*v); DATA.caja.unshift({m:m*v, d}); save(); }
+    function mon(v) { const m = parseFloat(document.getElementById('c-mon').value), d = document.getElementById('c-det').value; if(!isNaN(m)){ DATA.saldo+=(m*v); DATA.caja.unshift({m:m*v, d}); save(); } }
     function addInv() { const n = document.getElementById('i-item').value, c = document.getElementById('i-cant').value; DATA.inventario.unshift({n, c}); save(); }
-    function sendMsg() { const t = document.getElementById('j-msg').value; if(!t) return; DATA.mensajes.push({u: userAct, t}); save(); document.getElementById('j-msg').value=""; }
+    function sendMsg() { const t = document.getElementById('j-msg').value; if(t){ DATA.mensajes.push({u: userAct, t}); save(); document.getElementById('j-msg').value=""; } }
 
-    window.onload = () => { const s = JSON.parse(localStorage.getItem('SESION_TOTAL')); if(s) run(s.rol)
+    window.onload = () => { 
+        const s = JSON.parse(localStorage.getItem('SESION_TOTAL')); 
+        if(s) run(s.rol); 
+        else actualizarTodo(); 
+    };
+</script>
+</body>
+                </html>
