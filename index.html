@@ -3,164 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA CATEQUESIS TARIJA</title>
+    <title>CATEQUESIS TARIJA - SISTEMA INTEGRAL</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root { --blue: #1a237e; --gold: #ffd600; --bg: #f8f9fa; }
-        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; padding-bottom: 100px; }
-        .app-header { background: var(--blue); color: white; padding: 20px; border-bottom: 6px solid var(--gold); border-radius: 0 0 35px 35px; text-align: center; }
-        .card { border-radius: 20px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.08); margin: 12px; background: white; }
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 12px; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); border-radius: 25px 25px 0 0; z-index: 1000; }
-        .nav-item { text-align: center; color: #bbb; flex: 1; cursor: pointer; font-size: 11px; }
-        .nav-item.active { color: var(--blue); font-weight: bold; }
-        .nav-item i { font-size: 22px; display: block; }
-        /* BLOQUEOS ESTRICTOS */
-        .admin-content, .cate-content, .hidden { display: none !important; }
-        .login-screen { position: fixed; inset: 0; background: var(--blue); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        :root { --blue: #1a237e; --gold: #ffd600; --bg: #f0f2f5; }
+        body { background: var(--bg); font-family: 'Segoe UI', sans-serif; padding-bottom: 100px; margin: 0; }
+        
+        /* Login Forzado al inicio */
+        #login-screen { position: fixed; inset: 0; background: var(--blue); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        
+        .app-header { background: var(--blue); color: white; padding: 25px 20px; border-bottom: 6px solid var(--gold); border-radius: 0 0 40px 40px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .card { border-radius: 25px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.06); margin: 15px; background: white; overflow: hidden; }
+        
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 15px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); border-radius: 30px 30px 0 0; z-index: 1000; }
+        .nav-item { text-align: center; color: #bbb; flex: 1; cursor: pointer; font-size: 11px; font-weight: 600; }
+        .nav-item.active { color: var(--blue); }
+        .nav-item i { font-size: 24px; display: block; margin-bottom: 2px; }
+
+        /* Elementos de Bloqueo */
+        .admin-only, .cate-only, .hidden { display: none !important; }
+        .post-card { border-left: 5px solid var(--blue); padding: 15px; margin-bottom: 10px; background: #fff; }
     </style>
 </head>
 <body>
 
-<div id="login-box" class="login-screen">
-    <div class="card p-4 text-center" style="width: 85%; max-width: 350px;">
-        <h4 class="fw-bold mb-3" style="color: var(--blue)">✝️ Misión Tarija</h4>
-        <select id="sel-rol" class="form-select mb-3 rounded-pill">
-            <option value="Joven">Modo Joven (Visitante)</option>
-            <option value="Maycol">Maycol (Súper Admin)</option>
-            <option value="Yoselin">Yoselin (Súper Admin)</option>
+<div id="login-screen">
+    <div class="card p-4 text-center" style="width: 90%; max-width: 380px;">
+        <h3 class="fw-bold mb-1" style="color: var(--blue)">✝️ MISIÓN TARIJA</h3>
+        <p class="text-muted small mb-4">Gestión 2026 - Coordinación</p>
+        
+        <select id="rol-select" class="form-select mb-3 rounded-pill p-3 border-0 bg-light shadow-sm" onchange="togglePass()">
+            <option value="Joven">Modo Joven (Invitado)</option>
+            <option value="Maycol">Maycol (Coordinador)</option>
+            <option value="Yoselin">Yoselin (Coordinadora)</option>
             <option value="Catequista">Catequista (14 Grupos)</option>
         </select>
-        <div id="pass-area" class="hidden">
-            <input type="password" id="pass-in" class="form-control mb-3 rounded-pill" placeholder="Contraseña">
+
+        <div id="pass-container" class="hidden">
+            <input type="password" id="pass-input" class="form-control mb-3 rounded-pill p-3 border-0 bg-light shadow-sm" placeholder="Contraseña">
         </div>
-        <button onclick="verificarAcceso()" class="btn btn-primary w-100 rounded-pill py-2">ENTRAR</button>
+
+        <button onclick="acceder()" class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow">INGRESAR AL SISTEMA</button>
     </div>
 </div>
 
-<div id="app" class="hidden">
+<div id="app-content" class="hidden">
     <div class="app-header">
         <h5 class="fw-bold mb-0">CATEQUESIS TARIJA</h5>
-        <div id="role-tag" class="badge bg-light text-dark rounded-pill mt-2"></div>
+        <div id="user-display" class="badge bg-light text-dark rounded-pill mt-2 px-3 p-2 small"></div>
     </div>
 
     <div id="sec-home" class="seccion p-2">
-        <div class="admin-content card p-3 bg-light border-primary mb-3">
-            <h6 class="fw-bold text-primary">Subir Publicidad (Link Imagen)</h6>
-            <input type="text" id="pub-url" class="form-control mb-2" placeholder="Link de imagen">
-            <button onclick="setPub()" class="btn btn-primary btn-sm w-100 rounded-pill">Publicar</button>
+        <div class="admin-only card p-3 bg-light border-primary mb-3">
+            <h6 class="fw-bold text-primary">Subir Publicidad (Imagen)</h6>
+            <input type="text" id="img-input" class="form-control mb-2" placeholder="Pegar enlace de imagen">
+            <button onclick="ponerAnuncio()" class="btn btn-primary btn-sm w-100 rounded-pill">Publicar Banner</button>
         </div>
-        
-        <div id="banner-pub" class="hidden mb-3"><img id="img-pub" src="" class="w-100 rounded-4 shadow"></div>
 
-        <div class="card p-0 overflow-hidden">
+        <div id="anuncio-box" class="hidden text-center mb-3">
+            <img id="anuncio-img" src="" class="w-100 rounded-4 shadow">
+        </div>
+
+        <div class="card p-0">
             <div class="ratio ratio-16x9">
-                <iframe id="main-video" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+                <iframe id="video-frame" src="http://googleusercontent.com/youtube.com/8" allowfullscreen></iframe>
             </div>
-            <div class="admin-content p-2 bg-dark">
-                <input type="text" id="vid-id" class="form-control form-control-sm mb-1" placeholder="ID YouTube">
-                <button onclick="setVid()" class="btn btn-warning btn-sm w-100 rounded-pill">Cambiar Video</button>
+            <div class="admin-only p-2 bg-dark">
+                <input type="text" id="vid-input" class="form-control form-control-sm mb-1" placeholder="ID de YouTube">
+                <button onclick="ponerVideo()" class="btn btn-warning btn-sm w-100 rounded-pill">Actualizar Video</button>
             </div>
         </div>
 
         <div class="card p-3">
-            <h6 class="fw-bold text-primary">Blog de Noticias</h6>
-            <div class="admin-content mb-3">
-                <textarea id="blog-txt" class="form-control mb-1" placeholder="¿Qué quieres anunciar?"></textarea>
-                <button onclick="addBlog()" class="btn btn-primary btn-sm w-100 rounded-pill">Publicar Noticia</button>
+            <h6 class="fw-bold text-primary">Comunicados del Blog</h6>
+            <div class="admin-only mb-3">
+                <input type="text" id="b-tit" class="form-control mb-1" placeholder="Título">
+                <textarea id="b-msg" class="form-control mb-2" rows="2" placeholder="Mensaje..."></textarea>
+                <button onclick="subirNoticia()" class="btn btn-primary btn-sm w-100 rounded-pill">Subir Noticia</button>
             </div>
-            <div id="feed-blog"></div>
+            <div id="blog-lista"></div>
+        </div>
+    </div>
+
+    <div id="sec-lib" class="seccion hidden p-2">
+        <div class="card p-3">
+            <h6 class="fw-bold text-primary"><i class="bi bi-book me-2"></i>Biblioteca Virtual</h6>
+            <div class="admin-only p-2 bg-light rounded mb-3">
+                <input type="text" id="l-tit" class="form-control mb-1" placeholder="Nombre del Libro">
+                <input type="text" id="l-url" class="form-control mb-1" placeholder="Enlace Drive/PDF">
+                <button onclick="subirLibro()" class="btn btn-primary btn-sm w-100 rounded-pill">Agregar a Biblioteca</button>
+            </div>
+            <div id="lib-lista"></div>
         </div>
     </div>
 
     <div id="sec-grupo" class="seccion hidden p-2">
-        <div class="cate-content card p-3 border-success">
-            <h6 class="fw-bold">Llamar Lista</h6>
-            <div id="lista-asis" class="mb-3">
-                <div class="d-flex justify-content-between p-2 border-bottom">
-                    <span>Joven de Tarija</span>
-                    <button class="btn btn-outline-success btn-sm" onclick="this.className='btn btn-success btn-sm'">P</button>
-                </div>
+        <div class="cate-only card p-3 border-success mb-3">
+            <h6 class="fw-bold text-success">Llamar Lista: <span id="grupo-txt"></span></h6>
+            <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
+                <span>Estudiante Ejemplo</span>
+                <button class="btn btn-outline-success btn-sm" onclick="this.className='btn btn-success btn-sm'">P</button>
             </div>
+            <button class="btn btn-success w-100 rounded-pill mt-3">Guardar Asistencia</button>
         </div>
         <div class="card p-3">
-            <h6 class="fw-bold text-warning">Misiones de Coordinación</h6>
-            <div id="lista-misiones" class="small text-muted">No hay misiones hoy.</div>
+            <h6 class="fw-bold text-warning">Órdenes de Coordinación</h6>
+            <div id="misiones-feed" class="small text-muted">No hay misiones asignadas...</div>
         </div>
     </div>
 
-    <div id="sec-lib" class="seccion hidden p-2 text-center">
-        <div class="card p-3">
-            <h6 class="fw-bold">Biblioteca Virtual</h6>
-            <div class="admin-content mb-3 bg-light p-2">
-                <input type="text" id="l-tit" class="form-control mb-1" placeholder="Título Libro">
-                <input type="text" id="l-url" class="form-control mb-1" placeholder="Link PDF">
-                <button onclick="addLib()" class="btn btn-primary btn-sm w-100">Subir</button>
-            </div>
-            <div id="lib-files"></div>
+    <div id="sec-admin" class="seccion hidden admin-only p-2">
+        <div class="card p-4 bg-primary text-white text-center shadow">
+            <small class="opacity-75">SALDO ACTUAL GESTIÓN</small>
+            <h2 class="fw-bold" id="saldo-bs">Bs. 0.00</h2>
         </div>
-    </div>
+        
+        <div class="card p-3 border-warning mb-3">
+            <h6 class="fw-bold text-warning">Asignar Misión a Catequistas</h6>
+            <input type="text" id="m-input" class="form-control mb-2" placeholder="¿Qué deben hacer hoy?">
+            <button onclick="mandarMision()" class="btn btn-warning btn-sm w-100 rounded-pill fw-bold text-dark">ENVIAR TAREA</button>
+        </div>
 
-    <div id="sec-caja" class="seccion hidden p-2 admin-content">
-        <div class="card p-4 bg-primary text-white text-center">
-            <small>SALDO DISPONIBLE</small>
-            <h2 id="saldo-txt">Bs. 0.00</h2>
-        </div>
-        <div class="card p-3">
-            <input type="number" id="cash-m" class="form-control mb-2" placeholder="Monto Bs.">
-            <input type="text" id="cash-d" class="form-control mb-2" placeholder="Motivo">
+        <div class="card p-3 mb-3">
+            <h6 class="fw-bold">Contabilidad de Caja</h6>
+            <input type="number" id="c-monto" class="form-control mb-1" placeholder="Monto Bs.">
+            <input type="text" id="c-motivo" class="form-control mb-2" placeholder="Detalle">
             <div class="d-flex gap-2">
-                <button onclick="caja(1)" class="btn btn-success w-100">Ingreso</button>
-                <button onclick="caja(-1)" class="btn btn-danger w-100">Egreso</button>
+                <button onclick="caja(1)" class="btn btn-success w-100 rounded-pill">Ingreso</button>
+                <button onclick="caja(-1)" class="btn btn-danger w-100 rounded-pill">Egreso</button>
             </div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-house"></i>Inicio</div>
-        <div onclick="tab('grupo')" id="n-grupo" class="nav-item cate-content"><i class="bi bi-people"></i>Grupo</div>
-        <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-book"></i>Libros</div>
-        <div onclick="tab('caja')" id="n-caja" class="nav-item admin-content"><i class="bi bi-cash-stack"></i>Caja</div>
+        <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-house-door"></i>Inicio</div>
+        <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-bookmark-star"></i>Libros</div>
+        <div onclick="tab('grupo')" id="n-grupo" class="nav-item cate-only"><i class="bi bi-people"></i>Grupo</div>
+        <div onclick="tab('admin')" id="n-admin" class="nav-item admin-only"><i class="bi bi-shield-lock"></i>Caja</div>
     </div>
 </div>
 
 <script>
-    const CLAVES = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Catequista":"cate_2026" };
-    let saldoTotal = 0;
+    const KEYS = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Catequista":"cate_2026" };
+    let saldo = 0;
 
-    // Mostrar/Ocultar campo de contraseña según rol
-    document.getElementById('sel-rol').addEventListener('change', function() {
-        if(this.value === "Joven") document.getElementById('pass-area').classList.add('hidden');
-        else document.getElementById('pass-area').classList.remove('hidden');
-    });
+    function togglePass() {
+        const r = document.getElementById('rol-select').value;
+        if(r === "Joven") document.getElementById('pass-container').classList.add('hidden');
+        else document.getElementById('pass-container').classList.remove('hidden');
+    }
 
-    function verificarAcceso() {
-        const rol = document.getElementById('sel-rol').value;
-        const pass = document.getElementById('pass-in').value;
-        const tag = document.getElementById('role-tag');
+    function acceder() {
+        const rol = document.getElementById('rol-select').value;
+        const pass = document.getElementById('pass-input').value;
+        const tag = document.getElementById('user-display');
 
         if(rol === "Joven") {
-            entrarApp("MODO JOVEN", false, false);
-        } else if ((rol === "Maycol" || rol === "Yoselin") && pass === CLAVES[rol]) {
-            entrarApp("ADMIN: " + rol, true, true);
-        } else if (rol === "Catequista" && pass === CLAVES["Catequista"]) {
-            entrarApp("CATEQUISTA", false, true);
+            activarModo("MODO LECTURA", false, false);
+        } else if ((rol === "Maycol" || rol === "Yoselin") && pass === KEYS[rol]) {
+            activarModo("COORDINADOR: " + rol, true, true);
+        } else if (rol === "Catequista" && pass === KEYS["Catequista"]) {
+            activarModo("CATEQUISTA: GRUPO X", false, true);
         } else {
-            alert("Acceso denegado");
+            alert("Contraseña Incorrecta");
         }
     }
 
-    function entrarApp(txt, isAdmin, isCate) {
-        document.getElementById('login-box').classList.add('hidden');
-        document.getElementById('app').classList.remove('hidden');
-        document.getElementById('role-tag').innerText = txt;
+    function activarModo(txt, admin, cate) {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app-content').classList.remove('hidden');
+        document.getElementById('user-display').innerText = txt;
 
-        // Limpieza y Activación de permisos
-        if(isAdmin) {
-            document.querySelectorAll('.admin-content').forEach(el => el.style.setProperty('display', 'block', 'important'));
-            document.querySelectorAll('.cate-content').forEach(el => el.style.setProperty('display', 'block', 'important'));
-        } else if(isCate) {
-            document.querySelectorAll('.cate-content').forEach(el => el.style.setProperty('display', 'block', 'important'));
+        if(admin) {
+            document.querySelectorAll('.admin-only').forEach(e => e.style.setProperty('display', 'block', 'important'));
+            document.querySelectorAll('.cate-only').forEach(e => e.style.setProperty('display', 'block', 'important'));
+            document.getElementById('n-grupo').style.setProperty('display', 'none', 'important'); // El admin no necesita ver su propio grupo
+        } else if(cate) {
+            document.querySelectorAll('.cate-only').forEach(e => e.style.setProperty('display', 'block', 'important'));
         }
     }
 
@@ -171,36 +191,42 @@
         document.getElementById('n-' + id).classList.add('active');
     }
 
-    // FUNCIONES DINÁMICAS
-    function addBlog() {
-        const txt = document.getElementById('blog-txt').value;
-        if(!txt) return;
-        document.getElementById('feed-blog').insertAdjacentHTML('afterbegin', `<div class="p-2 border-bottom small">${txt}</div>`);
-        document.getElementById('blog-txt').value = "";
+    // --- ACCIONES ADMIN ---
+    function ponerAnuncio() {
+        const url = document.getElementById('img-input').value;
+        document.getElementById('anuncio-img').src = url;
+        document.getElementById('anuncio-box').classList.remove('hidden');
     }
 
-    function setPub() {
-        const url = document.getElementById('pub-url').value;
-        document.getElementById('img-pub').src = url;
-        document.getElementById('banner-pub').classList.remove('hidden');
+    function ponerVideo() {
+        const id = document.getElementById('vid-input').value;
+        document.getElementById('video-frame').src = "http://googleusercontent.com/youtube.com/9" + id;
     }
 
-    function setVid() {
-        const id = document.getElementById('vid-id').value;
-        document.getElementById('main-video').src = "http://googleusercontent.com/youtube.com/7" + id;
+    function subirNoticia() {
+        const t = document.getElementById('b-tit').value;
+        const m = document.getElementById('b-msg').value;
+        if(!t || !m) return;
+        document.getElementById('blog-lista').insertAdjacentHTML('afterbegin', `<div class="post-card shadow-sm"><h6>${t}</h6><p class="small text-muted mb-0">${m}</p></div>`);
+        document.getElementById('b-tit').value = ""; document.getElementById('b-msg').value = "";
     }
 
-    function addLib() {
+    function subirLibro() {
         const t = document.getElementById('l-tit').value;
         const u = document.getElementById('l-url').value;
-        document.getElementById('lib-files').insertAdjacentHTML('afterbegin', `<a href="${u}" class="d-block p-2 border-bottom text-dark">${t}</a>`);
+        document.getElementById('lib-lista').insertAdjacentHTML('afterbegin', `<a href="${u}" target="_blank" class="d-block p-3 border-bottom text-decoration-none text-dark small"><i class="bi bi-file-earmark-pdf text-danger me-2"></i>${t}</a>`);
+    }
+
+    function mandarMision() {
+        const m = document.getElementById('m-input').value;
+        document.getElementById('misiones-feed').insertAdjacentHTML('afterbegin', `<div class="p-2 border-bottom text-dark bg-light mb-1 border-start border-warning border-4">${m}</div>`);
     }
 
     function caja(tipo) {
-        const m = parseFloat(document.getElementById('cash-m').value);
+        const m = parseFloat(document.getElementById('c-monto').value);
         if(!m) return;
-        saldoTotal += (m * tipo);
-        document.getElementById('saldo-txt').innerText = "Bs. " + saldoTotal.toFixed(2);
+        saldo += (m * tipo);
+        document.getElementById('saldo-bs').innerText = "Bs. " + saldo.toFixed(2);
     }
 </script>
 </body>
