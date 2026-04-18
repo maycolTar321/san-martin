@@ -10,18 +10,30 @@
         :root { --blue: #1a237e; --blue-light: #303f9f; --gold: #ffd600; --bg: #f4f7f9; }
         html, body { background: var(--bg); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; height: 100%; overflow: hidden; }
         #app { height: 100vh; overflow-y: auto; padding-bottom: 120px; -webkit-overflow-scrolling: touch; }
+        
+        /* LOGIN */
         #login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--blue), #000); z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .pass-group { position: relative; }
+        .toggle-password { position: absolute; right: 15px; top: 10px; cursor: pointer; color: #666; z-index: 10; font-size: 1.2rem; }
+
+        /* HEADER */
         .app-header { background: var(--blue); color: white; padding: 30px 20px; border-bottom: 5px solid var(--gold); border-radius: 0 0 40px 40px; text-align: center; position: relative; }
         .logout-btn { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: white; cursor: pointer; }
+
+        /* CARDS */
         .card { border-radius: 25px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.06); margin: 15px; background: white; padding: 18px; }
         .section-title { font-weight: 800; color: var(--blue); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        /* NAVEGACIÓN */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 12px 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); border-radius: 30px 30px 0 0; z-index: 1000; }
         .nav-item { text-align: center; color: #999; flex: 1; cursor: pointer; font-size: 9px; font-weight: 600; }
         .nav-item i { font-size: 1.4rem; display: block; }
         .nav-item.active { color: var(--blue); }
+
         .hidden { display: none !important; }
-        .cat-card { border-left: 5px solid var(--gold); background: #f8f9fa; padding: 15px; border-radius: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .wa-btn { background: #25d366; color: white; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; text-decoration: none; }
+        
+        .cat-card { border-left: 5px solid var(--gold); background: #f8f9fa; padding: 12px; border-radius: 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .wa-btn { background: #25d366; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; text-decoration: none; box-shadow: 0 4px 10px rgba(37,211,102,0.3); }
         .check-item { background: #fdfdfd; border: 1px solid #eee; padding: 10px; border-radius: 15px; margin-bottom: 8px; }
         .msg-bubble { background: #e8eaf6; padding: 12px; border-radius: 15px 15px 15px 0; margin-bottom: 10px; border-left: 4px solid var(--blue-light); }
     </style>
@@ -31,14 +43,15 @@
 <div id="login-screen">
     <div class="card text-center" style="width: 90%; max-width: 380px;">
         <h4 class="fw-bold mb-4">CATEQUESIS TARIJA</h4>
-        <select id="rol-select" class="form-select mb-3 rounded-pill" onchange="document.getElementById('p-box').classList.toggle('hidden', this.value === 'Joven')">
+        <select id="rol-select" class="form-select mb-3 rounded-pill" onchange="checkRol(this.value)">
             <option value="Joven">Soy Joven</option>
             <option value="Maycol">Maycol (Director)</option>
             <option value="Yoselin">Yoselin (Coordinadora)</option>
             <option value="Catequista">Catequista</option>
         </select>
-        <div id="p-box" class="hidden mb-3">
+        <div id="p-box" class="hidden pass-group mb-3">
             <input type="password" id="p-pass" class="form-control rounded-pill" placeholder="Contraseña">
+            <i class="bi bi-eye-fill toggle-password" onclick="togglePass()"></i>
         </div>
         <button onclick="entrar()" class="btn btn-primary w-100 py-2 rounded-pill fw-bold">ENTRAR</button>
     </div>
@@ -54,10 +67,9 @@
     <div id="sec-home" class="seccion p-2">
         <div class="card">
             <h6 class="section-title"><i class="bi bi-megaphone"></i> Blog y Comunicados</h6>
-            <div id="can-publish" class="hidden mb-3">
+            <div id="admin-media" class="hidden mb-3">
                 <input type="text" id="m-tit" class="form-control mb-2" placeholder="Título">
-                <input type="file" id="m-img-file" class="form-control mb-2" accept="image/*">
-                <input type="text" id="m-url" class="form-control mb-2" placeholder="ID Video YouTube">
+                <input type="text" id="m-url" class="form-control mb-2" placeholder="Link Imagen/Arte">
                 <button onclick="addMedia()" class="btn btn-primary w-100 rounded-pill">Publicar</button>
             </div>
             <div id="lista-media"></div>
@@ -67,7 +79,7 @@
     <div id="sec-asistencia" class="seccion hidden p-2">
         <div class="card">
             <h6 class="section-title"><i class="bi bi-person-check"></i> Registro y Lista</h6>
-            <div id="can-register-joven" class="hidden bg-light p-3 rounded-4 mb-3">
+            <div id="admin-jovenes" class="hidden bg-light p-3 rounded-4 mb-3">
                 <input type="text" id="j-nom-reg" class="form-control mb-1" placeholder="Nombre completo">
                 <select id="j-grupo-reg" class="form-select mb-2"></select>
                 <button onclick="addJoven()" class="btn btn-primary btn-sm w-100 rounded-pill">Inscribir</button>
@@ -77,14 +89,20 @@
         </div>
     </div>
 
-    <div id="sec-agenda" class="seccion hidden p-2">
+    <div id="sec-equipo" class="seccion hidden p-2">
         <div class="card">
-            <h6 class="section-title"><i class="bi bi-calendar-check"></i> Agenda de Coordinación</h6>
-            <div id="admin-agenda-form" class="hidden bg-light p-3 rounded-4 mb-3">
-                <input type="text" id="a-task" class="form-control mb-2" placeholder="Pendiente...">
-                <button onclick="addAgenda()" class="btn btn-primary w-100 rounded-pill btn-sm">Agregar</button>
+            <h6 class="section-title"><i class="bi bi-people"></i> Equipo y Grupos</h6>
+            <div id="admin-equipo" class="hidden bg-light p-3 rounded-4 mb-3">
+                <input type="text" id="cat-nom" class="form-control mb-1" placeholder="Nombre Catequista">
+                <input type="number" id="cat-tel" class="form-control mb-1" placeholder="WhatsApp">
+                <button onclick="addCate()" class="btn btn-dark btn-sm w-100 rounded-pill mb-3">Registrar</button>
+                <input type="text" id="g-nom" class="form-control mb-1" placeholder="Nombre del Grupo">
+                <select id="g-cat" class="form-select mb-2"></select>
+                <button onclick="addGroup()" class="btn btn-primary btn-sm w-100 rounded-pill">Crear Grupo</button>
             </div>
-            <div id="lista-agenda"></div>
+            <div id="lista-equipo"></div>
+            <hr>
+            <div id="lista-grupos"></div>
         </div>
     </div>
 
@@ -100,26 +118,19 @@
         </div>
     </div>
 
-    <div id="sec-equipo" class="seccion hidden p-2">
-        <div class="card">
-            <h6 class="section-title"><i class="bi bi-people"></i> Equipo y Grupos</h6>
-            <div id="admin-equipo" class="hidden bg-light p-3 rounded-4 mb-3">
-                <input type="text" id="cat-nom" class="form-control mb-1" placeholder="Nombre Catequista">
-                <input type="number" id="cat-tel" class="form-control mb-1" placeholder="WhatsApp">
-                <button onclick="addCate()" class="btn btn-dark btn-sm w-100 rounded-pill">Registrar</button>
-            </div>
-            <div id="lista-equipo"></div>
-        </div>
-    </div>
-
     <div id="sec-adm" class="seccion hidden p-2">
         <div class="card bg-primary text-white text-center">
-            <small>SALDO TOTAL</small>
+            <small>SALDO EN CAJA</small>
             <h2 id="s-bs" class="fw-bold">Bs. 0.00</h2>
         </div>
         <div class="card">
-            <h6 class="section-title"><i class="bi bi-gear"></i> Movimientos</h6>
-            <div id="lista-caja"></div>
+            <input type="number" id="c-mon" class="form-control mb-2" placeholder="Monto">
+            <input type="text" id="c-det" class="form-control mb-2" placeholder="Concepto">
+            <div class="d-flex gap-2">
+                <button onclick="mon(1)" class="btn btn-success w-100 rounded-pill">Ingreso</button>
+                <button onclick="mon(-1)" class="btn btn-danger w-100 rounded-pill">Egreso</button>
+            </div>
+            <div id="lista-caja" class="mt-3 small overflow-auto" style="max-height: 120px;"></div>
         </div>
     </div>
 
@@ -137,10 +148,9 @@
     <div class="bottom-nav">
         <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-megaphone"></i>Blog</div>
         <div onclick="tab('asistencia')" id="n-asistencia" class="nav-item"><i class="bi bi-person-check"></i>Lista</div>
-        <div onclick="tab('agenda')" id="n-agenda" class="nav-item staff-only"><i class="bi bi-calendar-check"></i>Agenda</div>
         <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-book"></i>Libros</div>
         <div onclick="tab('equipo')" id="n-equipo" class="nav-item"><i class="bi bi-people"></i>Equipo</div>
-        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-gear"></i>Caja</div>
+        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-gear"></i>Admin</div>
         <div onclick="tab('msg')" id="n-msg" class="nav-item"><i class="bi bi-chat-dots"></i>Chat</div>
     </div>
 </div>
@@ -148,17 +158,24 @@
 <script>
     const P = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Catequista":"cate_2026" };
     let DATA = JSON.parse(localStorage.getItem('CATE_SISTEMA_TOTAL')) || {
-        media: [], catequistas: [], grupos: [], libros: [], mensajes: [], caja: [], saldo: 0, jovenes: [], agenda: []
+        media: [], catequistas: [], grupos: [], libros: [], mensajes: [], caja: [], saldo: 0, jovenes: []
     };
     let userAct = "";
+
+    function togglePass() {
+        const x = document.getElementById("p-pass");
+        x.type = x.type === "password" ? "text" : "password";
+    }
+
+    function checkRol(v) { document.getElementById('p-box').classList.toggle('hidden', v === 'Joven'); }
 
     function entrar() {
         const r = document.getElementById('rol-select').value;
         const p = document.getElementById('p-pass').value;
         if(r === "Joven" || p === P[r]) {
-            localStorage.setItem('SESION_ACTIVA', r);
+            localStorage.setItem('SESION_OK', r);
             run(r);
-        } else { alert("Contraseña incorrecta"); }
+        } else { alert("Clave Incorrecta"); }
     }
 
     function run(rol) {
@@ -167,24 +184,26 @@
         document.getElementById('app').classList.remove('hidden');
         document.getElementById('u-tag').innerText = rol.toUpperCase();
 
-        // Limpiar botones de navegación según rol
-        document.querySelectorAll('.admin-only, .staff-only').forEach(e => e.classList.add('hidden'));
-        
+        // Limpiar permisos de vista
+        document.querySelectorAll('.admin-only').forEach(e => e.classList.add('hidden'));
+        document.getElementById('admin-media').classList.add('hidden');
+        document.getElementById('admin-jovenes').classList.add('hidden');
+        document.getElementById('admin-equipo').classList.add('hidden');
+        document.getElementById('admin-lib').classList.add('hidden');
+
         if(rol !== 'Joven') {
-            document.querySelectorAll('.staff-only').forEach(e => e.classList.remove('hidden'));
-            document.getElementById('can-publish').classList.remove('hidden');
-            document.getElementById('can-register-joven').classList.remove('hidden');
+            document.getElementById('admin-media').classList.remove('hidden');
+            document.getElementById('admin-jovenes').classList.remove('hidden');
         }
         if(rol === 'Maycol' || rol === 'Yoselin') {
             document.querySelectorAll('.admin-only').forEach(e => e.classList.remove('hidden'));
             document.getElementById('admin-equipo').classList.remove('hidden');
             document.getElementById('admin-lib').classList.remove('hidden');
-            document.getElementById('admin-agenda-form').classList.remove('hidden');
         }
         actualizarTodo();
     }
 
-    function salir() { localStorage.removeItem('SESION_ACTIVA'); location.reload(); }
+    function salir() { localStorage.removeItem('SESION_OK'); location.reload(); }
 
     function tab(id) {
         document.querySelectorAll('.seccion').forEach(s => s.classList.add('hidden'));
@@ -200,17 +219,20 @@
     }
 
     function actualizarTodo() {
-        // Blog
-        document.getElementById('lista-media').innerHTML = DATA.media.map(m => `<div class="media-card"><div class="p-2"><b>${m.t}</b></div></div>`).join('');
-        // Equipo
-        document.getElementById('lista-equipo').innerHTML = DATA.catequistas.map(c => `<div class="cat-card"><b>${c.n}</b><a href="https://wa.me/591${c.t}" class="wa-btn"><i class="bi bi-whatsapp"></i></a></div>`).join('');
-        // Caja
-        document.getElementById('s-bs').innerText = "Bs. " + DATA.saldo.toFixed(2);
-        // Selectores
+        document.getElementById('lista-media').innerHTML = DATA.media.map(m => `
+            <div class="card p-0 overflow-hidden"><img src="${m.u}" class="w-100" style="height:150px; object-fit:cover"><div class="p-2"><b>${m.t}</b></div></div>`).join('');
+        
+        document.getElementById('lista-equipo').innerHTML = DATA.catequistas.map(c => `
+            <div class="cat-card"><div><b>${c.n}</b></div><a href="https://wa.me/591${c.t}" class="wa-btn"><i class="bi bi-whatsapp"></i></a></div>`).join('');
+
         const gOpts = DATA.grupos.map(g => `<option value="${g.n}">${g.n}</option>`).join('');
         document.getElementById('j-grupo-reg').innerHTML = gOpts;
+        document.getElementById('g-cat').innerHTML = DATA.catequistas.map(c => `<option value="${c.n}">${c.n}</option>`).join('');
         document.getElementById('filtro-grupo').innerHTML = '<option value="">Todos los grupos</option>' + gOpts;
-        // Mensajes
+
+        document.getElementById('lista-lib').innerHTML = DATA.libros.map(l => `<div class="p-2 border-bottom d-flex justify-content-between"><span>${l.t}</span><a href="${l.u}" target="_blank" class="btn btn-sm btn-outline-primary">Abrir</a></div>`).join('');
+        document.getElementById('s-bs').innerText = "Bs. " + DATA.saldo.toFixed(2);
+        document.getElementById('lista-caja').innerHTML = DATA.caja.map(c => `<div class="${c.m>0?'text-success':'text-danger'} small border-bottom">${c.m} Bs - ${c.d}</div>`).join('');
         document.getElementById('lista-msg').innerHTML = DATA.mensajes.map(m => `<div class="msg-bubble"><b>${m.u}:</b> ${m.t}</div>`).join('');
     }
 
@@ -220,28 +242,23 @@
         document.getElementById('tabla-jovenes').innerHTML = l.map(j => `
             <div class="check-item d-flex justify-content-between align-items-center">
                 <div><b>${j.nombre}</b><br><small>${j.grupo}</small></div>
-                ${userAct !== 'Joven' ? `
-                <div class="d-flex gap-2">
-                    <input type="checkbox" ${j.presente?'checked':''} onclick="tglJ(${j.id},'presente')">
-                </div>` : ''}
+                ${userAct !== 'Joven' ? `<div><input type="checkbox" ${j.p?'checked':''} onclick="tglJ(${j.id})"></div>` : ''}
             </div>`).join('');
     }
 
-    function addJoven() {
-        const n = document.getElementById('j-nom-reg').value, g = document.getElementById('j-grupo-reg').value;
-        if(n && g) { DATA.jovenes.unshift({id:Date.now(), nombre:n, grupo:g, presente:false}); save(); }
-    }
-
-    function sendMsg() {
-        const t = document.getElementById('j-msg').value;
-        if(t) { DATA.mensajes.push({u: userAct, t}); save(); document.getElementById('j-msg').value=""; }
-    }
+    function tglJ(id) { const j = DATA.jovenes.find(x => x.id === id); if(j){ j.p=!j.p; save(); } }
+    function addMedia() { const t = document.getElementById('m-tit').value, u = document.getElementById('m-url').value; if(t && u){ DATA.media.unshift({t, u}); save(); } }
+    function addJoven() { const n = document.getElementById('j-nom-reg').value, g = document.getElementById('j-grupo-reg').value; if(n && g){ DATA.jovenes.unshift({id:Date.now(), nombre:n, grupo:g, p:false}); save(); } }
+    function addCate() { const n = document.getElementById('cat-nom').value, t = document.getElementById('cat-tel').value; if(n && t){ DATA.catequistas.unshift({n, t}); save(); } }
+    function addGroup() { const n = document.getElementById('g-nom').value, c = document.getElementById('g-cat').value; if(n && c){ DATA.grupos.unshift({n, c}); save(); } }
+    function addLib() { const t = document.getElementById('l-tit').value, u = document.getElementById('l-url').value; if(t && u){ DATA.libros.unshift({t, u}); save(); } }
+    function mon(v) { const m = parseFloat(document.getElementById('c-mon').value), d = document.getElementById('c-det').value; if(m && d){ DATA.saldo+=(m*v); DATA.caja.unshift({m:m*v, d}); save(); } }
+    function sendMsg() { const t = document.getElementById('j-msg').value; if(t){ DATA.mensajes.push({u: userAct, t}); save(); document.getElementById('j-msg').value=""; } }
 
     window.onload = () => {
-        const s = localStorage.getItem('SESION_ACTIVA');
+        const s = localStorage.getItem('SESION_OK');
         if(s) run(s);
     };
 </script>
 </body>
-    </html>
-    
+</html>
