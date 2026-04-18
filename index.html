@@ -3,40 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA MAESTRO CATEQUESIS</title>
+    <title>SISTEMA TOTAL - CATEQUESIS TARIJA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
-        :root { --blue: #1a237e; --gold: #ffd600; --bg: #f0f2f5; }
+        :root { --blue: #1a237e; --blue-light: #303f9f; --gold: #ffd600; --bg: #f4f7f9; }
         html, body { background: var(--bg); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; height: 100%; overflow: hidden; }
-        #app { height: 100vh; overflow-y: auto; padding-bottom: 110px; }
+        #app { height: 100vh; overflow-y: auto; padding-bottom: 120px; -webkit-overflow-scrolling: touch; }
         
+        /* LOGIN */
         #login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, var(--blue), #000); z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .pass-group { position: relative; }
         .toggle-password { position: absolute; right: 15px; top: 12px; cursor: pointer; color: #666; z-index: 10; }
 
+        /* HEADER */
         .app-header { background: var(--blue); color: white; padding: 30px 20px; border-bottom: 5px solid var(--gold); border-radius: 0 0 40px 40px; text-align: center; position: relative; }
         .logout-btn { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: white; cursor: pointer; }
 
-        .card { border-radius: 25px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.05); margin: 15px; background: white; padding: 18px; }
+        /* CARDS */
+        .card { border-radius: 25px; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.06); margin: 15px; background: white; padding: 18px; }
         .section-title { font-weight: 800; color: var(--blue); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #eee; padding-bottom: 10px; }
         
+        /* NAVEGACIÓN */
         .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; padding: 12px 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); border-radius: 30px 30px 0 0; z-index: 1000; }
-        .nav-item { text-align: center; color: #999; flex: 1; cursor: pointer; font-size: 10px; font-weight: 600; }
-        .nav-item i { font-size: 1.5rem; display: block; }
+        .nav-item { text-align: center; color: #999; flex: 1; cursor: pointer; font-size: 9px; font-weight: 600; }
+        .nav-item i { font-size: 1.4rem; display: block; }
         .nav-item.active { color: var(--blue); }
 
         .hidden, .admin-only { display: none !important; }
         
-        .cat-card { background: #fff; border-radius: 15px; border-left: 5px solid var(--gold); padding: 12px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
-        .btn-ws { color: #25d366; font-size: 1.2rem; text-decoration: none; }
+        /* ESTILOS ESPECÍFICOS */
+        .msg-bubble { background: #e8eaf6; padding: 12px; border-radius: 15px 15px 15px 0; margin-bottom: 10px; border-left: 4px solid var(--blue-light); }
+        .cat-card { border-left: 5px solid var(--gold); background: #f8f9fa; padding: 10px; border-radius: 12px; margin-bottom: 8px; }
+        .media-card { border-radius: 15px; overflow: hidden; border: 1px solid #eee; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
     <div class="card text-center" style="width: 90%; max-width: 380px;">
-        <h4 class="fw-bold mb-4">✝️ CATEQUESIS TARIJA</h4>
+        <h4 class="fw-bold mb-4">CATEQUESIS TARIJA</h4>
         <select id="rol-select" class="form-select mb-3 rounded-pill" onchange="checkRol(this.value)">
             <option value="Joven">Soy Joven</option>
             <option value="Maycol">Maycol (Director)</option>
@@ -53,44 +59,74 @@
 
 <div id="app" class="hidden">
     <div class="app-header">
-        <div class="logout-btn" onclick="salir()"><i class="bi bi-door-closed"></i></div>
-        <h5 class="fw-bold mb-0">SISTEMA INTEGRAL</h5>
+        <div class="logout-btn" onclick="salir()"><i class="bi bi-power"></i></div>
+        <h5 class="fw-bold mb-0">PANEL INTEGRAL</h5>
         <span id="u-tag" class="badge bg-warning text-dark mt-2"></span>
     </div>
 
-    <div id="sec-lib" class="seccion p-2">
+    <div id="sec-home" class="seccion p-2">
         <div class="card">
-            <h6 class="section-title"><i class="bi bi-book"></i> Biblioteca de Libros</h6>
-            <div class="admin-only bg-light p-3 rounded-4 mb-3">
-                <input type="text" id="l-tit" class="form-control mb-2" placeholder="Nombre del Libro">
-                <input type="text" id="l-url" class="form-control mb-2" placeholder="Link (Drive o Web)">
-                <button onclick="addLib()" class="btn btn-primary btn-sm w-100 rounded-pill">Subir Libro</button>
+            <h6 class="section-title"><i class="bi bi-megaphone"></i> Blog y Comunicados</h6>
+            <div class="admin-only mb-3">
+                <input type="text" id="m-tit" class="form-control mb-2" placeholder="Título del comunicado/Arte">
+                <input type="text" id="m-url" class="form-control mb-2" placeholder="Link de Imagen o Video">
+                <button onclick="addMedia()" class="btn btn-primary w-100 rounded-pill">Publicar</button>
             </div>
-            <div id="lista-lib"></div>
+            <div id="lista-media"></div>
         </div>
     </div>
 
     <div id="sec-equipo" class="seccion hidden p-2">
         <div class="card">
-            <h6 class="section-title"><i class="bi bi-person-heart"></i> Mi Equipo de Catequistas</h6>
+            <h6 class="section-title"><i class="bi bi-people"></i> Mi Equipo y Grupos</h6>
             <div class="admin-only bg-light p-3 rounded-4 mb-3">
-                <input type="text" id="cat-nom" class="form-control mb-2" placeholder="Nombre Completo">
-                <input type="number" id="cat-tel" class="form-control mb-2" placeholder="Celular (WhatsApp)">
+                <p class="small fw-bold mb-1">Nuevo Catequista:</p>
+                <input type="text" id="cat-nom" class="form-control mb-1" placeholder="Nombre">
+                <input type="number" id="cat-tel" class="form-control mb-1" placeholder="WhatsApp">
                 <input type="date" id="cat-cum" class="form-control mb-2">
-                <button onclick="addCate()" class="btn btn-dark btn-sm w-100 rounded-pill">Registrar Catequista</button>
+                <button onclick="addCate()" class="btn btn-dark btn-sm w-100 rounded-pill mb-3">Registrar Catequista</button>
+                
+                <p class="small fw-bold mb-1">Crear Grupo:</p>
+                <input type="text" id="g-nom" class="form-control mb-1" placeholder="Nombre del Grupo">
+                <select id="g-cat" class="form-select mb-2"><option value="">Asignar a...</option></select>
+                <button onclick="addGroup()" class="btn btn-primary btn-sm w-100 rounded-pill">Crear Grupo</button>
             </div>
-            <div id="lista-cate"></div>
+            <div id="lista-equipo"></div>
+            <hr>
+            <div id="lista-grupos"></div>
+        </div>
+    </div>
+
+    <div id="sec-lib" class="seccion hidden p-2">
+        <div class="card">
+            <h6 class="section-title"><i class="bi bi-book"></i> Biblioteca Virtual</h6>
+            <div class="admin-only mb-3">
+                <input type="text" id="l-tit" class="form-control mb-2" placeholder="Título del Libro">
+                <input type="text" id="l-url" class="form-control mb-2" placeholder="Link de descarga">
+                <button onclick="addLib()" class="btn btn-primary w-100 rounded-pill btn-sm">Subir a Biblioteca</button>
+            </div>
+            <div id="lista-lib"></div>
         </div>
     </div>
 
     <div id="sec-adm" class="seccion hidden admin-only p-2">
         <div class="card bg-primary text-white text-center">
-            <small>SALDO CAJA</small>
+            <small>DINERO EN CAJA</small>
             <h2 id="s-bs" class="fw-bold">Bs. 0.00</h2>
         </div>
         <div class="card">
-            <h6 class="section-title"><i class="bi bi-box-seam"></i> Inventario de Cosas</h6>
-            <div class="d-flex gap-2 mb-3">
+            <h6 class="section-title"><i class="bi bi-cash-stack"></i> Movimientos de Dinero</h6>
+            <input type="number" id="c-mon" class="form-control mb-2" placeholder="Monto Bs.">
+            <input type="text" id="c-det" class="form-control mb-2" placeholder="Concepto">
+            <div class="d-flex gap-2">
+                <button onclick="mon(1)" class="btn btn-success w-100 rounded-pill">Ingreso</button>
+                <button onclick="mon(-1)" class="btn btn-danger w-100 rounded-pill">Egreso</button>
+            </div>
+            <div id="lista-caja" class="mt-3 small overflow-auto" style="max-height: 150px;"></div>
+        </div>
+        <div class="card">
+            <h6 class="section-title"><i class="bi bi-box-seam"></i> Inventario de Materiales</h6>
+            <div class="d-flex gap-2 mb-2">
                 <input type="text" id="i-item" class="form-control" placeholder="Objeto">
                 <input type="number" id="i-cant" class="form-control" style="width: 70px;">
                 <button onclick="addInv()" class="btn btn-dark">+</button>
@@ -99,24 +135,37 @@
         </div>
     </div>
 
+    <div id="sec-msg" class="seccion hidden p-2">
+        <div class="card">
+            <h6 class="section-title"><i class="bi bi-chat-left-dots"></i> Mensajes a Coordinación</h6>
+            <div id="lista-msg" style="max-height: 350px; overflow-y: auto;" class="mb-3"></div>
+            <div class="input-group">
+                <input type="text" id="j-msg" class="form-control" placeholder="Escribe tu mensaje...">
+                <button onclick="sendMsg()" class="btn btn-primary"><i class="bi bi-send"></i></button>
+            </div>
+        </div>
+    </div>
+
     <div class="bottom-nav">
-        <div onclick="tab('lib')" id="n-lib" class="nav-item active"><i class="bi bi-book"></i>Libros</div>
+        <div onclick="tab('home')" id="n-home" class="nav-item active"><i class="bi bi-megaphone"></i>Blog</div>
         <div onclick="tab('equipo')" id="n-equipo" class="nav-item"><i class="bi bi-people"></i>Equipo</div>
-        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-wallet2"></i>Caja/Inv</div>
+        <div onclick="tab('lib')" id="n-lib" class="nav-item"><i class="bi bi-book"></i>Libros</div>
+        <div onclick="tab('msg')" id="n-msg" class="nav-item"><i class="bi bi-chat-dots"></i>Mensajes</div>
+        <div onclick="tab('adm')" id="n-adm" class="nav-item admin-only"><i class="bi bi-gear"></i>Admin</div>
     </div>
 </div>
 
 <script>
     const P = { "Maycol":"coord_2026", "Yoselin":"sub_tarija", "Catequista":"cate_2026" };
-    let DATA = JSON.parse(localStorage.getItem('SISTEMA_V6')) || {
-        libros: [], catequistas: [], inventario: [], saldo: 0
+    let DATA = JSON.parse(localStorage.getItem('CATE_SISTEMA_TOTAL')) || {
+        media: [], catequistas: [], grupos: [], libros: [], mensajes: [], caja: [], inventario: [], saldo: 0
     };
     let userAct = "";
 
     window.onload = () => {
-        const s = JSON.parse(localStorage.getItem('SESION_V6'));
+        const s = JSON.parse(localStorage.getItem('SESION_TOTAL'));
         if(s) run(s.rol);
-        render();
+        actualizarTodo();
     };
 
     function togglePass() {
@@ -130,9 +179,9 @@
         const r = document.getElementById('rol-select').value;
         const p = document.getElementById('p-pass').value;
         if(r === "Joven" || p === P[r]) {
-            localStorage.setItem('SESION_V6', JSON.stringify({rol: r}));
+            localStorage.setItem('SESION_TOTAL', JSON.stringify({rol: r}));
             run(r);
-        } else { alert("Acceso denegado"); }
+        } else { alert("Clave Incorrecta"); }
     }
 
     function run(rol) {
@@ -143,10 +192,10 @@
         if(rol === 'Maycol' || rol === 'Yoselin') {
             document.querySelectorAll('.admin-only').forEach(e => e.style.setProperty('display','block','important'));
         }
-        tab('lib');
+        actualizarTodo();
     }
 
-    function salir() { localStorage.removeItem('SESION_V6'); location.reload(); }
+    function salir() { localStorage.removeItem('SESION_TOTAL'); location.reload(); }
 
     function tab(id) {
         document.querySelectorAll('.seccion').forEach(s => s.classList.add('hidden'));
@@ -155,69 +204,102 @@
         document.getElementById('n-'+id).classList.add('active');
     }
 
-    function save() { localStorage.setItem('SISTEMA_V6', JSON.stringify(DATA)); render(); }
+    function save() {
+        localStorage.setItem('CATE_SISTEMA_TOTAL', JSON.stringify(DATA));
+        actualizarTodo();
+    }
 
-    function render() {
-        // Libros
-        document.getElementById('lista-lib').innerHTML = DATA.libros.map((l, i) => `
-            <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
-                <div><i class="bi bi-file-earmark-pdf text-danger me-2"></i><b>${l.t}</b></div>
-                <div class="d-flex gap-2">
-                    <a href="${l.u}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill">Ver</a>
-                    ${(userAct==='Maycol') ? `<i class="bi bi-trash text-danger" onclick="elim('libros', ${i})"></i>` : ''}
-                </div>
+    function actualizarTodo() {
+        // Blog/Media
+        document.getElementById('lista-media').innerHTML = DATA.media.map(m => `
+            <div class="media-card">
+                <img src="${m.u}" class="w-100" style="height:150px; object-fit:cover" onerror="this.src='https://placehold.co/400x200?text=Arte+o+Video'">
+                <div class="p-2"><b>${m.t}</b></div>
             </div>`).join('');
 
-        // Catequistas
-        document.getElementById('lista-cate').innerHTML = DATA.catequistas.map((c, i) => `
-            <div class="cat-card">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <h6 class="mb-0 fw-bold">${c.n}</h6>
-                        <small class="text-muted"><i class="bi bi-cake"></i> Cumple: ${c.f}</small>
-                    </div>
-                    <a href="https://wa.me/591${c.t}" target="_blank" class="btn-ws"><i class="bi bi-whatsapp"></i></a>
-                </div>
-                ${(userAct==='Maycol') ? `<div class="text-end"><small class="text-danger" onclick="elim('catequistas', ${i})">Eliminar</small></div>` : ''}
+        // Catequistas y Selector de Grupos
+        document.getElementById('lista-equipo').innerHTML = DATA.catequistas.map(c => `
+            <div class="cat-card d-flex justify-content-between">
+                <span><b>${c.n}</b><br><small>🎂 ${c.f}</small></span>
+                <a href="https://wa.me/591${c.t}" class="text-success fs-4"><i class="bi bi-whatsapp"></i></a>
+            </div>`).join('');
+        
+        document.getElementById('g-cat').innerHTML = '<option value="">Asignar a...</option>' + 
+            DATA.catequistas.map(c => `<option value="${c.n}">${c.n}</option>`).join('');
+
+        // Grupos
+        document.getElementById('lista-grupos').innerHTML = DATA.grupos.map(g => `
+            <div class="p-2 border rounded-3 mb-2 bg-white">
+                <b>${g.n}</b> <span class="badge bg-primary float-end">${g.c}</span>
             </div>`).join('');
 
-        // Inventario
-        document.getElementById('lista-inv').innerHTML = DATA.inventario.map((inv, i) => `
-            <div class="d-flex justify-content-between p-2 border-bottom">
-                <span>${inv.n}</span> <span class="badge bg-dark">${inv.c}</span>
+        // Biblioteca
+        document.getElementById('lista-lib').innerHTML = DATA.libros.map(l => `
+            <div class="p-2 border-bottom d-flex justify-content-between">
+                <span>${l.t}</span> <a href="${l.u}" target="_blank" class="btn btn-sm btn-outline-primary">Abrir</a>
             </div>`).join('');
 
+        // Caja e Inventario
         document.getElementById('s-bs').innerText = "Bs. " + DATA.saldo.toFixed(2);
+        document.getElementById('lista-caja').innerHTML = DATA.caja.map(c => `
+            <div class="${c.v>0?'text-success':'text-danger'} border-bottom py-1">
+                ${c.v>0?'+':''}${c.m} Bs. - ${c.d}
+            </div>`).join('');
+        
+        document.getElementById('lista-inv').innerHTML = DATA.inventario.map(i => `
+            <div class="d-flex justify-content-between p-2 border-bottom"><span>${i.n}</span><b>${i.c}</b></div>`).join('');
+
+        // Mensajes
+        document.getElementById('lista-msg').innerHTML = DATA.mensajes.map(m => `
+            <div class="msg-bubble"><b>${m.u}:</b><br>${m.t}</div>`).join('');
     }
 
     // ACCIONES
-    function addLib() {
-        const t = document.getElementById('l-tit').value, u = document.getElementById('l-url').value;
-        if(!t || !u) return;
-        DATA.libros.unshift({t: t, u: u});
-        document.getElementById('l-tit').value=""; document.getElementById('l-url').value="";
-        save();
+    function addMedia() {
+        const t = document.getElementById('m-tit').value, u = document.getElementById('m-url').value;
+        if(!t || !u) return; DATA.media.unshift({t, u}); save();
+        document.getElementById('m-tit').value=""; document.getElementById('m-url').value="";
     }
 
     function addCate() {
-        const n = document.getElementById('cat-nom').value;
-        const t = document.getElementById('cat-tel').value;
-        const f = document.getElementById('cat-cum').value;
-        if(!n || !t) return;
-        DATA.catequistas.unshift({n: n, t: t, f: f});
+        const n = document.getElementById('cat-nom').value, t = document.getElementById('cat-tel').value, f = document.getElementById('cat-cum').value;
+        if(!n || !t) return; DATA.catequistas.unshift({n, t, f}); save();
         document.getElementById('cat-nom').value=""; document.getElementById('cat-tel').value="";
+    }
+
+    function addGroup() {
+        const n = document.getElementById('g-nom').value, c = document.getElementById('g-cat').value;
+        if(!n || !c) return; DATA.grupos.unshift({n, c}); save();
+        document.getElementById('g-nom').value="";
+    }
+
+    function addLib() {
+        const t = document.getElementById('l-tit').value, u = document.getElementById('l-url').value;
+        if(!t || !u) return; DATA.libros.unshift({t, u}); save();
+        document.getElementById('l-tit').value=""; document.getElementById('l-url').value="";
+    }
+
+    function mon(v) {
+        const m = parseFloat(document.getElementById('c-mon').value);
+        const d = document.getElementById('c-det').value;
+        if(isNaN(m) || !d) return alert("Pon monto y concepto");
+        DATA.saldo += (m * v);
+        DATA.caja.unshift({m: m*v, d, v});
         save();
+        document.getElementById('c-mon').value=""; document.getElementById('c-det').value="";
     }
 
     function addInv() {
         const n = document.getElementById('i-item').value, c = document.getElementById('i-cant').value;
-        if(!n || !c) return;
-        DATA.inventario.unshift({n: n, c: c});
+        if(!n || !c) return; DATA.inventario.unshift({n, c}); save();
         document.getElementById('i-item').value=""; document.getElementById('i-cant').value="";
-        save();
     }
 
-    function elim(tipo, i) { DATA[tipo].splice(i, 1); save(); }
+    function sendMsg() {
+        const t = document.getElementById('j-msg').value;
+        if(!t) return; DATA.mensajes.push({u: userAct, t}); save();
+        document.getElementById('j-msg').value="";
+    }
 </script>
 </body>
 </html>
