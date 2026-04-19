@@ -2,20 +2,26 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Control de Votación PRO+</title>
+<title>Control de Votación PRO+ Final</title>
 <style>
     body { font-family: Arial, sans-serif; background: #0f172a; color: white; padding: 20px; }
-    h1 { text-align: center; }
-    .search-container { position: sticky; top: 0; background: #0f172a; padding: 10px 0; z-index: 100; }
-    input { width: 100%; padding: 15px; font-size: 18px; border-radius: 8px; border: 2px solid #334155; background: #1e293b; color: white; box-sizing: border-box; }
+    .container { max-width: 700px; margin: auto; }
+    h1 { text-align: center; color: #3b82f6; }
     
-    .persona { background: #1e293b; padding: 12px; margin: 8px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; }
+    .search-container { position: sticky; top: 0; background: #0f172a; padding: 10px 0; z-index: 100; display: flex; gap: 10px; }
+    input { padding: 15px; font-size: 18px; border-radius: 8px; border: 2px solid #334155; background: #1e293b; color: white; box-sizing: border-box; }
+    #buscar { flex-grow: 1; }
+    #buscarNum { width: 100px; }
+
+    .persona { background: #1e293b; padding: 12px; margin: 8px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; transition: 0.3s; }
     .n-orden { background: #334155; padding: 2px 8px; border-radius: 4px; margin-right: 10px; font-weight: bold; color: #94a3b8; }
     
-    button { background: #22c55e; border: none; padding: 10px 15px; color: white; cursor: pointer; border-radius: 5px; font-weight: bold; }
-    .votado { background: #16a34a !important; border-color: #22c55e; }
-    .no-asistio { background: #475569 !important; border-color: #64748b; opacity: 0.8; }
+    .btn-marcar { background: #22c55e; border: none; padding: 10px 15px; color: white; cursor: pointer; border-radius: 5px; font-weight: bold; min-width: 90px; }
+    .btn-quitar { background: #64748b; border: none; padding: 10px 15px; color: white; cursor: pointer; border-radius: 5px; font-weight: bold; margin-left: 5px; }
     
+    .votado { background: #064e3b !important; border-color: #059669; }
+    .ausente { background: #451a03 !important; border-color: #92400e; }
+
     .stats, .escrutinio { margin-top: 20px; font-size: 18px; background: #1e293b; padding: 20px; border-radius: 10px; border: 1px solid #334155; }
     .btn-cerrar { background: #e11d48; width: 100%; padding: 15px; margin-top: 15px; font-size: 18px; cursor: pointer; border-radius: 8px; border: none; color: white; font-weight: bold; }
     
@@ -26,45 +32,50 @@
     .blanco { background: #f8fafc; color: #0f172a; }
     .nulo { background: #dc2626; }
     
-    .resultados-finales { margin-top: 25px; padding-top: 15px; border-top: 2px solid #334155; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 22px; }
+    .btn-reporte { background: #3b82f6; width: 100%; padding: 15px; margin-top: 10px; font-size: 16px; cursor: pointer; border-radius: 8px; border: none; color: white; font-weight: bold; }
+    .share-box { margin-bottom: 20px; padding: 15px; background: #1e293b; border: 1px dashed #3b82f6; border-radius: 10px; text-align: center; }
     .oculto { display: none; }
 </style>
 </head>
 <body>
 
-<h1>🗳️ Control de Votación</h1>
+<div class="container">
+    <h1>🗳️ Control de Votación PRO+</h1>
 
-<div class="search-container">
-    <input type="text" id="buscar" placeholder="🔍 Buscar por nombre o apellido...">
-</div>
-
-<div id="lista"></div>
-
-<div class="stats">
-    ✅ Asistentes: <span id="asistentes">0</span><br>
-    ❌ Ausentes: <span id="ausentes">0</span><br>
-    ⏳ Pendientes: <span id="pendientes">83</span>
-    <button id="btnCerrar" class="btn-cerrar" onclick="cerrarVotacion()">🔒 FINALIZAR Y CERRAR MESA</button>
-</div>
-
-<div id="seccionEscrutinio" class="escrutinio oculto">
-    <h2>📊 Conteo de Votos (Uno a Uno)</h2>
-    <p>Presiona el botón por cada voto extraído de la urna:</p>
-    
-    <div class="conteo-grid">
-        <button class="voto-btn cdc" onclick="sumarVoto('cdc')">+1 CDC</button>
-        <button class="voto-btn patria" onclick="sumarVoto('patria')">+1 Patria</button>
-        <button class="voto-btn blanco" onclick="sumarVoto('blanco')">+1 Blanco</button>
-        <button class="voto-btn nulo" onclick="sumarVoto('nulo')">+1 Nulo</button>
+    <div class="share-box">
+        <button style="background:#3b82f6; border:none; color:white; padding:10px; border-radius:5px; cursor:pointer; font-weight:bold;" onclick="generarEnlace()">🔗 Copiar Enlace para Compartir Datos</button>
     </div>
 
-    <div class="resultados-finales">
-        <div>🔵 CDC: <strong id="resCDC">0</strong></div>
-        <div>🟠 Patria: <strong id="resPatria">0</strong></div>
-        <div>⚪ Blanco: <strong id="resBlanco">0</strong></div>
-        <div>🔴 Nulo: <strong id="resNulo">0</strong></div>
+    <div class="search-container">
+        <input type="text" id="buscar" placeholder="🔍 Buscar por nombre...">
+        <input type="number" id="buscarNum" placeholder="Nº" min="1" max="83">
     </div>
-    <p style="margin-top:15px; color: #94a3b8; font-size: 14px;">Total contados: <span id="totalContados">0</span> / Asistentes: <span id="totalAsistieron">0</span></p>
+
+    <div id="lista"></div>
+
+    <div class="stats">
+        ✅ Asistentes: <span id="asistentes">0</span><br>
+        ❌ Ausentes: <span id="ausentes">0</span><br>
+        ⏳ Pendientes: <span id="pendientes">83</span>
+        <button id="btnCerrar" class="btn-cerrar" onclick="cerrarVotacion()">🔒 FINALIZAR Y CERRAR MESA</button>
+    </div>
+
+    <div id="seccionEscrutinio" class="escrutinio oculto">
+        <h2>📊 Conteo de Votos (Uno a Uno)</h2>
+        <div class="conteo-grid">
+            <button class="voto-btn cdc" onclick="sumarVoto('cdc')">+1 CDC</button>
+            <button class="voto-btn patria" onclick="sumarVoto('patria')">+1 Patria</button>
+            <button class="voto-btn blanco" onclick="sumarVoto('blanco')">+1 Blanco</button>
+            <button class="voto-btn nulo" onclick="sumarVoto('nulo')">+1 Nulo</button>
+        </div>
+        <div style="margin-top:20px; display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:22px;">
+            <div>🔵 CDC: <strong id="resCDC">0</strong></div>
+            <div>🟠 Patria: <strong id="resPatria">0</strong></div>
+            <div>⚪ Blanco: <strong id="resBlanco">0</strong></div>
+            <div>🔴 Nulo: <strong id="resNulo">0</strong></div>
+        </div>
+        <button class="btn-reporte" onclick="descargarReporte()">📥 DESCARGAR REPORTE FINAL</button>
+    </div>
 </div>
 
 <script>
@@ -76,27 +87,40 @@ let estado = JSON.parse(localStorage.getItem("votos")) || {};
 let conteo = JSON.parse(localStorage.getItem("conteo")) || { cdc: 0, patria: 0, blanco: 0, nulo: 0 };
 let mesaCerrada = localStorage.getItem("mesaCerrada") === "true";
 
-function render(filtro="") {
+// Cargar datos de URL si existen
+const params = new URLSearchParams(window.location.search);
+if(params.get("d")) {
+    const importados = JSON.parse(atob(params.get("d")));
+    importados.forEach(nom => estado[nom] = true);
+}
+
+function render() {
     const lista = document.getElementById("lista");
+    const filtroNombre = document.getElementById("buscar").value.toLowerCase();
+    const filtroNum = document.getElementById("buscarNum").value;
     lista.innerHTML = "";
-    let asistentes = 0;
-    let ausentes = 0;
+    
+    let asistentes = 0, ausentes = 0;
 
     personas.forEach(p => {
         if(estado[p.nombre] === true) asistentes++;
         else if(estado[p.nombre] === "ausente") ausentes++;
 
-        if(p.nombre.toLowerCase().includes(filtro.toLowerCase())) {
+        const coincideNombre = p.nombre.toLowerCase().includes(filtroNombre);
+        const coincideNum = filtroNum === "" || p.n == filtroNum;
+
+        if(coincideNombre && coincideNum) {
             const div = document.createElement("div");
-            div.className = "persona" + (estado[p.nombre] === true ? " votado" : (estado[p.nombre] === "ausente" ? " no-asistio" : ""));
+            div.className = "persona" + (estado[p.nombre] === true ? " votado" : (estado[p.nombre] === "ausente" ? " ausente" : ""));
+            
             div.innerHTML = `
+                <div><span class="n-orden">${p.n}</span><span>${p.nombre}</span></div>
                 <div>
-                    <span class="n-orden">${p.n}</span>
-                    <span>${p.nombre}</span>
+                    <button class="btn-marcar" onclick="marcar('${p.nombre}')" ${mesaCerrada ? "disabled" : ""}>
+                        ${estado[p.nombre] === true ? "✔️ Votó" : "Marcar"}
+                    </button>
+                    ${estado[p.nombre] === true && !mesaCerrada ? `<button class="btn-quitar" onclick="quitar('${p.nombre}')">✕</button>` : ""}
                 </div>
-                <button onclick="marcar('${p.nombre}')" ${mesaCerrada ? "disabled" : ""}>
-                    ${estado[p.nombre] === true ? "✔️" : (estado[p.nombre] === "ausente" ? "❌" : "Marcar")}
-                </button>
             `;
             lista.appendChild(div);
         }
@@ -109,20 +133,24 @@ function render(filtro="") {
     if(mesaCerrada) {
         document.getElementById("seccionEscrutinio").classList.remove("oculto");
         document.getElementById("btnCerrar").classList.add("oculto");
-        document.getElementById("totalAsistieron").innerText = asistentes;
         actualizarTablero();
     }
 }
 
 function marcar(nombre) {
-    if(mesaCerrada) return;
     estado[nombre] = true;
     localStorage.setItem("votos", JSON.stringify(estado));
-    render(document.getElementById("buscar").value);
+    render();
+}
+
+function quitar(nombre) {
+    delete estado[nombre];
+    localStorage.setItem("votos", JSON.stringify(estado));
+    render();
 }
 
 function cerrarVotacion() {
-    if(!confirm("¿Cerrar mesa y empezar el escrutinio?")) return;
+    if(!confirm("¿Cerrar mesa? Los no marcados serán ausentes.")) return;
     personas.forEach(p => { if(!estado[p.nombre]) estado[p.nombre] = "ausente"; });
     mesaCerrada = true;
     localStorage.setItem("mesaCerrada", "true");
@@ -131,15 +159,10 @@ function cerrarVotacion() {
 }
 
 function sumarVoto(tipo) {
-    let totalAsistentes = parseInt(document.getElementById("asistentes").innerText);
-    let yaContados = conteo.cdc + conteo.patria + conteo.blanco + conteo.nulo;
-
-    if(yaContados < totalAsistentes) {
+    if((conteo.cdc + conteo.patria + conteo.blanco + conteo.nulo) < parseInt(document.getElementById("asistentes").innerText)) {
         conteo[tipo]++;
         localStorage.setItem("conteo", JSON.stringify(conteo));
         actualizarTablero();
-    } else {
-        alert("Ya has contado todos los votos correspondientes a los asistentes.");
     }
 }
 
@@ -148,10 +171,26 @@ function actualizarTablero() {
     document.getElementById("resPatria").innerText = conteo.patria;
     document.getElementById("resBlanco").innerText = conteo.blanco;
     document.getElementById("resNulo").innerText = conteo.nulo;
-    document.getElementById("totalContados").innerText = conteo.cdc + conteo.patria + conteo.blanco + conteo.nulo;
 }
 
-document.getElementById("buscar").addEventListener("input", e => render(e.target.value));
+function descargarReporte() {
+    let csv = "REPORTE FINAL DE MESA\n\nASISTENTES;" + document.getElementById("asistentes").innerText + "\nAUSENTES;" + document.getElementById("ausentes").innerText + "\n\nRESULTADOS\nCDC;" + conteo.cdc + "\nPATRIA;" + conteo.patria + "\nBLANCO;" + conteo.blanco + "\nNULO;" + conteo.nulo + "\n\nLISTADO DE AUSENTES\n";
+    personas.filter(p => estado[p.nombre] === "ausente").forEach(p => csv += p.n + ";" + p.nombre + "\n");
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+    link.setAttribute("download", "Reporte_Final.csv");
+    link.click();
+}
+
+function generarEnlace() {
+    const votaron = Object.keys(estado).filter(k => estado[k] === true);
+    const url = window.location.href.split('?')[0] + "?d=" + btoa(JSON.stringify(votaron));
+    navigator.clipboard.writeText(url);
+    alert("¡Enlace copiado! Envíalo para que otros vean tus marcas actuales.");
+}
+
+document.getElementById("buscar").addEventListener("input", render);
+document.getElementById("buscarNum").addEventListener("input", render);
 render();
 </script>
 </body>
