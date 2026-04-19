@@ -2,30 +2,23 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Control Electoral - Gobernación Tarija 2026</title>
+<title>Control Electoral - Tarija 2026</title>
 <style>
     body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; padding: 20px; }
     .container { max-width: 800px; margin: auto; }
-    h1 { text-align: center; color: #3b82f6; text-transform: uppercase; margin-bottom: 5px; }
-    h3 { text-align: center; color: #94a3b8; margin-top: 0; font-weight: normal; margin-bottom: 20px; }
-    
+    h1 { text-align: center; color: #3b82f6; text-transform: uppercase; }
     .progress-box { background: #1e293b; border-radius: 20px; height: 25px; width: 100%; margin: 20px 0; border: 1px solid #334155; overflow: hidden; position: relative; }
     #progressBar { background: linear-gradient(90deg, #3b82f6, #22c55e); height: 100%; width: 0%; transition: 0.5s; }
     .perc-text { position: absolute; width: 100%; text-align: center; line-height: 25px; font-size: 12px; font-weight: bold; z-index: 10; }
-
-    .search-container { position: sticky; top: 10px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px); padding: 15px; z-index: 100; display: flex; gap: 10px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px; }
+    .search-container { position: sticky; top: 10px; background: #0f172a; padding: 15px; z-index: 100; display: flex; gap: 10px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px; }
     input { padding: 12px; border-radius: 8px; border: 2px solid #334155; background: #0f172a; color: white; flex-grow: 1; outline: none; }
-
     .persona { background: #1e293b; padding: 15px; margin: 8px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; }
     .votado { border-color: #22c55e; background: rgba(34, 197, 94, 0.1) !important; }
-    .no-voto { border-color: #dc2626; opacity: 0.6; background: rgba(220, 38, 38, 0.05) !important; }
-
     .escrutinio { background: #1e293b; padding: 25px; border-radius: 15px; border: 2px solid #3b82f6; margin-top: 30px; }
     .grid-votos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
     .v-btn { padding: 20px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 16px; }
     .patria-btn { background: #ea580c; } .cdc-btn { background: #2563eb; }
     .blanco-btn { background: #f8fafc; color: #0f172a; } .nulo-btn { background: #dc2626; }
-    
     .final-stats { display: flex; justify-content: space-around; font-size: 20px; text-align: center; background: #0f172a; padding: 15px; border-radius: 10px; }
     .btn-accion { background: #e11d48; width: 100%; padding: 15px; border-radius: 10px; border: none; color: white; font-weight: bold; cursor: pointer; margin-top: 20px; }
     .oculto { display: none; }
@@ -35,7 +28,6 @@
 
 <div class="container">
     <h1>GOBERNACIÓN TARIJA 2026</h1>
-    <h3>Segunda Vuelta - Control de Mesa</h3>
 
     <div class="progress-box">
         <div class="perc-text"><span id="perc">0</span>% Participación</div>
@@ -43,20 +35,20 @@
     </div>
 
     <div class="search-container">
-        <input type="text" id="buscar" placeholder="🔍 Buscar por nombre o C.I. ...">
+        <input type="text" id="buscar" placeholder="🔍 Buscar votante...">
     </div>
 
     <div id="lista"></div>
 
-    <button id="btnCerrar" class="btn-accion" onclick="cerrarConNulos()">🔒 CERRAR MESA (Ausentes a Nulos)</button>
+    <button id="btnCerrar" class="btn-accion" onclick="forzarCierre()">🔒 CERRAR MESA AHORA (Convertir Ausentes a Nulos)</button>
 
     <div id="seccionConteo" class="escrutinio oculto">
         <h2>📊 Escrutinio Final</h2>
         <div class="grid-votos">
-            <button class="v-btn patria-btn" onclick="votarManual('patria')">PATRIA (+1)</button>
-            <button class="v-btn cdc-btn" onclick="votarManual('cdc')">CDC (+1)</button>
-            <button class="v-btn blanco-btn" onclick="votarManual('blanco')">BLANCO (+1)</button>
-            <button class="v-btn nulo-btn" onclick="votarManual('nulo')">NULO (+1)</button>
+            <button class="v-btn patria-btn" onclick="votar('patria')">PATRIA (+1)</button>
+            <button class="v-btn cdc-btn" onclick="votar('cdc')">CDC (+1)</button>
+            <button class="v-btn blanco-btn" onclick="votar('blanco')">BLANCO (+1)</button>
+            <button class="v-btn nulo-btn" onclick="votar('nulo')">NULO (+1)</button>
         </div>
         
         <div class="final-stats">
@@ -65,7 +57,7 @@
             <div>⚪ Blanco<br><strong id="resBlanco">0</strong></div>
             <div>🔴 Nulo<br><strong id="resNulo">0</strong></div>
         </div>
-        <button class="btn-accion" style="background:#3b82f6" onclick="descargarReporte()">📥 DESCARGAR ACTA FINAL</button>
+        <button class="btn-accion" style="background:#3b82f6" onclick="descargarReporte()">📥 DESCARGAR ACTA</button>
     </div>
 </div>
 
@@ -78,7 +70,7 @@ const votantes = [
     {n:9, nombre:"SEGOVIA DIAZ KEVIN HERNAN", ci:"3698521"}, {n:10, nombre:"SEGOVIA FLORES GUSTAVO ARIEL", ci:"2587410"},
     {n:11, nombre:"SEGOVIA GUTIERREZ ANIBAL", ci:"1234567"}, {n:12, nombre:"SERRUDO ROMERO JHON ANDER DAVID", ci:"8523694"},
     {n:13, nombre:"SILVA SUBIETA LILIANA", ci:"7412589"}, {n:14, nombre:"SOLARES MENDOZA ALEXANDER MAGIN", ci:"9632587"},
-    {n:15, nombre:"SOLIZ ESPINDOLA LINBER", ci:"1597534"}, {n:16, nombre:"SOLIZ LUNA ELIZABETH DORIS", ci:"4862159"},
+    {n:15, nombre:"SOLIZ ESPINDOLA LIMBER", ci:"1597534"}, {n:16, nombre:"SOLIZ LUNA ELIZABETH DORIS", ci:"4862159"},
     {n:17, nombre:"SORUCO ALBA LUCERO", ci:"7531594"}, {n:18, nombre:"SORUCO RODAS ADRIANA", ci:"1245780"},
     {n:19, nombre:"SORUCO ROMERO ANGELA VANESSA", ci:"9513574"}, {n:20, nombre:"SORUCO TEJERINA NATALIA", ci:"8426153"},
     {n:21, nombre:"SOTO MANCILLA LIZBETH KAREN", ci:"6547891"}, {n:22, nombre:"SUBIA GUEVARA YAMIL GUSTAVO", ci:"3214569"},
@@ -112,97 +104,77 @@ const votantes = [
     {n:77, nombre:"ZARATE CORPUS FABIOLA", ci:"9519511"}, {n:78, nombre:"ZENTENO ARAMAYO ADRIANO RAUL", ci:"7537532"},
     {n:79, nombre:"ZENTENO FIGUEROA LILIAN KAREN", ci:"1591593"}, {n:80, nombre:"ZENTENO GALLARDO OLIVER GERMAN", ci:"4864864"},
     {n:81, nombre:"ZENTENO ORTIZ JHONNY EDUARDO", ci:"1231235"}, {n:82, nombre:"ZENTENO YEVARA WILLAN LUCIO", ci:"4564566"},
-    {n:83, nombre:"ZUBIETA MANCILLA YAZMIN", ci:"---"}
+    {n:83, nombre:"ZUBIETA MANCILLA YAZMIN", ci:"---"}, {n:84, nombre:"VEDIA RODRIGUEZ GREGORIO", ci:"7214589"}
 ];
 
-// Recuperar datos locales
 let registro = JSON.parse(localStorage.getItem("tja_votos")) || {};
 let conteo = JSON.parse(localStorage.getItem("tja_conteo")) || { patria: 0, cdc: 0, blanco: 0, nulo: 0 };
 let cerrada = localStorage.getItem("tja_cerrada") === "true";
 
-// PROCESAR ENLACE EXTERNO (SIN SOBREESCRIBIR LO LOCAL)
+// Sincronizar enlace d=
 const params = new URLSearchParams(window.location.search);
 if(params.get("d")) {
     try {
-        const data = JSON.parse(atob(params.get("d")));
-        data.forEach(nom => {
-            if(!registro[nom]) registro[nom] = "voto";
-        });
+        const d = JSON.parse(atob(params.get("d")));
+        d.forEach(n => { if(!registro[n]) registro[n] = "voto"; });
         localStorage.setItem("tja_votos", JSON.stringify(registro));
-    } catch(e) { console.error("Error al sincronizar enlace"); }
+    } catch(e) {}
 }
 
 function render() {
     const lista = document.getElementById("lista");
     const buscar = document.getElementById("buscar").value.toLowerCase();
     lista.innerHTML = "";
-    
     let presentes = 0;
+
     votantes.forEach(v => {
-        const estado = registro[v.nombre];
-        if(estado === "voto") presentes++;
-        
+        const est = registro[v.nombre];
+        if(est === "voto") presentes++;
         if(v.nombre.toLowerCase().includes(buscar) || v.ci.includes(buscar)) {
             const div = document.createElement("div");
-            div.className = "persona" + (estado === "voto" ? " votado" : (estado === "nulo_auto" ? " no-voto" : ""));
-            div.innerHTML = `
-                <div class="info">
-                    <span style="font-size:12px; color:#3b82f6;">ORDEN #${v.n}</span><br>
-                    <span class="nombre">${v.nombre}</span><br>
-                    <span class="ci">CI: ${v.ci}</span>
-                </div>
+            div.className = "persona" + (est === "voto" ? " votado" : "");
+            div.innerHTML = `<div><b>#${v.n}</b> ${v.nombre}<br><small>CI: ${v.ci}</small></div>
                 <button class="v-btn" style="padding:10px; background:#22c55e" onclick="marcar('${v.nombre}')" ${cerrada ? "disabled" : ""}>
-                    ${estado === "voto" ? "✔️" : "MARCAR"}
-                </button>`;
+                ${est === "voto" ? "✔️" : "MARCAR"}</button>`;
             lista.appendChild(div);
         }
     });
 
-    const porc = ((presentes / votantes.length) * 100).toFixed(1);
-    document.getElementById("progressBar").style.width = porc + "%";
-    document.getElementById("perc").innerText = porc;
+    const p = ((presentes / votantes.length) * 100).toFixed(1);
+    document.getElementById("progressBar").style.width = p + "%";
+    document.getElementById("perc").innerText = p;
 
     if(cerrada) {
         document.getElementById("seccionConteo").classList.remove("oculto");
         document.getElementById("btnCerrar").classList.add("oculto");
-        actualizarTablero();
+        actualizarUI();
     }
 }
 
-function marcar(nom) {
-    registro[nom] = "voto";
-    localStorage.setItem("tja_votos", JSON.stringify(registro));
-    render();
-}
+function marcar(n) { registro[n] = "voto"; localStorage.setItem("tja_votos", JSON.stringify(registro)); render(); }
 
-function cerrarConNulos() {
-    if(!confirm("¿Cerrar mesa? Todos los no marcados se sumarán como NULOS automáticamente.")) return;
+function forzarCierre() {
+    if(!confirm("¿Cerrar mesa? Los ausentes se sumarán a NULOS.")) return;
     
-    let faltantes = 0;
+    let ausentes = 0;
     votantes.forEach(v => {
-        // Solo actúa sobre los que NO tienen marca de voto
-        if(!registro[v.nombre] || registro[v.nombre] === "ausente") {
-            registro[v.nombre] = "nulo_auto"; 
-            faltantes++;
+        if(!registro[v.nombre]) {
+            registro[v.nombre] = "ausente_nulo";
+            ausentes++;
         }
     });
 
-    conteo.nulo += faltantes;
+    conteo.nulo += ausentes;
     cerrada = true;
-    
     localStorage.setItem("tja_cerrada", "true");
-    localStorage.setItem("tja_votos", JSON.stringify(registro));
     localStorage.setItem("tja_conteo", JSON.stringify(conteo));
+    localStorage.setItem("tja_votos", JSON.stringify(registro));
     render();
 }
 
-function votarManual(tipo) {
-    conteo[tipo]++;
-    localStorage.setItem("tja_conteo", JSON.stringify(conteo));
-    actualizarTablero();
-}
+function votar(t) { conteo[t]++; localStorage.setItem("tja_conteo", JSON.stringify(conteo)); actualizarUI(); }
 
-function actualizarTablero() {
+function actualizarUI() {
     document.getElementById("resPatria").innerText = conteo.patria;
     document.getElementById("resCDC").innerText = conteo.cdc;
     document.getElementById("resBlanco").innerText = conteo.blanco;
@@ -210,13 +182,12 @@ function actualizarTablero() {
 }
 
 function descargarReporte() {
-    let csv = "\uFEFFACTA FINAL - TARIJA 2026\n\n";
-    csv += `PARTIDO;VOTOS\nPATRIA;${conteo.patria}\nCDC;${conteo.cdc}\nBLANCO;${conteo.blanco}\nNULO (Ausentes + Manual);${conteo.nulo}\n`;
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "Acta_Final_Tarija.csv";
-    link.click();
+    let t = "\uFEFFACTA FINAL - TARIJA 2026\n\nPARTIDO;VOTOS\nPATRIA;" + conteo.patria + "\nCDC;" + conteo.cdc + "\nBLANCO;" + conteo.blanco + "\nNULO (Incl. Ausentes);" + conteo.nulo;
+    const b = new Blob([t], {type:"text/csv"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(b);
+    a.download = "Acta_Tarija.csv";
+    a.click();
 }
 
 document.getElementById("buscar").addEventListener("input", render);
