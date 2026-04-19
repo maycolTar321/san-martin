@@ -6,43 +6,28 @@
 <style>
     body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; padding: 20px; }
     .container { max-width: 800px; margin: auto; }
-    h1 { text-align: center; color: #3b82f6; margin-bottom: 5px; text-transform: uppercase; }
+    h1 { text-align: center; color: #3b82f6; text-transform: uppercase; margin-bottom: 5px; }
     h3 { text-align: center; color: #94a3b8; margin-top: 0; font-weight: normal; margin-bottom: 20px; }
     
-    .share-box { margin-bottom: 20px; padding: 15px; background: #1e293b; border: 1px dashed #3b82f6; border-radius: 12px; text-align: center; }
-    .btn-share { background: #3b82f6; border: none; color: white; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; }
-
     .progress-box { background: #1e293b; border-radius: 20px; height: 25px; width: 100%; margin: 20px 0; border: 1px solid #334155; overflow: hidden; position: relative; }
     #progressBar { background: linear-gradient(90deg, #3b82f6, #22c55e); height: 100%; width: 0%; transition: 0.5s; }
     .perc-text { position: absolute; width: 100%; text-align: center; line-height: 25px; font-size: 12px; font-weight: bold; z-index: 10; }
 
     .search-container { position: sticky; top: 10px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(8px); padding: 15px; z-index: 100; display: flex; gap: 10px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px; }
     input { padding: 12px; border-radius: 8px; border: 2px solid #334155; background: #0f172a; color: white; flex-grow: 1; outline: none; }
-    #buscarNum { max-width: 80px; }
 
     .persona { background: #1e293b; padding: 15px; margin: 8px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; }
-    .info { display: flex; flex-direction: column; }
-    .n-orden { font-size: 12px; color: #3b82f6; font-weight: bold; }
-    .nombre { font-size: 16px; font-weight: bold; text-transform: uppercase; }
-    .ci { font-size: 13px; color: #94a3b8; }
-    
-    .btn-marcar { background: #22c55e; border: none; padding: 10px 20px; color: white; cursor: pointer; border-radius: 8px; font-weight: bold; min-width: 120px; }
-    .btn-quitar { background: transparent; border: 1px solid #ef4444; color: #ef4444; padding: 8px; margin-left: 8px; cursor: pointer; border-radius: 5px; }
-    
     .votado { border-color: #22c55e; background: rgba(34, 197, 94, 0.1) !important; }
-    .ausente { opacity: 0.5; filter: grayscale(1); background: #334155 !important; }
+    .no-voto { border-color: #dc2626; opacity: 0.6; background: rgba(220, 38, 38, 0.05) !important; }
 
-    .stats { margin-top: 20px; font-size: 18px; background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; }
     .escrutinio { background: #1e293b; padding: 25px; border-radius: 15px; border: 2px solid #3b82f6; margin-top: 30px; }
     .grid-votos { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
     .v-btn { padding: 20px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 16px; }
-    .patria-btn { background: #ea580c; }
-    .cdc-btn { background: #2563eb; }
-    .blanco-btn { background: #f8fafc; color: #0f172a; }
-    .nulo-btn { background: #dc2626; }
+    .patria-btn { background: #ea580c; } .cdc-btn { background: #2563eb; }
+    .blanco-btn { background: #f8fafc; color: #0f172a; } .nulo-btn { background: #dc2626; }
     
     .final-stats { display: flex; justify-content: space-around; font-size: 20px; text-align: center; background: #0f172a; padding: 15px; border-radius: 10px; }
-    .btn-accion { background: #3b82f6; width: 100%; padding: 15px; border-radius: 10px; border: none; color: white; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 16px; }
+    .btn-accion { background: #e11d48; width: 100%; padding: 15px; border-radius: 10px; border: none; color: white; font-weight: bold; cursor: pointer; margin-top: 20px; }
     .oculto { display: none; }
 </style>
 </head>
@@ -52,10 +37,6 @@
     <h1>GOBERNACIÓN TARIJA 2026</h1>
     <h3>Segunda Vuelta - Control de Mesa</h3>
 
-    <div class="share-box">
-        <button class="btn-share" onclick="generarEnlace()">🔗 Copiar Enlace para Sincronizar Datos</button>
-    </div>
-
     <div class="progress-box">
         <div class="perc-text"><span id="perc">0</span>% Participación</div>
         <div id="progressBar"></div>
@@ -63,25 +44,19 @@
 
     <div class="search-container">
         <input type="text" id="buscar" placeholder="🔍 Buscar por nombre o C.I. ...">
-        <input type="number" id="buscarNum" placeholder="Nº">
     </div>
 
     <div id="lista"></div>
 
-    <div class="stats">
-        ✅ Asistentes: <span id="asistentes">0</span><br>
-        ❌ Ausentes: <span id="ausentes">0</span><br>
-        ⏳ Pendientes: <span id="pendientes">83</span>
-        <button id="btnCerrar" class="btn-accion" style="background:#e11d48" onclick="cerrarMesa()">🔒 CERRAR MESA Y EMPEZAR CONTEO</button>
-    </div>
+    <button id="btnCerrar" class="btn-accion" onclick="cerrarConNulos()">🔒 CERRAR MESA (Ausentes a Nulos)</button>
 
     <div id="seccionConteo" class="escrutinio oculto">
-        <h2>📊 Escrutinio Oficial</h2>
+        <h2>📊 Escrutinio Final</h2>
         <div class="grid-votos">
-            <button class="v-btn patria-btn" onclick="votar('patria')">PATRIA (Oliva)</button>
-            <button class="v-btn cdc-btn" onclick="votar('cdc')">CDC (Soruco)</button>
-            <button class="v-btn blanco-btn" onclick="votar('blanco')">BLANCO</button>
-            <button class="v-btn nulo-btn" onclick="votar('nulo')">NULO</button>
+            <button class="v-btn patria-btn" onclick="votarManual('patria')">PATRIA (+1)</button>
+            <button class="v-btn cdc-btn" onclick="votarManual('cdc')">CDC (+1)</button>
+            <button class="v-btn blanco-btn" onclick="votarManual('blanco')">BLANCO (+1)</button>
+            <button class="v-btn nulo-btn" onclick="votarManual('nulo')">NULO (+1)</button>
         </div>
         
         <div class="final-stats">
@@ -90,64 +65,98 @@
             <div>⚪ Blanco<br><strong id="resBlanco">0</strong></div>
             <div>🔴 Nulo<br><strong id="resNulo">0</strong></div>
         </div>
-        <button class="btn-accion" onclick="descargarReporte()">📥 DESCARGAR ACTA DE CIERRE (CSV)</button>
+        <button class="btn-accion" style="background:#3b82f6" onclick="descargarReporte()">📥 DESCARGAR ACTA FINAL</button>
     </div>
 </div>
 
 <script>
 const votantes = [
-    {n:1, nombre:"SANTOS LEONARDO JAVIER", ci:"7210451"}, {n:2, nombre:"SANTOS CHIRINOS LINDA GABRIELA", ci:"10632147"}, {n:3, nombre:"SANTOS MOLLINEDO GERMAN LUIS", ci:"1254789"}, {n:4, nombre:"SARAVIA AVALOS YOBANA", ci:"8547123"}, {n:5, nombre:"SARAVIA GUEVARA MARIA LOURDES", ci:"4521036"}, {n:6, nombre:"SEGOVIA AGUIRRE ALBERTO", ci:"7854120"}, {n:7, nombre:"SEGOVIA AGUIRRE LUISA GUMERCINDA", ci:"9654123"}, {n:8, nombre:"SEGOVIA ANAZCO FABIAN ALEJANDRO", ci:"1478523"}, {n:9, nombre:"SEGOVIA DIAZ KEVIN HERNAN", ci:"3698521"}, {n:10, nombre:"SEGOVIA FLORES GUSTAVO ARIEL", ci:"2587410"}, {n:11, nombre:"SEGOVIA GUTIERREZ ANIBAL", ci:"1234567"}, {n:12, nombre:"SERRUDO ROMERO JHON ANDER DAVID", ci:"8523694"}, {n:13, nombre:"SILVA SUBIETA LILIANA", ci:"7412589"}, {n:14, nombre:"SOLARES MENDOZA ALEXANDER MAGIN", ci:"9632587"}, {n:15, nombre:"SOLIZ ESPINDOLA LIMBER", ci:"1597534"}, {n:16, nombre:"SOLIZ LUNA ELIZABETH DORIS", ci:"4862159"}, {n:17, nombre:"SORUCO ALBA LUCERO", ci:"7531594"}, {n:18, nombre:"SORUCO RODAS ADRIANA", ci:"1245780"}, {n:19, nombre:"SORUCO ROMERO ANGELA VANESSA", ci:"9513574"}, {n:20, nombre:"SORUCO TEJERINA NATALIA", ci:"8426153"}, {n:21, nombre:"SOTO MANCILLA LIZBETH KAREN", ci:"6547891"}, {n:22, nombre:"SUBIA GUEVARA YAMIL GUSTAVO", ci:"3214569"}, {n:23, nombre:"TAPIA AMADOR MATIAS", ci:"9874561"}, {n:24, nombre:"TAPIA HUANCA LESLIE BONI", ci:"1472583"}, {n:25, nombre:"TAPIA ICUNA VIRGINIA", ci:"3691472"}, {n:26, nombre:"TARIFA FIGUEROA MARIEL ZARETH", ci:"2583691"}, {n:27, nombre:"TEGUA DANITZA", ci:"1237894"}, {n:28, nombre:"TEJERINA CASTILLO JHENNIFER ALISON", ci:"4561237"}, {n:29, nombre:"TEJERINA CAYO RONI", ci:"7894561"}, {n:30, nombre:"TEJERINA CHUQUIMIA ANAHY PAOLA", ci:"3216549"}, {n:31, nombre:"TEJERINA RUEDA ADA LUZ", ci:"9514862"}, {n:32, nombre:"TEJERINA VILAR JAZMIN ADELFA", ci:"7539514"}, {n:33, nombre:"TICONA ALI JORGE GASTON", ci:"1594862"}, {n:34, nombre:"TICONA GARECA SHIRLEY GABRIELA", ci:"4861592"}, {n:35, nombre:"TOLA TOLA RITA", ci:"1234560"}, {n:36, nombre:"TOLABA MAMANI NAYDELI LIDZA", ci:"8521473"}, {n:37, nombre:"TOLABA VARGAS MICHELLE ANGELI", ci:"9631472"}, {n:38, nombre:"TOLAY COPA MARTIN", ci:"1592634"}, {n:39, nombre:"TORREJON CANO PAMELA ANDREA", ci:"4863571"}, {n:40, nombre:"TORREJON LABRA PABLO", ci:"7532468"}, {n:41, nombre:"TORREZ ARRATIA DAYANA NICOLE", ci:"1248753"}, {n:42, nombre:"TORREZ BROWN JAVIER", ci:"9516248"}, {n:43, nombre:"TORREZ LOPEZ SAUL", ci:"8421379"}, {n:44, nombre:"UBALDO CHOQUE MARITZA", ci:"6541238"}, {n:45, nombre:"UGARTE CHOQUE RAYMUNDO", ci:"3217894"}, {n:46, nombre:"ULLOA ORTIZ ANGEL ANDRES", ci:"9871234"}, {n:47, nombre:"VADILLO PADILLA LEYDY LAURA", ci:"1473692"}, {n:48, nombre:"VALENCIA CONDORI LISSET ROCIO", ci:"3692581"}, {n:49, nombre:"VALERIANO NARVAEZ JHOEL EDUARDO", ci:"2581473"}, {n:50, nombre:"VARAS BUSTOS MARCELO", ci:"1236547"}, {n:51, nombre:"VARGAS MORALES FRANZ ROLANDO", ci:"4569871"}, {n:52, nombre:"VARGAS MORALES JACQUELINE REINA", ci:"7891234"}, {n:53, nombre:"VARGAS VALLEJO MARITZA LISBETH", ci:"3219874"}, {n:54, nombre:"VASCO TINTILAY LIDIA", ci:"9517532"}, {n:55, nombre:"VASQUEZ AYAVIRI LIMBERTH", ci:"7534561"}, {n:56, nombre:"VASQUEZ OSORIO KAREN ALEJANDRA", ci:"1593574"}, {n:57, nombre:"VASQUEZ VICTORIO MARCEL GERARDO", ci:"4867531"}, {n:58, nombre:"VEDIA RODRIGUEZ GREGORIO", ci:"1230987"}, {n:59, nombre:"VEGA ENCINAS VANLIZ MONTSERRAT", ci:"8529631"}, {n:60, nombre:"VEGA HIDALGO VILDO ROLANDO", ci:"9638521"}, {n:61, nombre:"VEGA SANTOS KARLA LORENA", ci:"1591591"}, {n:62, nombre:"VELASQUEZ FELIX", ci:"4864862"}, {n:63, nombre:"VELASQUEZ CRUZ MARGARITA", ci:"7537533"}, {n:64, nombre:"VELASQUEZ CRUZ NATALY HORTENCIA", ci:"1241244"}, {n:65, nombre:"VELASQUEZ HUANCA HUGO", ci:"9519515"}, {n:66, nombre:"VELASQUEZ REYES CRISTIAN MATIAS", ci:"8428426"}, {n:67, nombre:"VERA FRANCO", ci:"6546547"}, {n:68, nombre:"VICTORIO CONDORI JOEL ALEXANDER", ci:"3213218"}, {n:69, nombre:"VIDAURRE DAZA MARITZA", ci:"9879879"}, {n:70, nombre:"VIDES YUCRA FATIMA", ci:"1471471"}, {n:71, nombre:"VILAR COPA SAYDA MARLENI", ci:"3693692"}, {n:72, nombre:"VILLENA RODRIGUEZ ESTEBAN", ci:"2582583"}, {n:73, nombre:"VILTE FLORES EDIL", ci:"1231234"}, {n:74, nombre:"VILTE ORTIZ YOSELIN", ci:"4564565"}, {n:75, nombre:"YAÑEZ VIDAURRE ANA ISABEL", ci:"7897896"}, {n:76, nombre:"YUCA DELGADO JACQUELINNE STEFANI", ci:"3213210"}, {n:77, nombre:"ZARATE CORPUS FABIOLA", ci:"9519511"}, {n:78, nombre:"ZENTENO ARAMAYO ADRIANO RAUL", ci:"7537532"}, {n:79, nombre:"ZENTENO FIGUEROA LILIAN KAREN", ci:"1591593"}, {n:80, nombre:"ZENTENO GALLARDO OLIVER GERMAN", ci:"4864864"}, {n:81, nombre:"ZENTENO ORTIZ JHONNY EDUARDO", ci:"1231235"}, {n:82, nombre:"ZENTENO YEVARA WILLAN LUCIO", ci:"4564566"}, {n:83, nombre:"ZUBIETA MANCILLA YAZMIN", ci:"---"}
+    {n:1, nombre:"SANTOS LEONARDO JAVIER", ci:"7210451"}, {n:2, nombre:"SANTOS CHIRINOS LINDA GABRIELA", ci:"10632147"},
+    {n:3, nombre:"SANTOS MOLLINEDO GERMAN LUIS", ci:"1254789"}, {n:4, nombre:"SARAVIA AVALOS YOBANA", ci:"8547123"},
+    {n:5, nombre:"SARAVIA GUEVARA MARIA LOURDES", ci:"4521036"}, {n:6, nombre:"SEGOVIA AGUIRRE ALBERTO", ci:"7854120"},
+    {n:7, nombre:"SEGOVIA AGUIRRE LUISA GUMERCINDA", ci:"9654123"}, {n:8, nombre:"SEGOVIA ANAZCO FABIAN ALEJANDRO", ci:"1478523"},
+    {n:9, nombre:"SEGOVIA DIAZ KEVIN HERNAN", ci:"3698521"}, {n:10, nombre:"SEGOVIA FLORES GUSTAVO ARIEL", ci:"2587410"},
+    {n:11, nombre:"SEGOVIA GUTIERREZ ANIBAL", ci:"1234567"}, {n:12, nombre:"SERRUDO ROMERO JHON ANDER DAVID", ci:"8523694"},
+    {n:13, nombre:"SILVA SUBIETA LILIANA", ci:"7412589"}, {n:14, nombre:"SOLARES MENDOZA ALEXANDER MAGIN", ci:"9632587"},
+    {n:15, nombre:"SOLIZ ESPINDOLA LINBER", ci:"1597534"}, {n:16, nombre:"SOLIZ LUNA ELIZABETH DORIS", ci:"4862159"},
+    {n:17, nombre:"SORUCO ALBA LUCERO", ci:"7531594"}, {n:18, nombre:"SORUCO RODAS ADRIANA", ci:"1245780"},
+    {n:19, nombre:"SORUCO ROMERO ANGELA VANESSA", ci:"9513574"}, {n:20, nombre:"SORUCO TEJERINA NATALIA", ci:"8426153"},
+    {n:21, nombre:"SOTO MANCILLA LIZBETH KAREN", ci:"6547891"}, {n:22, nombre:"SUBIA GUEVARA YAMIL GUSTAVO", ci:"3214569"},
+    {n:23, nombre:"TAPIA AMADOR MATIAS", ci:"9874561"}, {n:24, nombre:"TAPIA HUANCA LESLIE BONY", ci:"1472583"},
+    {n:25, nombre:"TAPIA ICUNA VIRGINIA", ci:"3691472"}, {n:26, nombre:"TARIFA FIGUEROA MARIEL ZARETH", ci:"2583691"},
+    {n:27, nombre:"TEGUA DANITZA", ci:"1237894"}, {n:28, nombre:"TEJERINA CASTILLO JHENNIFER ALISON", ci:"4561237"},
+    {n:29, nombre:"TEJERINA CAYO RONI", ci:"7894561"}, {n:30, nombre:"TEJERINA CHUQUIMIA ANAHY PAOLA", ci:"3216549"},
+    {n:31, nombre:"TEJERINA RUEDA ADA LUZ", ci:"9514862"}, {n:32, nombre:"TEJERINA VILAR JAZMIN ADELFA", ci:"7539514"},
+    {n:33, nombre:"TICONA ALI JORGE GASTON", ci:"1594862"}, {n:34, nombre:"TICONA GARECA SHIRLEY GABRIELA", ci:"4861592"},
+    {n:35, nombre:"TOLA TOLA RITA", ci:"1234560"}, {n:36, nombre:"TOLABA MAMANI NAYDELI LIDZA", ci:"8521473"},
+    {n:37, nombre:"TOLABA VARGAS MICHELLE ANGELI", ci:"9631472"}, {n:38, nombre:"TOLAY COPA MARTIN", ci:"1592634"},
+    {n:39, nombre:"TORREJON CANO PAMELA ANDREA", ci:"4863571"}, {n:40, nombre:"TORREJON LABRA PABLO", ci:"7532468"},
+    {n:41, nombre:"TORREZ ARRATIA DAYANA NICOLE", ci:"1248753"}, {n:42, nombre:"TORREZ BROWN JAVIER", ci:"9516248"},
+    {n:43, nombre:"TORREZ LOPEZ SAUL", ci:"8421379"}, {n:44, nombre:"UBALDO CHOQUE MARITZA", ci:"6541238"},
+    {n:45, nombre:"UGARTE CHOQUE RAYMUNDO", ci:"3217894"}, {n:46, nombre:"ULLOA ORTIZ ANGEL ANDRES", ci:"9871234"},
+    {n:47, nombre:"VADILLO PADILLA LEYDY LAURA", ci:"1473692"}, {n:48, nombre:"VALENCIA CONDORI LISSET ROCIO", ci:"3692581"},
+    {n:49, nombre:"VALERIANO NARVAEZ JHOEL EDUARDO", ci:"2581473"}, {n:50, nombre:"VARAS BUSTOS MARCELO", ci:"1236547"},
+    {n:51, nombre:"VARGAS MORALES FRANZ ROLANDO", ci:"4569871"}, {n:52, nombre:"VARGAS MORALES JACQUELINE REINA", ci:"7891234"},
+    {n:53, nombre:"VARGAS VALLEJO MARITZA LISBETH", ci:"3219874"}, {n:54, nombre:"VASCO TINTILAY LIDIA", ci:"9517532"},
+    {n:55, nombre:"VASQUEZ AYAVIRI LIMBERTH", ci:"7534561"}, {n:56, nombre:"VASQUEZ OSORIO KAREN ALEJANDRA", ci:"1593574"},
+    {n:57, nombre:"VASQUEZ VICTORIO MARCEL GERARDO", ci:"4867531"}, {n:58, nombre:"VEDIA RODRIGUEZ GREGORIO", ci:"1230987"},
+    {n:59, nombre:"VEGA ENCINAS VANLIZ MONTSERRAT", ci:"8529631"}, {n:60, nombre:"VEGA HIDALGO VILDO ROLANDO", ci:"9638521"},
+    {n:61, nombre:"VEGA SANTOS KARLA LORENA", ci:"1591591"}, {n:62, nombre:"VELASQUEZ FELIX", ci:"4864862"},
+    {n:63, nombre:"VELASQUEZ CRUZ MARGARITA", ci:"7537533"}, {n:64, nombre:"VELASQUEZ CRUZ NATALY HORTENCIA", ci:"1241244"},
+    {n:65, nombre:"VELASQUEZ HUANCA HUGO", ci:"9519515"}, {n:66, nombre:"VELASQUEZ REYES CRISTIAN MATIAS", ci:"8428426"},
+    {n:67, nombre:"VERA FRANCO", ci:"6546547"}, {n:68, nombre:"VICTORIO CONDORI JOEL ALEXANDER", ci:"3213218"},
+    {n:69, nombre:"VIDAURRE DAZA MARITZA", ci:"9879879"}, {n:70, nombre:"VIDES YUCRA FATIMA", ci:"1471471"},
+    {n:71, nombre:"VILAR COPA SAYDA MARLENI", ci:"3693692"}, {n:72, nombre:"VILLENA RODRIGUEZ ESTEBAN", ci:"2582583"},
+    {n:73, nombre:"VILTE FLORES EDIL", ci:"1231234"}, {n:74, nombre:"VILTE ORTIZ YOSELIN", ci:"4564565"},
+    {n:75, nombre:"YAÑEZ VIDAURRE ANA ISABEL", ci:"7897896"}, {n:76, nombre:"YUCA DELGADO JACQUELINNE STEFANI", ci:"3213210"},
+    {n:77, nombre:"ZARATE CORPUS FABIOLA", ci:"9519511"}, {n:78, nombre:"ZENTENO ARAMAYO ADRIANO RAUL", ci:"7537532"},
+    {n:79, nombre:"ZENTENO FIGUEROA LILIAN KAREN", ci:"1591593"}, {n:80, nombre:"ZENTENO GALLARDO OLIVER GERMAN", ci:"4864864"},
+    {n:81, nombre:"ZENTENO ORTIZ JHONNY EDUARDO", ci:"1231235"}, {n:82, nombre:"ZENTENO YEVARA WILLAN LUCIO", ci:"4564566"},
+    {n:83, nombre:"ZUBIETA MANCILLA YAZMIN", ci:"---"}
 ];
 
+// Recuperar datos locales
 let registro = JSON.parse(localStorage.getItem("tja_votos")) || {};
 let conteo = JSON.parse(localStorage.getItem("tja_conteo")) || { patria: 0, cdc: 0, blanco: 0, nulo: 0 };
 let cerrada = localStorage.getItem("tja_cerrada") === "true";
 
-// Importar datos de URL si existen
+// PROCESAR ENLACE EXTERNO (SIN SOBREESCRIBIR LO LOCAL)
 const params = new URLSearchParams(window.location.search);
 if(params.get("d")) {
-    const importados = JSON.parse(atob(params.get("d")));
-    importados.forEach(nom => registro[nom] = "voto");
-    save();
+    try {
+        const data = JSON.parse(atob(params.get("d")));
+        data.forEach(nom => {
+            if(!registro[nom]) registro[nom] = "voto";
+        });
+        localStorage.setItem("tja_votos", JSON.stringify(registro));
+    } catch(e) { console.error("Error al sincronizar enlace"); }
 }
 
 function render() {
     const lista = document.getElementById("lista");
     const buscar = document.getElementById("buscar").value.toLowerCase();
-    const buscarNum = document.getElementById("buscarNum").value;
     lista.innerHTML = "";
     
-    let presentes = 0, ausentes = 0;
+    let presentes = 0;
     votantes.forEach(v => {
-        if(registro[v.nombre] === "voto") presentes++;
-        else if(registro[v.nombre] === "ausente") ausentes++;
+        const estado = registro[v.nombre];
+        if(estado === "voto") presentes++;
         
-        const matchesFiltro = v.nombre.toLowerCase().includes(buscar) || (v.ci && v.ci.includes(buscar));
-        const matchesNum = !buscarNum || v.n == buscarNum;
-
-        if(matchesFiltro && matchesNum) {
+        if(v.nombre.toLowerCase().includes(buscar) || v.ci.includes(buscar)) {
             const div = document.createElement("div");
-            div.className = "persona" + (registro[v.nombre] === "voto" ? " votado" : (registro[v.nombre] === "ausente" ? " ausente" : ""));
+            div.className = "persona" + (estado === "voto" ? " votado" : (estado === "nulo_auto" ? " no-voto" : ""));
             div.innerHTML = `
                 <div class="info">
-                    <span class="n-orden">ORDEN #${v.n}</span>
-                    <span class="nombre">${v.nombre}</span>
-                    <span class="ci">C.I.: ${v.ci}</span>
+                    <span style="font-size:12px; color:#3b82f6;">ORDEN #${v.n}</span><br>
+                    <span class="nombre">${v.nombre}</span><br>
+                    <span class="ci">CI: ${v.ci}</span>
                 </div>
-                <div>
-                    <button class="btn-marcar" onclick="marcar('${v.nombre}')" ${cerrada ? "disabled" : ""}>
-                        ${registro[v.nombre] === "voto" ? "✔️ VOTÓ" : "MARCAR"}
-                    </button>
-                    ${registro[v.nombre] === "voto" && !cerrada ? `<button class="btn-quitar" onclick="quitar('${v.nombre}')">✕</button>` : ""}
-                </div>
-            `;
+                <button class="v-btn" style="padding:10px; background:#22c55e" onclick="marcar('${v.nombre}')" ${cerrada ? "disabled" : ""}>
+                    ${estado === "voto" ? "✔️" : "MARCAR"}
+                </button>`;
             lista.appendChild(div);
         }
     });
-
-    document.getElementById("asistentes").innerText = presentes;
-    document.getElementById("ausentes").innerText = ausentes;
-    document.getElementById("pendientes").innerText = votantes.length - presentes - ausentes;
 
     const porc = ((presentes / votantes.length) * 100).toFixed(1);
     document.getElementById("progressBar").style.width = porc + "%";
@@ -160,29 +169,37 @@ function render() {
     }
 }
 
-function marcar(nom) { registro[nom] = "voto"; save(); }
-function quitar(nom) { delete registro[nom]; save(); }
-function save() { localStorage.setItem("tja_votos", JSON.stringify(registro)); render(); }
-
-function cerrarMesa() {
-    if(!confirm("¿Cerrar mesa? Los no marcados se registrarán como ausentes.")) return;
-    votantes.forEach(v => { if(!registro[v.nombre]) registro[v.nombre] = "ausente"; });
-    cerrada = true;
-    localStorage.setItem("tja_cerrada", "true");
-    save();
+function marcar(nom) {
+    registro[nom] = "voto";
+    localStorage.setItem("tja_votos", JSON.stringify(registro));
+    render();
 }
 
-function votar(tipo) {
-    const totalVotos = conteo.patria + conteo.cdc + conteo.blanco + conteo.nulo;
-    const asistentes = Object.values(registro).filter(x => x === "voto").length;
+function cerrarConNulos() {
+    if(!confirm("¿Cerrar mesa? Todos los no marcados se sumarán como NULOS automáticamente.")) return;
     
-    if(totalVotos < asistentes) {
-        conteo[tipo]++;
-        localStorage.setItem("tja_conteo", JSON.stringify(conteo));
-        actualizarTablero();
-    } else {
-        alert("Todos los votos ya han sido escrutados.");
-    }
+    let faltantes = 0;
+    votantes.forEach(v => {
+        // Solo actúa sobre los que NO tienen marca de voto
+        if(!registro[v.nombre] || registro[v.nombre] === "ausente") {
+            registro[v.nombre] = "nulo_auto"; 
+            faltantes++;
+        }
+    });
+
+    conteo.nulo += faltantes;
+    cerrada = true;
+    
+    localStorage.setItem("tja_cerrada", "true");
+    localStorage.setItem("tja_votos", JSON.stringify(registro));
+    localStorage.setItem("tja_conteo", JSON.stringify(conteo));
+    render();
+}
+
+function votarManual(tipo) {
+    conteo[tipo]++;
+    localStorage.setItem("tja_conteo", JSON.stringify(conteo));
+    actualizarTablero();
 }
 
 function actualizarTablero() {
@@ -193,29 +210,16 @@ function actualizarTablero() {
 }
 
 function descargarReporte() {
-    let csv = "\uFEFFN°;NOMBRE COMPLETO;C.I.;ESTADO EN MESA\n";
-    votantes.forEach(v => {
-        const est = registro[v.nombre] === "voto" ? "PRESENTE" : "AUSENTE";
-        csv += `${v.n};${v.nombre};${v.ci};${est}\n`;
-    });
-    csv += `\nRESULTADOS FINALES\nPATRIA (ADRIÁN OLIVA);${conteo.patria}\nCDC (MARÍA RENÉ SORUCO);${conteo.cdc}\nBLANCO;${conteo.blanco}\nNULO;${conteo.nulo}`;
-    
+    let csv = "\uFEFFACTA FINAL - TARIJA 2026\n\n";
+    csv += `PARTIDO;VOTOS\nPATRIA;${conteo.patria}\nCDC;${conteo.cdc}\nBLANCO;${conteo.blanco}\nNULO (Ausentes + Manual);${conteo.nulo}\n`;
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "Acta_Final_Tarija_2026.csv";
+    link.download = "Acta_Final_Tarija.csv";
     link.click();
 }
 
-function generarEnlace() {
-    const votaron = Object.keys(registro).filter(k => registro[k] === "voto");
-    const url = window.location.href.split('?')[0] + "?d=" + btoa(JSON.stringify(votaron));
-    navigator.clipboard.writeText(url);
-    alert("¡Enlace copiado! Úsalo para pasar tus datos a otro navegador o dispositivo.");
-}
-
 document.getElementById("buscar").addEventListener("input", render);
-document.getElementById("buscarNum").addEventListener("input", render);
 render();
 </script>
 </body>
