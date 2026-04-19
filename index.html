@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Control de Votación PRO</title>
+<title>Control de Votación - Completo</title>
 <style>
 body {
     font-family: Arial;
@@ -35,12 +35,8 @@ button {
     cursor: pointer;
     border-radius: 5px;
 }
-.votado {
-    background: #16a34a !important;
-}
-.nulo {
-    background: #dc2626 !important;
-}
+.votado { background: #16a34a !important; }
+.nulo { background: #dc2626 !important; }
 .stats {
     margin-top: 20px;
     font-size: 18px;
@@ -65,5 +61,150 @@ button {
 
 const personas = [
 "SANTOS LEONARDO JAVIER",
+"SANTOS CHIRINOS LINDA GABRIELA",
+"SANTOS MOLLINEDO GERMAN LUIS",
 "SARAVIA AVALOS YOBANA",
-"SEG
+"SARAVIA GUEVARA MARIA LOURDES",
+"SEGOVIA AGUIRRE ALBERTO",
+"SEGOVIA AGUIRRE LUISA GUMERCINDA",
+"SEGOVIA ANAZCO FABIAN ALEJANDRO",
+"SEGOVIA DIAZ KEVIN HERNAN",
+"SEGOVIA FLORES GUSTAVO ARIEL",
+"SEGOVIA GUTIERREZ ANIBAL",
+"SERRUDO ROMERO JHON ANDER DAVID",
+"SILVA SUBIETA LILIANA",
+"SOLARES MENDOZA ALEXANDER MAGIN",
+"SOLIZ ESPINDOLA LIMBER",
+"SOLIZ LUNA ELIZABETH DORIS",
+"SORUCO ALBA LUCERO",
+"SORUCO RODAS ADRIANA",
+"SORUCO ROMERO ANGELA VANESSA",
+"SORUCO TEJERINA NATALIA",
+"SOTO MANCILLA LIZBETH KAREN",
+"SUBIA GUEVARA YAMIL GUSTAVO",
+"TAPIA AMADOR MATIAS",
+"TAPIA HUANCA LESLIE BONI",
+"TAPIA ICUNA VIRGINIA",
+"TARIFA FIGUEROA MARIEL ZARETH",
+"TEGUA DANITZA",
+"TEJERINA CASTILLO JHENNIFER ALISON",
+"TEJERINA CAYO RONI",
+"TEJERINA CHUQUIMIA ANAHY PAOLA",
+"TEJERINA RUEDA ADA LUZ",
+"TEJERINA VILAR JAZMIN ADELFA",
+"TICONA ALI JORGE GASTON",
+"TICONA GARECA SHIRLEY GABRIELA",
+"TOLA TOLA RITA",
+"TOLABA MAMANI NAYDELI LIDZA",
+"TOLABA VARGAS MICHELLE ANGELI",
+"TOLAY COPA MARTIN",
+"TORREJON CANO PAMELA ANDREA",
+"TORREJON LABRA PABLO",
+"TORREZ ARRATIA DAYANA NICOLE",
+"TORREZ BROWN JAVIER",
+"TORREZ LOPEZ SAUL",
+"UBALDO CHOQUE MARITZA",
+"UGARTE CHOQUE RAYMUNDO",
+"ULLOA ORTIZ ANGEL ANDRES",
+"VADILLO PADILLA LEYDY LAURA",
+"VALENCIA CONDORI LISSET ROCIO",
+"VALERIANO NARVAEZ JHOEL EDUARDO",
+"VARAS BUSTOS MARCELO",
+"VARGAS MORALES FRANZ ROLANDO",
+"VARGAS MORALES JACQUELINE REINA",
+"VARGAS VALLEJO MARITZA LISBETH",
+"VASCO TINTILAY LIDIA",
+"VASQUEZ AYAVIRI LIMBERTH",
+"VASQUEZ OSORIO KAREN ALEJANDRA",
+"VASQUEZ VICTORIO MARCEL GERARDO",
+"VEDIA RODRIGUEZ GREGORIO",
+"VEGA ENCINAS VANLIZ MONTSERRAT",
+"VEGA HIDALGO VILDO ROLANDO",
+"VEGA SANTOS KARLA LORENA",
+"VELASQUEZ FELIX",
+"VELASQUEZ CRUZ MARGARITA",
+"VELASQUEZ CRUZ NATALY HORTENCIA",
+"VELASQUEZ HUANCA HUGO",
+"VELASQUEZ REYES CRISTIAN MATIAS",
+"VERA FRANCO",
+"VICTORIO CONDORI JOEL ALEXANDER",
+"VIDAURRE DAZA MARITZA",
+"VIDES YUCRA FATIMA",
+"VILAR COPA SAYDA MARLENI",
+"VILLENA RODRIGUEZ ESTEBAN",
+"VILTE FLORES EDIL",
+"VILTE ORTIZ YOSELIN",
+"YAÑEZ VIDAURRE ANA ISABEL",
+"YUCA DELGADO JACQUELINNE STEFANI",
+"ZARATE CORPUS FABIOLA",
+"ZENTENO ARAMAYO ADRIANO RAUL",
+"ZENTENO FIGUEROA LILIAN KAREN",
+"ZENTENO GALLARDO OLIVER GERMAN",
+"ZENTENO ORTIZ JHONNY EDUARDO",
+"ZENTENO YEVARA WILLAN LUCIO",
+"ZUBIETA MANCILLA YAZMIN"
+];
+
+let estado = JSON.parse(localStorage.getItem("votos")) || {};
+
+const lista = document.getElementById("lista");
+const buscar = document.getElementById("buscar");
+
+function esHoraCierre() {
+    return new Date().getHours() >= 16;
+}
+
+function render(filtro="") {
+    lista.innerHTML = "";
+
+    let votaron = 0;
+    let nulos = 0;
+
+    personas.forEach(nombre => {
+
+        if(esHoraCierre() && !estado[nombre]) {
+            estado[nombre] = "nulo";
+        }
+
+        if(estado[nombre] === true) votaron++;
+        if(estado[nombre] === "nulo") nulos++;
+
+        if(nombre.toLowerCase().includes(filtro.toLowerCase())) {
+            const div = document.createElement("div");
+            div.className = "persona";
+
+            if(estado[nombre] === true) div.classList.add("votado");
+            if(estado[nombre] === "nulo") div.classList.add("nulo");
+
+            div.innerHTML = `
+                <span>${nombre}</span>
+                <button onclick="marcar('${nombre}')">
+                    ${estado[nombre] ? "✔️" : "Marcar"}
+                </button>
+            `;
+
+            lista.appendChild(div);
+        }
+    });
+
+    localStorage.setItem("votos", JSON.stringify(estado));
+
+    document.getElementById("votaron").innerText = votaron;
+    document.getElementById("nulos").innerText = nulos;
+    document.getElementById("faltan").innerText = personas.length - votaron - nulos;
+}
+
+function marcar(nombre) {
+    estado[nombre] = true;
+    localStorage.setItem("votos", JSON.stringify(estado));
+    render(buscar.value);
+}
+
+buscar.addEventListener("input", e => render(e.target.value));
+
+render();
+
+</script>
+
+</body>
+</html>
