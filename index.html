@@ -1,186 +1,63 @@
-from weasyprint import HTML
-
-# Contenido HTML para el reporte profesional
-html_content = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <title>Generador de Reporte Final - Mesa 83</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        @page {
-            size: A4;
-            margin: 20mm;
-            background-color: #ffffff;
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f172a; color: white; padding: 20px; }
+        .container { max-width: 800px; margin: auto; text-align: center; }
+        .btn-descargar { 
+            background: #22c55e; color: white; border: none; padding: 20px 40px; 
+            font-size: 20px; font-weight: bold; border-radius: 12px; cursor: pointer; 
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4); transition: 0.3s;
         }
-        body {
-            font-family: 'Helvetica', 'Arial', sans-serif;
-            color: #333;
-            line-height: 1.5;
-            margin: 0;
-            padding: 0;
-        }
-        .header {
-            text-align: center;
-            border-bottom: 2px solid #3b82f6;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            margin: 0;
-            color: #1e3a8a;
-            font-size: 22pt;
-            text-transform: uppercase;
-        }
-        .header p {
-            margin: 5px 0;
-            font-size: 11pt;
-            color: #666;
-        }
-        .section-title {
-            background-color: #f1f5f9;
-            padding: 8px 12px;
-            font-weight: bold;
-            font-size: 13pt;
-            color: #1e40af;
-            border-left: 5px solid #3b82f6;
-            margin: 20px 0 10px 0;
-        }
-        .stats-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        .stats-table th, .stats-table td {
-            border: 1px solid #e2e8f0;
-            padding: 12px;
-            text-align: left;
-        }
-        .stats-table th {
-            background-color: #f8fafc;
-            width: 70%;
-        }
-        .stats-table td {
-            text-align: center;
-            font-weight: bold;
-            font-size: 12pt;
-        }
-        .results-box {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .result-card {
-            flex: 1;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-        }
-        .result-card .label {
-            display: block;
-            font-size: 10pt;
-            color: #64748b;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-        .result-card .value {
-            font-size: 20pt;
-            font-weight: bold;
-            color: #0f172a;
-        }
-        .nulo-highlight {
-            border: 2px solid #ef4444 !important;
-            background-color: #fef2f2;
-        }
-        .absent-list {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 10pt;
-        }
-        .absent-list th {
-            background-color: #334155;
-            color: white;
-            padding: 8px;
-            text-align: left;
-        }
-        .absent-list td {
-            padding: 6px 8px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .footer {
-            margin-top: 40px;
-            text-align: center;
-            font-size: 9pt;
-            color: #94a3b8;
-        }
-        .signature-line {
-            margin-top: 60px;
-            display: flex;
-            justify-content: space-around;
-        }
-        .sig-box {
-            border-top: 1px solid #000;
-            width: 200px;
-            text-align: center;
-            padding-top: 5px;
-            font-size: 10pt;
-        }
+        .btn-descargar:hover { background: #16a34a; transform: translateY(-2px); }
+        
+        /* Estilos del reporte (lo que saldrá en el PDF) */
+        #reporte-pdf { background: white; color: #333; padding: 40px; width: 700px; margin: 20px auto; text-align: left; display: none; }
+        .header { text-align: center; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; margin-bottom: 20px; }
+        .section-title { background: #f1f5f9; padding: 10px; font-weight: bold; color: #1e40af; border-left: 5px solid #3b82f6; margin: 20px 0; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; }
+        .resultados { display: flex; gap: 10px; justify-content: space-around; }
+        .res-box { border: 1px solid #cbd5e1; padding: 15px; border-radius: 8px; text-align: center; width: 20%; }
+        .nulo-box { border: 2px solid #ef4444; background: #fef2f2; color: #b91c1c; }
     </style>
 </head>
 <body>
+
+<div class="container">
+    <h1>REPORTE FINAL CONSOLIDADO</h1>
+    <p>Haz clic abajo para generar y descargar el documento oficial en PDF.</p>
+    <button class="btn-descargar" onclick="generarPDF()">📥 DESCARGAR REPORTE PDF</button>
+</div>
+
+<div id="reporte-pdf">
     <div class="header">
-        <h1>Acta de Escrutinio Final</h1>
-        <p>Elecciones Departamentales Tarija | Mesa Nº 83</p>
-        <p>Fecha de Reporte: 19 de Abril, 2026</p>
+        <h1 style="margin:0; color:#1e3a8a;">ACTA DE ESCRUTINIO FINAL</h1>
+        <p style="margin:5px 0;">Mesa Nº 83 | Tarija, Bolivia</p>
     </div>
 
-    <div class="section-title">Resumen de Participación</div>
-    <table class="stats-table">
-        <tr>
-            <th>Total de ciudadanos inscritos en padrón (Mesa 83)</th>
-            <td>83</td>
-        </tr>
-        <tr>
-            <th>Ciudadanos que asistieron y emitieron su voto</th>
-            <td style="color: #16a34a;">72</td>
-        </tr>
-        <tr>
-            <th>Ciudadanos ausentes (No votaron)</th>
-            <td style="color: #dc2626;">11</td>
-        </tr>
+    <div class="section-title">RESUMEN DE PARTICIPACIÓN</div>
+    <table>
+        <tr><th>Total Padrón Electores</th><td>83</td></tr>
+        <tr><th>Ciudadanos que Votaron (Asistentes)</th><td style="color:green;">72</td></tr>
+        <tr><th>Ciudadanos Ausentes (No Votaron)</th><td style="color:red;">11</td></tr>
     </table>
 
-    <div class="section-title">Resultados por Partido / Opción</div>
-    <div style="display: table; width: 100%; table-layout: fixed; border-spacing: 10px;">
-        <div style="display: table-cell; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; border-top: 5px solid #ea580c;">
-            <span style="display: block; font-size: 10pt; color: #64748b; margin-bottom: 5px;">PATRIA</span>
-            <span style="font-size: 20pt; font-weight: bold;">26</span>
-        </div>
-        <div style="display: table-cell; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; border-top: 5px solid #2563eb;">
-            <span style="display: block; font-size: 10pt; color: #64748b; margin-bottom: 5px;">CDC</span>
-            <span style="font-size: 20pt; font-weight: bold;">42</span>
-        </div>
-        <div style="display: table-cell; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; border-top: 5px solid #94a3b8;">
-            <span style="display: block; font-size: 10pt; color: #64748b; margin-bottom: 5px;">BLANCO</span>
-            <span style="font-size: 20pt; font-weight: bold;">1</span>
-        </div>
-        <div style="display: table-cell; border: 2px solid #ef4444; background-color: #fef2f2; border-radius: 8px; padding: 15px; text-align: center;">
-            <span style="display: block; font-size: 10pt; color: #b91c1c; margin-bottom: 5px;">NULO *</span>
-            <span style="font-size: 20pt; font-weight: bold; color: #b91c1c;">14</span>
-        </div>
+    <div class="section-title">RESULTADOS POR PARTIDO</div>
+    <div class="resultados">
+        <div class="res-box"><b>PATRIA</b><br><span style="font-size:24px;">26</span></div>
+        <div class="res-box"><b>CDC</b><br><span style="font-size:24px;">42</span></div>
+        <div class="res-box"><b>BLANCO</b><br><span style="font-size:24px;">1</span></div>
+        <div class="res-box nulo-box"><b>NULO</b><br><span style="font-size:24px;">14</span></div>
     </div>
-    <p style="font-size: 9pt; color: #666; margin-top: 10px;">* El total de votos nulos (14) incluye a los 11 ciudadanos ausentes más 3 votos anulados durante el conteo manual.</p>
+    <p style="font-size:11px; color:#666; margin-top:5px;">* Los 14 votos nulos incluyen los 11 ausentes detectados por el sistema.</p>
 
-    <div class="section-title">Relación de Ciudadanos Ausentes (11)</div>
-    <table class="absent-list">
-        <thead>
-            <tr>
-                <th style="width: 15%;">Nº Orden</th>
-                <th>Nombre Completo</th>
-                <th style="width: 30%;">Estado</th>
-            </tr>
-        </thead>
+    <div class="section-title">LISTA DE PERSONAS QUE NO VOTARON (11)</div>
+    <table style="font-size:12px;">
+        <thead><tr style="background:#f8fafc;"><th>Nº</th><th>Nombre Completo</th><th>Estado</th></tr></thead>
         <tbody>
             <tr><td>11</td><td>SEGOVIA GUTIERREZ ANIBAL</td><td>AUSENTE</td></tr>
             <tr><td>27</td><td>TEGUA DANITZA</td><td>AUSENTE</td></tr>
@@ -196,16 +73,30 @@ html_content = """
         </tbody>
     </table>
 
-    <div class="signature-line">
-        <div class="sig-box">Firma Responsable de Mesa</div>
-        <div class="sig-box">Firma Delegado/Testigo</div>
+    <div style="margin-top:50px; display:flex; justify-content:space-around;">
+        <div style="border-top:1px solid #000; width:200px; text-align:center;">Firma Jurado de Mesa</div>
+        <div style="border-top:1px solid #000; width:200px; text-align:center;">Firma Delegado</div>
     </div>
+</div>
 
-    <div class="footer">
-        Este documento es un reporte generado por el Sistema de Control de Votación Mesa 83.
-    </div>
+<script>
+function generarPDF() {
+    const element = document.getElementById('reporte-pdf');
+    element.style.display = 'block'; // Mostrar para capturar
+    
+    const opt = {
+        margin:       10,
+        filename:     'Reporte_Mesa_83_Final.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        element.style.display = 'none'; // Ocultar de nuevo
+    });
+}
+</script>
+
 </body>
 </html>
-"""
-
-HTML(string=html_content).write_pdf("reporte_mesa_83_final.pdf")
