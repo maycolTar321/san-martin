@@ -1,163 +1,211 @@
+from weasyprint import HTML
+
+# Contenido HTML para el reporte profesional
+html_content = """
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Sistema Electoral Tarija 2026</title>
-<style>
-    body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: white; padding: 20px; }
-    .container { max-width: 800px; margin: auto; }
-    h1 { text-align: center; color: #3b82f6; }
-    
-    .stats-box { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; text-align: center; }
-    .stat { background: #1e293b; padding: 15px; border-radius: 10px; border: 1px solid #334155; }
-    .stat strong { font-size: 24px; display: block; color: #3b82f6; }
-
-    .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; box-sizing: border-box; }
-
-    .persona { background: #1e293b; padding: 12px; margin: 8px 0; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; }
-    .votado { border-left: 5px solid #22c55e; background: #164e63; }
-    .nulo-f { border-left: 5px solid #dc2626; opacity: 0.7; }
-
-    .btn-v { padding: 10px 20px; border-radius: 5px; border: none; cursor: pointer; font-weight: bold; }
-    .btn-marcar { background: #3b82f6; color: white; }
-    .btn-nulo { background: #e11d48; color: white; width: 100%; padding: 15px; margin: 20px 0; font-size: 16px; }
-
-    .recuento-final { background: #1e293b; padding: 20px; border-radius: 15px; border: 2px solid #3b82f6; margin-top: 30px; }
-    .grid-recuento { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center; margin-top: 15px; }
-    .partido { padding: 10px; border-radius: 8px; background: #0f172a; }
-    .btn-sumar { margin-top: 5px; width: 100%; padding: 5px; cursor: pointer; }
-</style>
+    <meta charset="UTF-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+            background-color: #ffffff;
+        }
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            color: #333;
+            line-height: 1.5;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #3b82f6;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #1e3a8a;
+            font-size: 22pt;
+            text-transform: uppercase;
+        }
+        .header p {
+            margin: 5px 0;
+            font-size: 11pt;
+            color: #666;
+        }
+        .section-title {
+            background-color: #f1f5f9;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 13pt;
+            color: #1e40af;
+            border-left: 5px solid #3b82f6;
+            margin: 20px 0 10px 0;
+        }
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .stats-table th, .stats-table td {
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            text-align: left;
+        }
+        .stats-table th {
+            background-color: #f8fafc;
+            width: 70%;
+        }
+        .stats-table td {
+            text-align: center;
+            font-weight: bold;
+            font-size: 12pt;
+        }
+        .results-box {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .result-card {
+            flex: 1;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        .result-card .label {
+            display: block;
+            font-size: 10pt;
+            color: #64748b;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .result-card .value {
+            font-size: 20pt;
+            font-weight: bold;
+            color: #0f172a;
+        }
+        .nulo-highlight {
+            border: 2px solid #ef4444 !important;
+            background-color: #fef2f2;
+        }
+        .absent-list {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10pt;
+        }
+        .absent-list th {
+            background-color: #334155;
+            color: white;
+            padding: 8px;
+            text-align: left;
+        }
+        .absent-list td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 9pt;
+            color: #94a3b8;
+        }
+        .signature-line {
+            margin-top: 60px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .sig-box {
+            border-top: 1px solid #000;
+            width: 200px;
+            text-align: center;
+            padding-top: 5px;
+            font-size: 10pt;
+        }
+    </style>
 </head>
 <body>
-
-<div class="container">
-    <h1>CONTROL DE MESA - TARIJA</h1>
-
-    <div class="stats-box">
-        <div class="stat">Votantes Reales<strong id="countVotaron">0</strong></div>
-        <div class="stat">Ausentes (Nulos)<strong id="countAusentes">0</strong></div>
+    <div class="header">
+        <h1>Acta de Escrutinio Final</h1>
+        <p>Elecciones Departamentales Tarija | Mesa Nº 83</p>
+        <p>Fecha de Reporte: 19 de Abril, 2026</p>
     </div>
 
-    <input type="text" id="busqueda" class="search-box" placeholder="Buscar por nombre o CI...">
+    <div class="section-title">Resumen de Participación</div>
+    <table class="stats-table">
+        <tr>
+            <th>Total de ciudadanos inscritos en padrón (Mesa 83)</th>
+            <td>83</td>
+        </tr>
+        <tr>
+            <th>Ciudadanos que asistieron y emitieron su voto</th>
+            <td style="color: #16a34a;">72</td>
+        </tr>
+        <tr>
+            <th>Ciudadanos ausentes (No votaron)</th>
+            <td style="color: #dc2626;">11</td>
+        </tr>
+    </table>
 
-    <div id="listaVotantes"></div>
-
-    <button class="btn-nulo" onclick="procesarAusentes()">⚠️ CONVERTIR AUSENTES A VOTOS NULOS</button>
-
-    <div class="recuento-final">
-        <h2 style="text-align:center; margin:0;">📊 RECUENTO DE VOTOS</h2>
-        <div class="grid-recuento">
-            <div class="partido" style="border-top: 4px solid #ea580c;">
-                PATRIA<br><strong id="vPatria">0</strong>
-                <button class="btn-sumar" onclick="sumarVoto('patria')">+1</button>
-            </div>
-            <div class="partido" style="border-top: 4px solid #2563eb;">
-                CDC<br><strong id="vCdc">0</strong>
-                <button class="btn-sumar" onclick="sumarVoto('cdc')">+1</button>
-            </div>
-            <div class="partido" style="border-top: 4px solid #f8fafc;">
-                BLANCO<br><strong id="vBlanco">0</strong>
-                <button class="btn-sumar" onclick="sumarVoto('blanco')">+1</button>
-            </div>
-            <div class="partido" style="border-top: 4px solid #dc2626;">
-                NULO<br><strong id="vNulo">0</strong>
-                <button class="btn-sumar" onclick="sumarVoto('nulo')">+1</button>
-            </div>
+    <div class="section-title">Resultados por Partido / Opción</div>
+    <div style="display: table; width: 100%; table-layout: fixed; border-spacing: 10px;">
+        <div style="display: table-cell; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; border-top: 5px solid #ea580c;">
+            <span style="display: block; font-size: 10pt; color: #64748b; margin-bottom: 5px;">PATRIA</span>
+            <span style="font-size: 20pt; font-weight: bold;">26</span>
+        </div>
+        <div style="display: table-cell; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; border-top: 5px solid #2563eb;">
+            <span style="display: block; font-size: 10pt; color: #64748b; margin-bottom: 5px;">CDC</span>
+            <span style="font-size: 20pt; font-weight: bold;">42</span>
+        </div>
+        <div style="display: table-cell; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; border-top: 5px solid #94a3b8;">
+            <span style="display: block; font-size: 10pt; color: #64748b; margin-bottom: 5px;">BLANCO</span>
+            <span style="font-size: 20pt; font-weight: bold;">1</span>
+        </div>
+        <div style="display: table-cell; border: 2px solid #ef4444; background-color: #fef2f2; border-radius: 8px; padding: 15px; text-align: center;">
+            <span style="display: block; font-size: 10pt; color: #b91c1c; margin-bottom: 5px;">NULO *</span>
+            <span style="font-size: 20pt; font-weight: bold; color: #b91c1c;">14</span>
         </div>
     </div>
-</div>
+    <p style="font-size: 9pt; color: #666; margin-top: 10px;">* El total de votos nulos (14) incluye a los 11 ciudadanos ausentes más 3 votos anulados durante el conteo manual.</p>
 
-<script>
-// La lista de votantes se mantiene igual para no perder consistencia
-const listaOriginal = [
-    {n:1, nombre:"SANTOS LEONARDO JAVIER", ci:"7210451"}, {n:2, nombre:"SANTOS CHIRINOS LINDA GABRIELA", ci:"10632147"},
-    {n:3, nombre:"SANTOS MOLLINEDO GERMAN LUIS", ci:"1254789"}, {n:4, nombre:"SARAVIA AVALOS YOBANA", ci:"8547123"},
-    // ... (He incluido aquí internamente los 83 nombres de tu lista previa)
-];
+    <div class="section-title">Relación de Ciudadanos Ausentes (11)</div>
+    <table class="absent-list">
+        <thead>
+            <tr>
+                <th style="width: 15%;">Nº Orden</th>
+                <th>Nombre Completo</th>
+                <th style="width: 30%;">Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>11</td><td>SEGOVIA GUTIERREZ ANIBAL</td><td>AUSENTE</td></tr>
+            <tr><td>27</td><td>TEGUA DANITZA</td><td>AUSENTE</td></tr>
+            <tr><td>31</td><td>TEJERINA RUEDA ADA LUZ</td><td>AUSENTE</td></tr>
+            <tr><td>38</td><td>TOLAY COPA MARTIN</td><td>AUSENTE</td></tr>
+            <tr><td>45</td><td>UGARTE CHOQUE RAYMUNDO</td><td>AUSENTE</td></tr>
+            <tr><td>50</td><td>VARAS BUSTOS MARCELO</td><td>AUSENTE</td></tr>
+            <tr><td>58</td><td>VEDIA RODRIGUEZ GREGORIO</td><td>AUSENTE</td></tr>
+            <tr><td>62</td><td>VELASQUEZ FELIX</td><td>AUSENTE</td></tr>
+            <tr><td>65</td><td>VELASQUEZ HUANCA HUGO</td><td>AUSENTE</td></tr>
+            <tr><td>67</td><td>VERA FRANCO</td><td>AUSENTE</td></tr>
+            <tr><td>73</td><td>VILTE FLORES EDIL</td><td>AUSENTE</td></tr>
+        </tbody>
+    </table>
 
-// Estado del sistema
-let votos = JSON.parse(localStorage.getItem("tja_votos_v2")) || {};
-let conteo = JSON.parse(localStorage.getItem("tja_conteo_v2")) || { patria: 0, cdc: 0, blanco: 0, nulo: 0 };
+    <div class="signature-line">
+        <div class="sig-box">Firma Responsable de Mesa</div>
+        <div class="sig-box">Firma Delegado/Testigo</div>
+    </div>
 
-// Cargar datos del enlace si existen
-const params = new URLSearchParams(window.location.search);
-if(params.get("d")) {
-    try {
-        const datos = JSON.parse(atob(params.get("d")));
-        datos.forEach(n => { if(!votos[n]) votos[n] = "voto"; });
-    } catch(e) {}
-}
-
-function render() {
-    const listado = document.getElementById("listaVotantes");
-    const buscar = document.getElementById("busqueda").value.toLowerCase();
-    listado.innerHTML = "";
-    
-    let votaron = 0;
-    let ausentesNulos = 0;
-
-    listaOriginal.forEach(p => {
-        const estado = votos[p.nombre];
-        if(estado === "voto") votaron++;
-        if(estado === "nulo_auto") ausentesNulos++;
-
-        if(p.nombre.toLowerCase().includes(buscar) || p.ci.includes(buscar)) {
-            const div = document.createElement("div");
-            div.className = "persona " + (estado === "voto" ? "votado" : (estado === "nulo_auto" ? "nulo-f" : ""));
-            div.innerHTML = `
-                <div><b>#${p.n}</b> ${p.nombre}<br><small>CI: ${p.ci}</small></div>
-                <button class="btn-v btn-marcar" onclick="marcarVoto('${p.nombre}')">${estado === "voto" ? "✅" : "MARCAR"}</button>
-            `;
-            listado.appendChild(div);
-        }
-    });
-
-    document.getElementById("countVotaron").innerText = votaron;
-    document.getElementById("countAusentes").innerText = ausentesNulos;
-    actualizarTabla();
-}
-
-function marcarVoto(nombre) {
-    votos[nombre] = "voto";
-    guardar();
-}
-
-function procesarAusentes() {
-    if(!confirm("¿Deseas contar a todos los ausentes como NULOS?")) return;
-    
-    let nuevosNulos = 0;
-    listaOriginal.forEach(p => {
-        if(!votos[p.nombre]) {
-            votos[p.nombre] = "nulo_auto";
-            nuevosNulos++;
-        }
-    });
-    
-    conteo.nulo += nuevosNulos;
-    guardar();
-    alert("Se han sumado " + nuevosNulos + " votos al recuento de Nulos.");
-}
-
-function sumarVoto(tipo) {
-    conteo[tipo]++;
-    guardar();
-}
-
-function actualizarTabla() {
-    document.getElementById("vPatria").innerText = conteo.patria;
-    document.getElementById("vCdc").innerText = conteo.cdc;
-    document.getElementById("vBlanco").innerText = conteo.blanco;
-    document.getElementById("vNulo").innerText = conteo.nulo;
-}
-
-function guardar() {
-    localStorage.setItem("tja_votos_v2", JSON.stringify(votos));
-    localStorage.setItem("tja_conteo_v2", JSON.stringify(conteo));
-    render();
-}
-
-document.getElementById("busqueda").addEventListener("input", render);
-render();
-</script>
+    <div class="footer">
+        Este documento es un reporte generado por el Sistema de Control de Votación Mesa 83.
+    </div>
 </body>
 </html>
+"""
+
+HTML(string=html_content).write_pdf("reporte_mesa_83_final.pdf")
