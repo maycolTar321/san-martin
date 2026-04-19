@@ -4,9 +4,8 @@
 <meta charset="UTF-8">
 <title>Control de Votación PRO+</title>
 <style>
-    body { font-family: Arial; background: #0f172a; color: white; padding: 20px; }
+    body { font-family: Arial, sans-serif; background: #0f172a; color: white; padding: 20px; }
     h1 { text-align: center; }
-    /* Estilo para la barra de búsqueda */
     .search-container { position: sticky; top: 0; background: #0f172a; padding: 10px 0; z-index: 100; }
     input { width: 100%; padding: 15px; font-size: 18px; border-radius: 8px; border: 2px solid #334155; background: #1e293b; color: white; box-sizing: border-box; }
     
@@ -15,14 +14,19 @@
     
     button { background: #22c55e; border: none; padding: 10px 15px; color: white; cursor: pointer; border-radius: 5px; font-weight: bold; }
     .votado { background: #16a34a !important; border-color: #22c55e; }
-    .nulo { background: #dc2626 !important; border-color: #ef4444; }
+    .no-asistio { background: #475569 !important; border-color: #64748b; opacity: 0.8; }
     
     .stats, .escrutinio { margin-top: 20px; font-size: 18px; background: #1e293b; padding: 20px; border-radius: 10px; border: 1px solid #334155; }
     .btn-cerrar { background: #e11d48; width: 100%; padding: 15px; margin-top: 15px; font-size: 18px; cursor: pointer; border-radius: 8px; border: none; color: white; font-weight: bold; }
-    .conteo-box { display: flex; gap: 20px; margin-top: 15px; }
-    .voto-btn { padding: 20px; flex: 1; font-size: 20px; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; }
+    
+    .conteo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+    .voto-btn { padding: 20px; font-size: 18px; border: none; border-radius: 10px; color: white; cursor: pointer; font-weight: bold; }
     .cdc { background: #2563eb; }
     .patria { background: #ea580c; }
+    .blanco { background: #f8fafc; color: #0f172a; }
+    .nulo { background: #dc2626; }
+    
+    .resultados-finales { margin-top: 25px; padding-top: 15px; border-top: 2px solid #334155; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 22px; }
     .oculto { display: none; }
 </style>
 </head>
@@ -37,75 +41,76 @@
 <div id="lista"></div>
 
 <div class="stats">
-    ✅ Ya votaron: <span id="votaron">0</span><br>
-    ❌ No asistieron (Nulos): <span id="nulos">0</span><br>
-    ⏳ Faltan: <span id="faltan">0</span>
+    ✅ Asistentes: <span id="asistentes">0</span><br>
+    ❌ Ausentes: <span id="ausentes">0</span><br>
+    ⏳ Pendientes: <span id="pendientes">83</span>
     <button id="btnCerrar" class="btn-cerrar" onclick="cerrarVotacion()">🔒 FINALIZAR Y CERRAR MESA</button>
 </div>
 
 <div id="seccionEscrutinio" class="escrutinio oculto">
-    <h2>📊 Hoja de Escrutinio</h2>
-    <p>Registrar votos de los <span id="totalSufragantes">0</span> asistentes:</p>
-    <div class="conteo-box">
-        <button class="voto-btn cdc" onclick="contar('cdc')">Voto CDC</button>
-        <button class="voto-btn patria" onclick="contar('patria')">Voto Patria</button>
+    <h2>📊 Conteo de Votos (Uno a Uno)</h2>
+    <p>Presiona el botón por cada voto extraído de la urna:</p>
+    
+    <div class="conteo-grid">
+        <button class="voto-btn cdc" onclick="sumarVoto('cdc')">+1 CDC</button>
+        <button class="voto-btn patria" onclick="sumarVoto('patria')">+1 Patria</button>
+        <button class="voto-btn blanco" onclick="sumarVoto('blanco')">+1 Blanco</button>
+        <button class="voto-btn nulo" onclick="sumarVoto('nulo')">+1 Nulo</button>
     </div>
-    <div style="margin-top: 20px; font-size: 24px; border-top: 1px solid #334155; padding-top: 15px;">
-        🔵 <strong>CDC:</strong> <span id="resCDC">0</span><br>
-        🟠 <strong>Patria:</strong> <span id="resPatria">0</span><br>
-        ⚪ <strong>Blancos/Nulos:</strong> <span id="resBlancos">0</span>
+
+    <div class="resultados-finales">
+        <div>🔵 CDC: <strong id="resCDC">0</strong></div>
+        <div>🟠 Patria: <strong id="resPatria">0</strong></div>
+        <div>⚪ Blanco: <strong id="resBlanco">0</strong></div>
+        <div>🔴 Nulo: <strong id="resNulo">0</strong></div>
     </div>
+    <p style="margin-top:15px; color: #94a3b8; font-size: 14px;">Total contados: <span id="totalContados">0</span> / Asistentes: <span id="totalAsistieron">0</span></p>
 </div>
 
 <script>
-// Lista de 83 personas
 const personas = [
     {n:1, nombre:"SANTOS LEONARDO JAVIER"}, {n:2, nombre:"SANTOS CHIRINOS LINDA GABRIELA"}, {n:3, nombre:"SANTOS MOLLINEDO GERMAN LUIS"}, {n:4, nombre:"SARAVIA AVALOS YOBANA"}, {n:5, nombre:"SARAVIA GUEVARA MARIA LOURDES"}, {n:6, nombre:"SEGOVIA AGUIRRE ALBERTO"}, {n:7, nombre:"SEGOVIA AGUIRRE LUISA GUMERCINDA"}, {n:8, nombre:"SEGOVIA ANAZCO FABIAN ALEJANDRO"}, {n:9, nombre:"SEGOVIA DIAZ KEVIN HERNAN"}, {n:10, nombre:"SEGOVIA FLORES GUSTAVO ARIEL"}, {n:11, nombre:"SEGOVIA GUTIERREZ ANIBAL"}, {n:12, nombre:"SERRUDO ROMERO JHON ANDER DAVID"}, {n:13, nombre:"SILVA SUBIETA LILIANA"}, {n:14, nombre:"SOLARES MENDOZA ALEXANDER MAGIN"}, {n:15, nombre:"SOLIZ ESPINDOLA LIMBER"}, {n:16, nombre:"SOLIZ LUNA ELIZABETH DORIS"}, {n:17, nombre:"SORUCO ALBA LUCERO"}, {n:18, nombre:"SORUCO RODAS ADRIANA"}, {n:19, nombre:"SORUCO ROMERO ANGELA VANESSA"}, {n:20, nombre:"SORUCO TEJERINA NATALIA"}, {n:21, nombre:"SOTO MANCILLA LIZBETH KAREN"}, {n:22, nombre:"SUBIA GUEVARA YAMIL GUSTAVO"}, {n:23, nombre:"TAPIA AMADOR MATIAS"}, {n:24, nombre:"TAPIA HUANCA LESLIE BONI"}, {n:25, nombre:"TAPIA ICUNA VIRGINIA"}, {n:26, nombre:"TARIFA FIGUEROA MARIEL ZARETH"}, {n:27, nombre:"TEGUA DANITZA"}, {n:28, nombre:"TEJERINA CASTILLO JHENNIFER ALISON"}, {n:29, nombre:"TEJERINA CAYO RONI"}, {n:30, nombre:"TEJERINA CHUQUIMIA ANAHY PAOLA"}, {n:31, nombre:"TEJERINA RUEDA ADA LUZ"}, {n:32, nombre:"TEJERINA VILAR JAZMIN ADELFA"}, {n:33, nombre:"TICONA ALI JORGE GASTON"}, {n:34, nombre:"TICONA GARECA SHIRLEY GABRIELA"}, {n:35, nombre:"TOLA TOLA RITA"}, {n:36, nombre:"TOLABA MAMANI NAYDELI LIDZA"}, {n:37, nombre:"TOLABA VARGAS MICHELLE ANGELI"}, {n:38, nombre:"TOLAY COPA MARTIN"}, {n:39, nombre:"TORREJON CANO PAMELA ANDREA"}, {n:40, nombre:"TORREJON LABRA PABLO"}, {n:41, nombre:"TORREZ ARRATIA DAYANA NICOLE"}, {n:42, nombre:"TORREZ BROWN JAVIER"}, {n:43, nombre:"TORREZ LOPEZ SAUL"}, {n:44, nombre:"UBALDO CHOQUE MARITZA"}, {n:45, nombre:"UGARTE CHOQUE RAYMUNDO"}, {n:46, nombre:"ULLOA ORTIZ ANGEL ANDRES"}, {n:47, nombre:"VADILLO PADILLA LEYDY LAURA"}, {n:48, nombre:"VALENCIA CONDORI LISSET ROCIO"}, {n:49, nombre:"VALERIANO NARVAEZ JHOEL EDUARDO"}, {n:50, nombre:"VARAS BUSTOS MARCELO"}, {n:51, nombre:"VARGAS MORALES FRANZ ROLANDO"}, {n:52, nombre:"VARGAS MORALES JACQUELINE REINA"}, {n:53, nombre:"VARGAS VALLEJO MARITZA LISBETH"}, {n:54, nombre:"VASCO TINTILAY LIDIA"}, {n:55, nombre:"VASQUEZ AYAVIRI LIMBERTH"}, {n:56, nombre:"VASQUEZ OSORIO KAREN ALEJANDRA"}, {n:57, nombre:"VASQUEZ VICTORIO MARCEL GERARDO"}, {n:58, nombre:"VEDIA RODRIGUEZ GREGORIO"}, {n:59, nombre:"VEGA ENCINAS VANLIZ MONTSERRAT"}, {n:60, nombre:"VEGA HIDALGO VILDO ROLANDO"}, {n:61, nombre:"VEGA SANTOS KARLA LORENA"}, {n:62, nombre:"VELASQUEZ FELIX"}, {n:63, nombre:"VELASQUEZ CRUZ MARGARITA"}, {n:64, nombre:"VELASQUEZ CRUZ NATALY HORTENCIA"}, {n:65, nombre:"VELASQUEZ HUANCA HUGO"}, {n:66, nombre:"VELASQUEZ REYES CRISTIAN MATIAS"}, {n:67, nombre:"VERA FRANCO"}, {n:68, nombre:"VICTORIO CONDORI JOEL ALEXANDER"}, {n:69, nombre:"VIDAURRE DAZA MARITZA"}, {n:70, nombre:"VIDES YUCRA FATIMA"}, {n:71, nombre:"VILAR COPA SAYDA MARLENI"}, {n:72, nombre:"VILLENA RODRIGUEZ ESTEBAN"}, {n:73, nombre:"VILTE FLORES EDIL"}, {n:74, nombre:"VILTE ORTIZ YOSELIN"}, {n:75, nombre:"YAÑEZ VIDAURRE ANA ISABEL"}, {n:76, nombre:"YUCA DELGADO JACQUELINNE STEFANI"}, {n:77, nombre:"ZARATE CORPUS FABIOLA"}, {n:78, nombre:"ZENTENO ARAMAYO ADRIANO RAUL"}, {n:79, nombre:"ZENTENO FIGUEROA LILIAN KAREN"}, {n:80, nombre:"ZENTENO GALLARDO OLIVER GERMAN"}, {n:81, nombre:"ZENTENO ORTIZ JHONNY EDUARDO"}, {n:82, nombre:"ZENTENO YEVARA WILLAN LUCIO"}, {n:83, nombre:"ZUBIETA MANCILLA YAZMIN"}
 ];
 
-// Carga datos existentes
 let estado = JSON.parse(localStorage.getItem("votos")) || {};
-let conteo = JSON.parse(localStorage.getItem("conteo")) || { cdc: 0, patria: 0 };
+let conteo = JSON.parse(localStorage.getItem("conteo")) || { cdc: 0, patria: 0, blanco: 0, nulo: 0 };
 let mesaCerrada = localStorage.getItem("mesaCerrada") === "true";
 
-const lista = document.getElementById("lista");
-const buscar = document.getElementById("buscar");
-
 function render(filtro="") {
+    const lista = document.getElementById("lista");
     lista.innerHTML = "";
-    let votaron = 0;
-    let nulos = 0;
+    let asistentes = 0;
+    let ausentes = 0;
 
     personas.forEach(p => {
-        if(estado[p.nombre] === true) votaron++;
-        else if(estado[p.nombre] === "nulo") nulos++;
+        if(estado[p.nombre] === true) asistentes++;
+        else if(estado[p.nombre] === "ausente") ausentes++;
 
-        // La búsqueda sigue funcionando igual
         if(p.nombre.toLowerCase().includes(filtro.toLowerCase())) {
             const div = document.createElement("div");
-            div.className = "persona" + (estado[p.nombre] === true ? " votado" : (estado[p.nombre] === "nulo" ? " nulo" : ""));
+            div.className = "persona" + (estado[p.nombre] === true ? " votado" : (estado[p.nombre] === "ausente" ? " no-asistio" : ""));
             div.innerHTML = `
                 <div>
                     <span class="n-orden">${p.n}</span>
                     <span>${p.nombre}</span>
                 </div>
                 <button onclick="marcar('${p.nombre}')" ${mesaCerrada ? "disabled" : ""}>
-                    ${estado[p.nombre] ? "✔️" : "Marcar"}
+                    ${estado[p.nombre] === true ? "✔️" : (estado[p.nombre] === "ausente" ? "❌" : "Marcar")}
                 </button>
             `;
             lista.appendChild(div);
         }
     });
 
-    document.getElementById("votaron").innerText = votaron;
-    document.getElementById("nulos").innerText = nulos;
-    document.getElementById("faltan").innerText = personas.length - votaron - nulos;
+    document.getElementById("asistentes").innerText = asistentes;
+    document.getElementById("ausentes").innerText = ausentes;
+    document.getElementById("pendientes").innerText = personas.length - asistentes - ausentes;
     
     if(mesaCerrada) {
         document.getElementById("seccionEscrutinio").classList.remove("oculto");
         document.getElementById("btnCerrar").classList.add("oculto");
-        document.getElementById("totalSufragantes").innerText = votaron;
-        actualizarResultados();
+        document.getElementById("totalAsistieron").innerText = asistentes;
+        actualizarTablero();
     }
 }
 
@@ -113,35 +118,40 @@ function marcar(nombre) {
     if(mesaCerrada) return;
     estado[nombre] = true;
     localStorage.setItem("votos", JSON.stringify(estado));
-    render(buscar.value);
+    render(document.getElementById("buscar").value);
 }
 
 function cerrarVotacion() {
-    if(!confirm("¿Deseas cerrar la mesa? Los que no asistieron se marcarán como nulos.")) return;
-    personas.forEach(p => { if(!estado[p.nombre]) estado[p.nombre] = "nulo"; });
+    if(!confirm("¿Cerrar mesa y empezar el escrutinio?")) return;
+    personas.forEach(p => { if(!estado[p.nombre]) estado[p.nombre] = "ausente"; });
     mesaCerrada = true;
     localStorage.setItem("mesaCerrada", "true");
     localStorage.setItem("votos", JSON.stringify(estado));
     render();
 }
 
-function contar(frente) {
-    let totalAsistieron = parseInt(document.getElementById("votaron").innerText);
-    if((conteo.cdc + conteo.patria) < totalAsistieron) {
-        conteo[frente]++;
+function sumarVoto(tipo) {
+    let totalAsistentes = parseInt(document.getElementById("asistentes").innerText);
+    let yaContados = conteo.cdc + conteo.patria + conteo.blanco + conteo.nulo;
+
+    if(yaContados < totalAsistentes) {
+        conteo[tipo]++;
         localStorage.setItem("conteo", JSON.stringify(conteo));
-        actualizarResultados();
+        actualizarTablero();
+    } else {
+        alert("Ya has contado todos los votos correspondientes a los asistentes.");
     }
 }
 
-function actualizarResultados() {
-    let totalAsistieron = parseInt(document.getElementById("votaron").innerText);
+function actualizarTablero() {
     document.getElementById("resCDC").innerText = conteo.cdc;
     document.getElementById("resPatria").innerText = conteo.patria;
-    document.getElementById("resBlancos").innerText = totalAsistieron - (conteo.cdc + conteo.patria);
+    document.getElementById("resBlanco").innerText = conteo.blanco;
+    document.getElementById("resNulo").innerText = conteo.nulo;
+    document.getElementById("totalContados").innerText = conteo.cdc + conteo.patria + conteo.blanco + conteo.nulo;
 }
 
-buscar.addEventListener("input", e => render(e.target.value));
+document.getElementById("buscar").addEventListener("input", e => render(e.target.value));
 render();
 </script>
 </body>
