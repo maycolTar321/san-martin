@@ -3,219 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catequesis San Martín de Porres Tarija</title>
+    <title>Catequesis Grupo 4 - Registro</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --guindo: #800020;
-            --guindo-soft: #fdf2f4;
-            --insta-grad: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #fd1d1d);
-            --bg: #fafafa;
-            --white: #ffffff;
-            --shadow: 0 4px 12px rgba(0,0,0,0.05);
-            --radius: 20px;
-        }
+        :root { --guindo: #800020; --insta: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); --bg: #fafafa; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); margin: 0; color: #262626; }
+        
+        /* HEADER ESTILO APP */
+        header { background: white; border-bottom: 1px solid #dbdbdb; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; }
+        .logo-smp { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--guindo); padding: 2px; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg); color: #262626; padding-bottom: 80px; }
+        .container { max-width: 450px; margin: auto; padding: 20px; }
+        
+        /* TARJETAS TIPO INSTAGRAM */
+        .card { background: white; border: 1px solid #dbdbdb; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        h2 { font-weight: 800; font-size: 18px; margin-bottom: 15px; color: var(--guindo); text-align: center; }
 
-        /* --- HEADER ESTILO PREMIUM --- */
-        header {
-            background: var(--white); border-bottom: 1px solid #dbdbdb;
-            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .logo-container { display: flex; align-items: center; gap: 10px; }
-        .logo-container img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--guindo); }
-        .brand-name { font-weight: 800; font-size: 14px; color: var(--guindo); text-transform: uppercase; letter-spacing: -0.5px; }
+        /* CAMPOS DE FORMULARIO */
+        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #dbdbdb; font-size: 14px; outline: none; }
+        input:focus { border-color: var(--guindo); }
+        
+        .btn-enviar { background: var(--insta); color: white; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
+        .btn-enviar:active { transform: scale(0.95); }
 
-        /* --- STORIES (CATEGORÍAS RÁPIDAS) --- */
-        .stories-bar { display: flex; gap: 15px; padding: 15px 20px; overflow-x: auto; background: var(--white); border-bottom: 1px solid #dbdbdb; }
-        .story { display: flex; flex-direction: column; align-items: center; min-width: 70px; cursor: pointer; }
-        .story-ring { 
-            width: 60px; height: 60px; border-radius: 50%; padding: 3px;
-            background: var(--insta-grad); margin-bottom: 5px;
-        }
-        .story-inner { 
-            width: 100%; height: 100%; border-radius: 50%; background: white; 
-            display: flex; align-items: center; justify-content: center; font-size: 20px;
-        }
+        /* DISEÑO DE LA LISTA (SOLO PARA TI) */
+        .alumno-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: #fff; border-radius: 8px; margin-bottom: 5px; }
+        .controles { display: flex; gap: 5px; }
+        .btn-check { padding: 6px 10px; border-radius: 6px; font-size: 10px; border: 1px solid #ddd; cursor: pointer; font-weight: 700; }
+        .btn-check.active { background: var(--guindo); color: white; border-color: var(--guindo); }
 
-        /* --- CONTENEDOR PRINCIPAL --- */
-        .container { max-width: 500px; margin: auto; padding: 15px; }
+        .badge-tarea { background: #e1f5fe; color: #01579b; padding: 4px 8px; border-radius: 20px; font-size: 11px; margin-top: 5px; display: inline-block; }
 
-        /* --- TARJETAS TIPO INSTAGRAM --- */
-        .post-card { background: var(--white); border: 1px solid #dbdbdb; border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
-        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; }
-        .post-img { width: 100%; height: 250px; background: var(--guindo-soft); display: flex; align-items: center; justify-content: center; color: var(--guindo); font-size: 40px; }
-        .post-actions { padding: 12px; display: flex; gap: 15px; font-size: 20px; }
-        .post-content { padding: 0 12px 12px; font-size: 14px; line-height: 1.4; }
-        .post-content b { margin-right: 5px; }
-
-        /* --- PANEL DE GESTIÓN (LMS) --- */
-        .admin-panel { background: var(--white); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; }
-        input, select, textarea { 
-            width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #dbdbdb; 
-            border-radius: 8px; background: #fafafa; font-size: 14px;
-        }
-        .btn-action { 
-            width: 100%; padding: 12px; border: none; border-radius: 8px; 
-            background: var(--guindo); color: white; font-weight: 700; cursor: pointer;
-        }
-
-        /* --- NAV INFERIOR --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%; background: var(--white);
-            display: flex; justify-content: space-around; padding: 12px 0;
-            border-top: 1px solid #dbdbdb; z-index: 1000;
-        }
-        .nav-item { color: #262626; font-size: 22px; cursor: pointer; transition: 0.2s; }
-        .nav-item.active { color: var(--guindo); transform: scale(1.1); }
-
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .footer-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #dbdbdb; }
+        .nav-icon { font-size: 20px; color: #8e8e8e; cursor: pointer; }
+        .nav-icon.active { color: var(--guindo); }
+        
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo-container">
-            <img src="https://i.ibb.co/Lnbm2Xq/1000540900-jpg.jpg" alt="Logo SMP">
-            <div class="brand-name">Catequistas <br>Confirmación Tarija</div>
-        </div>
-        <i class="fab fa-facebook-messenger fa-lg"></i>
-    </header>
+<header>
+    <img src="https://i.ibb.co/Lnbm2Xq/1000540900-jpg.jpg" class="logo-smp">
+    <div style="font-weight: 800; font-size: 12px; color: var(--guindo);">GRUPO 4 - SAN MARTÍN DE PORRES</div>
+</header>
 
-    <div class="stories-bar">
-        <div class="story" onclick="app.nav('feed')">
-            <div class="story-ring"><div class="story-inner"><i class="fas fa-home"></i></div></div>
-            <span style="font-size: 10px; font-weight: 600;">Inicio</span>
+<div class="container">
+
+    <div id="v-registro" class="section">
+        <div class="card">
+            <h2>📝 Registro de Asistencia</h2>
+            <p style="font-size: 12px; text-align: center; color: #8e8e8e;">Hola! Regístrate para que Michael pueda tomarte la asistencia de hoy.</p>
+            <input type="text" id="nombre" placeholder="Tu nombre y apellido">
+            <input type="number" id="celular" placeholder="Tu número de celular">
+            <button class="btn-enviar" onclick="app.registrar()">Enviar mi registro</button>
         </div>
-        <div class="story" onclick="app.nav('edu')">
-            <div class="story-ring"><div class="story-inner"><i class="fas fa-book-open"></i></div></div>
-            <span style="font-size: 10px; font-weight: 600;">LMS</span>
-        </div>
-        <div class="story" onclick="app.nav('staff')">
-            <div class="story-ring"><div class="story-inner"><i class="fas fa-users"></i></div></div>
-            <span style="font-size: 10px; font-weight: 600;">Equipo</span>
-        </div>
-        <div class="story admin-only hidden" onclick="app.nav('admin')">
-            <div class="story-ring"><div class="story-inner"><i class="fas fa-cog"></i></div></div>
-            <span style="font-size: 10px; font-weight: 600;">Admin</span>
+
+        <div class="card">
+            <h2>📸 Subir Tarea / Misa</h2>
+            <select id="nombre-lista-tareas">
+                <option value="">Selecciona tu nombre...</option>
+            </select>
+            <input type="text" id="tema-tarea" placeholder="¿Qué tema es? (Ej: El Espíritu Santo)">
+            <p style="font-size: 11px; color: #8e8e8e;">Sube la foto de tu tarea o comprobante:</p>
+            <input type="file" accept="image/*">
+            <button class="btn-enviar" onclick="app.subirTarea()">Publicar Tarea</button>
         </div>
     </div>
 
-    <div class="container">
+    <div id="v-admin" class="section hidden">
+        <h2>📊 Mi Panel de Control</h2>
+        <div id="estadisticas" style="margin-bottom: 15px; font-size: 12px; font-weight: 700;"></div>
         
-        <div id="v-feed" class="section active">
-            <div id="main-feed"></div>
-        </div>
-
-        <div id="v-edu" class="section">
-            <h3 style="margin-bottom: 15px;">Módulos de Formación</h3>
-            <div id="lms-content"></div>
-        </div>
-
-        <div id="v-staff" class="section">
-            <h3 style="margin-bottom: 15px;">Nuestros Catequistas</h3>
-            <div id="catequistas-list"></div>
-        </div>
-
-        <div id="v-admin" class="section">
-            <div class="admin-panel">
-                <h4>Subir Nuevo Contenido</h4>
-                <select id="pub-type">
-                    <option value="avisos">Publicar Aviso (Feed)</option>
-                    <option value="tareas">Publicar Tarea (LMS)</option>
-                    <option value="catequistas">Registrar Catequista</option>
-                </select>
-                <input type="text" id="pub-title" placeholder="Título o Nombre">
-                <textarea id="pub-desc" placeholder="Descripción o link del material..."></textarea>
-                <button class="btn-action" onclick="app.saveData()">Publicar en la Plataforma</button>
+        <div id="lista-alumnos-master">
             </div>
-        </div>
 
+        <h2 style="margin-top: 30px;">📂 Tareas por Revisar</h2>
+        <div id="lista-tareas-master"></div>
     </div>
 
-    <div class="bottom-nav">
-        <i class="fas fa-home nav-item active" onclick="app.nav('feed')"></i>
-        <i class="fas fa-search nav-item"></i>
-        <i class="fas fa-plus-square nav-item admin-only hidden" onclick="app.nav('admin')"></i>
-        <i class="fas fa-heart nav-item"></i>
-        <i class="fas fa-user-circle nav-item" onclick="app.logout()"></i>
-    </div>
+</div>
 
-    <script>
-        const app = {
-            db: JSON.parse(localStorage.getItem('smp_final_db')) || {
-                avisos: [{title: 'Bienvenida', desc: 'Bienvenidos al ciclo 2026 de Confirmación en Tarija.', date: 'Hoy'}],
-                tareas: [],
-                catequistas: [{name: 'Michael Avila', info: 'Administrador General'}]
-            },
-            session: { role: 'admin' }, // Forzado para Michael
+<div class="footer-nav">
+    <i class="fas fa-user-edit nav-icon active" id="btn-v-reg" onclick="app.nav('registro')"></i>
+    <i class="fas fa-user-shield nav-icon" id="btn-v-adm" onclick="app.nav('admin')"></i>
+</div>
 
-            init: () => {
-                app.render();
-                if(app.session.role === 'admin') {
-                    document.querySelectorAll('.admin-only').forEach(e => e.classList.remove('hidden'));
-                }
-            },
+<script>
+    const app = {
+        // La base de datos guarda todo lo que ellos envían
+        db: JSON.parse(localStorage.getItem('grupo4_db')) || { jovenes: [], tareas: [] },
 
-            nav: (id) => {
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById('v-' + id).classList.add('active');
-                // Estética de botones
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            },
+        registrar: () => {
+            const nom = document.getElementById('nombre').value;
+            const cel = document.getElementById('celular').value;
+            if(!nom || !cel) return alert("Por favor pon tu nombre y celular");
 
-            saveData: () => {
-                const type = document.getElementById('pub-type').value;
-                const title = document.getElementById('pub-title').value;
-                const desc = document.getElementById('pub-desc').value;
+            app.db.jovenes.push({ id: Date.now(), nombre: nom, celular: cel });
+            app.sync("¡Genial! Ya te registraste.");
+            document.getElementById('nombre').value = "";
+            document.getElementById('celular').value = "";
+        },
 
-                if(!title) return alert("Completa el título");
-                
-                app.db[type].push({title, name: title, desc, info: desc, date: 'Reciente'});
-                localStorage.setItem('smp_final_db', JSON.stringify(app.db));
-                alert("¡Publicado!");
-                app.render();
-            },
+        subirTarea: () => {
+            const nom = document.getElementById('nombre-lista-tareas').value;
+            const tema = document.getElementById('tema-tarea').value;
+            if(!nom || !tema) return alert("Selecciona tu nombre y pon el tema");
 
-            render: () => {
-                // Render Feed (Avisos)
-                document.getElementById('main-feed').innerHTML = app.db.avisos.slice().reverse().map(a => `
-                    <div class="post-card">
-                        <div class="post-header"><img src="https://i.ibb.co/Lnbm2Xq/1000540900-jpg.jpg"> <b>Confirmación SMP</b></div>
-                        <div class="post-img"><i class="fas fa-church"></i></div>
-                        <div class="post-actions"><i class="far fa-heart"></i> <i class="far fa-comment"></i> <i class="far fa-paper-plane"></i></div>
-                        <div class="post-content"><b>Confirmación SMP</b> ${a.title}: ${a.desc}</div>
+            app.db.tareas.push({ nombre: nom, tema: tema, fecha: new Date().toLocaleString() });
+            app.sync("¡Tarea enviada con éxito!");
+            document.getElementById('tema-tarea').value = "";
+        },
+
+        nav: (id) => {
+            // Protección simple: Si quieres entrar a Admin, te pide una clave rápida (opcional)
+            if(id === 'admin') {
+                const pass = prompt("Introduce tu clave de Catequista:");
+                if(pass !== "1234") return alert("Acceso denegado");
+            }
+
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('v-' + id).classList.remove('hidden');
+            document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
+            document.getElementById('btn-v-' + id).classList.add('active');
+            app.render();
+        },
+
+        sync: (msg) => {
+            localStorage.setItem('grupo4_db', JSON.stringify(app.db));
+            alert(msg);
+            app.render();
+        },
+
+        render: () => {
+            // Actualizar select de tareas para los chicos
+            const select = document.getElementById('nombre-lista-tareas');
+            select.innerHTML = '<option value="">Selecciona tu nombre...</option>' + 
+                app.db.jovenes.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
+
+            // Actualizar tu Panel Maestro (Nombres que te aparecen)
+            const lista = document.getElementById('lista-alumnos-master');
+            lista.innerHTML = app.db.jovenes.map(j => `
+                <div class="alumno-row">
+                    <div>
+                        <strong style="font-size:14px;">${j.nombre}</strong><br>
+                        <small style="color:#8e8e8e;">${j.celular}</small>
                     </div>
-                `).join('');
-
-                // Render Catequistas
-                document.getElementById('catequistas-list').innerHTML = app.db.catequistas.map(c => `
-                    <div class="post-header" style="background:white; border-radius:10px; margin-bottom:10px; border:1px solid #dbdbdb;">
-                        <img src="https://ui-avatars.com/api/?name=${c.name}&background=800020&color=fff">
-                        <div><b>${c.name}</b><br><small>${c.info}</small></div>
+                    <div class="controles">
+                        <div class="btn-check" onclick="this.classList.toggle('active')">TEMA</div>
+                        <div class="btn-check" onclick="this.classList.toggle('active')">MISA</div>
                     </div>
-                `).join('');
+                </div>
+            `).join('') || '<p style="text-align:center;">Nadie se ha registrado aún...</p>';
 
-                // Render LMS
-                document.getElementById('lms-content').innerHTML = app.db.tareas.map(t => `
-                    <div class="admin-panel" style="border-left: 5px solid var(--guindo);">
-                        <strong>${t.title}</strong><br><small>${t.desc}</small>
-                        <button class="btn-action" style="margin-top:10px; padding:5px; font-size:12px;">Ver Material</button>
-                    </div>
-                `).join('') || '<p>Aún no hay tareas publicadas.</p>';
-            },
+            // Actualizar lista de tareas para que las veas
+            const tareasMaster = document.getElementById('lista-tareas-master');
+            tareasMaster.innerHTML = app.db.tareas.slice().reverse().map(t => `
+                <div class="card">
+                    <span style="font-weight:800; color:var(--guindo);">${t.nombre}</span><br>
+                    <span style="font-size:13px;">Entregó: ${t.tema}</span><br>
+                    <span class="badge-tarea">${t.fecha}</span>
+                </div>
+            `).join('');
 
-            logout: () => { if(confirm("¿Cerrar sesión?")) { localStorage.clear(); location.reload(); } }
-        };
+            document.getElementById('estadisticas').innerText = `Total Jóvenes: ${app.db.jovenes.length} | Tareas: ${app.db.tareas.length}`;
+        }
+    };
 
-        app.init();
-    </script>
+    app.render();
+</script>
+
 </body>
 </html>
