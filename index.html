@@ -11,7 +11,7 @@
         :root { --guindo: #800020; --bg: #f8f9fc; --white: #ffffff; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; }
         header { background: var(--white); padding: 15px; display: flex; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 1000; }
-        #logo-header { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--guindo); margin-right: 12px; object-fit: cover; }
+        #logo-header { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--guindo); margin-right: 12px; object-fit: cover; background: #eee; }
         .container { max-width: 100%; padding: 10px; }
         .card { background: var(--white); border-radius: 15px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
         h2 { font-size: 16px; color: var(--guindo); margin-bottom: 5px; }
@@ -42,7 +42,7 @@
 <body>
 
 <header>
-    <img id="logo-header" src="https://i.ibb.co/Lnbm2Xq/1000540900-jpg.jpg">
+    <img id="logo-header" src="">
     <div>
         <div style="font-weight:800; font-size:13px; color:var(--guindo);">GRUPO 4 • 2DO AÑO</div>
         <div style="font-size:10px; color:#666;">Catequista: Maycol Avila Zenteno</div>
@@ -50,28 +50,27 @@
 </header>
 
 <div class="container">
-
     <div id="v-joven" class="view">
         <div id="card-registro" class="card">
-            <h2><i class="fas fa-user-plus"></i> Inscripción al Grupo</h2>
+            <h2><i class="fas fa-user-plus"></i> Registro Único</h2>
             <label>Nombre Completo:</label>
             <input type="text" id="reg-nom" placeholder="Ej: Juan Perez" oninput="app.formatoNombre(this)">
             <label>Fecha de Nacimiento:</label>
             <input type="date" id="reg-fecha">
-            <label>C.I. / Documento:</label>
+            <label>C.I.:</label>
             <input type="number" id="reg-ci" placeholder="C.I.">
-            <label>Teléfono:</label>
+            <label>Celular:</label>
             <input type="number" id="reg-tel" placeholder="Celular">
             <button class="btn-main" onclick="app.registrar()">REGISTRARME</button>
         </div>
 
         <div id="panel-joven" class="hidden">
             <div class="card" style="background:#fff4e5; border-left:5px solid #ff9800;">
-                <h2><i class="fas fa-bullhorn"></i> Aviso Semanal</h2>
+                <h2><i class="fas fa-bullhorn"></i> Aviso de Maycol</h2>
                 <p id="txt-aviso" style="font-weight:700; color:#856404; margin:0;"></p>
             </div>
             <div class="card">
-                <h2><i class="fas fa-check-circle"></i> Mi Seguimiento</h2>
+                <h2><i class="fas fa-list-check"></i> Mi Estado</h2>
                 <div id="checklist-joven"></div>
             </div>
         </div>
@@ -79,17 +78,17 @@
 
     <div id="v-admin" class="view hidden">
         <div class="card">
-            <h2><i class="fas fa-calendar-check"></i> Registro de Asistencia</h2>
+            <h2><i class="fas fa-calendar-alt"></i> Asistencia y Tareas</h2>
             <div id="fecha-actual" class="fecha-hoy"></div>
             <div class="tabla-scroll">
                 <table>
                     <thead>
                         <tr>
-                            <th>Estudiante</th>
+                            <th>Nombre</th>
                             <th>Nacimiento</th>
-                            <th>C.I. / Tel.</th>
+                            <th>Datos</th>
                             <th>Asistencia</th>
-                            <th>Tareas</th>
+                            <th>Tarea</th>
                         </tr>
                     </thead>
                     <tbody id="lista-master"></tbody>
@@ -98,13 +97,17 @@
         </div>
         
         <div class="card">
-            <h2><i class="fas fa-edit"></i> Control de Avisos</h2>
-            <textarea id="input-aviso" placeholder="Escribe la tarea o aviso de la semana..."></textarea>
-            <button class="btn-main" onclick="app.publicarAviso()" style="background:#ff9800">PUBLICAR AVISO</button>
-            <button class="btn-main" onclick="app.exportar()" style="background:#107c41; margin-top:10px;">EXPORTAR EXCEL</button>
+            <h2><i class="fas fa-comment-dots"></i> Publicar Aviso</h2>
+            <textarea id="input-aviso" placeholder="Escribe aquí..."></textarea>
+            <button class="btn-main" onclick="app.publicarAviso()" style="background:#ff9800">ACTUALIZAR AVISO</button>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-camera"></i> Logo del Grupo</h2>
+            <input type="file" id="input-foto" accept="image/*" onchange="app.subirFoto(this)">
+            <button class="btn-main" onclick="app.exportar()" style="background:#107c41; margin-top:10px;">DESCARGAR EXCEL</button>
         </div>
     </div>
-
 </div>
 
 <nav class="nav-bar">
@@ -114,15 +117,13 @@
 
 <script>
     const app = {
-        db: JSON.parse(localStorage.getItem('smp_v13_final')) || {
-            jovenes: [],
-            aviso: "",
-            asist: {}, 
-            tareas: {} 
+        db: JSON.parse(localStorage.getItem('smp_v16_final')) || {
+            jovenes: [], aviso: "", logo: "", asist: {}, tareas: {} 
         },
-        sesion: JSON.parse(localStorage.getItem('smp_user_v13')) || null,
+        sesion: JSON.parse(localStorage.getItem('smp_user_v16')) || null,
 
         init: () => {
+            if(app.db.logo) document.getElementById('logo-header').src = app.db.logo;
             if(app.sesion) {
                 document.getElementById('card-registro').classList.add('hidden');
                 document.getElementById('panel-joven').classList.remove('hidden');
@@ -143,6 +144,18 @@
             app.render();
         },
 
+        subirFoto: (input) => {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    app.db.logo = e.target.result;
+                    document.getElementById('logo-header').src = e.target.result;
+                    app.save("Logo actualizado.");
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        },
+
         registrar: () => {
             const d = {
                 id: Date.now(),
@@ -151,18 +164,17 @@
                 c: document.getElementById('reg-ci').value,
                 t: document.getElementById('reg-tel').value
             };
-            if(!d.n || !d.f || !d.c || !d.t) return alert("Por favor, llena todos los datos.");
-            
+            if(!d.n || !d.f || !d.c || !d.t) return alert("Faltan datos.");
             app.db.jovenes.push(d);
             app.sesion = d;
-            localStorage.setItem('smp_user_v13', JSON.stringify(d));
-            app.save("Registro exitoso. ¡Bienvenido!");
+            localStorage.setItem('smp_user_v16', JSON.stringify(d));
+            app.save("¡Listo!");
             location.reload();
         },
 
         publicarAviso: () => {
             app.db.aviso = document.getElementById('input-aviso').value;
-            app.save("Aviso publicado correctamente.");
+            app.save("Aviso publicado.");
         },
 
         marcar: (tipo, jId, valor) => {
@@ -178,7 +190,7 @@
         },
 
         save: (m) => {
-            localStorage.setItem('smp_v13_final', JSON.stringify(app.db));
+            localStorage.setItem('smp_v16_final', JSON.stringify(app.db));
             if(m) alert(m);
             app.render();
         },
@@ -188,19 +200,17 @@
             const fechaTxt = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             document.getElementById('fecha-actual').innerText = "Hoy es: " + fechaTxt;
             
-            // Render Joven
             if(app.sesion) {
-                document.getElementById('txt-aviso').innerText = app.db.aviso || "No hay tareas por ahora.";
+                document.getElementById('txt-aviso').innerText = app.db.aviso || "No hay avisos.";
                 const hecho = (app.db.tareas[hoy] && app.db.tareas[hoy][app.sesion.id]);
                 document.getElementById('checklist-joven').innerHTML = `
-                    <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee;">
-                        <span>Tarea del día</span>
-                        <b style="color:${hecho?'green':'red'}">${hecho?'ENTREGADO':'FALTANTE'}</b>
+                    <div style="display:flex; justify-content:space-between; padding:12px 0;">
+                        <span>Tarea de hoy:</span>
+                        <b style="color:${hecho?'green':'red'}">${hecho?'PRESENTADO':'PENDIENTE'}</b>
                     </div>
                 `;
             }
 
-            // Render Admin Tabla
             const aHoy = app.db.asist[hoy] || {};
             const tHoy = app.db.tareas[hoy] || {};
             
@@ -208,7 +218,7 @@
                 <tr>
                     <td><b>${j.n}</b></td>
                     <td>${j.f}</td>
-                    <td>${j.c}<br><small>${j.t}</small></td>
+                    <td>CI: ${j.c}<br>${j.t}</td>
                     <td>
                         <div class="btn-grupo">
                             <button class="btn-control ${aHoy[j.id]=='p'?'active-p':''}" onclick="app.marcar('asist',${j.id},'p')">P</button>
@@ -218,27 +228,23 @@
                     </td>
                     <td>
                         <button class="btn-control ${tHoy[j.id]?'active-t':''}" onclick="app.marcar('tarea',${j.id},!tHoy[j.id])">
-                            ${tHoy[j.id]?'ENTREGADA':'MARCAR'}
+                            ${tHoy[j.id]?'SÍ':'NO'}
                         </button>
                     </td>
                 </tr>
-            `).join('') || '<tr><td colspan="5" style="text-align:center;">Esperando registros de los jóvenes...</td></tr>';
+            `).join('');
         },
 
         exportar: () => {
             const hoy = new Date().toLocaleDateString().replace(/\//g, '-');
             const data = app.db.jovenes.map(j => ({
-                Nombre: j.n,
-                Nacimiento: j.f,
-                CI: j.c,
-                Telefono: j.t,
-                Asistencia_Hoy: app.db.asist[hoy] ? (app.db.asist[hoy][j.id] || "-") : "-",
-                Tarea_Hoy: app.db.tareas[hoy] ? (app.db.tareas[hoy][j.id] ? "SÍ" : "NO") : "NO"
+                Nombre: j.n, CI: j.c, Asistencia: app.db.asist[hoy] ? (app.db.asist[hoy][j.id] || "-") : "-",
+                Tarea: app.db.tareas[hoy] ? (app.db.tareas[hoy][j.id] ? "SÍ" : "NO") : "NO"
             }));
             const ws = XLSX.utils.json_to_sheet(data);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Lista_" + hoy);
-            XLSX.writeFile(wb, "Catequesis_SMP_" + hoy + ".xlsx");
+            XLSX.utils.book_append_sheet(wb, ws, "Lista");
+            XLSX.writeFile(wb, "Catequesis_Maycol_" + hoy + ".xlsx");
         }
     };
     app.init();
