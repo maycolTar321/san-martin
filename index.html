@@ -3,126 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMP | Catequesis Pro</title>
+    <title>Catequesis SMP | San Martín de Porres</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --insta-blue: #007BFF;
-            --insta-orange: #FF8C00;
-            --insta-gradient: linear-gradient(45deg, #007BFF, #FF8C00);
+            --guindo: #800020; /* Color Vino Parroquial */
+            --guindo-light: #a31535;
             --bg: #FAFAFA;
             --white: #ffffff;
             --text: #262626;
-            --shadow: 0 2px 10px rgba(0,0,0,0.05);
+            --shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding-bottom: 75px; }
+        body { background-color: var(--bg); color: var(--text); padding-bottom: 80px; }
 
         /* HEADER */
         header {
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px);
-            padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;
-            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #dbdbdb;
+            background: var(--white); padding: 12px 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #efefef;
         }
-        .logo-text { font-weight: 700; font-size: 20px; background: var(--insta-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo-text { font-weight: 800; font-size: 18px; color: var(--guindo); }
 
-        /* STORIES (Secciones rápidas) */
-        .stories-container {
-            display: flex; gap: 15px; overflow-x: auto; padding: 15px 20px;
-            scrollbar-width: none;
+        /* LOGIN / INICIO */
+        #auth-screen { 
+            position: fixed; inset: 0; background: var(--white); z-index: 2000; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px;
         }
-        .story { text-align: center; flex-shrink: 0; }
-        .story-circle {
-            width: 65px; height: 65px; border-radius: 50%; padding: 3px;
-            background: var(--insta-gradient); display: flex; align-items: center; justify-content: center;
-        }
-        .story-circle div { background: white; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-        .story-circle i { font-size: 22px; color: var(--insta-blue); }
-        .story p { font-size: 11px; margin-top: 5px; font-weight: 600; }
+        .logo-img { width: 150px; margin-bottom: 20px; }
 
-        /* CONTENEDOR PRINCIPAL */
-        .container { padding: 10px 15px; max-width: 450px; margin: auto; }
+        /* BOTONES */
+        .btn-main { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; background: var(--guindo); color: white; margin-top: 10px; }
+        .btn-outline { background: none; border: 1.5px solid var(--guindo); color: var(--guindo); margin-top: 10px; }
+        .admin-trigger { position: absolute; top: 10px; right: 10px; font-size: 10px; color: #ddd; background: none; border: none; cursor: pointer; }
+
+        /* STORIES NAVIGATION */
+        .stories { display: flex; gap: 15px; overflow-x: auto; padding: 15px 20px; scrollbar-width: none; background: white; }
+        .story { text-align: center; flex-shrink: 0; cursor: pointer; }
+        .story-circle { 
+            width: 62px; height: 62px; border-radius: 50%; border: 2.5px solid var(--guindo); 
+            display: flex; align-items: center; justify-content: center; margin-bottom: 5px;
+        }
+        .story i { font-size: 20px; color: var(--guindo); }
+        .story p { font-size: 11px; font-weight: 600; }
+
+        /* SECCIONES */
+        .container { padding: 15px; max-width: 480px; margin: auto; }
         .section { display: none; animation: fadeIn 0.4s ease; }
         .section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* POSTS (ESTILO FEED) */
-        .post { background: var(--white); border: 1px solid #dbdbdb; border-radius: 12px; margin-bottom: 15px; overflow: hidden; }
-        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #f0f0f0; }
-        .post-header .avatar { width: 30px; height: 30px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-size: 12px; }
-        .post-body { padding: 15px; }
-        .post-footer { padding: 10px 15px; border-top: 1px solid #f0f0f0; font-size: 13px; color: #8e8e8e; }
+        /* POSTS (FEED) */
+        .post { background: var(--white); border-radius: 15px; margin-bottom: 20px; box-shadow: var(--shadow); overflow: hidden; }
+        .post-header { padding: 12px; display: flex; align-items: center; gap: 10px; background: #fdfdfd; }
+        .post-header .icon { width: 32px; height: 32px; background: var(--guindo); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .post-content { padding: 15px; line-height: 1.5; }
+        .post-content b { color: var(--guindo); display: block; margin-bottom: 5px; font-size: 16px; }
+        .post-date { padding: 10px 15px; font-size: 11px; color: #999; border-top: 1px solid #f5f5f5; }
 
-        /* BOTONES Y CAMPOS */
-        .input-group { background: white; padding: 20px; border-radius: 15px; border: 1px solid #dbdbdb; margin-bottom: 20px; }
-        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #efefef; border-radius: 8px; background: #fafafa; font-size: 14px; }
-        .btn-main { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; background: var(--insta-blue); color: white; margin-top: 10px; }
-        .btn-secondary { background: none; border: 1px solid #dbdbdb; color: var(--text); }
+        /* FORMULARIOS */
+        .card-form { background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #eee; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #eee; border-radius: 8px; background: #f9f9f9; font-size: 14px; outline: none; }
+        input:focus { border-color: var(--guindo); }
 
         /* NAV INFERIOR */
         .bottom-nav {
             position: fixed; bottom: 0; width: 100%; background: white;
-            display: flex; justify-content: space-around; padding: 12px 0;
-            border-top: 1px solid #dbdbdb; z-index: 1000;
+            display: flex; justify-content: space-around; padding: 15px 0;
+            border-top: 1px solid #eee; z-index: 1000;
         }
-        .nav-item { border: none; background: none; color: #262626; font-size: 24px; cursor: pointer; flex: 1; position: relative; }
-        .nav-item span { display: block; font-size: 10px; margin-top: 2px; }
-        .nav-item.active { color: var(--insta-orange); }
-
-        /* PANTALLA LOGIN */
-        #auth-screen { position: fixed; inset: 0; background: var(--white); z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
+        .nav-item { border: none; background: none; color: #aaa; font-size: 22px; cursor: pointer; flex: 1; }
+        .nav-item.active { color: var(--guindo); }
     </style>
 </head>
 <body>
 
     <div id="auth-screen">
-        <h1 class="logo-text" style="font-size: 32px; margin-bottom: 30px;">Catequesis Pro</h1>
+        <button class="admin-trigger" onclick="app.showLogin('admin')">admin</button>
+        <img src="https://i.ibb.co/Lnbm2Xq/1000540900-jpg.jpg" alt="Logo" class="logo-img"> <h2 style="color: var(--guindo); margin-bottom: 20px;">Catequesis SMP</h2>
+        
         <div style="width: 100%; max-width: 300px;">
-            <input type="email" id="log-email" placeholder="Correo electrónico">
-            <input type="password" id="log-pass" placeholder="Contraseña">
-            <button class="btn-main" onclick="app.login()">Iniciar Sesión</button>
+            <button class="btn-main" onclick="app.guestAccess()">Soy Joven (Ver Página)</button>
+            <button class="btn-main btn-outline" onclick="app.showLogin('catequista')">Soy Catequista</button>
             
-            <div style="text-align: center; margin: 25px 0; color: #8e8e8e; font-size: 13px;">O TAMBIÉN</div>
-            
-            <button class="btn-main btn-secondary" onclick="app.guestAccess()">Soy Joven Confirmante</button>
+            <div id="login-fields" style="display:none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
+                <input type="email" id="log-email" placeholder="Correo electrónico">
+                <input type="password" id="log-pass" placeholder="Contraseña">
+                <button class="btn-main" id="btn-entrar" onclick="app.login()">Entrar</button>
+                <button class="btn-main btn-outline" id="btn-crear" onclick="app.register()">Crear mi Cuenta</button>
+                <p onclick="app.hideLogin()" style="font-size: 12px; text-align: center; margin-top: 10px; cursor:pointer;">Volver</p>
+            </div>
         </div>
     </div>
 
     <header>
         <span class="logo-text">Confirmación SMP</span>
-        <div id="user-badge" style="font-size: 12px; font-weight: 600; color: var(--insta-blue);"></div>
+        <div id="user-role" style="font-size: 10px; font-weight: bold; background: #eee; padding: 3px 8px; border-radius: 10px;">PÁGINA PÚBLICA</div>
     </header>
 
-    <div class="stories-container" id="stories">
+    <div class="stories">
         <div class="story" onclick="app.nav('dash')"><div class="story-circle"><div><i class="fas fa-home"></i></div></div><p>Inicio</p></div>
-        <div class="story" onclick="app.nav('edu')"><div class="story-circle"><div><i class="fas fa-book"></i></div></div><p>Tareas</p></div>
+        <div class="story" onclick="app.nav('edu')"><div class="story-circle"><div><i class="fas fa-book-open"></i></div></div><p>Tareas</p></div>
         <div class="story" onclick="app.nav('blog')"><div class="story-circle"><div><i class="fas fa-bullhorn"></i></div></div><p>Avisos</p></div>
-        <div class="story" onclick="app.nav('event')"><div class="story-circle"><div><i class="fas fa-calendar"></i></div></div><p>Agenda</p></div>
-        <div id="story-admin" class="story" style="display:none;" onclick="app.nav('admin')"><div class="story-circle"><div><i class="fas fa-tools"></i></div></div><p>Gestión</p></div>
+        <div class="story" onclick="app.nav('event')"><div class="story-circle"><div><i class="fas fa-calendar-check"></i></div></div><p>Agenda</p></div>
     </div>
 
     <div class="container">
-        
         <div id="v-dash" class="section active">
-            <div id="feed-container">
-                </div>
+            <h4 style="margin-bottom:15px;">Últimas actualizaciones</h4>
+            <div id="feed-content"></div>
         </div>
 
         <div id="v-edu" class="section">
-            <div id="admin-edu-form" class="input-group admin-only" style="display:none;">
-                <h4 style="margin-bottom:10px;">Asignar Tarea / Tema</h4>
-                <input type="text" id="edu-title" placeholder="Título">
-                <textarea id="edu-desc" placeholder="Instrucciones o descripción..."></textarea>
-                <button class="btn-main" onclick="app.save('edu')">Publicar Tarea</button>
+            <div class="card-form auth-required" style="display:none;">
+                <b>Asignar Tarea / Tema</b>
+                <input type="text" id="edu-title" placeholder="Título del tema">
+                <textarea id="edu-desc" placeholder="Instrucciones..."></textarea>
+                <button class="btn-main" onclick="app.save('edu')">Publicar</button>
             </div>
             <div id="list-edu"></div>
         </div>
 
-        <div id="v-admin" class="section admin-only">
+        <div id="v-blog" class="section">
+            <div class="card-form auth-required" style="display:none;">
+                <b>Nuevo Anuncio</b>
+                <input type="text" id="blog-title" placeholder="Título del aviso">
+                <textarea id="blog-text" placeholder="Escribe el aviso aquí..."></textarea>
+                <button class="btn-main" onclick="app.save('blog')">Postear</button>
+            </div>
+            <div id="list-blog"></div>
+        </div>
+
+        <div id="v-event" class="section">
+            <div class="card-form auth-required" style="display:none;">
+                <b>Programar Evento</b>
+                <input type="text" id="ev-name" placeholder="Nombre del evento">
+                <input type="date" id="ev-date">
+                <button class="btn-main" onclick="app.save('event')">Agendar</button>
+            </div>
+            <div id="list-event"></div>
+        </div>
+
+        <div id="v-admin" class="section">
             <h3>Panel Maestro</h3>
-            <div class="input-group">
+            <div class="card-form">
                 <select id="adm-type">
                     <option value="cat">Catequista</option>
                     <option value="gru">Grupo</option>
@@ -130,84 +156,84 @@
                 </select>
                 <input type="text" id="adm-name" placeholder="Nombre">
                 <input type="text" id="adm-extra" placeholder="Dato extra">
-                <button class="btn-main" onclick="app.saveAdmin()">Registrar</button>
+                <button class="btn-main" onclick="app.saveAdmin()">Guardar Registro</button>
             </div>
             <div id="list-admin"></div>
-        </div>
-
-        <div id="v-blog" class="section">
-            <div class="input-group admin-only" style="display:none;">
-                <input type="text" id="blog-title" placeholder="Título del Aviso">
-                <textarea id="blog-text" placeholder="¿Qué quieres anunciar hoy?"></textarea>
-                <button class="btn-main" onclick="app.save('blog')">Postear</button>
-            </div>
-            <div id="list-blog"></div>
-        </div>
-
-        <div id="v-event" class="section">
-            <div class="input-group admin-only" style="display:none;">
-                <input type="text" id="ev-name" placeholder="Evento">
-                <input type="date" id="ev-date">
-                <button class="btn-main" onclick="app.save('event')">Agendar</button>
-            </div>
-            <div id="list-event"></div>
         </div>
     </div>
 
     <div class="bottom-nav">
         <button class="nav-item active" onclick="app.nav('dash')"><i class="fas fa-home"></i></button>
         <button class="nav-item" onclick="app.nav('edu')"><i class="fas fa-graduation-cap"></i></button>
-        <button class="nav-item" onclick="app.nav('blog')"><i class="fas fa-plus-square"></i></button>
-        <button class="nav-item" id="nav-admin" style="display:none;" onclick="app.nav('admin')"><i class="fas fa-user-cog"></i></button>
+        <button class="nav-item" onclick="app.nav('event')"><i class="fas fa-calendar-alt"></i></button>
+        <button class="nav-item" id="nav-admin" style="display:none;" onclick="app.nav('admin')"><i class="fas fa-cog"></i></button>
         <button class="nav-item" onclick="app.logout()"><i class="fas fa-sign-out-alt"></i></button>
     </div>
 
     <script>
         const app = {
-            db: JSON.parse(localStorage.getItem('smp_final_db')) || { cat:[], gru:[], con:[], blog:[], edu:[], event:[] },
-            isAdmin: false,
+            db: JSON.parse(localStorage.getItem('smp_v3_db')) || { 
+                users:[], cat:[], gru:[], con:[], blog:[], edu:[], event:[] 
+            },
+            currentRole: 'joven',
+
+            // NAVEGACIÓN
+            nav: (id) => {
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.getElementById('v-' + id).classList.add('active');
+                if(event) event.currentTarget.classList.add('active');
+            },
+
+            // LOGIN LOGIC
+            showLogin: (role) => {
+                document.getElementById('login-fields').style.display = 'block';
+                document.getElementById('btn-crear').style.display = (role === 'catequista') ? 'block' : 'none';
+                app.tempRole = role;
+            },
+
+            hideLogin: () => document.getElementById('login-fields').style.display = 'none',
+
+            register: () => {
+                const e = document.getElementById('log-email').value;
+                const p = document.getElementById('log-pass').value;
+                if(!e || !p) return alert("Completa los datos");
+                app.db.users.push({email: e, pass: p, role: 'catequista'});
+                localStorage.setItem('smp_v3_db', JSON.stringify(app.db));
+                alert("Cuenta creada. Ahora inicia sesión.");
+            },
 
             login: () => {
-                const email = document.getElementById('log-email').value;
-                const pass = document.getElementById('log-pass').value;
+                const e = document.getElementById('log-email').value;
+                const p = document.getElementById('log-pass').value;
 
-                if(email === 'avilamichael0@gmail.com' && pass === '123456') {
-                    app.isAdmin = true;
-                    localStorage.setItem('smp_role', 'admin');
-                    app.init();
-                } else if(email.length > 3) {
-                    app.isAdmin = false;
-                    localStorage.setItem('smp_role', 'catequista');
-                    app.init();
+                if(e === 'avilamichael0@gmail.com' && p === '123456') {
+                    app.setSession('admin');
                 } else {
-                    alert("Datos incorrectos");
+                    const user = app.db.users.find(u => u.email === e && u.pass === p);
+                    if(user) app.setSession('catequista');
+                    else alert("Correo o clave incorrecta");
                 }
+            },
+
+            setSession: (role) => {
+                localStorage.setItem('smp_session', role);
+                location.reload();
             },
 
             guestAccess: () => {
-                app.isAdmin = false;
-                localStorage.setItem('smp_role', 'joven');
-                app.init();
-            },
-
-            init: () => {
+                localStorage.setItem('smp_session', 'joven');
                 document.getElementById('auth-screen').style.display = 'none';
-                const role = localStorage.getItem('smp_role');
-                
-                if(role === 'admin') {
-                    document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
-                    document.getElementById('story-admin').style.display = 'block';
-                    document.getElementById('nav-admin').style.display = 'block';
-                    document.getElementById('user-badge').innerText = "ADMIN";
-                } else {
-                    document.getElementById('user-badge').innerText = role.toUpperCase();
-                }
                 app.render();
             },
 
-            nav: (id) => {
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.getElementById('v-' + id).classList.add('active');
+            // DATA LOGIC
+            save: (key) => {
+                const t = document.getElementById(key + '-title')?.value || document.getElementById('ev-name')?.value;
+                const d = document.getElementById(key + '-text')?.value || document.getElementById(key + '-desc')?.value || document.getElementById('ev-date')?.value;
+                if(!t) return;
+                app.db[key].push({title: t, desc: d, date: new Date().toLocaleDateString()});
+                app.sync();
             },
 
             saveAdmin: () => {
@@ -219,46 +245,51 @@
                 app.sync();
             },
 
-            save: (key) => {
-                const t = document.getElementById(key + '-title')?.value || document.getElementById('ev-name')?.value;
-                const d = document.getElementById(key + '-text')?.value || document.getElementById(key + '-desc')?.value || document.getElementById('ev-date')?.value;
-                if(!t) return;
-                app.db[key].push({title: t, desc: d, date: new Date().toLocaleDateString()});
-                app.sync();
-            },
-
             sync: () => {
-                localStorage.setItem('smp_final_db', JSON.stringify(app.db));
+                localStorage.setItem('smp_v3_db', JSON.stringify(app.db));
+                alert("¡Publicado con éxito!");
                 app.render();
-                alert("¡Publicado!");
+                document.querySelectorAll('input, textarea').forEach(i => i.value = "");
             },
 
             render: () => {
-                // Render Feed (Dashboard)
-                const feed = document.getElementById('feed-container');
-                const allPosts = [...app.db.blog, ...app.db.edu].reverse();
-                feed.innerHTML = allPosts.map(p => `
+                const role = localStorage.getItem('smp_session');
+                document.getElementById('user-role').innerText = role ? role.toUpperCase() : "PÁGINA PÚBLICA";
+                
+                if(role === 'admin' || role === 'catequista') {
+                    document.querySelectorAll('.auth-required').forEach(el => el.style.display = 'block');
+                }
+                if(role === 'admin') {
+                    document.getElementById('nav-admin').style.display = 'block';
+                }
+
+                // Render Feed
+                const all = [...app.db.blog, ...app.db.edu].reverse();
+                document.getElementById('feed-content').innerHTML = all.map(p => `
                     <div class="post">
-                        <div class="post-header"><div class="avatar">SM</div> <b>San Martín de Porres</b></div>
-                        <div class="post-body"><b>${p.title}</b><p style="margin-top:5px; font-size:14px;">${p.desc}</p></div>
-                        <div class="post-footer">Publicado el ${p.date}</div>
+                        <div class="post-header"><div class="icon">SM</div> <b>San Martín de Porres</b></div>
+                        <div class="post-content"><b>${p.title}</b><p>${p.desc}</p></div>
+                        <div class="post-date">Publicado: ${p.date}</div>
                     </div>
                 `).join('');
 
-                // Render Listas
-                document.getElementById('list-edu').innerHTML = app.db.edu.map(e => `<div class="post"><div class="post-body">📘 <b>${e.title}</b><p>${e.desc}</p></div></div>`).join('');
-                document.getElementById('list-blog').innerHTML = app.db.blog.map(b => `<div class="post"><div class="post-body">📢 <b>${b.title}</b><p>${b.desc}</p></div></div>`).join('');
-                document.getElementById('list-event').innerHTML = app.db.event.map(e => `<div class="post"><div class="post-body">📅 <b>${e.title}</b><p>Fecha: ${e.desc}</p></div></div>`).join('');
-                document.getElementById('list-admin').innerHTML = app.db.cat.concat(app.db.gru, app.db.con).map(i => `<div class="post-header" style="border:1px solid #dbdbdb; margin-bottom:5px; border-radius:8px;"><b>${i.name}</b> - <small>${i.extra}</small></div>`).join('');
+                // Render Listas Específicas
+                document.getElementById('list-edu').innerHTML = app.db.edu.slice().reverse().map(e => `<div class="post"><div class="post-content"><b>📘 ${e.title}</b><p>${e.desc}</p></div></div>`).join('');
+                document.getElementById('list-blog').innerHTML = app.db.blog.slice().reverse().map(b => `<div class="post"><div class="post-content"><b>📢 ${b.title}</b><p>${b.desc}</p></div></div>`).join('');
+                document.getElementById('list-event').innerHTML = app.db.event.slice().reverse().map(e => `<div class="post"><div class="post-content"><b>📅 ${e.title}</b><p>Fecha: ${e.desc}</p></div></div>`).join('');
+                document.getElementById('list-admin').innerHTML = app.db.cat.concat(app.db.gru, app.db.con).map(i => `<div class="post-header" style="margin-bottom:5px; border-radius:10px; border:1px solid #eee;"><b>${i.name}</b> <small>(${i.extra})</small></div>`).join('');
             },
 
             logout: () => {
-                localStorage.clear();
+                localStorage.removeItem('smp_session');
                 location.reload();
             }
         };
 
-        if(localStorage.getItem('smp_role')) app.init();
+        if(localStorage.getItem('smp_session')) {
+            document.getElementById('auth-screen').style.display = 'none';
+            app.render();
+        }
     </script>
 </body>
 </html>
