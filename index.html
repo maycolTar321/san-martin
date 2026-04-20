@@ -3,68 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Catequesis PRO FINAL</title>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
+<title>Catequesis PRO</title>
 
 <style>
-:root{
---bg:#0f172a;
---card:#1e293b;
---primary:#22c55e;
---text:#fff;
-}
-body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);}
-
-/* SIDEBAR */
+body{margin:0;font-family:Arial;background:#0f172a;color:white;}
 .sidebar{
-position:fixed;
-width:230px;
-height:100%;
-background:#020617;
-padding-top:20px;
+position:fixed;width:220px;height:100%;background:#020617;padding-top:20px;
 }
 .sidebar button{
 display:block;width:100%;padding:12px;border:none;background:none;color:white;text-align:left;
 }
-
-/* MAIN */
-.main{margin-left:230px;padding:20px;}
+.main{margin-left:220px;padding:20px;}
 .section{display:none;}
 .active{display:block;}
-
 .card{
-background:var(--card);
-padding:15px;
-margin:10px 0;
-border-radius:10px;
+background:#1e293b;padding:15px;margin:10px 0;border-radius:10px;
 }
-
 input,select,textarea{
 width:100%;padding:10px;margin:5px 0;border:none;border-radius:10px;
 }
-
 button{
-padding:10px;border:none;border-radius:10px;background:var(--primary);color:white;
+padding:10px;border:none;border-radius:10px;background:#22c55e;color:white;
 }
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:10px;
-}
-
-#login{padding:30px;}
 </style>
-</head>
 
+</head>
 <body>
 
 <!-- LOGIN -->
 <div id="login">
-<h2>Login Catequesis</h2>
+<h2>Login</h2>
 <input id="email" placeholder="Correo">
 <input id="pass" type="password" placeholder="Contraseña">
 <button onclick="login()">Ingresar</button>
@@ -75,29 +43,21 @@ gap:10px;
 <div id="app" style="display:none;">
 
 <div class="sidebar">
-<button onclick="ver('dashboard')">📊 Dashboard</button>
-<button onclick="ver('grupos')">📚 Grupos</button>
-<button onclick="ver('usuarios')">🙋 Confirmantes</button>
-<button onclick="ver('tareas')">📝 Tareas</button>
-<button onclick="ver('blog')">💬 Blog</button>
-<button onclick="ver('biblioteca')">📖 Biblioteca</button>
-<button onclick="ver('eventos')">📅 Eventos</button>
-<button onclick="logout()">🚪 Salir</button>
+<button onclick="ver('dashboard')">Dashboard</button>
+<button onclick="ver('grupos')">Grupos</button>
+<button onclick="ver('usuarios')">Confirmantes</button>
+<button onclick="ver('tareas')">Tareas</button>
+<button onclick="logout()">Salir</button>
 </div>
 
 <div class="main">
 
-<!-- DASHBOARD -->
 <div id="dashboard" class="section active">
-<h2>Dashboard</h2>
-<div class="grid">
+<h2>Panel</h2>
 <div class="card">Grupos: <span id="totalGrupos"></span></div>
 <div class="card">Confirmantes: <span id="totalUsuarios"></span></div>
-<div class="card">Tareas: <span id="totalTareas"></span></div>
-</div>
 </div>
 
-<!-- GRUPOS -->
 <div id="grupos" class="section">
 <h2>Grupos</h2>
 <input id="gNombre" placeholder="Nombre grupo">
@@ -105,7 +65,6 @@ gap:10px;
 <div id="listaGrupos"></div>
 </div>
 
-<!-- USUARIOS -->
 <div id="usuarios" class="section">
 <h2>Confirmantes</h2>
 <input id="uNombre" placeholder="Nombre">
@@ -114,7 +73,6 @@ gap:10px;
 <div id="listaUsuarios"></div>
 </div>
 
-<!-- TAREAS -->
 <div id="tareas" class="section">
 <h2>Tareas</h2>
 <input id="tTexto" placeholder="Tarea">
@@ -123,51 +81,54 @@ gap:10px;
 <div id="listaTareas"></div>
 </div>
 
-<!-- BLOG -->
-<div id="blog" class="section">
-<textarea id="bTexto"></textarea>
-<button onclick="addPost()">Publicar</button>
-<div id="listaBlog"></div>
-</div>
-
-<!-- BIBLIOTECA -->
-<div id="biblioteca" class="section">
-<input id="libro" placeholder="Libro">
-<button onclick="addLibro()">Agregar</button>
-<div id="listaLibros"></div>
-</div>
-
-<!-- EVENTOS -->
-<div id="eventos" class="section">
-<input id="eNombre" placeholder="Evento">
-<input id="eFecha" type="date">
-<button onclick="addEvento()">Guardar</button>
-<div id="listaEventos"></div>
-</div>
-
 </div>
 </div>
 
-<script>
+<!-- FIREBASE MODULAR -->
+<script type="module">
 
-// CONFIGURACIÓN FIREBASE
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import {
+getAuth,
+signInWithEmailAndPassword,
+createUserWithEmailAndPassword,
+onAuthStateChanged,
+signOut
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+
+import {
+getFirestore,
+collection,
+addDoc,
+query,
+where,
+onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+// 🔥 CONFIGURA AQUÍ
 const firebaseConfig = {
 apiKey: "TU_API_KEY",
 authDomain: "TU_DOMINIO",
 projectId: "TU_ID"
 };
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+const appFirebase = initializeApp(firebaseConfig);
+const auth = getAuth(appFirebase);
+const db = getFirestore(appFirebase);
 
 // LOGIN
-function login(){auth.signInWithEmailAndPassword(email.value,pass.value);}
-function register(){auth.createUserWithEmailAndPassword(email.value,pass.value);}
-function logout(){auth.signOut();}
+window.login = async () => {
+await signInWithEmailAndPassword(auth, email.value, pass.value);
+};
+
+window.register = async () => {
+await createUserWithEmailAndPassword(auth, email.value, pass.value);
+};
+
+window.logout = () => signOut(auth);
 
 // ESTADO
-auth.onAuthStateChanged(user=>{
+onAuthStateChanged(auth, user => {
 if(user){
 login.style.display="none";
 app.style.display="block";
@@ -178,138 +139,82 @@ app.style.display="none";
 }
 });
 
-function ver(id){
+// NAV
+window.ver = (id) => {
 document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
-}
+};
 
 // INIT
 function init(uid){
 cargarGrupos(uid);
 cargarUsuarios(uid);
 cargarTareas(uid);
-cargarBlog();
-cargarLibros();
-cargarEventos();
 }
 
 // GRUPOS
-function addGrupo(){
-db.collection("grupos").add({nombre:gNombre.value,user:auth.currentUser.uid});
-}
+window.addGrupo = async () => {
+await addDoc(collection(db,"grupos"),{
+nombre:gNombre.value,
+user:auth.currentUser.uid
+});
+};
 
 function cargarGrupos(uid){
-db.collection("grupos").where("user","==",uid)
-.onSnapshot(data=>{
+const q = query(collection(db,"grupos"), where("user","==",uid));
+onSnapshot(q,data=>{
 listaGrupos.innerHTML="";
 uGrupo.innerHTML="";
 tGrupo.innerHTML="";
+totalGrupos.innerText=data.size;
 data.forEach(doc=>{
 let g=doc.data().nombre;
 listaGrupos.innerHTML+=`<div class="card">${g}</div>`;
 uGrupo.innerHTML+=`<option>${g}</option>`;
 tGrupo.innerHTML+=`<option>${g}</option>`;
 });
-totalGrupos.innerText=data.size;
 });
 }
 
 // USUARIOS
-function addUsuario(){
-db.collection("usuarios").add({
+window.addUsuario = async () => {
+await addDoc(collection(db,"usuarios"),{
 nombre:uNombre.value,
 grupo:uGrupo.value,
 user:auth.currentUser.uid
 });
-}
+};
 
 function cargarUsuarios(uid){
-db.collection("usuarios").where("user","==",uid)
-.onSnapshot(data=>{
+const q = query(collection(db,"usuarios"), where("user","==",uid));
+onSnapshot(q,data=>{
 listaUsuarios.innerHTML="";
+totalUsuarios.innerText=data.size;
 data.forEach(doc=>{
 let d=doc.data();
 listaUsuarios.innerHTML+=`<div class="card">${d.nombre} - ${d.grupo}</div>`;
 });
-totalUsuarios.innerText=data.size;
 });
 }
 
 // TAREAS
-function addTarea(){
-db.collection("tareas").add({
+window.addTarea = async () => {
+await addDoc(collection(db,"tareas"),{
 texto:tTexto.value,
 grupo:tGrupo.value,
 user:auth.currentUser.uid
 });
-}
+};
 
 function cargarTareas(uid){
-db.collection("tareas").where("user","==",uid)
-.onSnapshot(data=>{
+const q = query(collection(db,"tareas"), where("user","==",uid));
+onSnapshot(q,data=>{
 listaTareas.innerHTML="";
 data.forEach(doc=>{
 let t=doc.data();
-listaTareas.innerHTML+=`
-<div class="card">
-${t.texto}
-<br>
-<button onclick="enviarWhats('${t.texto}')">📲 WhatsApp</button>
-</div>`;
-});
-totalTareas.innerText=data.size;
-});
-}
-
-// BLOG
-function addPost(){
-db.collection("blog").add({texto:bTexto.value});
-}
-
-function cargarBlog(){
-db.collection("blog").onSnapshot(data=>{
-listaBlog.innerHTML="";
-data.forEach(doc=>{
-listaBlog.innerHTML+=`<div class="card">${doc.data().texto}</div>`;
+listaTareas.innerHTML+=`<div class="card">${t.texto}</div>`;
 });
 });
-}
-
-// LIBROS
-function addLibro(){
-db.collection("libros").add({nombre:libro.value});
-}
-
-function cargarLibros(){
-db.collection("libros").onSnapshot(data=>{
-listaLibros.innerHTML="";
-data.forEach(doc=>{
-listaLibros.innerHTML+=`<div class="card">${doc.data().nombre}</div>`;
-});
-});
-}
-
-// EVENTOS
-function addEvento(){
-db.collection("eventos").add({
-nombre:eNombre.value,
-fecha:eFecha.value
-});
-}
-
-function cargarEventos(){
-db.collection("eventos").onSnapshot(data=>{
-listaEventos.innerHTML="";
-data.forEach(doc=>{
-let e=doc.data();
-listaEventos.innerHTML+=`<div class="card">${e.nombre} - ${e.fecha}</div>`;
-});
-});
-}
-
-// WHATSAPP
-function enviarWhats(msg){
-window.open("https://wa.me/?text="+encodeURIComponent(msg));
 }
 
 </script>
