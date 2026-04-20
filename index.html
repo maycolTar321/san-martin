@@ -8,7 +8,7 @@
 <style>
 body{
 margin:0;
-font-family:'Segoe UI',sans-serif;
+font-family:Arial;
 background:#0f172a;
 color:white;
 }
@@ -24,15 +24,14 @@ padding:20px;
 .box{
 background:#1e293b;
 padding:25px;
-border-radius:20px;
+border-radius:15px;
 width:100%;
-max-width:380px;
-box-shadow:0 10px 30px rgba(0,0,0,0.5);
+max-width:350px;
 }
 
 input{
 width:100%;
-padding:12px;
+padding:10px;
 margin:5px 0;
 border:none;
 border-radius:10px;
@@ -40,18 +39,13 @@ border-radius:10px;
 
 button{
 width:100%;
-padding:12px;
+padding:10px;
 margin-top:10px;
 border:none;
 border-radius:10px;
 background:#22c55e;
 color:white;
-font-weight:bold;
 cursor:pointer;
-}
-
-.secondary{
-background:#334155;
 }
 
 .link{
@@ -61,7 +55,7 @@ cursor:pointer;
 color:#38bdf8;
 }
 
-#msg{
+.msg{
 text-align:center;
 margin-top:10px;
 color:#f87171;
@@ -69,9 +63,10 @@ color:#f87171;
 
 /* APP */
 #app{display:none;}
+
 .sidebar{
 position:fixed;
-width:220px;
+width:200px;
 height:100%;
 background:#020617;
 padding-top:20px;
@@ -80,7 +75,7 @@ padding-top:20px;
 .sidebar button{
 display:block;
 width:100%;
-padding:12px;
+padding:10px;
 background:none;
 border:none;
 color:white;
@@ -88,8 +83,8 @@ text-align:left;
 }
 
 .main{
-margin-left:220px;
-padding:15px;
+margin-left:200px;
+padding:20px;
 }
 
 .section{display:none;}
@@ -97,18 +92,16 @@ padding:15px;
 
 .card{
 background:#1e293b;
-padding:15px;
-border-radius:15px;
+padding:10px;
 margin:10px 0;
+border-radius:10px;
 }
 
-/* RESPONSIVE */
 @media(max-width:768px){
 .sidebar{
 position:relative;
 width:100%;
 display:flex;
-overflow:auto;
 }
 .main{margin-left:0;}
 }
@@ -118,39 +111,39 @@ overflow:auto;
 <body>
 
 <!-- LOGIN -->
-<div id="login" class="container">
+<div id="loginView" class="container">
 <div class="box">
 <h2>Login</h2>
 
-<input id="email" placeholder="Correo">
-<input id="pass" type="password" placeholder="Contraseña">
+<input id="loginEmail" placeholder="Correo">
+<input id="loginPass" type="password" placeholder="Contraseña">
 
-<button onclick="login()">Ingresar</button>
+<button onclick="loginUser()">Ingresar</button>
 
-<div class="link" onclick="mostrarRegistro()">Crear cuenta</div>
+<div class="link" onclick="showRegister()">Crear cuenta</div>
 
-<p id="msg"></p>
+<p id="loginMsg" class="msg"></p>
 </div>
 </div>
 
 <!-- REGISTRO -->
-<div id="registro" class="container" style="display:none;">
+<div id="registerView" class="container" style="display:none;">
 <div class="box">
 <h2>Registro</h2>
 
-<input id="rNombre" placeholder="Nombre completo">
-<input id="rCel" placeholder="Celular">
-<input id="rEmail" placeholder="Correo">
-<input id="rPass" type="password" placeholder="Contraseña">
+<input id="regNombre" placeholder="Nombre completo">
+<input id="regCel" placeholder="Celular">
+<input id="regEmail" placeholder="Correo">
+<input id="regPass" type="password" placeholder="Contraseña">
 
 <label>¿Cuánto es 3 + 4?</label>
-<input id="captcha">
+<input id="regCaptcha">
 
-<button onclick="registrar()">Registrar</button>
+<button onclick="registerUser()">Registrar</button>
 
-<div class="link" onclick="volverLogin()">Volver al login</div>
+<div class="link" onclick="showLogin()">Volver</div>
 
-<p id="msg2"></p>
+<p id="regMsg" class="msg"></p>
 </div>
 </div>
 
@@ -158,39 +151,21 @@ overflow:auto;
 <div id="app">
 
 <div class="sidebar">
-<button onclick="ver('dashboard')">Dashboard</button>
-<button onclick="ver('grupos')">Grupos</button>
-<button onclick="ver('confirmantes')">Confirmantes</button>
-<button onclick="ver('tareas')">Tareas</button>
+<button onclick="showSection('dashboard')">Dashboard</button>
+<button onclick="showSection('grupos')">Grupos</button>
 <button onclick="logout()">Salir</button>
 </div>
 
 <div class="main">
 
 <div id="dashboard" class="section active">
-<h2>Panel</h2>
-<div class="card">Grupos: <span id="totalGrupos"></span></div>
-<div class="card">Confirmantes: <span id="totalConfirmantes"></span></div>
+<h2>Bienvenido</h2>
 </div>
 
 <div id="grupos" class="section">
-<input id="gNombre" placeholder="Nombre grupo">
+<input id="grupoNombre" placeholder="Nombre grupo">
 <button onclick="addGrupo()">Crear</button>
 <div id="listaGrupos"></div>
-</div>
-
-<div id="confirmantes" class="section">
-<input id="uNombre" placeholder="Nombre">
-<select id="uGrupo"></select>
-<button onclick="addConfirmante()">Agregar</button>
-<div id="listaConfirmantes"></div>
-</div>
-
-<div id="tareas" class="section">
-<input id="tTexto" placeholder="Tarea">
-<select id="tGrupo"></select>
-<button onclick="addTarea()">Crear</button>
-<div id="listaTareas"></div>
 </div>
 
 </div>
@@ -198,79 +173,87 @@ overflow:auto;
 
 <script>
 
-// BASE LOCAL
+// BASE DATOS
 let db = JSON.parse(localStorage.getItem("db")) || {
 users:[],
-grupos:[],
-confirmantes:[],
-tareas:[]
+grupos:[]
 };
 
-function save(){
+function saveDB(){
 localStorage.setItem("db", JSON.stringify(db));
 }
 
-// CAMBIOS DE VISTA
-function mostrarRegistro(){
-login.style.display="none";
-registro.style.display="flex";
+// VISTAS
+function showRegister(){
+document.getElementById("loginView").style.display="none";
+document.getElementById("registerView").style.display="flex";
 }
 
-function volverLogin(){
-registro.style.display="none";
-login.style.display="flex";
+function showLogin(){
+document.getElementById("registerView").style.display="none";
+document.getElementById("loginView").style.display="flex";
 }
 
 // REGISTRO
-function registrar(){
+function registerUser(){
 
-if(captcha.value != "7"){
-msg2.innerText="Captcha incorrecto";
+let nombre = document.getElementById("regNombre").value;
+let cel = document.getElementById("regCel").value;
+let email = document.getElementById("regEmail").value;
+let pass = document.getElementById("regPass").value;
+let captcha = document.getElementById("regCaptcha").value;
+
+if(captcha !== "7"){
+document.getElementById("regMsg").innerText="Captcha incorrecto";
 return;
 }
 
-if(!rNombre.value || !rEmail.value || !rPass.value){
-msg2.innerText="Completa los datos";
+if(!nombre || !email || !pass){
+document.getElementById("regMsg").innerText="Completa los datos";
 return;
 }
 
-let existe = db.users.find(u=>u.email===rEmail.value);
+let existe = db.users.find(u => u.email === email);
 if(existe){
-msg2.innerText="Correo ya registrado";
+document.getElementById("regMsg").innerText="Correo ya registrado";
 return;
 }
 
-db.users.push({
-nombre:rNombre.value,
-cel:rCel.value,
-email:rEmail.value,
-pass:rPass.value
-});
+db.users.push({nombre,cel,email,pass});
+saveDB();
 
-save();
-
-msg2.style.color="#22c55e";
-msg2.innerText="Registrado correctamente";
+document.getElementById("regMsg").style.color="#22c55e";
+document.getElementById("regMsg").innerText="Cuenta creada";
 
 setTimeout(()=>{
-volverLogin();
+showLogin();
 },1500);
-
 }
 
 // LOGIN
-function login(){
-let user = db.users.find(u=>u.email===email.value && u.pass===pass.value);
+function loginUser(){
+
+let email = document.getElementById("loginEmail").value;
+let pass = document.getElementById("loginPass").value;
+
+let user = db.users.find(u => u.email === email && u.pass === pass);
 
 if(user){
-localStorage.setItem("session", email.value);
-mostrarApp();
+localStorage.setItem("session", email);
+loadApp();
 }else{
-msg.innerText="Datos incorrectos";
+document.getElementById("loginMsg").innerText="Datos incorrectos";
 }
 }
 
-// LOGOUT
+// APP
+function loadApp(){
+document.getElementById("loginView").style.display="none";
+document.getElementById("registerView").style.display="none";
+document.getElementById("app").style.display="block";
+render();
+}
+
 function logout(){
 localStorage.removeItem("session");
 location.reload();
@@ -278,57 +261,29 @@ location.reload();
 
 // AUTO LOGIN
 if(localStorage.getItem("session")){
-mostrarApp();
+loadApp();
 }
 
-function mostrarApp(){
-login.style.display="none";
-app.style.display="block";
-render();
+// SECCIONES
+function showSection(id){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
 }
 
-// NAV
-function ver(id){
-document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-document.getElementById(id).classList.add('active');
-}
-
-// FUNCIONES
+// GRUPOS
 function addGrupo(){
-db.grupos.push({nombre:gNombre.value});
-save();render();
-}
+let nombre = document.getElementById("grupoNombre").value;
+if(!nombre) return;
 
-function addConfirmante(){
-db.confirmantes.push({nombre:uNombre.value,grupo:uGrupo.value});
-save();render();
-}
-
-function addTarea(){
-db.tareas.push({texto:tTexto.value,grupo:tGrupo.value});
-save();render();
+db.grupos.push({nombre});
+saveDB();
+render();
 }
 
 // RENDER
 function render(){
-
-listaGrupos.innerHTML="";
-uGrupo.innerHTML="";
-tGrupo.innerHTML="";
-
-db.grupos.forEach(g=>{
-listaGrupos.innerHTML+=`<div class="card">${g.nombre}</div>`;
-uGrupo.innerHTML+=`<option>${g.nombre}</option>`;
-tGrupo.innerHTML+=`<option>${g.nombre}</option>`;
-});
-
-listaConfirmantes.innerHTML=db.confirmantes.map(u=>`<div class="card">${u.nombre} - ${u.grupo}</div>`).join("");
-
-listaTareas.innerHTML=db.tareas.map(t=>`<div class="card">${t.texto}</div>`).join("");
-
-totalGrupos.innerText=db.grupos.length;
-totalConfirmantes.innerText=db.confirmantes.length;
-
+let cont = document.getElementById("listaGrupos");
+cont.innerHTML = db.grupos.map(g=>`<div class="card">${g.nombre}</div>`).join("");
 }
 
 </script>
