@@ -6,33 +6,31 @@
 <title>Catequesis PRO</title>
 
 <style>
-
-:root{
---bg:#0f172a;
---card:#1e293b;
---primary:#22c55e;
---text:#fff;
-}
-
-*{box-sizing:border-box;}
-
 body{
 margin:0;
 font-family:'Segoe UI',sans-serif;
-background:var(--bg);
-color:var(--text);
+background:#0f172a;
+color:white;
 }
 
-/* LOGIN */
-#login{
+.container{
 display:flex;
-flex-direction:column;
 justify-content:center;
+align-items:center;
 height:100vh;
 padding:20px;
 }
 
-input,select,textarea{
+.box{
+background:#1e293b;
+padding:25px;
+border-radius:20px;
+width:100%;
+max-width:380px;
+box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+input{
 width:100%;
 padding:12px;
 margin:5px 0;
@@ -41,20 +39,36 @@ border-radius:10px;
 }
 
 button{
+width:100%;
 padding:12px;
+margin-top:10px;
 border:none;
 border-radius:10px;
-background:var(--primary);
+background:#22c55e;
 color:white;
+font-weight:bold;
 cursor:pointer;
 }
 
-/* APP */
-.app{
-display:none;
+.secondary{
+background:#334155;
 }
 
-/* SIDEBAR */
+.link{
+text-align:center;
+margin-top:10px;
+cursor:pointer;
+color:#38bdf8;
+}
+
+#msg{
+text-align:center;
+margin-top:10px;
+color:#f87171;
+}
+
+/* APP */
+#app{display:none;}
 .sidebar{
 position:fixed;
 width:220px;
@@ -73,112 +87,98 @@ color:white;
 text-align:left;
 }
 
-/* MAIN */
 .main{
 margin-left:220px;
 padding:15px;
 }
 
-/* MOBILE */
+.section{display:none;}
+.active{display:block;}
+
+.card{
+background:#1e293b;
+padding:15px;
+border-radius:15px;
+margin:10px 0;
+}
+
+/* RESPONSIVE */
 @media(max-width:768px){
 .sidebar{
 position:relative;
 width:100%;
-height:auto;
 display:flex;
 overflow:auto;
 }
-.main{
-margin-left:0;
+.main{margin-left:0;}
 }
-}
-
-/* SECTIONS */
-.section{display:none;}
-.active{display:block;}
-
-/* CARDS */
-.card{
-background:var(--card);
-padding:15px;
-border-radius:15px;
-margin:10px 0;
-animation:fade 0.4s;
-}
-
-@keyframes fade{
-from{opacity:0;transform:translateY(10px);}
-to{opacity:1;}
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
-gap:10px;
-}
-
-.small{font-size:12px;color:#94a3b8;}
-
 </style>
-
 </head>
 
 <body>
 
 <!-- LOGIN -->
-<div id="login">
-<h2>Login Catequesis</h2>
+<div id="login" class="container">
+<div class="box">
+<h2>Login</h2>
+
 <input id="email" placeholder="Correo">
 <input id="pass" type="password" placeholder="Contraseña">
+
 <button onclick="login()">Ingresar</button>
-<button onclick="register()">Crear cuenta</button>
+
+<div class="link" onclick="mostrarRegistro()">Crear cuenta</div>
+
+<p id="msg"></p>
+</div>
+</div>
+
+<!-- REGISTRO -->
+<div id="registro" class="container" style="display:none;">
+<div class="box">
+<h2>Registro</h2>
+
+<input id="rNombre" placeholder="Nombre completo">
+<input id="rCel" placeholder="Celular">
+<input id="rEmail" placeholder="Correo">
+<input id="rPass" type="password" placeholder="Contraseña">
+
+<label>¿Cuánto es 3 + 4?</label>
+<input id="captcha">
+
+<button onclick="registrar()">Registrar</button>
+
+<div class="link" onclick="volverLogin()">Volver al login</div>
+
+<p id="msg2"></p>
+</div>
 </div>
 
 <!-- APP -->
-<div id="app" class="app">
+<div id="app">
 
 <div class="sidebar">
-<button onclick="ver('dashboard')">📊 Dashboard</button>
-<button onclick="ver('catequistas')">👥 Catequistas</button>
-<button onclick="ver('grupos')">📚 Grupos</button>
-<button onclick="ver('confirmantes')">🙋 Confirmantes</button>
-<button onclick="ver('tareas')">📝 Tareas</button>
-<button onclick="ver('blog')">💬 Blog</button>
-<button onclick="ver('biblioteca')">📖 Biblioteca</button>
-<button onclick="ver('eventos')">📅 Eventos</button>
-<button onclick="ver('publicidad')">📢 Publicidad</button>
-<button onclick="logout()">🚪 Salir</button>
+<button onclick="ver('dashboard')">Dashboard</button>
+<button onclick="ver('grupos')">Grupos</button>
+<button onclick="ver('confirmantes')">Confirmantes</button>
+<button onclick="ver('tareas')">Tareas</button>
+<button onclick="logout()">Salir</button>
 </div>
 
 <div class="main">
 
-<!-- DASHBOARD -->
 <div id="dashboard" class="section active">
-<h2>Dashboard</h2>
-<div class="grid">
-<div class="card">Catequistas: <span id="totalCatequistas"></span></div>
+<h2>Panel</h2>
 <div class="card">Grupos: <span id="totalGrupos"></span></div>
 <div class="card">Confirmantes: <span id="totalConfirmantes"></span></div>
-<div class="card">Tareas: <span id="totalTareas"></span></div>
-</div>
 </div>
 
-<!-- CATEQUISTAS -->
-<div id="catequistas" class="section">
-<input id="cNombre" placeholder="Nombre completo">
-<input id="cCel" placeholder="Celular">
-<button onclick="addCatequista()">Agregar</button>
-<div id="listaCatequistas"></div>
-</div>
-
-<!-- GRUPOS -->
 <div id="grupos" class="section">
 <input id="gNombre" placeholder="Nombre grupo">
 <button onclick="addGrupo()">Crear</button>
 <div id="listaGrupos"></div>
 </div>
 
-<!-- CONFIRMANTES -->
 <div id="confirmantes" class="section">
 <input id="uNombre" placeholder="Nombre">
 <select id="uGrupo"></select>
@@ -186,7 +186,6 @@ gap:10px;
 <div id="listaConfirmantes"></div>
 </div>
 
-<!-- TAREAS -->
 <div id="tareas" class="section">
 <input id="tTexto" placeholder="Tarea">
 <select id="tGrupo"></select>
@@ -194,81 +193,95 @@ gap:10px;
 <div id="listaTareas"></div>
 </div>
 
-<!-- BLOG -->
-<div id="blog" class="section">
-<textarea id="bTexto"></textarea>
-<button onclick="addPost()">Publicar</button>
-<div id="listaBlog"></div>
-</div>
-
-<!-- BIBLIOTECA -->
-<div id="biblioteca" class="section">
-<input id="libro" placeholder="Libro">
-<button onclick="addLibro()">Agregar</button>
-<div id="listaLibros"></div>
-</div>
-
-<!-- EVENTOS -->
-<div id="eventos" class="section">
-<input id="eNombre" placeholder="Evento">
-<input type="date" id="eFecha">
-<button onclick="addEvento()">Guardar</button>
-<div id="listaEventos"></div>
-</div>
-
-<!-- PUBLICIDAD -->
-<div id="publicidad" class="section">
-<input id="publi" placeholder="Mensaje">
-<button onclick="addPubli()">Publicar</button>
-<div id="listaPubli"></div>
-</div>
-
 </div>
 </div>
 
 <script>
 
+// BASE LOCAL
 let db = JSON.parse(localStorage.getItem("db")) || {
 users:[],
-catequistas:[],
 grupos:[],
 confirmantes:[],
-tareas:[],
-blog:[],
-libros:[],
-eventos:[],
-publicidad:[]
+tareas:[]
 };
 
 function save(){
 localStorage.setItem("db", JSON.stringify(db));
 }
 
-// LOGIN
-function register(){
-db.users.push({email:email.value,pass:pass.value});
+// CAMBIOS DE VISTA
+function mostrarRegistro(){
+login.style.display="none";
+registro.style.display="flex";
+}
+
+function volverLogin(){
+registro.style.display="none";
+login.style.display="flex";
+}
+
+// REGISTRO
+function registrar(){
+
+if(captcha.value != "7"){
+msg2.innerText="Captcha incorrecto";
+return;
+}
+
+if(!rNombre.value || !rEmail.value || !rPass.value){
+msg2.innerText="Completa los datos";
+return;
+}
+
+let existe = db.users.find(u=>u.email===rEmail.value);
+if(existe){
+msg2.innerText="Correo ya registrado";
+return;
+}
+
+db.users.push({
+nombre:rNombre.value,
+cel:rCel.value,
+email:rEmail.value,
+pass:rPass.value
+});
+
 save();
-alert("Cuenta creada");
+
+msg2.style.color="#22c55e";
+msg2.innerText="Registrado correctamente";
+
+setTimeout(()=>{
+volverLogin();
+},1500);
+
 }
 
+// LOGIN
 function login(){
-let u = db.users.find(x=>x.email==email.value && x.pass==pass.value);
-if(u){
-localStorage.setItem("session",email.value);
-mostrar();
+let user = db.users.find(u=>u.email===email.value && u.pass===pass.value);
+
+if(user){
+localStorage.setItem("session", email.value);
+mostrarApp();
 }else{
-alert("Error");
+msg.innerText="Datos incorrectos";
 }
 }
 
+// LOGOUT
 function logout(){
 localStorage.removeItem("session");
 location.reload();
 }
 
-if(localStorage.getItem("session")) mostrar();
+// AUTO LOGIN
+if(localStorage.getItem("session")){
+mostrarApp();
+}
 
-function mostrar(){
+function mostrarApp(){
 login.style.display="none";
 app.style.display="block";
 render();
@@ -281,11 +294,6 @@ document.getElementById(id).classList.add('active');
 }
 
 // FUNCIONES
-function addCatequista(){
-db.catequistas.push({nombre:cNombre.value,cel:cCel.value});
-save();render();
-}
-
 function addGrupo(){
 db.grupos.push({nombre:gNombre.value});
 save();render();
@@ -301,56 +309,25 @@ db.tareas.push({texto:tTexto.value,grupo:tGrupo.value});
 save();render();
 }
 
-function addPost(){
-db.blog.push({texto:bTexto.value});
-save();render();
-}
-
-function addLibro(){
-db.libros.push({nombre:libro.value});
-save();render();
-}
-
-function addEvento(){
-db.eventos.push({nombre:eNombre.value,fecha:eFecha.value});
-save();render();
-}
-
-function addPubli(){
-db.publicidad.push({texto:publi.value});
-save();render();
-}
-
 // RENDER
 function render(){
 
+listaGrupos.innerHTML="";
 uGrupo.innerHTML="";
 tGrupo.innerHTML="";
 
-listaCatequistas.innerHTML=db.catequistas.map(c=>`<div class="card">${c.nombre} <div class="small">${c.cel}</div></div>`).join("");
-
-listaGrupos.innerHTML=db.grupos.map(g=>{
+db.grupos.forEach(g=>{
+listaGrupos.innerHTML+=`<div class="card">${g.nombre}</div>`;
 uGrupo.innerHTML+=`<option>${g.nombre}</option>`;
 tGrupo.innerHTML+=`<option>${g.nombre}</option>`;
-return `<div class="card">${g.nombre}</div>`;
-}).join("");
+});
 
 listaConfirmantes.innerHTML=db.confirmantes.map(u=>`<div class="card">${u.nombre} - ${u.grupo}</div>`).join("");
 
 listaTareas.innerHTML=db.tareas.map(t=>`<div class="card">${t.texto}</div>`).join("");
 
-listaBlog.innerHTML=db.blog.map(b=>`<div class="card">${b.texto}</div>`).join("");
-
-listaLibros.innerHTML=db.libros.map(l=>`<div class="card">${l.nombre}</div>`).join("");
-
-listaEventos.innerHTML=db.eventos.map(e=>`<div class="card">${e.nombre} - ${e.fecha}</div>`).join("");
-
-listaPubli.innerHTML=db.publicidad.map(p=>`<div class="card">${p.texto}</div>`).join("");
-
-totalCatequistas.innerText=db.catequistas.length;
 totalGrupos.innerText=db.grupos.length;
 totalConfirmantes.innerText=db.confirmantes.length;
-totalTareas.innerText=db.tareas.length;
 
 }
 
