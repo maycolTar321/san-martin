@@ -3,94 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMP - Registro Pro Grupo 4</title>
+    <title>SMP - Sistema Integral Grupo 4</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --guindo: #800020; --bg: #f4f7f6; --gold: #d4af37; }
+        :root { --guindo: #800020; --bg: #f8f9fc; --white: #ffffff; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; }
-        
-        header { background: var(--guindo); color: white; padding: 20px; text-align: center; border-radius: 0 0 25px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        header { background: var(--white); padding: 15px; display: flex; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 1000; }
+        #logo-header { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--guindo); margin-right: 12px; object-fit: cover; }
         .container { max-width: 500px; margin: auto; padding: 15px; }
-        .card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        
-        h2 { font-size: 17px; color: var(--guindo); margin: 0 0 15px 0; display: flex; align-items: center; gap: 8px; }
-        .btn-main { background: var(--guindo); color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: 800; cursor: pointer; }
-
-        /* TABLA DE TAREAS APARTE */
-        .item-joven { border-bottom: 1px solid #eee; padding: 12px 0; }
-        .status-tag { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; }
-        .tag-al-dia { background: #e8f5e9; color: #2e7d32; }
-        .tag-retraso { background: #fff3e0; color: #ef6c00; }
-
-        .grid-notas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 8px; }
-        .btn-nota { padding: 8px 2px; font-size: 10px; font-weight: 800; border-radius: 8px; border: 1px solid #ddd; background: white; cursor: pointer; }
-        .btn-nota.n100 { color: #2e7d32; } .btn-nota.n100.active { background: #2e7d32; color: white; }
-        .btn-nota.n80 { color: #fbc02d; } .btn-nota.n80.active { background: #fbc02d; color: white; }
-        .btn-nota.n50 { color: #d32f2f; } .btn-nota.n50.active { background: #d32f2f; color: white; }
-
-        .nav-admin { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; background: white; border-radius: 20px; display: flex; justify-content: space-around; padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .nav-btn { color: #ccc; font-size: 20px; cursor: pointer; }
+        .card { background: var(--white); border-radius: 20px; padding: 18px; margin-bottom: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); border: 1px solid #f0f0f0; }
+        h2 { font-size: 16px; color: var(--guindo); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; }
+        input, textarea, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 10px; box-sizing: border-box; font-size: 14px; }
+        .btn-main { background: var(--guindo); color: white; border: none; padding: 14px; width: 100%; border-radius: 12px; font-weight: 800; cursor: pointer; }
+        .fila-joven { border-bottom: 1px solid #f0f0f0; padding: 10px 0; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 8px; }
+        .btn-opt { padding: 8px 2px; font-size: 9px; font-weight: 800; border-radius: 8px; border: 1px solid #eee; background: white; cursor: pointer; color: #999; }
+        .btn-opt.active { border-color: var(--guindo); color: var(--guindo); background: #fff5f7; }
+        .nav-bar { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: 94%; background: white; border-radius: 20px; display: flex; justify-content: space-around; padding: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 2000; }
+        .nav-btn { font-size: 20px; color: #ccc; cursor: pointer; }
         .nav-btn.active { color: var(--guindo); }
         .hidden { display: none !important; }
+        .status-gps { font-size: 10px; color: #2e7d32; font-weight: 800; margin-bottom: 10px; display: block; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="font-weight: 800; letter-spacing: 1px;">CATEQUESIS 2º AÑO</div>
-    <div style="font-size: 11px; opacity: 0.8;">Admin: Maycol Avila Zenteno</div>
+    <img id="logo-header" src="https://i.ibb.co/Lnbm2Xq/1000540900-jpg.jpg">
+    <div>
+        <div style="font-weight:800; font-size:13px; color:var(--guindo);">GRUPO 4 • SAN MARTÍN</div>
+        <div id="txt-cat" style="font-size:10px; color:#666;">Catequista: Maycol Avila Zenteno</div>
+    </div>
 </header>
 
 <div class="container">
 
-    <div id="v-tareas" class="view">
-        <div class="card">
-            <h2><i class="fas fa-book"></i> Control de Tareas Pendientes</h2>
-            <div id="lista-tareas-calif"></div>
+    <div id="v-joven" class="view">
+        <div id="registro-card" class="card">
+            <h2><i class="fas fa-user-plus"></i> Registro de Nuevo Estudiante</h2>
+            <p style="font-size:11px; color:#666;">Inscríbete una sola vez para que Michael pueda llamarte lista.</p>
+            <input type="text" id="reg-nom" placeholder="Tu nombre y apellido">
+            <input type="number" id="reg-ci" placeholder="Tu C.I.">
+            <button class="btn-main" onclick="app.registrar()">ENVIAR MI REGISTRO</button>
+        </div>
+
+        <div id="area-joven-activa" class="hidden">
+            <div class="card" style="background:#fff4e5; border-left:5px solid #ff9800;">
+                <h2><i class="fas fa-clipboard-list"></i> Tarea Pendiente</h2>
+                <p id="txt-tarea-j" style="font-size:14px; margin:0; font-weight:700;"></p>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-map-marker-alt"></i> Reportar Misa (GPS)</h2>
+                <input type="text" id="misa-img" placeholder="Enlace de la foto del comprobante">
+                <div id="gps-status" class="hidden"><span class="status-gps"><i class="fas fa-check-circle"></i> Ubicación obtenida</span></div>
+                <button class="btn-main" style="background:#4a148c" onclick="app.enviarReporteMisa()">ENVIAR REPORTE AHORA</button>
+            </div>
         </div>
     </div>
 
     <div id="v-asistencia" class="view hidden">
         <div class="card">
-            <h2><i class="fas fa-check-double"></i> Lista de Asistencia</h2>
-            <div id="lista-asistencia-hoy"></div>
+            <h2><i class="fas fa-users"></i> Control de Asistencia</h2>
+            <div id="cont-asistencia"></div>
         </div>
     </div>
 
-    <div id="v-config" class="view hidden">
+    <div id="v-tareas" class="view hidden">
         <div class="card">
-            <h2><i class="fas fa-cog"></i> Configuración</h2>
-            <label style="font-size:12px; font-weight:800;">Orden de la Tarea:</label>
-            <textarea id="inp-orden" style="width:100%; border-radius:10px; border:1px solid #ddd; padding:10px;" placeholder="Escribe la tarea..."></textarea>
-            <button class="btn-main" style="margin-top:10px;" onclick="app.nuevaTarea()">PUBLICAR TAREA</button>
+            <h2><i class="fas fa-pen-fancy"></i> Calificar Tareas</h2>
+            <div id="cont-tareas"></div>
         </div>
-        <button class="btn-main" style="background:#107c41" onclick="app.exportar()">DESCARGAR EXCEL COMPLETO</button>
+        <div class="card">
+            <label style="font-size:11px; font-weight:800;">Orden Semanal:</label>
+            <textarea id="adm-tarea" placeholder="Escribe aquí la tarea para los chicos..."></textarea>
+            <button class="btn-main" onclick="app.postTarea()" style="background:#ff9800">PUBLICAR TAREA</button>
+        </div>
+    </div>
+
+    <div id="v-misas" class="view hidden">
+        <div class="card">
+            <h2><i class="fas fa-church"></i> Registro de Misas</h2>
+            <div id="cont-misas"></div>
+        </div>
+        <div class="card">
+            <h2><i class="fas fa-cog"></i> Panel de Control</h2>
+            <button class="btn-main" style="background:#107c41" onclick="app.exportar()">DESCARGAR REPORTE EXCEL</button>
+            <button class="btn-main" style="background:#444; margin-top:10px;" onclick="if(confirm('¿Borrar todo?')) {localStorage.clear(); location.reload();}">RESETEAR SISTEMA</button>
+        </div>
     </div>
 
 </div>
 
-<div class="nav-admin">
-    <i class="fas fa-tasks nav-btn active" onclick="app.nav('tareas', this)"></i>
-    <i class="fas fa-clipboard-list nav-btn" onclick="app.nav('asistencia', this)"></i>
-    <i class="fas fa-tools nav-btn" onclick="app.nav('config', this)"></i>
-</div>
+<nav class="nav-bar">
+    <i class="fas fa-user-edit nav-btn active" onclick="app.nav('joven', this)"></i>
+    <i class="fas fa-clipboard-check nav-btn" onclick="app.nav('asistencia', this)"></i>
+    <i class="fas fa-star nav-btn" onclick="app.nav('tareas', this)"></i>
+    <i class="fas fa-place-of-worship nav-btn" onclick="app.nav('misas', this)"></i>
+</nav>
 
 <script>
     const app = {
-        db: JSON.parse(localStorage.getItem('smp_final_v5')) || {
-            jovenes: [
-                {id: 1, nombre: "Ejemplo: Juan Perez", ci: "123456"},
-                {id: 2, nombre: "Ejemplo: Maria Lopez", ci: "654321"}
-            ],
-            notasTareas: {}, // { jovenId: { nota: 100, fecha: "" } }
-            asistencia: {} 
+        db: JSON.parse(localStorage.getItem('smp_v9_final')) || {
+            jovenes: [],
+            tarea: "",
+            asist: {}, 
+            notasT: {}, 
+            notasM: {},
+            reportesMisa: {} 
         },
 
         init: () => { app.render(); },
 
         nav: (id, el) => {
+            if(id !== 'joven' && prompt("Clave Michael:") !== "adminSMP") return;
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('v-'+id).classList.remove('hidden');
@@ -98,68 +126,118 @@
             app.render();
         },
 
-        calificar: (jId, valor) => {
-            const hoy = new Date().toLocaleDateString();
-            app.db.notasTareas[jId] = { nota: valor, fecha: hoy };
+        registrar: () => {
+            const n = document.getElementById('reg-nom').value.trim();
+            const c = document.getElementById('reg-ci').value.trim();
+            if(!n || !c) return alert("Michael necesita tu nombre y C.I. para la lista.");
+            
+            app.db.jovenes.push({ id: Date.now(), nombre: n, ci: c });
+            app.save("¡Registro exitoso! Michael ya puede verte en su lista.");
+            document.getElementById('registro-card').classList.add('hidden');
+        },
+
+        enviarReporteMisa: () => {
+            const img = document.getElementById('misa-img').value;
+            const nom = prompt("Escribe tu nombre tal cual te registraste:");
+            const j = app.db.jovenes.find(x => x.nombre.toLowerCase() === nom.toLowerCase());
+            
+            if(!j) return alert("No estás en la lista. Primero regístrate.");
+            if(!img) return alert("Pega el enlace de la foto del comprobante.");
+
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const coords = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+                app.db.reportesMisa[j.id] = { coords, img, fecha: new Date().toLocaleString() };
+                document.getElementById('gps-status').classList.remove('hidden');
+                app.save("Reporte enviado con GPS. Michael lo revisará.");
+            }, () => alert("Activa el GPS para validar que estás en la misa."));
+        },
+
+        postTarea: () => {
+            app.db.tarea = document.getElementById('adm-tarea').value;
+            app.save("Tarea actualizada.");
+        },
+
+        marcar: (tipo, jId, valor) => {
+            if(tipo === 'asist') {
+                const hoy = new Date().toLocaleDateString().replace(/\//g, '-');
+                if(!app.db.asist[hoy]) app.db.asist[hoy] = {};
+                app.db.asist[hoy][jId] = valor;
+            } else if (tipo === 'tarea') {
+                app.db.notasT[jId] = valor;
+            } else if (tipo === 'misa') {
+                app.db.notasM[jId] = valor;
+            }
             app.save();
         },
 
-        marcarAsist: (jId, tipo) => {
-            const hoy = new Date().toLocaleDateString().replace(/\//g, '-');
-            if(!app.db.asistencia[hoy]) app.db.asistencia[hoy] = {};
-            app.db.asistencia[hoy][jId] = tipo;
-            app.save();
-        },
-
-        save: () => {
-            localStorage.setItem('smp_final_v5', JSON.stringify(app.db));
+        save: (m) => {
+            localStorage.setItem('smp_v9_final', JSON.stringify(app.db));
+            if(m) alert(m);
             app.render();
         },
 
         render: () => {
-            const hoyAsist = new Date().toLocaleDateString().replace(/\//g, '-');
+            const hoy = new Date().toLocaleDateString().replace(/\//g, '-');
             
-            // RENDER TAREAS
-            const tCont = document.getElementById('lista-tareas-calif');
-            tCont.innerHTML = app.db.jovenes.map(j => {
-                const n = app.db.notasTareas[j.id] || { nota: 0 };
-                return `
-                <div class="item-joven">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <b>${j.nombre}</b>
-                        <span class="status-tag ${n.nota == 100 ? 'tag-al-dia' : 'tag-retraso'}">${n.nota}%</span>
+            // Joven
+            if(app.db.jovenes.length > 0) document.getElementById('area-joven-activa').classList.remove('hidden');
+            document.getElementById('txt-tarea-j').innerText = app.db.tarea || "No hay tareas asignadas aún.";
+
+            // Admin: Asistencia
+            const aHoy = app.db.asist[hoy] || {};
+            document.getElementById('cont-asistencia').innerHTML = app.db.jovenes.map(j => `
+                <div class="fila-joven">
+                    <b>${j.nombre}</b> <small style="color:#999">CI: ${j.ci}</small>
+                    <div class="grid-3">
+                        <button class="btn-opt ${aHoy[j.id]=='p'?'active':''}" onclick="app.marcar('asist',${j.id},'p')">PRESENTE</button>
+                        <button class="btn-opt ${aHoy[j.id]=='f'?'active':''}" onclick="app.marcar('asist',${j.id},'f')">FALTA</button>
+                        <button class="btn-opt ${aHoy[j.id]=='per'?'active':''}" onclick="app.marcar('asist',${j.id},'per')">PERMISO</button>
                     </div>
-                    <div class="grid-notas">
-                        <button class="btn-nota n100 ${n.nota==100?'active':''}" onclick="app.calificar(${j.id}, 100)">AL DÍA (10/10)</button>
-                        <button class="btn-nota n80 ${n.nota==80?'active':''}" onclick="app.calificar(${j.id}, 80)">-20% (RETRASO)</button>
-                        <button class="btn-nota n50 ${n.nota==50?'active':''}" onclick="app.calificar(${j.id}, 50)">-50% (CRÍTICO)</button>
+                </div>`).join('') || '<p style="font-size:12px; color:#999; text-align:center;">Esperando a que los jóvenes se registren...</p>';
+
+            // Admin: Tareas
+            document.getElementById('cont-tareas').innerHTML = app.db.jovenes.map(j => {
+                const n = app.db.notasT[j.id] || 0;
+                return `
+                <div class="fila-joven">
+                    <b>${j.nombre}</b> <span style="float:right; color:var(--guindo)">${n}%</span>
+                    <div class="grid-3">
+                        <button class="btn-opt ${n==100?'active':''}" onclick="app.marcar('tarea',${j.id},100)">10/10</button>
+                        <button class="btn-opt ${n==80?'active':''}" onclick="app.marcar('tarea',${j.id},80)">-20%</button>
+                        <button class="btn-opt ${n==50?'active':''}" onclick="app.marcar('tarea',${j.id},50)">-50%</button>
                     </div>
                 </div>`;
             }).join('');
 
-            // RENDER ASISTENCIA
-            const aCont = document.getElementById('lista-asistencia-hoy');
-            const diaAsist = app.db.asistencia[hoyAsist] || {};
-            aCont.innerHTML = app.db.jovenes.map(j => `
-                <div class="item-joven">
-                    <b>${j.nombre}</b>
-                    <div class="grid-notas">
-                        <button class="btn-nota ${diaAsist[j.id]=='p'?'active':''}" onclick="app.marcarAsist(${j.id},'p')">PRESENTE</button>
-                        <button class="btn-nota ${diaAsist[j.id]=='f'?'active':''}" onclick="app.marcarAsist(${j.id},'f')">FALTA</button>
-                        <button class="btn-nota ${diaAsist[j.id]=='per'?'active':''}" onclick="app.marcarAsist(${j.id},'per')">PERMISO</button>
+            // Admin: Misas
+            document.getElementById('cont-misas').innerHTML = app.db.jovenes.map(j => {
+                const n = app.db.notasM[j.id] || 0;
+                const rep = app.db.reportesMisa[j.id];
+                return `
+                <div class="fila-joven">
+                    <b>${j.nombre}</b> <span style="float:right;">${n}%</span>
+                    ${rep ? `<div style="font-size:9px; background:#f0f0f0; padding:5px; border-radius:5px; margin:5px 0;">📍 GPS: ${rep.coords} | <a href="${rep.img}" target="_blank">Ver Foto</a></div>` : '<div style="font-size:9px; color:red;">Sin reporte</div>'}
+                    <div class="grid-3">
+                        <button class="btn-opt ${n==100?'active':''}" onclick="app.marcar('misa',${j.id},100)">10/10</button>
+                        <button class="btn-opt ${n==80?'active':''}" onclick="app.marcar('misa',${j.id},80)">-20%</button>
+                        <button class="btn-opt ${n==50?'active':''}" onclick="app.marcar('misa',${j.id},50)">-50%</button>
                     </div>
-                </div>`).join('');
+                </div>`;
+            }).join('');
         },
 
         exportar: () => {
-            const data = app.db.jovenes.map(j => {
-                const n = app.db.notasTareas[j.id] || { nota: 0 };
-                return { Nombre: j.nombre, CI: j.ci, CalificacionTarea: n.nota + "%", UltimaRevision: n.fecha || "Nunca" };
-            });
+            const data = app.db.jovenes.map(j => ({
+                Nombre: j.nombre,
+                CI: j.ci,
+                Nota_Tarea: (app.db.notasT[j.id] || 0) + "%",
+                Nota_Misa: (app.db.notasM[j.id] || 0) + "%",
+                Reporte_GPS: app.db.reportesMisa[j.id] ? app.db.reportesMisa[j.id].coords : "No enviado"
+            }));
             const ws = XLSX.utils.json_to_sheet(data);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Notas_Tareas");
-            XLSX.writeFile(wb, "Reporte_Notas_Grupo4.xlsx");
+            XLSX.utils.book_append_sheet(wb, ws, "Notas Grupo 4");
+            XLSX.writeFile(wb, "Catequesis_Michael_Vargas.xlsx");
         }
     };
     app.init();
