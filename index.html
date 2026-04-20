@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMP - Sistema Integral Grupo 4</title>
+    <title>SMP - Grupo 4 (Maycol Avila)</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -12,20 +12,31 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; }
         header { background: var(--white); padding: 15px; display: flex; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 1000; }
         #logo-header { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--guindo); margin-right: 12px; object-fit: cover; }
-        .container { max-width: 500px; margin: auto; padding: 15px; }
-        .card { background: var(--white); border-radius: 20px; padding: 18px; margin-bottom: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); border: 1px solid #f0f0f0; }
-        h2 { font-size: 16px; color: var(--guindo); margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; }
-        input, textarea, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; margin-bottom: 10px; box-sizing: border-box; font-size: 14px; }
-        .btn-main { background: var(--guindo); color: white; border: none; padding: 14px; width: 100%; border-radius: 12px; font-weight: 800; cursor: pointer; }
-        .fila-joven { border-bottom: 1px solid #f0f0f0; padding: 10px 0; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 8px; }
-        .btn-opt { padding: 8px 2px; font-size: 9px; font-weight: 800; border-radius: 8px; border: 1px solid #eee; background: white; cursor: pointer; color: #999; }
-        .btn-opt.active { border-color: var(--guindo); color: var(--guindo); background: #fff5f7; }
-        .nav-bar { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: 94%; background: white; border-radius: 20px; display: flex; justify-content: space-around; padding: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 2000; }
+        .container { max-width: 100%; padding: 10px; }
+        .card { background: var(--white); border-radius: 15px; padding: 15px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        h2 { font-size: 16px; color: var(--guindo); margin-bottom: 5px; }
+        .fecha-hoy { font-size: 12px; color: #666; margin-bottom: 15px; font-weight: 700; }
+        
+        input, textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd; margin-bottom: 10px; box-sizing: border-box; }
+        .btn-main { background: var(--guindo); color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-weight: 800; cursor: pointer; }
+        
+        .tabla-scroll { overflow-x: auto; background: white; border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; font-size: 12px; }
+        th { background: #f4f4f4; color: #444; padding: 12px; text-align: left; border-bottom: 2px solid #eee; }
+        td { padding: 12px; border-bottom: 1px solid #f0f0f0; }
+        
+        .btn-grupo { display: flex; gap: 4px; }
+        .btn-control { border: 1px solid #ddd; background: white; padding: 6px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; font-weight: 800; color: #888; }
+        .btn-control.active-p { background: #2e7d32; color: white; border-color: #2e7d32; }
+        .btn-control.active-f { background: #c62828; color: white; border-color: #c62828; }
+        .btn-control.active-per { background: #f9a825; color: white; border-color: #f9a825; }
+        .btn-control.active-t { background: #4a148c; color: white; border-color: #4a148c; }
+
+        .nav-bar { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); width: 94%; background: white; border-radius: 20px; display: flex; justify-content: space-around; padding: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
         .nav-btn { font-size: 20px; color: #ccc; cursor: pointer; }
         .nav-btn.active { color: var(--guindo); }
         .hidden { display: none !important; }
-        .status-gps { font-size: 10px; color: #2e7d32; font-weight: 800; margin-bottom: 10px; display: block; }
+        label { font-size: 11px; font-weight: 700; color: #666; display: block; margin-bottom: 4px; }
     </style>
 </head>
 <body>
@@ -33,92 +44,98 @@
 <header>
     <img id="logo-header" src="https://i.ibb.co/Lnbm2Xq/1000540900-jpg.jpg">
     <div>
-        <div style="font-weight:800; font-size:13px; color:var(--guindo);">GRUPO 4 • SAN MARTÍN</div>
-        <div id="txt-cat" style="font-size:10px; color:#666;">Catequista: Maycol Avila Zenteno</div>
+        <div style="font-weight:800; font-size:13px; color:var(--guindo);">GRUPO 4 • 2DO AÑO</div>
+        <div style="font-size:10px; color:#666;">Catequista: Maycol Avila Zenteno</div>
     </div>
 </header>
 
 <div class="container">
 
     <div id="v-joven" class="view">
-        <div id="registro-card" class="card">
-            <h2><i class="fas fa-user-plus"></i> Registro de Nuevo Estudiante</h2>
-            <p style="font-size:11px; color:#666;">Inscríbete una sola vez para que Michael pueda llamarte lista.</p>
-            <input type="text" id="reg-nom" placeholder="Tu nombre y apellido">
-            <input type="number" id="reg-ci" placeholder="Tu C.I.">
-            <button class="btn-main" onclick="app.registrar()">ENVIAR MI REGISTRO</button>
+        <div id="card-registro" class="card">
+            <h2><i class="fas fa-user-plus"></i> Inscripción al Grupo</h2>
+            <label>Nombre Completo:</label>
+            <input type="text" id="reg-nom" placeholder="Ej: Juan Perez" oninput="app.formatoNombre(this)">
+            <label>Fecha de Nacimiento:</label>
+            <input type="date" id="reg-fecha">
+            <label>C.I. / Documento:</label>
+            <input type="number" id="reg-ci" placeholder="C.I.">
+            <label>Teléfono:</label>
+            <input type="number" id="reg-tel" placeholder="Celular">
+            <button class="btn-main" onclick="app.registrar()">REGISTRARME</button>
         </div>
 
-        <div id="area-joven-activa" class="hidden">
+        <div id="panel-joven" class="hidden">
             <div class="card" style="background:#fff4e5; border-left:5px solid #ff9800;">
-                <h2><i class="fas fa-clipboard-list"></i> Tarea Pendiente</h2>
-                <p id="txt-tarea-j" style="font-size:14px; margin:0; font-weight:700;"></p>
+                <h2><i class="fas fa-bullhorn"></i> Aviso Semanal</h2>
+                <p id="txt-aviso" style="font-weight:700; color:#856404; margin:0;"></p>
             </div>
-
             <div class="card">
-                <h2><i class="fas fa-map-marker-alt"></i> Reportar Misa (GPS)</h2>
-                <input type="text" id="misa-img" placeholder="Enlace de la foto del comprobante">
-                <div id="gps-status" class="hidden"><span class="status-gps"><i class="fas fa-check-circle"></i> Ubicación obtenida</span></div>
-                <button class="btn-main" style="background:#4a148c" onclick="app.enviarReporteMisa()">ENVIAR REPORTE AHORA</button>
+                <h2><i class="fas fa-check-circle"></i> Mi Seguimiento</h2>
+                <div id="checklist-joven"></div>
             </div>
         </div>
     </div>
 
-    <div id="v-asistencia" class="view hidden">
+    <div id="v-admin" class="view hidden">
         <div class="card">
-            <h2><i class="fas fa-users"></i> Control de Asistencia</h2>
-            <div id="cont-asistencia"></div>
+            <h2><i class="fas fa-calendar-check"></i> Registro de Asistencia</h2>
+            <div id="fecha-actual" class="fecha-hoy"></div>
+            <div class="tabla-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Nacimiento</th>
+                            <th>C.I. / Tel.</th>
+                            <th>Asistencia</th>
+                            <th>Tareas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-master"></tbody>
+                </table>
+            </div>
         </div>
-    </div>
-
-    <div id="v-tareas" class="view hidden">
+        
         <div class="card">
-            <h2><i class="fas fa-pen-fancy"></i> Calificar Tareas</h2>
-            <div id="cont-tareas"></div>
-        </div>
-        <div class="card">
-            <label style="font-size:11px; font-weight:800;">Orden Semanal:</label>
-            <textarea id="adm-tarea" placeholder="Escribe aquí la tarea para los chicos..."></textarea>
-            <button class="btn-main" onclick="app.postTarea()" style="background:#ff9800">PUBLICAR TAREA</button>
-        </div>
-    </div>
-
-    <div id="v-misas" class="view hidden">
-        <div class="card">
-            <h2><i class="fas fa-church"></i> Registro de Misas</h2>
-            <div id="cont-misas"></div>
-        </div>
-        <div class="card">
-            <h2><i class="fas fa-cog"></i> Panel de Control</h2>
-            <button class="btn-main" style="background:#107c41" onclick="app.exportar()">DESCARGAR REPORTE EXCEL</button>
-            <button class="btn-main" style="background:#444; margin-top:10px;" onclick="if(confirm('¿Borrar todo?')) {localStorage.clear(); location.reload();}">RESETEAR SISTEMA</button>
+            <h2><i class="fas fa-edit"></i> Control de Avisos</h2>
+            <textarea id="input-aviso" placeholder="Escribe la tarea o aviso de la semana..."></textarea>
+            <button class="btn-main" onclick="app.publicarAviso()" style="background:#ff9800">PUBLICAR AVISO</button>
+            <button class="btn-main" onclick="app.exportar()" style="background:#107c41; margin-top:10px;">EXPORTAR EXCEL</button>
         </div>
     </div>
 
 </div>
 
 <nav class="nav-bar">
-    <i class="fas fa-user-edit nav-btn active" onclick="app.nav('joven', this)"></i>
-    <i class="fas fa-clipboard-check nav-btn" onclick="app.nav('asistencia', this)"></i>
-    <i class="fas fa-star nav-btn" onclick="app.nav('tareas', this)"></i>
-    <i class="fas fa-place-of-worship nav-btn" onclick="app.nav('misas', this)"></i>
+    <i class="fas fa-user-circle nav-btn active" onclick="app.nav('joven', this)"></i>
+    <i class="fas fa-tasks nav-btn" onclick="app.nav('admin', this)"></i>
 </nav>
 
 <script>
     const app = {
-        db: JSON.parse(localStorage.getItem('smp_v9_final')) || {
+        db: JSON.parse(localStorage.getItem('smp_v13_final')) || {
             jovenes: [],
-            tarea: "",
+            aviso: "",
             asist: {}, 
-            notasT: {}, 
-            notasM: {},
-            reportesMisa: {} 
+            tareas: {} 
+        },
+        sesion: JSON.parse(localStorage.getItem('smp_user_v13')) || null,
+
+        init: () => {
+            if(app.sesion) {
+                document.getElementById('card-registro').classList.add('hidden');
+                document.getElementById('panel-joven').classList.remove('hidden');
+            }
+            app.render();
         },
 
-        init: () => { app.render(); },
+        formatoNombre: (el) => {
+            el.value = el.value.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+        },
 
         nav: (id, el) => {
-            if(id !== 'joven' && prompt("Clave Michael:") !== "adminSMP") return;
+            if(id === 'admin' && prompt("Clave Maycol:") !== "adminSMP") return;
             document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('v-'+id).classList.remove('hidden');
@@ -127,117 +144,101 @@
         },
 
         registrar: () => {
-            const n = document.getElementById('reg-nom').value.trim();
-            const c = document.getElementById('reg-ci').value.trim();
-            if(!n || !c) return alert("Michael necesita tu nombre y C.I. para la lista.");
+            const d = {
+                id: Date.now(),
+                n: document.getElementById('reg-nom').value,
+                f: document.getElementById('reg-fecha').value,
+                c: document.getElementById('reg-ci').value,
+                t: document.getElementById('reg-tel').value
+            };
+            if(!d.n || !d.f || !d.c || !d.t) return alert("Por favor, llena todos los datos.");
             
-            app.db.jovenes.push({ id: Date.now(), nombre: n, ci: c });
-            app.save("¡Registro exitoso! Michael ya puede verte en su lista.");
-            document.getElementById('registro-card').classList.add('hidden');
+            app.db.jovenes.push(d);
+            app.sesion = d;
+            localStorage.setItem('smp_user_v13', JSON.stringify(d));
+            app.save("Registro exitoso. ¡Bienvenido!");
+            location.reload();
         },
 
-        enviarReporteMisa: () => {
-            const img = document.getElementById('misa-img').value;
-            const nom = prompt("Escribe tu nombre tal cual te registraste:");
-            const j = app.db.jovenes.find(x => x.nombre.toLowerCase() === nom.toLowerCase());
-            
-            if(!j) return alert("No estás en la lista. Primero regístrate.");
-            if(!img) return alert("Pega el enlace de la foto del comprobante.");
-
-            navigator.geolocation.getCurrentPosition((pos) => {
-                const coords = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
-                app.db.reportesMisa[j.id] = { coords, img, fecha: new Date().toLocaleString() };
-                document.getElementById('gps-status').classList.remove('hidden');
-                app.save("Reporte enviado con GPS. Michael lo revisará.");
-            }, () => alert("Activa el GPS para validar que estás en la misa."));
-        },
-
-        postTarea: () => {
-            app.db.tarea = document.getElementById('adm-tarea').value;
-            app.save("Tarea actualizada.");
+        publicarAviso: () => {
+            app.db.aviso = document.getElementById('input-aviso').value;
+            app.save("Aviso publicado correctamente.");
         },
 
         marcar: (tipo, jId, valor) => {
+            const hoy = new Date().toLocaleDateString().replace(/\//g, '-');
             if(tipo === 'asist') {
-                const hoy = new Date().toLocaleDateString().replace(/\//g, '-');
                 if(!app.db.asist[hoy]) app.db.asist[hoy] = {};
                 app.db.asist[hoy][jId] = valor;
-            } else if (tipo === 'tarea') {
-                app.db.notasT[jId] = valor;
-            } else if (tipo === 'misa') {
-                app.db.notasM[jId] = valor;
+            } else {
+                if(!app.db.tareas[hoy]) app.db.tareas[hoy] = {};
+                app.db.tareas[hoy][jId] = valor;
             }
             app.save();
         },
 
         save: (m) => {
-            localStorage.setItem('smp_v9_final', JSON.stringify(app.db));
+            localStorage.setItem('smp_v13_final', JSON.stringify(app.db));
             if(m) alert(m);
             app.render();
         },
 
         render: () => {
             const hoy = new Date().toLocaleDateString().replace(/\//g, '-');
+            const fechaTxt = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('fecha-actual').innerText = "Hoy es: " + fechaTxt;
             
-            // Joven
-            if(app.db.jovenes.length > 0) document.getElementById('area-joven-activa').classList.remove('hidden');
-            document.getElementById('txt-tarea-j').innerText = app.db.tarea || "No hay tareas asignadas aún.";
+            // Render Joven
+            if(app.sesion) {
+                document.getElementById('txt-aviso').innerText = app.db.aviso || "No hay tareas por ahora.";
+                const hecho = (app.db.tareas[hoy] && app.db.tareas[hoy][app.sesion.id]);
+                document.getElementById('checklist-joven').innerHTML = `
+                    <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee;">
+                        <span>Tarea del día</span>
+                        <b style="color:${hecho?'green':'red'}">${hecho?'ENTREGADO':'FALTANTE'}</b>
+                    </div>
+                `;
+            }
 
-            // Admin: Asistencia
+            // Render Admin Tabla
             const aHoy = app.db.asist[hoy] || {};
-            document.getElementById('cont-asistencia').innerHTML = app.db.jovenes.map(j => `
-                <div class="fila-joven">
-                    <b>${j.nombre}</b> <small style="color:#999">CI: ${j.ci}</small>
-                    <div class="grid-3">
-                        <button class="btn-opt ${aHoy[j.id]=='p'?'active':''}" onclick="app.marcar('asist',${j.id},'p')">PRESENTE</button>
-                        <button class="btn-opt ${aHoy[j.id]=='f'?'active':''}" onclick="app.marcar('asist',${j.id},'f')">FALTA</button>
-                        <button class="btn-opt ${aHoy[j.id]=='per'?'active':''}" onclick="app.marcar('asist',${j.id},'per')">PERMISO</button>
-                    </div>
-                </div>`).join('') || '<p style="font-size:12px; color:#999; text-align:center;">Esperando a que los jóvenes se registren...</p>';
-
-            // Admin: Tareas
-            document.getElementById('cont-tareas').innerHTML = app.db.jovenes.map(j => {
-                const n = app.db.notasT[j.id] || 0;
-                return `
-                <div class="fila-joven">
-                    <b>${j.nombre}</b> <span style="float:right; color:var(--guindo)">${n}%</span>
-                    <div class="grid-3">
-                        <button class="btn-opt ${n==100?'active':''}" onclick="app.marcar('tarea',${j.id},100)">10/10</button>
-                        <button class="btn-opt ${n==80?'active':''}" onclick="app.marcar('tarea',${j.id},80)">-20%</button>
-                        <button class="btn-opt ${n==50?'active':''}" onclick="app.marcar('tarea',${j.id},50)">-50%</button>
-                    </div>
-                </div>`;
-            }).join('');
-
-            // Admin: Misas
-            document.getElementById('cont-misas').innerHTML = app.db.jovenes.map(j => {
-                const n = app.db.notasM[j.id] || 0;
-                const rep = app.db.reportesMisa[j.id];
-                return `
-                <div class="fila-joven">
-                    <b>${j.nombre}</b> <span style="float:right;">${n}%</span>
-                    ${rep ? `<div style="font-size:9px; background:#f0f0f0; padding:5px; border-radius:5px; margin:5px 0;">📍 GPS: ${rep.coords} | <a href="${rep.img}" target="_blank">Ver Foto</a></div>` : '<div style="font-size:9px; color:red;">Sin reporte</div>'}
-                    <div class="grid-3">
-                        <button class="btn-opt ${n==100?'active':''}" onclick="app.marcar('misa',${j.id},100)">10/10</button>
-                        <button class="btn-opt ${n==80?'active':''}" onclick="app.marcar('misa',${j.id},80)">-20%</button>
-                        <button class="btn-opt ${n==50?'active':''}" onclick="app.marcar('misa',${j.id},50)">-50%</button>
-                    </div>
-                </div>`;
-            }).join('');
+            const tHoy = app.db.tareas[hoy] || {};
+            
+            document.getElementById('lista-master').innerHTML = app.db.jovenes.map(j => `
+                <tr>
+                    <td><b>${j.n}</b></td>
+                    <td>${j.f}</td>
+                    <td>${j.c}<br><small>${j.t}</small></td>
+                    <td>
+                        <div class="btn-grupo">
+                            <button class="btn-control ${aHoy[j.id]=='p'?'active-p':''}" onclick="app.marcar('asist',${j.id},'p')">P</button>
+                            <button class="btn-control ${aHoy[j.id]=='f'?'active-f':''}" onclick="app.marcar('asist',${j.id},'f')">F</button>
+                            <button class="btn-control ${aHoy[j.id]=='per'?'active-per':''}" onclick="app.marcar('asist',${j.id},'per')">PER</button>
+                        </div>
+                    </td>
+                    <td>
+                        <button class="btn-control ${tHoy[j.id]?'active-t':''}" onclick="app.marcar('tarea',${j.id},!tHoy[j.id])">
+                            ${tHoy[j.id]?'ENTREGADA':'MARCAR'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('') || '<tr><td colspan="5" style="text-align:center;">Esperando registros de los jóvenes...</td></tr>';
         },
 
         exportar: () => {
+            const hoy = new Date().toLocaleDateString().replace(/\//g, '-');
             const data = app.db.jovenes.map(j => ({
-                Nombre: j.nombre,
-                CI: j.ci,
-                Nota_Tarea: (app.db.notasT[j.id] || 0) + "%",
-                Nota_Misa: (app.db.notasM[j.id] || 0) + "%",
-                Reporte_GPS: app.db.reportesMisa[j.id] ? app.db.reportesMisa[j.id].coords : "No enviado"
+                Nombre: j.n,
+                Nacimiento: j.f,
+                CI: j.c,
+                Telefono: j.t,
+                Asistencia_Hoy: app.db.asist[hoy] ? (app.db.asist[hoy][j.id] || "-") : "-",
+                Tarea_Hoy: app.db.tareas[hoy] ? (app.db.tareas[hoy][j.id] ? "SÍ" : "NO") : "NO"
             }));
             const ws = XLSX.utils.json_to_sheet(data);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Notas Grupo 4");
-            XLSX.writeFile(wb, "Catequesis_Michael_Vargas.xlsx");
+            XLSX.utils.book_append_sheet(wb, ws, "Lista_" + hoy);
+            XLSX.writeFile(wb, "Catequesis_SMP_" + hoy + ".xlsx");
         }
     };
     app.init();
