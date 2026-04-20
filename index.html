@@ -3,266 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catequesis Pro | San Martín de Porres</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-icons/font-awesome/6.0.0/css/all.min.css">
-    
+    <title>Catequesis Pro | San Martín</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary: #007BFF;
-            --secondary: #FF8C00;
-            --bg: #f4f7f6;
-            --dark: #2d3436;
-            --white: #ffffff;
-            --shadow: 0 4px 6px rgba(0,0,0,0.1);
-            --radius: 12px;
+            --primary: #007BFF; --secondary: #FF8C00; --bg: #F0F2F5;
+            --white: #ffffff; --shadow: 0 4px 15px rgba(0,0,0,0.05); --radius: 18px;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); color: #1c1e21; padding-bottom: 80px; }
 
-        body { background-color: var(--bg); color: var(--dark); overflow-x: hidden; }
-
-        /* --- LOGIN & REGISTRO --- */
-        .auth-container {
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; padding: 20px;
-        }
-
-        .auth-card {
-            background: var(--white); padding: 30px; width: 100%; max-width: 400px;
-            border-radius: var(--radius); box-shadow: var(--shadow); text-align: center;
-        }
-
-        .auth-card h2 { margin-bottom: 20px; color: var(--primary); }
-
-        input {
-            width: 100%; padding: 12px; margin: 10px 0;
-            border: 1px solid #ddd; border-radius: 8px; outline: none;
-        }
-
-        .btn {
-            width: 100%; padding: 12px; border: none; border-radius: 8px;
-            cursor: pointer; font-weight: bold; transition: 0.3s; margin-top: 10px;
-        }
-
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: #0056b3; }
-
-        .link-toggle { margin-top: 15px; display: block; font-size: 0.9em; color: var(--primary); cursor: pointer; }
-
-        /* --- DASHBOARD ESTRUCTURA --- */
-        #app-shell { display: none; height: 100vh; flex-direction: column; }
-
+        /* HEADER ESTILO APP */
         header {
             background: var(--primary); color: white; padding: 15px 20px;
             display: flex; justify-content: space-between; align-items: center;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .main-container { display: flex; flex: 1; overflow: hidden; }
+        .container { padding: 15px; max-width: 500px; margin: auto; }
+        .section { display: none; animation: slideUp 0.3s ease-out; }
+        .section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        nav {
-            width: 250px; background: var(--white); border-right: 1px solid #ddd;
-            display: flex; flex-direction: column; padding: 20px;
-        }
-
-        nav a {
-            text-decoration: none; color: var(--dark); padding: 12px;
-            margin-bottom: 5px; border-radius: 8px; transition: 0.3s;
-        }
-
-        nav a:hover, nav a.active { background: #e9ecef; color: var(--primary); font-weight: 600; }
-
-        main { flex: 1; padding: 30px; overflow-y: auto; }
-
-        /* --- COMPONENTES --- */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, min-minmax(200px, 1fr));
-            gap: 20px; margin-bottom: 30px;
-        }
-
+        /* DASHBOARD */
+        .welcome { font-size: 22px; font-weight: 600; margin-bottom: 20px; color: var(--primary); }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .stat-card {
-            background: var(--white); padding: 20px; border-radius: var(--radius);
+            background: white; padding: 20px; border-radius: var(--radius);
             box-shadow: var(--shadow); text-align: center; border-bottom: 4px solid var(--primary);
         }
+        .stat-card span { display: block; font-size: 24px; font-weight: bold; color: var(--secondary); }
 
-        .section { display: none; }
-        .section.active { display: block; animation: fadeIn 0.5s; }
+        /* FORMULARIOS Y CARDS */
+        .card { background: white; padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 15px; }
+        input, select, textarea { 
+            width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; 
+            border-radius: 10px; font-size: 15px; background: #f9f9f9;
+        }
+        .btn { 
+            width: 100%; padding: 14px; border: none; border-radius: 10px; 
+            font-weight: 600; cursor: pointer; background: var(--primary); color: white; transition: 0.2s;
+        }
+        .btn:active { transform: scale(0.96); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* LISTAS ESTILO FEED */
+        .feed-item { background: white; padding: 15px; border-radius: var(--radius); margin-bottom: 10px; border-left: 5px solid var(--secondary); }
+        .feed-item h4 { color: var(--primary); margin-bottom: 5px; }
 
-        @media (max-width: 768px) {
-            nav { display: none; } /* Sidebar oculto en móvil por simplicidad en este demo */
-            .main-container { flex-direction: column; }
+        /* NAV INFERIOR TIPO INSTAGRAM */
+        .bottom-nav {
+            position: fixed; bottom: 0; width: 100%; background: white;
+            display: flex; justify-content: space-around; padding: 10px 0;
+            border-top: 1px solid #ddd; box-shadow: 0 -2px 15px rgba(0,0,0,0.05); z-index: 1000;
+        }
+        .nav-item { border: none; background: none; color: #888; font-size: 11px; cursor: pointer; transition: 0.3s; flex: 1; }
+        .nav-item i { display: block; font-size: 22px; margin-bottom: 4px; }
+        .nav-item.active { color: var(--primary); font-weight: 600; }
+
+        /* PANTALLA DE ACCESO */
+        #auth-screen { 
+            position: fixed; inset: 0; background: var(--bg); z-index: 2000; 
+            display: flex; justify-content: center; align-items: center; padding: 20px;
         }
     </style>
 </head>
 <body>
 
-    <div id="auth-module" class="auth-container">
-        <div id="login-form" class="auth-card">
-            <h2>Iniciar Sesión</h2>
-            <input type="email" id="log-email" placeholder="Correo Electrónico">
+    <div id="auth-screen">
+        <div class="card" style="width: 100%; max-width: 380px; text-align: center;">
+            <h2 style="color: var(--primary); margin-bottom: 10px;">Catequesis Pro</h2>
+            <p style="font-size: 14px; color: #666; margin-bottom: 20px;">Acceso Administrador</p>
+            <input type="email" id="log-email" placeholder="Correo">
             <input type="password" id="log-pass" placeholder="Contraseña">
-            <button class="btn btn-primary" onclick="auth.login()">Entrar</button>
-            <span class="link-toggle" onclick="ui.showRegister()">¿No tienes cuenta? Regístrate</span>
-        </div>
-
-        <div id="register-form" class="auth-card" style="display:none;">
-            <h2>Crear Cuenta</h2>
-            <input type="text" id="reg-name" placeholder="Nombre Completo">
-            <input type="email" id="reg-email" placeholder="Correo Electrónico">
-            <input type="password" id="reg-pass" placeholder="Contraseña">
-            <div style="background: #eee; padding: 10px; margin: 10px 0; border-radius: 8px;">
-                <label id="captcha-label"></label>
-                <input type="number" id="reg-captcha" placeholder="Resultado">
-            </div>
-            <button class="btn btn-primary" onclick="auth.register()">Registrarme</button>
-            <span class="link-toggle" onclick="ui.showLogin()">Volver al Login</span>
+            <button class="btn" onclick="app.login()">Entrar</button>
         </div>
     </div>
 
-    <div id="app-shell">
-        <header>
-            <h3>Catequesis Pro</h3>
-            <button onclick="auth.logout()" style="background:none; border:1px solid white; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;">Salir</button>
-        </header>
+    <header>
+        <span id="title-app">Confirmación SMP</span>
+        <button onclick="app.logout()" style="background:none; border:1px solid #fff6; color:white; padding:5px 10px; border-radius:8px; font-size:12px;">Cerrar</button>
+    </header>
 
-        <div class="main-container">
-            <nav id="sidebar">
-                <a href="#" onclick="ui.nav('dash')" class="active">Dashboard</a>
-                <a href="#" onclick="ui.nav('catequistas')">Catequistas</a>
-                <a href="#" onclick="ui.nav('grupos')">Grupos</a>
-                <a href="#" onclick="ui.nav('confirmantes')">Confirmantes</a>
-                <a href="#" onclick="ui.nav('tareas')">Tareas</a>
-            </nav>
-
-            <main>
-                <div id="sec-dash" class="section active">
-                    <h1>Bienvenido</h1>
-                    <div class="stats-grid">
-                        <div class="stat-card"><h3>Catequistas</h3><p id="stat-cat">0</p></div>
-                        <div class="stat-card"><h3>Grupos</h3><p id="stat-gru">0</p></div>
-                        <div class="stat-card"><h3>Confirmantes</h3><p id="stat-con">0</p></div>
-                    </div>
-                </div>
-
-                <div id="sec-catequistas" class="section">
-                    <h1>Gestión de Catequistas</h1>
-                    <div class="auth-card" style="max-width: 100%; text-align: left; margin-bottom: 20px;">
-                        <input type="text" id="cat-name" placeholder="Nombre del Catequista">
-                        <button class="btn btn-primary" onclick="app.addCatequista()">Añadir</button>
-                    </div>
-                    <ul id="list-catequistas" style="list-style: none;"></ul>
-                </div>
-
-                <div id="sec-grupos" class="section"><h1>Grupos</h1><p>Próximamente gestión de grupos...</p></div>
-                <div id="sec-confirmantes" class="section"><h1>Confirmantes</h1><p>Próximamente lista de jóvenes...</p></div>
-                <div id="sec-tareas" class="section"><h1>Tareas</h1><p>Próximamente sistema de tareas...</p></div>
-            </main>
+    <div class="container">
+        
+        <div id="v-dash" class="section active">
+            <p class="welcome">Panel de Control</p>
+            <div class="stat-grid">
+                <div class="stat-card"><span>0</span>Catequistas</div>
+                <div class="stat-card"><span>0</span>Confirmantes</div>
+                <div class="stat-card"><span>0</span>Grupos</div>
+                <div class="stat-card"><span>0</span>Tareas</div>
+            </div>
+            <div class="card" style="margin-top:20px; background: linear-gradient(135deg, var(--primary), #00bfff); color: white;">
+                <h4>Aviso Parroquial</h4>
+                <p id="last-news">No hay anuncios recientes.</p>
+            </div>
         </div>
+
+        <div id="v-blog" class="section">
+            <h3>Comunidad y Avisos</h3>
+            <div class="card">
+                <input type="text" id="blog-title" placeholder="Título del aviso">
+                <textarea id="blog-text" placeholder="Contenido del mensaje..."></textarea>
+                <button class="btn" onclick="app.save('blog')">Publicar</button>
+            </div>
+            <div id="list-blog"></div>
+        </div>
+
+        <div id="v-admin" class="section">
+            <h3>Gestión de Personal</h3>
+            <div class="card">
+                <select id="admin-type" onchange="app.uiToggleAdmin()">
+                    <option value="cat">Registrar Catequista</option>
+                    <option value="gru">Crear Grupo</option>
+                    <option value="con">Inscribir Confirmante</option>
+                </select>
+                <input type="text" id="admin-name" placeholder="Nombre completo">
+                <input type="text" id="admin-extra" placeholder="Dato extra (Celular/Horario)">
+                <button class="btn" onclick="app.saveAdmin()">Guardar Registro</button>
+            </div>
+            <div id="list-admin"></div>
+        </div>
+
+        <div id="v-edu" class="section">
+            <h3>Formación y Tareas</h3>
+            <div class="card">
+                <select id="edu-type">
+                    <option value="task">Nueva Tarea</option>
+                    <option value="book">Biblioteca (Tema)</option>
+                </select>
+                <input type="text" id="edu-title" placeholder="Título">
+                <textarea id="edu-desc" placeholder="Descripción o instrucciones..."></textarea>
+                <button class="btn" onclick="app.save('edu')">Asignar / Subir</button>
+            </div>
+            <div id="list-edu"></div>
+        </div>
+
+        <div id="v-event" class="section">
+            <h3>Agenda de Eventos</h3>
+            <div class="card">
+                <input type="text" id="event-name" placeholder="Nombre del evento">
+                <input type="date" id="event-date">
+                <button class="btn" onclick="app.save('event')">Programar</button>
+            </div>
+            <div id="list-event"></div>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="app.nav('dash', this)"><i class="fas fa-th-large"></i>Inicio</button>
+        <button class="nav-item" onclick="app.nav('blog', this)"><i class="fas fa-bullhorn"></i>Anuncios</button>
+        <button class="nav-item" onclick="app.nav('admin', this)"><i class="fas fa-user-check"></i>Gestión</button>
+        <button class="nav-item" onclick="app.nav('edu', this)"><i class="fas fa-book-reader"></i>Tareas</button>
+        <button class="nav-item" onclick="app.nav('event', this)"><i class="fas fa-calendar-alt"></i>Agenda</button>
     </div>
 
     <script>
-        // --- BASE DE DATOS LOCAL ---
-        const store = {
-            get: (key) => JSON.parse(localStorage.getItem(key)) || [],
-            save: (key, data) => localStorage.setItem(key, JSON.stringify(data))
-        };
-
-        // --- LÓGICA DE USUARIOS ---
-        let captchaAns = 0;
-
-        const auth = {
-            genCaptcha: () => {
-                const n1 = Math.floor(Math.random() * 10);
-                const n2 = Math.floor(Math.random() * 10);
-                captchaAns = n1 + n2;
-                document.getElementById('captcha-label').innerText = `¿Cuánto es ${n1} + ${n2}?`;
+        const app = {
+            db: JSON.parse(localStorage.getItem('smp_pro_db')) || {
+                cat:[], gru:[], con:[], blog:[], edu:[], event:[]
             },
-            register: () => {
-                const name = document.getElementById('reg-name').value;
-                const email = document.getElementById('reg-email').value;
-                const pass = document.getElementById('reg-pass').value;
-                const ans = document.getElementById('reg-captcha').value;
 
-                if(!name || !email || !pass) return alert("Llena todos los campos");
-                if(parseInt(ans) !== captchaAns) return alert("Captcha incorrecto");
-
-                let users = store.get('users');
-                if(users.find(u => u.email === email)) return alert("El correo ya existe");
-
-                users.push({name, email, pass});
-                store.save('users', users);
-                alert("Registro exitoso. Inicia sesión.");
-                ui.showLogin();
+            nav: (id, btn) => {
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                document.getElementById('v-' + id).classList.add('active');
+                btn.classList.add('active');
+                app.render();
             },
+
+            saveAdmin: () => {
+                const type = document.getElementById('admin-type').value;
+                const name = document.getElementById('admin-name').value;
+                const extra = document.getElementById('admin-extra').value;
+                if(!name) return;
+                app.db[type].push({name, extra});
+                app.sync();
+            },
+
+            save: (key) => {
+                const title = document.getElementById(key + '-title')?.value || document.getElementById('event-name')?.value;
+                const desc = document.getElementById(key + '-text')?.value || document.getElementById(key + '-desc')?.value || document.getElementById('event-date')?.value;
+                if(!title) return;
+                app.db[key].push({title, desc, date: new Date().toLocaleDateString()});
+                app.sync();
+            },
+
+            sync: () => {
+                localStorage.setItem('smp_pro_db', JSON.stringify(app.db));
+                document.querySelectorAll('input, textarea').forEach(i => i.value = "");
+                app.render();
+                alert("¡Actualizado con éxito!");
+            },
+
+            render: () => {
+                // Actualizar Stats
+                const stats = document.querySelectorAll('.stat-card span');
+                stats[0].innerText = app.db.cat.length;
+                stats[1].innerText = app.db.con.length;
+                stats[2].innerText = app.db.gru.length;
+                stats[3].innerText = app.db.edu.filter(e => e.type === 'task').length || app.db.edu.length;
+
+                // Render Blog
+                document.getElementById('list-blog').innerHTML = app.db.blog.slice().reverse().map(b => `
+                    <div class="feed-item"><h4>${b.title}</h4><p>${b.desc}</p><small>${b.date}</small></div>
+                `).join('');
+
+                // Render Gestión
+                document.getElementById('list-admin').innerHTML = app.db.cat.concat(app.db.gru, app.db.con).slice(-10).map(i => `
+                    <div class="feed-item"><h4>${i.name}</h4><p>${i.extra}</p></div>
+                `).join('');
+
+                // Render Edu
+                document.getElementById('list-edu').innerHTML = app.db.edu.map(e => `
+                    <div class="feed-item" style="border-left-color:var(--primary)"><h4>${e.title}</h4><p>${e.desc}</p></div>
+                `).join('');
+
+                // Render Agenda
+                document.getElementById('list-event').innerHTML = app.db.event.map(e => `
+                    <div class="feed-item"><h4>${e.title}</h4><p>Fecha: ${e.desc}</p></div>
+                `).join('');
+
+                // Último anuncio en Dash
+                if(app.db.blog.length > 0) document.getElementById('last-news').innerText = app.db.blog[app.db.blog.length-1].title;
+            },
+
             login: () => {
-                const email = document.getElementById('log-email').value;
-                const pass = document.getElementById('log-pass').value;
-                const users = store.get('users');
-                const user = users.find(u => u.email === email && u.pass === pass);
-
-                if(user) {
-                    localStorage.setItem('session', JSON.stringify(user));
-                    ui.initApp();
-                } else {
-                    alert("Credenciales incorrectas");
-                }
+                localStorage.setItem('smp_session', 'true');
+                document.getElementById('auth-screen').style.display = 'none';
+                app.render();
             },
+
             logout: () => {
-                localStorage.removeItem('session');
+                localStorage.removeItem('smp_session');
                 location.reload();
             }
         };
 
-        // --- LÓGICA DE LA APP ---
-        const app = {
-            addCatequista: () => {
-                const name = document.getElementById('cat-name').value;
-                if(!name) return;
-                let cats = store.get('catequistas');
-                cats.push(name);
-                store.save('catequistas', cats);
-                document.getElementById('cat-name').value = "";
-                app.renderCatequistas();
-                app.updateStats();
-            },
-            renderCatequistas: () => {
-                const list = document.getElementById('list-catequistas');
-                list.innerHTML = store.get('catequistas').map(c => `<li style="background:white; padding:10px; margin-bottom:5px; border-radius:5px; box-shadow:var(--shadow)">${c}</li>`).join('');
-            },
-            updateStats: () => {
-                document.getElementById('stat-cat').innerText = store.get('catequistas').length;
-            }
-        };
-
-        // --- INTERFAZ DE USUARIO (UI) ---
-        const ui = {
-            showRegister: () => {
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('register-form').style.display = 'block';
-                auth.genCaptcha();
-            },
-            showLogin: () => {
-                document.getElementById('login-form').style.display = 'block';
-                document.getElementById('register-form').style.display = 'none';
-            },
-            nav: (id) => {
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-                document.getElementById(`sec-${id}`).classList.add('active');
-                event.target.classList.add('active');
-            },
-            initApp: () => {
-                document.getElementById('auth-module').style.display = 'none';
-                document.getElementById('app-shell').style.display = 'flex';
-                app.updateStats();
-                app.renderCatequistas();
-            }
-        };
-
-        // Auto-login
-        if(localStorage.getItem('session')) ui.initApp();
+        if(localStorage.getItem('smp_session')) {
+            document.getElementById('auth-screen').style.display = 'none';
+            app.render();
+        }
     </script>
 </body>
 </html>
