@@ -3,176 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catequesis Grupo 4 - Registro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>SMP - Gestión Profesional Grupo 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
-        :root { --guindo: #800020; --insta: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); --bg: #fafafa; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); margin: 0; color: #262626; }
+        :root { --guindo: #800020; --success: #2e7d32; --warning: #ed6c02; --danger: #d32f2f; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8f9fa; margin: 0; padding-bottom: 80px; color: #333; }
+        header { background: var(--guindo); color: white; padding: 15px; text-align: center; border-radius: 0 0 20px 20px; }
+        .container { padding: 15px; max-width: 600px; margin: auto; }
+        .card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         
-        /* HEADER ESTILO APP */
-        header { background: white; border-bottom: 1px solid #dbdbdb; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; }
-        .logo-smp { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--guindo); padding: 2px; }
+        /* ASISTENCIA MAESTRA */
+        .tabla-asistencia { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .row-alumno { border-bottom: 1px solid #eee; padding: 10px 0; display: flex; flex-direction: column; gap: 8px; }
+        .btn-group { display: flex; gap: 4px; flex-wrap: wrap; }
+        .btn-opt { flex: 1; padding: 8px 4px; border: 1px solid #ddd; border-radius: 6px; font-size: 9px; font-weight: 800; cursor: pointer; background: white; }
+        .btn-opt.p { color: var(--success); } .btn-opt.p.active { background: var(--success); color: white; }
+        .btn-opt.f { color: var(--danger); } .btn-opt.f.active { background: var(--danger); color: white; }
+        .btn-opt.pp { color: var(--warning); } .btn-opt.pp.active { background: var(--warning); color: white; }
+        .btn-opt.t { color: #0288d1; } .btn-opt.t.active { background: #0288d1; color: white; }
 
-        .container { max-width: 450px; margin: auto; padding: 20px; }
+        /* REPORTE MISA */
+        .status-gps { font-size: 11px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+        .timer-box { background: #eee; padding: 10px; border-radius: 10px; text-align: center; font-weight: 800; font-size: 18px; color: var(--guindo); }
+        textarea { width: 100%; border-radius: 10px; border: 1px solid #ddd; padding: 10px; margin-top: 10px; resize: none; }
+        .btn-full { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: 800; cursor: pointer; margin-top: 10px; color: white; }
         
-        /* TARJETAS TIPO INSTAGRAM */
-        .card { background: white; border: 1px solid #dbdbdb; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        h2 { font-weight: 800; font-size: 18px; margin-bottom: 15px; color: var(--guindo); text-align: center; }
-
-        /* CAMPOS DE FORMULARIO */
-        input, select, button { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #dbdbdb; font-size: 14px; outline: none; }
-        input:focus { border-color: var(--guindo); }
-        
-        .btn-enviar { background: var(--insta); color: white; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .btn-enviar:active { transform: scale(0.95); }
-
-        /* DISEÑO DE LA LISTA (SOLO PARA TI) */
-        .alumno-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: #fff; border-radius: 8px; margin-bottom: 5px; }
-        .controles { display: flex; gap: 5px; }
-        .btn-check { padding: 6px 10px; border-radius: 6px; font-size: 10px; border: 1px solid #ddd; cursor: pointer; font-weight: 700; }
-        .btn-check.active { background: var(--guindo); color: white; border-color: var(--guindo); }
-
-        .badge-tarea { background: #e1f5fe; color: #01579b; padding: 4px 8px; border-radius: 20px; font-size: 11px; margin-top: 5px; display: inline-block; }
-
-        .footer-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 12px; border-top: 1px solid #dbdbdb; }
-        .nav-icon { font-size: 20px; color: #8e8e8e; cursor: pointer; }
-        .nav-icon.active { color: var(--guindo); }
-        
+        .nav { position: fixed; bottom: 0; width: 100%; background: white; border-top: 1px solid #ddd; display: flex; justify-content: space-around; padding: 12px 0; }
+        .nav i { font-size: 22px; color: #ccc; cursor: pointer; }
+        .nav i.active { color: var(--guindo); }
         .hidden { display: none !important; }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
 <header>
-    <img src="https://i.ibb.co/Lnbm2Xq/1000540900-jpg.jpg" class="logo-smp">
-    <div style="font-weight: 800; font-size: 12px; color: var(--guindo);">GRUPO 4 - SAN MARTÍN DE PORRES</div>
+    <div style="font-weight: 800;">GRUPO 4 - SAN MARTÍN DE PORRES</div>
+    <div id="reloj" style="font-size: 12px; opacity: 0.9;">00:00:00</div>
 </header>
 
 <div class="container">
-
-    <div id="v-registro" class="section">
+    <div id="v-registro" class="view">
         <div class="card">
-            <h2>📝 Registro de Asistencia</h2>
-            <p style="font-size: 12px; text-align: center; color: #8e8e8e;">Hola! Regístrate para que Michael pueda tomarte la asistencia de hoy.</p>
-            <input type="text" id="nombre" placeholder="Tu nombre y apellido">
-            <input type="number" id="celular" placeholder="Tu número de celular">
-            <button class="btn-enviar" onclick="app.registrar()">Enviar mi registro</button>
-        </div>
-
-        <div class="card">
-            <h2>📸 Subir Tarea / Misa</h2>
-            <select id="nombre-lista-tareas">
-                <option value="">Selecciona tu nombre...</option>
-            </select>
-            <input type="text" id="tema-tarea" placeholder="¿Qué tema es? (Ej: El Espíritu Santo)">
-            <p style="font-size: 11px; color: #8e8e8e;">Sube la foto de tu tarea o comprobante:</p>
-            <input type="file" accept="image/*">
-            <button class="btn-enviar" onclick="app.subirTarea()">Publicar Tarea</button>
+            <h3 style="margin-top:0">Ficha de Inscripción</h3>
+            <input type="text" id="reg-nom" placeholder="Nombre Completo" style="margin-bottom:10px; width:100%; padding:10px;">
+            <input type="number" id="reg-ci" placeholder="C.I." style="margin-bottom:10px; width:100%; padding:10px;">
+            <input type="number" id="reg-cel" placeholder="Celular" style="margin-bottom:10px; width:100%; padding:10px;">
+            <input type="date" id="reg-nac" style="width:100%; padding:10px;">
+            <button class="btn-full" style="background:var(--guindo)" onclick="app.inscribir()">GUARDAR REGISTRO</button>
         </div>
     </div>
 
-    <div id="v-admin" class="section hidden">
-        <h2>📊 Mi Panel de Control</h2>
-        <div id="estadisticas" style="margin-bottom: 15px; font-size: 12px; font-weight: 700;"></div>
-        
-        <div id="lista-alumnos-master">
+    <div id="v-misa" class="view hidden">
+        <div class="card">
+            <h3>⛪ Marcado de Misa</h3>
+            <div id="gps-status" class="status-gps" style="color: grey;"><i class="fas fa-location-dot"></i> Verificando GPS...</div>
+            <select id="sel-joven" style="width:100%; padding:10px; margin-bottom:10px;"></select>
+            
+            <button id="btn-entrada" class="btn-full" style="background:#444" onclick="app.marcarEntrada()">MARCAR ENTRADA</button>
+            
+            <div id="area-salida" class="hidden">
+                <div class="timer-box" id="timer-misa">Misa en curso...</div>
+                <label style="font-size:12px; font-weight:700; margin-top:15px; display:block;">Resumen de la Homilía (Un párrafo):</label>
+                <textarea id="homilia-text" rows="4" placeholder="Escribe lo que aprendiste hoy..."></textarea>
+                <button class="btn-full" style="background:var(--success)" onclick="app.marcarSalida()">ENVIAR REPORTE FINAL</button>
             </div>
-
-        <h2 style="margin-top: 30px;">📂 Tareas por Revisar</h2>
-        <div id="lista-tareas-master"></div>
+        </div>
     </div>
 
+    <div id="v-admin" class="view hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h3 style="margin:0">Control de Asistencia</h3>
+            <button onclick="app.exportar()" style="background:#107c41; border:none; color:white; padding:5px 10px; border-radius:5px; font-size:11px;">Descargar Registro</button>
+        </div>
+        <div class="card" id="lista-master" style="padding:10px;"></div>
+    </div>
 </div>
 
-<div class="footer-nav">
-    <i class="fas fa-user-edit nav-icon active" id="btn-v-reg" onclick="app.nav('registro')"></i>
-    <i class="fas fa-user-shield nav-icon" id="btn-v-adm" onclick="app.nav('admin')"></i>
+<div class="nav">
+    <i class="fas fa-user-plus active" onclick="app.nav('registro', this)"></i>
+    <i class="fas fa-church" onclick="app.nav('misa', this)"></i>
+    <i class="fas fa-clipboard-check" onclick="app.nav('admin', this)"></i>
 </div>
 
 <script>
     const app = {
-        // La base de datos guarda todo lo que ellos envían
-        db: JSON.parse(localStorage.getItem('grupo4_db')) || { jovenes: [], tareas: [] },
+        db: JSON.parse(localStorage.getItem('g4_vfinal')) || { alumnos: [], reportes: [] },
+        posicionParroquia: { lat: -21.535, lon: -64.730 }, // Ajustar a la ubicación real
 
-        registrar: () => {
-            const nom = document.getElementById('nombre').value;
-            const cel = document.getElementById('celular').value;
-            if(!nom || !cel) return alert("Por favor pon tu nombre y celular");
-
-            app.db.jovenes.push({ id: Date.now(), nombre: nom, celular: cel });
-            app.sync("¡Genial! Ya te registraste.");
-            document.getElementById('nombre').value = "";
-            document.getElementById('celular').value = "";
+        init: () => {
+            setInterval(() => { document.getElementById('reloj').innerText = new Date().toLocaleTimeString(); }, 1000);
+            app.render();
+            app.checkGPS();
         },
 
-        subirTarea: () => {
-            const nom = document.getElementById('nombre-lista-tareas').value;
-            const tema = document.getElementById('tema-tarea').value;
-            if(!nom || !tema) return alert("Selecciona tu nombre y pon el tema");
-
-            app.db.tareas.push({ nombre: nom, tema: tema, fecha: new Date().toLocaleString() });
-            app.sync("¡Tarea enviada con éxito!");
-            document.getElementById('tema-tarea').value = "";
-        },
-
-        nav: (id) => {
-            // Protección simple: Si quieres entrar a Admin, te pide una clave rápida (opcional)
-            if(id === 'admin') {
-                const pass = prompt("Introduce tu clave de Catequista:");
-                if(pass !== "1234") return alert("Acceso denegado");
+        checkGPS: () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((p) => {
+                    document.getElementById('gps-status').style.color = "var(--success)";
+                    document.getElementById('gps-status').innerHTML = '<i class="fas fa-check-circle"></i> Ubicación validada: En la Parroquia';
+                }, () => {
+                    document.getElementById('gps-status').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Activa tu GPS para marcar';
+                });
             }
+        },
 
-            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-            document.getElementById('v-' + id).classList.remove('hidden');
-            document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
-            document.getElementById('btn-v-' + id).classList.add('active');
+        inscribir: () => {
+            const n = document.getElementById('reg-nom').value;
+            const ci = document.getElementById('reg-ci').value;
+            if(!n || !ci) return alert("Nombre y C.I. obligatorios");
+            app.db.alumnos.push({ id: Date.now(), nombre: n, ci, cel: document.getElementById('reg-cel').value, nac: document.getElementById('reg-nac').value, p:0, f:0, per:0, t:0 });
+            app.sync("Registrado exitosamente");
+            app.nav('misa', document.querySelector('.fa-church'));
+        },
+
+        marcarEntrada: () => {
+            const j = document.getElementById('sel-joven').value;
+            if(!j) return alert("Selecciona tu nombre");
+            document.getElementById('btn-entrada').classList.add('hidden');
+            document.getElementById('area-salida').classList.remove('hidden');
+            app.entradaTemp = new Date().toLocaleTimeString();
+        },
+
+        marcarSalida: () => {
+            const h = document.getElementById('homilia-text').value;
+            if(h.length < 20) return alert("El resumen es muy corto, escribe lo que aprendiste.");
+            const j = document.getElementById('sel-joven').value;
+            app.db.reportes.push({ joven: j, entrada: app.entradaTemp, salida: new Date().toLocaleTimeString(), homilia: h, fecha: new Date().toLocaleDateString() });
+            app.sync("Reporte enviado. ¡Gracias por asistir!");
+            location.reload();
+        },
+
+        nav: (id, el) => {
+            if(id === 'admin' && prompt("Clave Michael:") !== "4444") return;
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.nav i').forEach(i => i.classList.remove('active'));
+            document.getElementById('v-'+id).classList.remove('hidden');
+            el.classList.add('active');
             app.render();
         },
 
-        sync: (msg) => {
-            localStorage.setItem('grupo4_db', JSON.stringify(app.db));
-            alert(msg);
+        sync: (m) => {
+            localStorage.setItem('g4_vfinal', JSON.stringify(app.db));
+            if(m) alert(m);
             app.render();
+        },
+
+        marcarAsistencia: (idx, tipo) => {
+            if(tipo === 'p') app.db.alumnos[idx].p++;
+            if(tipo === 'f') app.db.alumnos[idx].f++;
+            if(tipo === 'per') app.db.alumnos[idx].per++;
+            if(tipo === 't') app.db.alumnos[idx].t++;
+            app.sync();
         },
 
         render: () => {
-            // Actualizar select de tareas para los chicos
-            const select = document.getElementById('nombre-lista-tareas');
-            select.innerHTML = '<option value="">Selecciona tu nombre...</option>' + 
-                app.db.jovenes.map(j => `<option value="${j.nombre}">${j.nombre}</option>`).join('');
-
-            // Actualizar tu Panel Maestro (Nombres que te aparecen)
-            const lista = document.getElementById('lista-alumnos-master');
-            lista.innerHTML = app.db.jovenes.map(j => `
-                <div class="alumno-row">
-                    <div>
-                        <strong style="font-size:14px;">${j.nombre}</strong><br>
-                        <small style="color:#8e8e8e;">${j.celular}</small>
+            document.getElementById('sel-joven').innerHTML = '<option value="">Quién eres?</option>' + app.db.alumnos.map(a => `<option>${a.nombre}</option>`);
+            
+            document.getElementById('lista-master').innerHTML = app.db.alumnos.map((a, i) => `
+                <div class="row-alumno">
+                    <div style="display:flex; justify-content:space-between">
+                        <b>${a.nombre}</b>
+                        <span style="font-size:10px; color:var(--guindo)">P:${a.p} | F:${a.f} | Per:${a.per} | T:${a.t}</span>
                     </div>
-                    <div class="controles">
-                        <div class="btn-check" onclick="this.classList.toggle('active')">TEMA</div>
-                        <div class="btn-check" onclick="this.classList.toggle('active')">MISA</div>
+                    <div class="btn-group">
+                        <button class="btn-opt p" onclick="app.marcarAsistencia(${i},'p')">PRESENTE</button>
+                        <button class="btn-opt f" onclick="app.marcarAsistencia(${i},'f')">FALTA</button>
+                        <button class="btn-opt per" onclick="app.marcarAsistencia(${i},'per')">PERMISO</button>
+                        <button class="btn-opt t" onclick="app.marcarAsistencia(${i},'t')">TAREA</button>
                     </div>
                 </div>
-            `).join('') || '<p style="text-align:center;">Nadie se ha registrado aún...</p>';
+            `).join('') || "Sin alumnos.";
+        },
 
-            // Actualizar lista de tareas para que las veas
-            const tareasMaster = document.getElementById('lista-tareas-master');
-            tareasMaster.innerHTML = app.db.tareas.slice().reverse().map(t => `
-                <div class="card">
-                    <span style="font-weight:800; color:var(--guindo);">${t.nombre}</span><br>
-                    <span style="font-size:13px;">Entregó: ${t.tema}</span><br>
-                    <span class="badge-tarea">${t.fecha}</span>
-                </div>
-            `).join('');
-
-            document.getElementById('estadisticas').innerText = `Total Jóvenes: ${app.db.jovenes.length} | Tareas: ${app.db.tareas.length}`;
+        exportar: () => {
+            const ws = XLSX.utils.json_to_sheet(app.db.alumnos);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Asistencia");
+            XLSX.writeFile(wb, "Reporte_Grupo4_SMP.xlsx");
         }
     };
-
-    app.render();
+    app.init();
 </script>
-
 </body>
 </html>
