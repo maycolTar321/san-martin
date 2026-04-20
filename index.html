@@ -1,116 +1,114 @@
-<div style="font-family: 'Arial', sans-serif; max-width: 850px; margin: auto; border: 1px solid #000; padding: 40px; background-color: #fff; color: #000; line-height: 1.4;">
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import quad
+import xlsxwriter
+
+def sistema_saice_completo():
+    # 1. ENTRADA DE DATOS (Basado en tus tablas)
+    print("--- ENTRADA DE DATOS: PRODUCTO SAICE TARIJEÑO ---")
+    n = int(input("¿Cuántos datos de la tabla ingresará? (ej. 5): "))
+    precios, demanda, oferta = [], [], []
     
-    <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px;">
-        <h1 style="margin: 0; font-size: 1.6em; text-transform: uppercase;">Acta de Escrutinio y Cómputo Final</h1>
-        <p style="margin: 5px 0; font-weight: bold;">Elección de Autoridades Departamentales 2026 - Segunda Vuelta</p>
-        <div style="display: flex; justify-content: space-between; margin-top: 15px; font-size: 0.9em;">
-            <span><strong>DEPARTAMENTO:</strong> TARIJA</span>
-            <span><strong>PROVINCIA:</strong> CERCADO</span>
-            <span><strong>RECINTO:</strong> FE Y ALEGRÍA</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.9em;">
-            <span><strong>LOCALIDAD:</strong> TARIJA</span>
-            <span><strong>CÓDIGO DE MESA:</strong> 600231</span>
-            <span><strong>MESA Nº:</strong> 13</span>
-        </div>
-    </div>
+    for i in range(n):
+        p = float(input(f" Precio {i+1}: "))
+        d = float(input(f" Demanda {i+1}: "))
+        o = float(input(f" Oferta {i+1}: "))
+        precios.append(p)
+        demanda.append(d)
+        oferta.append(o)
+        
+    cf = float(input("\nCosto Fijo (CF): "))
+    cv_unitario = float(input("Costo Variable Unitario (Cv): "))
 
-    <div style="margin-bottom: 25px;">
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr style="background-color: #f2f2f2;">
-                <th colspan="2" style="border: 1px solid #000; padding: 8px; text-align: left;">RESUMEN DE PAPELETAS Y PARTICIPACIÓN</th>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #000; padding: 8px;">CANTIDAD DE HABILITADOS EN MESA</td>
-                <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">83</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #000; padding: 8px;">PAPELETAS EN ÁNFORA (Ciudadanos que asistieron)</td>
-                <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">72</td>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #000; padding: 8px;">PAPELETAS NO UTILIZADAS (Ciudadanos ausentes)</td>
-                <td style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">11</td>
-            </tr>
-        </table>
-    </div>
+    # 2. CÁLCULOS INTERNOS (Para validación en tiempo real)
+    def reg_manual(X, Y):
+        px, py = np.mean(X), np.mean(Y)
+        dx, dy = X - px, Y - py
+        b = np.sum(dx * dy) / np.sum(dx**2)
+        a = py - (b * px)
+        return a, b, px, py
 
-    <div style="margin-bottom: 25px;">
-        <h3 style="text-transform: uppercase; font-size: 1em; border-bottom: 1px solid #000; padding-bottom: 5px;">Resultados por Partido / Opción</h3>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: center;">
-            <thead>
-                <tr style="background-color: #f2f2f2;">
-                    <th style="border: 1px solid #000; padding: 10px;">OPCIÓN / PARTIDO</th>
-                    <th style="border: 1px solid #000; padding: 10px;">TOTAL VOTOS</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td style="border: 1px solid #000; padding: 10px; text-align: left;"><strong>PATRIA</strong></td>
-                    <td style="border: 1px solid #000; padding: 10px; font-size: 1.2em; font-weight: bold;">026</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #000; padding: 10px; text-align: left;"><strong>CDC</strong></td>
-                    <td style="border: 1px solid #000; padding: 10px; font-size: 1.2em; font-weight: bold;">042</td>
-                </tr>
-                <tr style="background-color: #fafafa;">
-                    <td style="border: 1px solid #000; padding: 10px; text-align: left;">VOTOS VÁLIDOS (Suma Candidatos)</td>
-                    <td style="border: 1px solid #000; padding: 10px; font-weight: bold;">068</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #000; padding: 10px; text-align: left;">VOTOS BLANCOS</td>
-                    <td style="border: 1px solid #000; padding: 10px; font-size: 1.2em; font-weight: bold;">001</td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #000; padding: 10px; text-align: left;">VOTOS NULOS</td>
-                    <td style="border: 1px solid #000; padding: 10px; font-size: 1.2em; font-weight: bold;">003</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    a_d, b_d, px_d, py_d = reg_manual(np.array(precios), np.array(demanda))
+    a_o, b_o, px_o, py_o = reg_manual(np.array(precios), np.array(oferta))
 
-    <div style="margin-bottom: 25px;">
-        <h3 style="text-transform: uppercase; font-size: 0.9em; margin-bottom: 10px;">Relación de Ciudadanos Ausentes (11)</h3>
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.8em;">
-            <thead>
-                <tr style="border-bottom: 2px solid #000;">
-                    <th style="padding: 5px; text-align: left; width: 80px;">Nº ORDEN</th>
-                    <th style="padding: 5px; text-align: left;">NOMBRE COMPLETO</th>
-                    <th style="padding: 5px; text-align: left;">OBSERVACIÓN</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td style="padding: 4px; border-bottom: 1px solid #eee;">11</td><td style="padding: 4px; border-bottom: 1px solid #eee;">SEGOVIA GUTIERREZ ANIBAL</td><td style="padding: 4px; border-bottom: 1px solid #eee;">PAPELETA NO UTILIZADA</td></tr>
-                <tr><td style="padding: 4px; border-bottom: 1px solid #eee;">27</td><td style="padding: 4px; border-bottom: 1px solid #eee;">TEGUA DANITZA</td><td style="padding: 4px; border-bottom: 1px solid #eee;">PAPELETA NO UTILIZADA</td></tr>
-                <tr><td style="padding: 4px; border-bottom: 1px solid #eee;">31</td><td style="padding: 4px; border-bottom: 1px solid #eee;">TEJERINA RUEDA ADA LUZ</td><td style="padding: 4px; border-bottom: 1px solid #eee;">PAPELETA NO UTILIZADA</td></tr>
-                <tr><td style="padding: 4px; border-bottom: 1px solid #eee;">38</td><td style="padding: 4px; border-bottom: 1px solid #eee;">TOLAY COPA MARTIN</td><td style="padding: 4px; border-bottom: 1px solid #eee;">PAPELETA NO UTILIZADA</td></tr>
-                <tr><td style="padding: 4px; border-bottom: 1px solid #eee;">45</td><td style="padding: 4px; border-bottom: 1px solid #eee;">UGARTE CHOQUE RAYMUNDO</td><td style="padding: 4px; border-bottom: 1px solid #eee;">PAPELETA NO UTILIZADA</td></tr>
-                <tr><td style="padding: 4px; border-bottom: 1px solid #eee;">50</td><td style="padding: 4px; border-bottom: 1px solid #eee;">VARAS BUSTOS MARCELO</td><td style="padding: 4px; border-bottom: 1px solid #eee;">PAPELETA NO UTILIZADA</td></tr>
-                <tr><td style="padding: 4px; border-bottom: 1px solid #eee;">58</td><td style="padding: 4px; border-bottom: 1px solid #eee;">VEDIA RODRIGUEZ GREGORIO</td><td style="padding: 4px; border-bottom: 1px solid #eee;">PAPELETA NO UTILIZADA</td></tr>
-                <tr><td style="padding: 4px; border-bottom: 1px solid #eee;">62</td><td style="padding: 4px; border-bottom: 1px solid #eee;">VELASQUEZ FELIX</td><td style="padding: 4px; border-bottom: 1px solid #eee;">PAPELETA NO UTILIZADA</td></tr>
-                <tr><td style="padding: 4px; border-bottom: 1px solid #eee;">65</td><td style="padding: 4px; border-bottom: 1px solid #eee;">VELASQUEZ HUANCA HUGO</td><td style="padding: 4px; border-bottom: 1px solid #eee;">PAPELETA NO UTILIZADA</td></tr>
-                <tr><td style="padding: 4px; border-bottom: 1px solid #eee;">67</td><td style="padding: 4px; border-bottom: 1px solid #eee;">VERA FRANCO</td><td style="padding: 4px; border-bottom: 1px solid #eee;">PAPELETA NO UTILIZADA</td></tr>
-                <tr><td style="padding: 4px; border-bottom: 1px solid #eee;">73</td><td style="padding: 4px; border-bottom: 1px solid #eee;">VILTE FLORES EDIL</td><td style="padding: 4px; border-bottom: 1px solid #eee;">PAPELETA NO UTILIZADA</td></tr>
-            </tbody>
-        </table>
-    </div>
+    # Equilibrio P = (ao - ad) / (bd - bo)
+    pe = (a_o - a_d) / (b_d - b_o)
+    qe = b_d * pe + a_d
 
-    <div style="margin-top: 50px;">
-        <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 0.75em;">
-            <tr>
-                <td style="padding-bottom: 40px; width: 33%;">_______________________<br>PRESIDENTE/A</td>
-                <td style="padding-bottom: 40px; width: 33%;">_______________________<br>SECRETARIO/A</td>
-                <td style="padding-bottom: 40px; width: 33%;">_______________________<br>VOCAL</td>
-            </tr>
-            <tr>
-                <td style="padding-bottom: 40px;">_______________________<br>DELEGADO PATRIA</td>
-                <td style="padding-bottom: 40px;">_______________________<br>DELEGADO CDC</td>
-                <td style="padding-bottom: 40px;">[ HUELLA DIGITAL ]</td>
-            </tr>
-        </table>
-    </div>
+    # Lógica de Competencia Imperfecta (Monopolio)
+    # P = (1/bd)x - (ad/bd) -> IT = (1/bd)x^2 - (ad/bd)x -> IM = (2/bd)x - (ad/bd)
+    m_p, c_p = 1/b_d, -a_d/b_d
+    x_im = (cv_unitario - c_p) / (2 * m_p)
+    x_pc = (cv_unitario - c_p) / m_p # Punto donde P = CM
+    
+    cs_val, _ = quad(lambda x: (m_p * x + c_p) - cv_unitario, x_im, x_pc)
 
-    <div style="text-align: center; font-size: 0.7em; color: #444; border-top: 1px solid #000; padding-top: 10px;">
-        Generado el 19 de abril de 2026 - Reporte de Control de Mesa 83 (Fe y Alegría)
-    </div>
-</div>
+    # 3. GENERACIÓN DE EXCEL CON FÓRMULAS VIVAS
+    workbook = xlsxwriter.Workbook('PROYECTO_SAICE_FINAL.xlsx')
+    
+    # --- HOJA 1: COMPETENCIA PERFECTA ---
+    ws1 = workbook.add_worksheet('Competencia Perfecta')
+    header = ['Precio X', 'Demanda Y', 'DX', 'DY', 'DXDY', 'DX2']
+    for col, h in enumerate(header): ws1.write(0, col, h)
+    
+    for i in range(n):
+        row = i + 1
+        ws1.write(row, 0, precios[i])
+        ws1.write(row, 1, demanda[i])
+        # Fórmulas de desvíos (Ej: A2 - PROMEDIO)
+        ws1.write_formula(row, 2, f'=A{row+1}-AVERAGE($A$2:$A${n+1})')
+        ws1.write_formula(row, 3, f'=B{row+1}-AVERAGE($B$2:$B${n+1})')
+        ws1.write_formula(row, 4, f'=C{row+1}*D{row+1}')
+        ws1.write_formula(row, 5, f'=C{row+1}^2')
+
+    # Resultados de Regresión en Excel
+    ws1.write('H2', 'Pendiente (b)'); ws1.write_formula('I2', f'=SUM(E2:E{n+1})/SUM(F2:F{n+1})')
+    ws1.write('H3', 'Intercepto (a)'); ws1.write_formula('I3', f'=AVERAGE(B2:B{n+1})-(I2*AVERAGE(A2:A{n+1}))')
+    ws1.write('H5', 'P. EQUILIBRIO'); ws1.write( 'I5', pe)
+    ws1.write('H6', 'Q. EQUILIBRIO'); ws1.write( 'I6', qe)
+
+    # --- HOJA 2: COMPETENCIA IMPERFECTA ---
+    ws2 = workbook.add_worksheet('Competencia Imperfecta')
+    ws2.write('A1', 'CANTIDAD (x)'); ws2.write('B1', 'PRECIO (P)'); ws2.write('C1', 'IM'); ws2.write('D1', 'CM')
+    
+    for i in range(20): # Genera puntos para el gráfico
+        row = i + 1
+        x_val = (x_pc / 15) * i
+        ws2.write(row, 0, x_val)
+        ws2.write_formula(row, 1, f'=({x_val}/\'Competencia Perfecta\'!$I$2)-(\'Competencia Perfecta\'!$I$3/\'Competencia Perfecta\'!$I$2)')
+        ws2.write_formula(row, 2, f'=(2*{x_val}/\'Competencia Perfecta\'!$I$2)-(\'Competencia Perfecta\'!$I$3/\'Competencia Perfecta\'!$I$2)')
+        ws2.write(row, 3, cv_unitario)
+
+    ws2.write('F2', 'COSTO SOCIAL'); ws2.write('G2', abs(cs_val))
+    ws2.write('F3', 'UTILIDAD OPTIMA (IM=CM)'); ws2.write('G3', x_im)
+
+    workbook.close()
+
+    # 4. GENERACIÓN DE LOS DOS GRÁFICOS (REQUISITO)
+    plt.figure(figsize=(14, 6))
+
+    # Gráfico 1: Oferta y Demanda (Equilibrio)
+    plt.subplot(1, 2, 1)
+    p_arr = np.linspace(min(precios), max(precios)+10, 100)
+    plt.plot(b_d * p_arr + a_d, p_arr, 'b-', label='Demanda (Qd)') [cite: 28]
+    plt.plot(b_o * p_arr + a_o, p_arr, 'g-', label='Oferta (Qs)') [cite: 34]
+    plt.axhline(pe, color='r', linestyle='--', label=f'Pe={pe:.2f}') [cite: 42]
+    plt.title("GRÁFICO 1: EQUILIBRIO COMPETENCIA PERFECTA")
+    plt.legend(); plt.grid(True)
+
+    # Gráfico 2: Modelo Imperfecto (Costo Social)
+    plt.subplot(1, 2, 2)
+    x_arr = np.linspace(0, x_pc * 1.3, 100)
+    plt.plot(x_arr, m_p * x_arr + c_p, 'b', label='Precio / Demanda') [cite: 132]
+    plt.plot(x_arr, (2 * m_p * x_arr) + c_p, 'orange', label='Ingreso Marginal (IM)') [cite: 139]
+    plt.axhline(cv_unitario, color='red', label='Costo Marginal (CM)') [cite: 141]
+    plt.fill_between(x_arr, m_p * x_arr + c_p, cv_unitario, where=(x_arr >= x_im) & (x_arr <= x_pc), color='gray', alpha=0.3)
+    plt.title("GRÁFICO 2: COSTO SOCIAL (AREA SOMBREADA)")
+    plt.legend(); plt.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+    print("\nArchivo 'PROYECTO_SAICE_FINAL.xlsx' creado con éxito.")
+
+sistema_saice_completo()
