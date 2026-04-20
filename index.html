@@ -5,110 +5,120 @@ from scipy.integrate import quad
 import xlsxwriter
 
 def sistema_saice_completo():
-    # 1. ENTRADA DE DATOS (Basado en tus tablas)
-    print("--- ENTRADA DE DATOS: PRODUCTO SAICE TARIJEÑO ---")
-    n = int(input("¿Cuántos datos de la tabla ingresará? (ej. 5): "))
-    precios, demanda, oferta = [], [], []
-    
-    for i in range(n):
-        p = float(input(f" Precio {i+1}: "))
-        d = float(input(f" Demanda {i+1}: "))
-        o = float(input(f" Oferta {i+1}: "))
-        precios.append(p)
-        demanda.append(d)
-        oferta.append(o)
+    # 1. ENTRADA DE DATOS (Siguiendo tu tabla de Saice Tarijeño)
+    print("--- ENTRADA DE DATOS: PRODUCTO SAICE TARIJEÑO ---") [cite: 15]
+    try:
+        n = int(input("¿Cuántos datos de la tabla ingresará? (ej. 5): "))
+        precios, demanda, oferta = [], [], []
         
-    cf = float(input("\nCosto Fijo (CF): "))
-    cv_unitario = float(input("Costo Variable Unitario (Cv): "))
+        for i in range(n):
+            print(f"\nRegistro {i+1}:")
+            precios.append(float(input("  Precio: ")))
+            demanda.append(float(input("  Demanda: "))) [cite: 16]
+            oferta.append(float(input("  Oferta: "))) [cite: 16]
+            
+        cf = float(input("\nCosto Fijo (CF): ")) [cite: 17]
+        cv_unitario = float(input("Costo Variable Unitario (Cv): ")) [cite: 17, 83]
+    except ValueError:
+        print("Error: Por favor ingrese solo números.")
+        return
 
-    # 2. CÁLCULOS INTERNOS (Para validación en tiempo real)
+    # 2. CÁLCULOS TÉCNICOS (Metodología de Regresión por Desvíos)
     def reg_manual(X, Y):
-        px, py = np.mean(X), np.mean(Y)
-        dx, dy = X - px, Y - py
-        b = np.sum(dx * dy) / np.sum(dx**2)
-        a = py - (b * px)
+        px, py = np.mean(X), np.mean(Y) [cite: 24, 25, 31, 32]
+        dx, dy = X - px, Y - py [cite: 20, 26, 30]
+        b = np.sum(dx * dy) / np.sum(dx**2) [cite: 27, 33]
+        a = py - (b * px) [cite: 27, 33]
         return a, b, px, py
 
-    a_d, b_d, px_d, py_d = reg_manual(np.array(precios), np.array(demanda))
-    a_o, b_o, px_o, py_o = reg_manual(np.array(precios), np.array(oferta))
+    # Ecuaciones finales
+    a_d, b_d, px_d, py_d = reg_manual(np.array(precios), np.array(demanda)) # Qd = b_d*P + a_d [cite: 28]
+    a_o, b_o, px_o, py_o = reg_manual(np.array(precios), np.array(oferta))  # Qs = b_o*P + a_o [cite: 34]
 
-    # Equilibrio P = (ao - ad) / (bd - bo)
-    pe = (a_o - a_d) / (b_d - b_o)
-    qe = b_d * pe + a_d
+    # Equilibrio de Mercado: Qd = Qs [cite: 35, 38]
+    pe = (a_o - a_d) / (b_d - b_o) [cite: 42]
+    qe = b_d * pe + a_d [cite: 43]
 
-    # Lógica de Competencia Imperfecta (Monopolio)
-    # P = (1/bd)x - (ad/bd) -> IT = (1/bd)x^2 - (ad/bd)x -> IM = (2/bd)x - (ad/bd)
+    # Lógica de Competencia Imperfecta (Punto 6 en adelante del Word)
+    # Función de Precio P(x): P = (x - a_d) / b_d [cite: 52, 104]
     m_p, c_p = 1/b_d, -a_d/b_d
-    x_im = (cv_unitario - c_p) / (2 * m_p)
-    x_pc = (cv_unitario - c_p) / m_p # Punto donde P = CM
     
-    cs_val, _ = quad(lambda x: (m_p * x + c_p) - cv_unitario, x_im, x_pc)
+    # IM = CM para Utilidad Óptima [cite: 11, 113, 114]
+    x_im = (cv_unitario - c_p) / (2 * m_p) [cite: 116]
+    # P = CM para Eficiencia Social [cite: 117, 120]
+    x_pc = (cv_unitario - c_p) / m_p 
+    
+    # Costo Social mediante Integral Definida [cite: 121, 126, 127]
+    cs_val, _ = quad(lambda x: (m_p * x + c_p) - cv_unitario, x_im, x_pc) [cite: 130]
 
-    # 3. GENERACIÓN DE EXCEL CON FÓRMULAS VIVAS
-    workbook = xlsxwriter.Workbook('PROYECTO_SAICE_FINAL.xlsx')
+    # 3. GENERACIÓN DE REPORTE EXCEL (Fórmulas integradas)
+    nombre_archivo = 'REPORTE_SAICE_TARIJA.xlsx'
+    workbook = xlsxwriter.Workbook(nombre_archivo)
     
-    # --- HOJA 1: COMPETENCIA PERFECTA ---
+    # HOJA: COMPETENCIA PERFECTA [cite: 1]
     ws1 = workbook.add_worksheet('Competencia Perfecta')
-    header = ['Precio X', 'Demanda Y', 'DX', 'DY', 'DXDY', 'DX2']
+    header = ['Precio X', 'Demanda Y', 'DX', 'DY', 'DXDY', 'DX2'] [cite: 20]
     for col, h in enumerate(header): ws1.write(0, col, h)
     
     for i in range(n):
         row = i + 1
         ws1.write(row, 0, precios[i])
         ws1.write(row, 1, demanda[i])
-        # Fórmulas de desvíos (Ej: A2 - PROMEDIO)
-        ws1.write_formula(row, 2, f'=A{row+1}-AVERAGE($A$2:$A${n+1})')
-        ws1.write_formula(row, 3, f'=B{row+1}-AVERAGE($B$2:$B${n+1})')
-        ws1.write_formula(row, 4, f'=C{row+1}*D{row+1}')
-        ws1.write_formula(row, 5, f'=C{row+1}^2')
+        ws1.write_formula(row, 2, f'=A{row+1}-AVERAGE($A$2:$A${n+1})') [cite: 26]
+        ws1.write_formula(row, 3, f'=B{row+1}-AVERAGE($B$2:$B${n+1})') [cite: 26]
+        ws1.write_formula(row, 4, f'=C{row+1}*D{row+1}') [cite: 20]
+        ws1.write_formula(row, 5, f'=C{row+1}^2') [cite: 20]
 
-    # Resultados de Regresión en Excel
-    ws1.write('H2', 'Pendiente (b)'); ws1.write_formula('I2', f'=SUM(E2:E{n+1})/SUM(F2:F{n+1})')
-    ws1.write('H3', 'Intercepto (a)'); ws1.write_formula('I3', f'=AVERAGE(B2:B{n+1})-(I2*AVERAGE(A2:A{n+1}))')
-    ws1.write('H5', 'P. EQUILIBRIO'); ws1.write( 'I5', pe)
-    ws1.write('H6', 'Q. EQUILIBRIO'); ws1.write( 'I6', qe)
+    # Resumen de Resultados
+    ws1.write('H2', 'PENDIENTE (b)'); ws1.write_formula('I2', f'=SUM(E2:E{n+1})/SUM(F2:F{n+1})') [cite: 27]
+    ws1.write('H3', 'INTERCEPTO (a)'); ws1.write_formula('I3', f'=AVERAGE(B2:B{n+1})-(I2*AVERAGE(A2:A{n+1}))') [cite: 27]
+    ws1.write('H5', 'PRECIO EQUILIBRIO'); ws1.write('I5', pe) [cite: 42]
+    ws1.write('H6', 'CANTIDAD EQUILIBRIO'); ws1.write('I6', qe) [cite: 43]
 
-    # --- HOJA 2: COMPETENCIA IMPERFECTA ---
+    # HOJA: COMPETENCIA IMPERFECTA [cite: 96]
     ws2 = workbook.add_worksheet('Competencia Imperfecta')
     ws2.write('A1', 'CANTIDAD (x)'); ws2.write('B1', 'PRECIO (P)'); ws2.write('C1', 'IM'); ws2.write('D1', 'CM')
     
-    for i in range(20): # Genera puntos para el gráfico
+    # Generar tabla de datos para gráfico
+    for i in range(15):
         row = i + 1
-        x_val = (x_pc / 15) * i
+        x_val = (x_pc / 10) * i
         ws2.write(row, 0, x_val)
         ws2.write_formula(row, 1, f'=({x_val}/\'Competencia Perfecta\'!$I$2)-(\'Competencia Perfecta\'!$I$3/\'Competencia Perfecta\'!$I$2)')
         ws2.write_formula(row, 2, f'=(2*{x_val}/\'Competencia Perfecta\'!$I$2)-(\'Competencia Perfecta\'!$I$3/\'Competencia Perfecta\'!$I$2)')
         ws2.write(row, 3, cv_unitario)
 
-    ws2.write('F2', 'COSTO SOCIAL'); ws2.write('G2', abs(cs_val))
-    ws2.write('F3', 'UTILIDAD OPTIMA (IM=CM)'); ws2.write('G3', x_im)
+    ws2.write('F2', 'COSTO SOCIAL (BS)'); ws2.write('G2', abs(cs_val)) [cite: 130]
+    ws2.write('F3', 'UTILIDAD ÓPTIMA (x)'); ws2.write('G3', x_im) [cite: 12, 116]
 
     workbook.close()
 
-    # 4. GENERACIÓN DE LOS DOS GRÁFICOS (REQUISITO)
-    plt.figure(figsize=(14, 6))
+    # 4. GENERACIÓN DE LOS DOS GRÁFICOS SOLICITADOS [cite: 13, 131]
+    plt.figure(figsize=(15, 6))
 
-    # Gráfico 1: Oferta y Demanda (Equilibrio)
+    # GRÁFICO 1: EQUILIBRIO [cite: 13]
     plt.subplot(1, 2, 1)
-    p_arr = np.linspace(min(precios), max(precios)+10, 100)
-    plt.plot(b_d * p_arr + a_d, p_arr, 'b-', label='Demanda (Qd)') [cite: 28]
-    plt.plot(b_o * p_arr + a_o, p_arr, 'g-', label='Oferta (Qs)') [cite: 34]
-    plt.axhline(pe, color='r', linestyle='--', label=f'Pe={pe:.2f}') [cite: 42]
-    plt.title("GRÁFICO 1: EQUILIBRIO COMPETENCIA PERFECTA")
-    plt.legend(); plt.grid(True)
+    p_lin = np.linspace(min(precios)-2, max(precios)+5, 100)
+    plt.plot(b_d * p_lin + a_d, p_lin, 'b-', label='Demanda (Qd)')
+    plt.plot(b_o * p_lin + a_o, p_lin, 'g-', label='Oferta (Qs)')
+    plt.scatter(qe, pe, color='red', label=f'Equilibrio ({qe:.1f}, {pe:.1f})')
+    plt.title("Gráfico 1: Equilibrio Competencia Perfecta")
+    plt.xlabel("Cantidad"); plt.ylabel("Precio (Bs)"); plt.legend(); plt.grid(True)
 
-    # Gráfico 2: Modelo Imperfecto (Costo Social)
+    # GRÁFICO 2: COSTO SOCIAL [cite: 131]
     plt.subplot(1, 2, 2)
-    x_arr = np.linspace(0, x_pc * 1.3, 100)
-    plt.plot(x_arr, m_p * x_arr + c_p, 'b', label='Precio / Demanda') [cite: 132]
-    plt.plot(x_arr, (2 * m_p * x_arr) + c_p, 'orange', label='Ingreso Marginal (IM)') [cite: 139]
-    plt.axhline(cv_unitario, color='red', label='Costo Marginal (CM)') [cite: 141]
-    plt.fill_between(x_arr, m_p * x_arr + c_p, cv_unitario, where=(x_arr >= x_im) & (x_arr <= x_pc), color='gray', alpha=0.3)
-    plt.title("GRÁFICO 2: COSTO SOCIAL (AREA SOMBREADA)")
-    plt.legend(); plt.grid(True)
+    x_lin = np.linspace(0, x_pc * 1.2, 100)
+    plt.plot(x_lin, m_p * x_lin + c_p, 'b', label='Demanda (P)') [cite: 132]
+    plt.plot(x_lin, (2 * m_p * x_lin) + c_p, 'orange', label='Ingreso Marginal (IM)') [cite: 132]
+    plt.axhline(cv_unitario, color='red', label='Costo Marginal (CM)') [cite: 132]
+    plt.fill_between(x_lin, m_p * x_lin + c_p, cv_unitario, where=(x_lin >= x_im) & (x_lin <= x_pc), color='gray', alpha=0.3)
+    plt.title("Gráfico 2: Competencia Imperfecta - Costo Social")
+    plt.xlabel("Cantidad (x)"); plt.ylabel("Precio/Costos"); plt.legend(); plt.grid(True)
 
     plt.tight_layout()
     plt.show()
-    print("\nArchivo 'PROYECTO_SAICE_FINAL.xlsx' creado con éxito.")
+    print(f"\nSistema finalizado. Reporte guardado como: {nombre_archivo}")
 
-sistema_saice_completo()
+# Ejecución
+if __name__ == "__main__":
+    sistema_saice_completo()
