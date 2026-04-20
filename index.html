@@ -1,124 +1,318 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.integrate import quad
-import xlsxwriter
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catequesis PRO FINAL</title>
 
-def sistema_saice_completo():
-    # 1. ENTRADA DE DATOS (Siguiendo tu tabla de Saice Tarijeño)
-    print("--- ENTRADA DE DATOS: PRODUCTO SAICE TARIJEÑO ---") [cite: 15]
-    try:
-        n = int(input("¿Cuántos datos de la tabla ingresará? (ej. 5): "))
-        precios, demanda, oferta = [], [], []
-        
-        for i in range(n):
-            print(f"\nRegistro {i+1}:")
-            precios.append(float(input("  Precio: ")))
-            demanda.append(float(input("  Demanda: "))) [cite: 16]
-            oferta.append(float(input("  Oferta: "))) [cite: 16]
-            
-        cf = float(input("\nCosto Fijo (CF): ")) [cite: 17]
-        cv_unitario = float(input("Costo Variable Unitario (Cv): ")) [cite: 17, 83]
-    except ValueError:
-        print("Error: Por favor ingrese solo números.")
-        return
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"></script>
 
-    # 2. CÁLCULOS TÉCNICOS (Metodología de Regresión por Desvíos)
-    def reg_manual(X, Y):
-        px, py = np.mean(X), np.mean(Y) [cite: 24, 25, 31, 32]
-        dx, dy = X - px, Y - py [cite: 20, 26, 30]
-        b = np.sum(dx * dy) / np.sum(dx**2) [cite: 27, 33]
-        a = py - (b * px) [cite: 27, 33]
-        return a, b, px, py
+<style>
+:root{
+--bg:#0f172a;
+--card:#1e293b;
+--primary:#22c55e;
+--text:#fff;
+}
+body{margin:0;font-family:Arial;background:var(--bg);color:var(--text);}
 
-    # Ecuaciones finales
-    a_d, b_d, px_d, py_d = reg_manual(np.array(precios), np.array(demanda)) # Qd = b_d*P + a_d [cite: 28]
-    a_o, b_o, px_o, py_o = reg_manual(np.array(precios), np.array(oferta))  # Qs = b_o*P + a_o [cite: 34]
+/* SIDEBAR */
+.sidebar{
+position:fixed;
+width:230px;
+height:100%;
+background:#020617;
+padding-top:20px;
+}
+.sidebar button{
+display:block;width:100%;padding:12px;border:none;background:none;color:white;text-align:left;
+}
 
-    # Equilibrio de Mercado: Qd = Qs [cite: 35, 38]
-    pe = (a_o - a_d) / (b_d - b_o) [cite: 42]
-    qe = b_d * pe + a_d [cite: 43]
+/* MAIN */
+.main{margin-left:230px;padding:20px;}
+.section{display:none;}
+.active{display:block;}
 
-    # Lógica de Competencia Imperfecta (Punto 6 en adelante del Word)
-    # Función de Precio P(x): P = (x - a_d) / b_d [cite: 52, 104]
-    m_p, c_p = 1/b_d, -a_d/b_d
-    
-    # IM = CM para Utilidad Óptima [cite: 11, 113, 114]
-    x_im = (cv_unitario - c_p) / (2 * m_p) [cite: 116]
-    # P = CM para Eficiencia Social [cite: 117, 120]
-    x_pc = (cv_unitario - c_p) / m_p 
-    
-    # Costo Social mediante Integral Definida [cite: 121, 126, 127]
-    cs_val, _ = quad(lambda x: (m_p * x + c_p) - cv_unitario, x_im, x_pc) [cite: 130]
+.card{
+background:var(--card);
+padding:15px;
+margin:10px 0;
+border-radius:10px;
+}
 
-    # 3. GENERACIÓN DE REPORTE EXCEL (Fórmulas integradas)
-    nombre_archivo = 'REPORTE_SAICE_TARIJA.xlsx'
-    workbook = xlsxwriter.Workbook(nombre_archivo)
-    
-    # HOJA: COMPETENCIA PERFECTA [cite: 1]
-    ws1 = workbook.add_worksheet('Competencia Perfecta')
-    header = ['Precio X', 'Demanda Y', 'DX', 'DY', 'DXDY', 'DX2'] [cite: 20]
-    for col, h in enumerate(header): ws1.write(0, col, h)
-    
-    for i in range(n):
-        row = i + 1
-        ws1.write(row, 0, precios[i])
-        ws1.write(row, 1, demanda[i])
-        ws1.write_formula(row, 2, f'=A{row+1}-AVERAGE($A$2:$A${n+1})') [cite: 26]
-        ws1.write_formula(row, 3, f'=B{row+1}-AVERAGE($B$2:$B${n+1})') [cite: 26]
-        ws1.write_formula(row, 4, f'=C{row+1}*D{row+1}') [cite: 20]
-        ws1.write_formula(row, 5, f'=C{row+1}^2') [cite: 20]
+input,select,textarea{
+width:100%;padding:10px;margin:5px 0;border:none;border-radius:10px;
+}
 
-    # Resumen de Resultados
-    ws1.write('H2', 'PENDIENTE (b)'); ws1.write_formula('I2', f'=SUM(E2:E{n+1})/SUM(F2:F{n+1})') [cite: 27]
-    ws1.write('H3', 'INTERCEPTO (a)'); ws1.write_formula('I3', f'=AVERAGE(B2:B{n+1})-(I2*AVERAGE(A2:A{n+1}))') [cite: 27]
-    ws1.write('H5', 'PRECIO EQUILIBRIO'); ws1.write('I5', pe) [cite: 42]
-    ws1.write('H6', 'CANTIDAD EQUILIBRIO'); ws1.write('I6', qe) [cite: 43]
+button{
+padding:10px;border:none;border-radius:10px;background:var(--primary);color:white;
+}
 
-    # HOJA: COMPETENCIA IMPERFECTA [cite: 96]
-    ws2 = workbook.add_worksheet('Competencia Imperfecta')
-    ws2.write('A1', 'CANTIDAD (x)'); ws2.write('B1', 'PRECIO (P)'); ws2.write('C1', 'IM'); ws2.write('D1', 'CM')
-    
-    # Generar tabla de datos para gráfico
-    for i in range(15):
-        row = i + 1
-        x_val = (x_pc / 10) * i
-        ws2.write(row, 0, x_val)
-        ws2.write_formula(row, 1, f'=({x_val}/\'Competencia Perfecta\'!$I$2)-(\'Competencia Perfecta\'!$I$3/\'Competencia Perfecta\'!$I$2)')
-        ws2.write_formula(row, 2, f'=(2*{x_val}/\'Competencia Perfecta\'!$I$2)-(\'Competencia Perfecta\'!$I$3/\'Competencia Perfecta\'!$I$2)')
-        ws2.write(row, 3, cv_unitario)
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:10px;
+}
 
-    ws2.write('F2', 'COSTO SOCIAL (BS)'); ws2.write('G2', abs(cs_val)) [cite: 130]
-    ws2.write('F3', 'UTILIDAD ÓPTIMA (x)'); ws2.write('G3', x_im) [cite: 12, 116]
+#login{padding:30px;}
+</style>
+</head>
 
-    workbook.close()
+<body>
 
-    # 4. GENERACIÓN DE LOS DOS GRÁFICOS SOLICITADOS [cite: 13, 131]
-    plt.figure(figsize=(15, 6))
+<!-- LOGIN -->
+<div id="login">
+<h2>Login Catequesis</h2>
+<input id="email" placeholder="Correo">
+<input id="pass" type="password" placeholder="Contraseña">
+<button onclick="login()">Ingresar</button>
+<button onclick="register()">Crear cuenta</button>
+</div>
 
-    # GRÁFICO 1: EQUILIBRIO [cite: 13]
-    plt.subplot(1, 2, 1)
-    p_lin = np.linspace(min(precios)-2, max(precios)+5, 100)
-    plt.plot(b_d * p_lin + a_d, p_lin, 'b-', label='Demanda (Qd)')
-    plt.plot(b_o * p_lin + a_o, p_lin, 'g-', label='Oferta (Qs)')
-    plt.scatter(qe, pe, color='red', label=f'Equilibrio ({qe:.1f}, {pe:.1f})')
-    plt.title("Gráfico 1: Equilibrio Competencia Perfecta")
-    plt.xlabel("Cantidad"); plt.ylabel("Precio (Bs)"); plt.legend(); plt.grid(True)
+<!-- APP -->
+<div id="app" style="display:none;">
 
-    # GRÁFICO 2: COSTO SOCIAL [cite: 131]
-    plt.subplot(1, 2, 2)
-    x_lin = np.linspace(0, x_pc * 1.2, 100)
-    plt.plot(x_lin, m_p * x_lin + c_p, 'b', label='Demanda (P)') [cite: 132]
-    plt.plot(x_lin, (2 * m_p * x_lin) + c_p, 'orange', label='Ingreso Marginal (IM)') [cite: 132]
-    plt.axhline(cv_unitario, color='red', label='Costo Marginal (CM)') [cite: 132]
-    plt.fill_between(x_lin, m_p * x_lin + c_p, cv_unitario, where=(x_lin >= x_im) & (x_lin <= x_pc), color='gray', alpha=0.3)
-    plt.title("Gráfico 2: Competencia Imperfecta - Costo Social")
-    plt.xlabel("Cantidad (x)"); plt.ylabel("Precio/Costos"); plt.legend(); plt.grid(True)
+<div class="sidebar">
+<button onclick="ver('dashboard')">📊 Dashboard</button>
+<button onclick="ver('grupos')">📚 Grupos</button>
+<button onclick="ver('usuarios')">🙋 Confirmantes</button>
+<button onclick="ver('tareas')">📝 Tareas</button>
+<button onclick="ver('blog')">💬 Blog</button>
+<button onclick="ver('biblioteca')">📖 Biblioteca</button>
+<button onclick="ver('eventos')">📅 Eventos</button>
+<button onclick="logout()">🚪 Salir</button>
+</div>
 
-    plt.tight_layout()
-    plt.show()
-    print(f"\nSistema finalizado. Reporte guardado como: {nombre_archivo}")
+<div class="main">
 
-# Ejecución
-if __name__ == "__main__":
-    sistema_saice_completo()
+<!-- DASHBOARD -->
+<div id="dashboard" class="section active">
+<h2>Dashboard</h2>
+<div class="grid">
+<div class="card">Grupos: <span id="totalGrupos"></span></div>
+<div class="card">Confirmantes: <span id="totalUsuarios"></span></div>
+<div class="card">Tareas: <span id="totalTareas"></span></div>
+</div>
+</div>
+
+<!-- GRUPOS -->
+<div id="grupos" class="section">
+<h2>Grupos</h2>
+<input id="gNombre" placeholder="Nombre grupo">
+<button onclick="addGrupo()">Crear</button>
+<div id="listaGrupos"></div>
+</div>
+
+<!-- USUARIOS -->
+<div id="usuarios" class="section">
+<h2>Confirmantes</h2>
+<input id="uNombre" placeholder="Nombre">
+<select id="uGrupo"></select>
+<button onclick="addUsuario()">Agregar</button>
+<div id="listaUsuarios"></div>
+</div>
+
+<!-- TAREAS -->
+<div id="tareas" class="section">
+<h2>Tareas</h2>
+<input id="tTexto" placeholder="Tarea">
+<select id="tGrupo"></select>
+<button onclick="addTarea()">Crear</button>
+<div id="listaTareas"></div>
+</div>
+
+<!-- BLOG -->
+<div id="blog" class="section">
+<textarea id="bTexto"></textarea>
+<button onclick="addPost()">Publicar</button>
+<div id="listaBlog"></div>
+</div>
+
+<!-- BIBLIOTECA -->
+<div id="biblioteca" class="section">
+<input id="libro" placeholder="Libro">
+<button onclick="addLibro()">Agregar</button>
+<div id="listaLibros"></div>
+</div>
+
+<!-- EVENTOS -->
+<div id="eventos" class="section">
+<input id="eNombre" placeholder="Evento">
+<input id="eFecha" type="date">
+<button onclick="addEvento()">Guardar</button>
+<div id="listaEventos"></div>
+</div>
+
+</div>
+</div>
+
+<script>
+
+// CONFIGURACIÓN FIREBASE
+const firebaseConfig = {
+apiKey: "TU_API_KEY",
+authDomain: "TU_DOMINIO",
+projectId: "TU_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// LOGIN
+function login(){auth.signInWithEmailAndPassword(email.value,pass.value);}
+function register(){auth.createUserWithEmailAndPassword(email.value,pass.value);}
+function logout(){auth.signOut();}
+
+// ESTADO
+auth.onAuthStateChanged(user=>{
+if(user){
+login.style.display="none";
+app.style.display="block";
+init(user.uid);
+}else{
+login.style.display="block";
+app.style.display="none";
+}
+});
+
+function ver(id){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+}
+
+// INIT
+function init(uid){
+cargarGrupos(uid);
+cargarUsuarios(uid);
+cargarTareas(uid);
+cargarBlog();
+cargarLibros();
+cargarEventos();
+}
+
+// GRUPOS
+function addGrupo(){
+db.collection("grupos").add({nombre:gNombre.value,user:auth.currentUser.uid});
+}
+
+function cargarGrupos(uid){
+db.collection("grupos").where("user","==",uid)
+.onSnapshot(data=>{
+listaGrupos.innerHTML="";
+uGrupo.innerHTML="";
+tGrupo.innerHTML="";
+data.forEach(doc=>{
+let g=doc.data().nombre;
+listaGrupos.innerHTML+=`<div class="card">${g}</div>`;
+uGrupo.innerHTML+=`<option>${g}</option>`;
+tGrupo.innerHTML+=`<option>${g}</option>`;
+});
+totalGrupos.innerText=data.size;
+});
+}
+
+// USUARIOS
+function addUsuario(){
+db.collection("usuarios").add({
+nombre:uNombre.value,
+grupo:uGrupo.value,
+user:auth.currentUser.uid
+});
+}
+
+function cargarUsuarios(uid){
+db.collection("usuarios").where("user","==",uid)
+.onSnapshot(data=>{
+listaUsuarios.innerHTML="";
+data.forEach(doc=>{
+let d=doc.data();
+listaUsuarios.innerHTML+=`<div class="card">${d.nombre} - ${d.grupo}</div>`;
+});
+totalUsuarios.innerText=data.size;
+});
+}
+
+// TAREAS
+function addTarea(){
+db.collection("tareas").add({
+texto:tTexto.value,
+grupo:tGrupo.value,
+user:auth.currentUser.uid
+});
+}
+
+function cargarTareas(uid){
+db.collection("tareas").where("user","==",uid)
+.onSnapshot(data=>{
+listaTareas.innerHTML="";
+data.forEach(doc=>{
+let t=doc.data();
+listaTareas.innerHTML+=`
+<div class="card">
+${t.texto}
+<br>
+<button onclick="enviarWhats('${t.texto}')">📲 WhatsApp</button>
+</div>`;
+});
+totalTareas.innerText=data.size;
+});
+}
+
+// BLOG
+function addPost(){
+db.collection("blog").add({texto:bTexto.value});
+}
+
+function cargarBlog(){
+db.collection("blog").onSnapshot(data=>{
+listaBlog.innerHTML="";
+data.forEach(doc=>{
+listaBlog.innerHTML+=`<div class="card">${doc.data().texto}</div>`;
+});
+});
+}
+
+// LIBROS
+function addLibro(){
+db.collection("libros").add({nombre:libro.value});
+}
+
+function cargarLibros(){
+db.collection("libros").onSnapshot(data=>{
+listaLibros.innerHTML="";
+data.forEach(doc=>{
+listaLibros.innerHTML+=`<div class="card">${doc.data().nombre}</div>`;
+});
+});
+}
+
+// EVENTOS
+function addEvento(){
+db.collection("eventos").add({
+nombre:eNombre.value,
+fecha:eFecha.value
+});
+}
+
+function cargarEventos(){
+db.collection("eventos").onSnapshot(data=>{
+listaEventos.innerHTML="";
+data.forEach(doc=>{
+let e=doc.data();
+listaEventos.innerHTML+=`<div class="card">${e.nombre} - ${e.fecha}</div>`;
+});
+});
+}
+
+// WHATSAPP
+function enviarWhats(msg){
+window.open("https://wa.me/?text="+encodeURIComponent(msg));
+}
+
+</script>
+
+</body>
+</html>
