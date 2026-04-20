@@ -8,242 +8,252 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --guindo: #800020; --bg: #f8f9fc; --white: #ffffff; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); margin: 0; padding-bottom: 90px; }
-        header { background: var(--white); padding: 15px; display: flex; align-items: center; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 1000; }
-        #logo-header { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--guindo); margin-right: 12px; object-fit: cover; background: #eee; }
-        .container { max-width: 100%; padding: 10px; }
-        .card { background: var(--white); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
-        h2 { font-size: 17px; color: var(--guindo); margin-bottom: 12px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-        .nav-bar { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 92%; background: white; border-radius: 25px; display: flex; justify-content: space-around; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); z-index: 2000; }
-        .nav-btn { font-size: 24px; color: #ddd; cursor: pointer; }
-        .nav-btn.active { color: var(--guindo); }
-        .btn-calif { border: 1.5px solid #ddd; background: white; padding: 8px 10px; border-radius: 10px; font-size: 10px; cursor: pointer; font-weight: 800; flex: 1; }
-        .c-aldia.active { background: #2e7d32; color: white; border-color: #2e7d32; }
-        .c-retraso.active { background: #f9a825; color: white; border-color: #f9a825; }
-        .c-critico.active { background: #c62828; color: white; border-color: #c62828; }
-        .badge-nota { display: block; padding: 15px; border-radius: 15px; font-weight: 800; font-size: 18px; text-align: center; margin: 10px 0; }
+        :root { --guindo: #800020; --bg: #f4f7f6; --white: #ffffff; --gold: #d4af37; --success: #107c41; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); margin: 0; padding-bottom: 100px; color: #333; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .view { animation: fadeIn 0.4s ease-out; }
+
+        header { background: var(--white); padding: 18px; display: flex; align-items: center; border-bottom: 2px solid var(--guindo); position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        #logo-header { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--guindo); margin-right: 15px; object-fit: cover; background: #eee; }
+        
+        .container { padding: 15px; max-width: 500px; margin: auto; }
+        .card { background: var(--white); border-radius: 24px; padding: 22px; margin-bottom: 18px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); border: 1px solid #edf2f7; }
+        
+        h2 { font-size: 18px; color: var(--guindo); margin: 0 0 15px 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        
+        .nav-bar { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-radius: 30px; display: flex; justify-content: space-around; padding: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); z-index: 2000; }
+        .nav-btn { font-size: 22px; color: #ccc; cursor: pointer; transition: 0.3s; padding: 10px; }
+        .nav-btn.active { color: var(--guindo); transform: scale(1.2); }
+
+        input, textarea { width: 100%; padding: 15px; border-radius: 14px; border: 1.5px solid #e2e8f0; margin-bottom: 12px; box-sizing: border-box; font-size: 15px; }
+        .btn-main { background: var(--guindo); color: white; border: none; padding: 18px; width: 100%; border-radius: 15px; font-weight: 800; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-main:active { transform: scale(0.98); opacity: 0.9; }
+
+        .btn-sec { background: #f0f2f5; color: #444; border: none; padding: 12px; border-radius: 12px; font-weight: 700; width: 100%; cursor: pointer; margin-top: 8px; }
+
+        .admin-row { border-bottom: 1px solid #eee; padding: 12px 0; display: flex; justify-content: space-between; align-items: center; }
+        .btn-group { display: flex; gap: 4px; }
+        .b-sm { padding: 8px 12px; border-radius: 8px; border: 1px solid #ddd; font-size: 11px; font-weight: 800; cursor: pointer; }
+        .b-sm.active { background: var(--guindo); color: white; border-color: var(--guindo); transform: scale(1.1); }
+        
         .hidden { display: none !important; }
-        input, textarea { width: 100%; padding: 14px; border-radius: 12px; border: 1.5px solid #eee; margin-bottom: 12px; font-family: inherit; }
-        .btn-main { background: var(--guindo); color: white; border: none; padding: 16px; width: 100%; border-radius: 12px; font-weight: 800; cursor: pointer; }
+        .status-badge { display: block; padding: 15px; border-radius: 18px; font-weight: 800; text-align: center; font-size: 16px; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <header>
-    <img id="logo-header" src="">
+    <img id="logo-header" src="https://via.placeholder.com/150">
     <div>
-        <div style="font-weight:800; font-size:14px; color:var(--guindo);">CATEQUESIS 2° AÑO</div>
-        <div style="font-size:11px; color:#666;">Admin: Michael Vargas</div>
+        <div style="font-weight:800; font-size:15px; color:var(--guindo);">CATEQUESIS 2° AÑO</div>
+        <div style="font-size:12px; color:#666;">Coord: Michael Vargas</div>
     </div>
 </header>
 
 <div class="container">
     <div id="v-inicio" class="view">
-        <div id="card-registro" class="card">
-            <h2><i class="fas fa-user-plus"></i> Registro de Estudiante</h2>
-            <input type="text" id="reg-nom" placeholder="Nombre y Apellido" oninput="app.formatoNombre(this)">
-            <input type="number" id="reg-ci" placeholder="Tu C.I.">
-            <button class="btn-main" onclick="app.registrar()">ENVIAR MI REGISTRO</button>
+        <div id="sec-registro" class="card">
+            <h2><i class="fas fa-id-card"></i> Registro Oficial</h2>
+            <input type="text" id="reg-nom" placeholder="Nombre Completo">
+            <input type="number" id="reg-ci" placeholder="Cédula de Identidad">
+            <button class="btn-main" onclick="app.registrar()">COMPLETAR REGISTRO</button>
         </div>
 
-        <div id="panel-joven" class="hidden">
-            <div class="card" style="background: linear-gradient(135deg, #800020, #a00028); color: white;">
-                <h2 style="color: white;"><i class="fas fa-bullhorn"></i> Aviso de Michael</h2>
-                <p id="txt-aviso" style="font-weight: 600; margin: 0;"></p>
+        <div id="sec-joven" class="hidden">
+            <div class="card" style="background: var(--guindo); color: white;">
+                <h2 style="color: white; margin-bottom: 5px;"><i class="fas fa-envelope-open-text"></i> Aviso de Michael</h2>
+                <p id="txt-tarea-desc" style="font-size: 15px; opacity: 0.9; margin: 0; font-weight: 500;"></p>
+                <div id="mi-nota" class="status-badge" style="background: rgba(255,255,255,0.1);">CARGANDO...</div>
             </div>
-            <div class="card">
-                <h2><i class="fas fa-file-signature"></i> Mi Nota de Tarea</h2>
-                <div id="nota-actual"></div>
-                <div id="info-pendiente" style="font-size: 12px; color: #666; margin-top: 10px; border-top: 1px solid #eee; padding-top: 10px;"></div>
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div class="card" style="text-align:center; margin-bottom:0;"><i class="fas fa-church" style="color:var(--guindo); font-size: 24px;"></i><div style="font-weight:800; font-size:12px; margin-top:5px;">MISAS</div></div>
-                <div class="card" style="text-align:center; margin-bottom:0;"><i class="fas fa-star" style="color:#f9a825; font-size: 24px;"></i><div style="font-weight:800; font-size:12px; margin-top:5px;">PUNTOS</div></div>
+
+            <div id="misa-container" class="card" style="border: 2px solid var(--gold);">
+                <h2><i class="fas fa-church"></i> Control de Misa</h2>
+                <p id="misa-msg" style="font-size: 13px; margin-bottom: 10px;"></p>
+                <button id="btn-registrar-misa" class="btn-main" style="background: var(--gold);" onclick="app.marcarMisa()" disabled>MARCAR ASISTENCIA MISA</button>
             </div>
         </div>
     </div>
 
     <div id="v-admin" class="view hidden">
         <div class="card">
-            <h2><i class="fas fa-clipboard-check"></i> Control Maestro</h2>
-            <div id="fecha-actual" style="font-size:12px; margin-bottom:15px; font-weight:700;"></div>
-            <div class="tabla-scroll">
-                <table style="width:100%; min-width:600px;">
-                    <tbody id="lista-master"></tbody>
-                </table>
+            <h2><i class="fas fa-bullhorn"></i> Publicar para el Grupo</h2>
+            <textarea id="input-tarea" placeholder="Escribe la tarea o aviso aquí..."></textarea>
+            <button class="btn-main" onclick="app.actualizarTarea()">ACTUALIZAR AVISO</button>
+        </div>
+
+        <div class="card">
+            <h2><i class="fas fa-database"></i> Gestión de Base de Datos</h2>
+            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Usa esto para mover la información a otro celular o PC.</p>
+            <button class="btn-main" style="background: #2c3e50;" onclick="app.descargarDB()">
+                <i class="fas fa-download"></i> DESCARGAR BASE DE DATOS
+            </button>
+            <div style="margin-top: 10px;">
+                <label style="font-size: 12px; font-weight: 700; color: var(--guindo);">RESTAURAR DESDE ARCHIVO:</label>
+                <input type="file" id="import-db" accept=".json" onchange="app.importarDB(this)" style="margin-top:5px; font-size:12px;">
             </div>
         </div>
+
         <div class="card">
-            <h2><i class="fas fa-edit"></i> Publicar Aviso</h2>
-            <textarea id="input-aviso" placeholder="Escribe el aviso aquí..."></textarea>
-            <button class="btn-main" onclick="app.publicarAviso()" style="background:#ff9800">ACTUALIZAR</button>
-        </div>
-        <div class="card">
-            <h2><i class="fas fa-camera"></i> Logo del Grupo</h2>
-            <input type="file" id="input-foto" accept="image/*" onchange="app.subirFoto(this)">
-            <button class="btn-main" onclick="app.exportar()" style="background:#107c41; margin-top:10px;">EXCEL</button>
+            <h2><i class="fas fa-users"></i> Control de Jóvenes</h2>
+            <div id="lista-master"></div>
+            <button class="btn-main" onclick="app.exportarExcel()" style="background:var(--success); margin-top:20px;">
+                <i class="fas fa-file-excel"></i> EXPORTAR LISTA (EXCEL)
+            </button>
         </div>
     </div>
 </div>
 
 <nav class="nav-bar">
-    <i class="fas fa-user-edit nav-btn active" onclick="app.nav('inicio', this)"></i>
-    <i class="fas fa-list-check nav-btn" onclick="app.nav('admin', this)"></i>
+    <i class="fas fa-home nav-btn active" onclick="app.nav('inicio', this)"></i>
+    <i class="fas fa-user-shield nav-btn" onclick="app.nav('admin', this)"></i>
 </nav>
 
 <script>
     const app = {
-        // --- SISTEMA DE MIGRACIÓN PARA NO PERDER DATOS ---
-        db: (function() {
-            const versions = ['smp_v16_final', 'smp_v17_final', 'smp_v18_final', 'smp_v19_final', 'smp_database_v20'];
-            let latestData = { jovenes: [], aviso: "", logo: "", asist: {}, tareas: {} };
-            versions.forEach(v => {
-                const data = localStorage.getItem(v);
-                if(data) {
-                    const parsed = JSON.parse(data);
-                    // Combinar jóvenes sin duplicados
-                    parsed.jovenes?.forEach(j => {
-                        if(!latestData.jovenes.find(ex => ex.c === j.c)) latestData.jovenes.push(j);
-                    });
-                    if(parsed.aviso) latestData.aviso = parsed.aviso;
-                    if(parsed.logo) latestData.logo = parsed.logo;
-                    Object.assign(latestData.asist, parsed.asist || {});
-                    Object.assign(latestData.tareas, parsed.tareas || {});
-                }
-            });
-            return latestData;
-        })(),
-
-        sesion: (function() {
-            const userVersions = ['smp_user_v16', 'smp_user_v17', 'smp_user_v18', 'smp_user_v19', 'smp_user_v20'];
-            for(let v of userVersions) {
-                const u = localStorage.getItem(v);
-                if(u) return JSON.parse(u);
-            }
-            return null;
-        })(),
+        data: {
+            jovenes: [],
+            tareaGlobal: "No hay avisos pendientes.",
+            registros: {}, 
+            logo: ""
+        },
+        user: null,
 
         init: () => {
-            if(app.db.logo) document.getElementById('logo-header').src = app.db.logo;
-            if(app.sesion) {
-                document.getElementById('card-registro').classList.add('hidden');
-                document.getElementById('panel-joven').classList.remove('hidden');
+            const savedData = localStorage.getItem('SMP_MASTER_DB');
+            if(savedData) app.data = JSON.parse(savedData);
+
+            const savedUser = localStorage.getItem('SMP_USER_SESSION');
+            if(savedUser) {
+                app.user = JSON.parse(savedUser);
+                app.showJovenUI();
             }
-            app.save(); // Asegura que todo esté en la v20 ahora
+            app.checkMisaDay();
             app.render();
         },
 
-        formatoNombre: (el) => {
-            el.value = el.value.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
-        },
-
-        nav: (id, el) => {
-            if(id === 'admin' && prompt("Clave Michael:") !== "adminSMP") return;
-            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('v-'+id).classList.remove('hidden');
-            el.classList.add('active');
+        save: () => {
+            localStorage.setItem('SMP_MASTER_DB', JSON.stringify(app.data));
             app.render();
-        },
-
-        subirFoto: (input) => {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    app.db.logo = e.target.result;
-                    document.getElementById('logo-header').src = e.target.result;
-                    app.save("Logo guardado.");
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
         },
 
         registrar: () => {
-            const d = { id: Date.now(), n: document.getElementById('reg-nom').value, c: document.getElementById('reg-ci').value };
-            if(!d.n || !d.c) return alert("Completa los datos.");
-            app.db.jovenes.push(d);
-            app.sesion = d;
-            localStorage.setItem('smp_user_v20', JSON.stringify(d));
-            app.save("¡Registro guardado!");
-            location.reload();
+            const nom = document.getElementById('reg-nom').value.trim();
+            const ci = document.getElementById('reg-ci').value.trim();
+            if(!nom || !ci) return alert("Llena tus datos.");
+            
+            const nuevo = { id: Date.now(), nombre: nom, ci: ci };
+            app.data.jovenes.push(nuevo);
+            app.user = nuevo;
+            localStorage.setItem('SMP_USER_SESSION', JSON.stringify(nuevo));
+            app.save();
+            app.showJovenUI();
         },
 
-        publicarAviso: () => {
-            app.db.aviso = document.getElementById('input-aviso').value;
-            app.save("Aviso actualizado.");
+        showJovenUI: () => {
+            document.getElementById('sec-registro').classList.add('hidden');
+            document.getElementById('sec-joven').classList.remove('hidden');
         },
 
-        marcar: (tipo, jId, valor) => {
+        actualizarTarea: () => {
+            app.data.tareaGlobal = document.getElementById('input-tarea').value;
+            app.save();
+            alert("Aviso actualizado.");
+        },
+
+        checkMisaDay: () => {
+            const esDomingo = new Date().getDay() === 0;
+            document.getElementById('btn-registrar-misa').disabled = !esDomingo;
+            document.getElementById('misa-msg').innerText = esDomingo ? "¡Es domingo de misa! Registra tu asistencia." : "El registro se activa los domingos.";
+        },
+
+        marcarMisa: () => {
             const hoy = new Date().toLocaleDateString().replace(/\//g, '-');
-            if(tipo === 'asist') {
-                if(!app.db.asist[hoy]) app.db.asist[hoy] = {};
-                app.db.asist[hoy][jId] = (app.db.asist[hoy][jId] === valor) ? null : valor;
-            } else {
-                if(!app.db.tareas[hoy]) app.db.tareas[hoy] = {};
-                app.db.tareas[hoy][jId] = valor;
-            }
+            if(!app.data.registros[hoy]) app.data.registros[hoy] = {};
+            if(!app.data.registros[hoy][app.user.id]) app.data.registros[hoy][app.user.id] = {};
+            app.data.registros[hoy][app.user.id].misa = true;
+            app.save();
+            alert("Asistencia a misa guardada.");
+        },
+
+        marcarAdmin: (jId, tipo, valor) => {
+            const hoy = new Date().toLocaleDateString().replace(/\//g, '-');
+            if(!app.data.registros[hoy]) app.data.registros[hoy] = {};
+            if(!app.data.registros[hoy][jId]) app.data.registros[hoy][jId] = {};
+            app.data.registros[hoy][jId][tipo] = valor;
             app.save();
         },
 
-        save: (m) => {
-            localStorage.setItem('smp_database_v20', JSON.stringify(app.db));
-            if(m) alert(m);
-            app.render();
+        // --- FUNCIONES DE BASE DE DATOS PARA LLEVAR A OTRO LADO ---
+        descargarDB: () => {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(app.data));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "SMP_DATABASE_MICHAEL.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        },
+
+        importarDB: (input) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    if(confirm("¿Seguro? Esto reemplazará todos los datos actuales con los del archivo.")) {
+                        app.data = importedData;
+                        app.save();
+                        location.reload();
+                    }
+                } catch(err) { alert("Archivo no válido."); }
+            };
+            reader.readAsText(input.files[0]);
+        },
+
+        nav: (id, el) => {
+            if(id === 'admin
+               && prompt("Clave Michael:") !== "adminSMP") return;
+            document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('v-' + id).classList.remove('hidden');
+            el.classList.add('active');
         },
 
         render: () => {
             const hoy = new Date().toLocaleDateString().replace(/\//g, '-');
-            document.getElementById('fecha-actual').innerText = "Hoy: " + new Date().toLocaleDateString();
             
-            if(app.sesion) {
-                document.getElementById('txt-aviso').innerText = app.db.aviso || "No hay avisos.";
-                const nota = (app.db.tareas[hoy] && app.db.tareas[hoy][app.sesion.id]);
-                const divNota = document.getElementById('nota-actual');
-                const infoP = document.getElementById('info-pendiente');
-
-                if(nota === 'dia') {
-                    divNota.innerHTML = '<span class="badge-nota" style="background:#e8f5e9; color:#2e7d32;">AL DÍA (10/10)</span>';
-                    infoP.innerHTML = "<b>¡Excelente!</b> Estás al día.";
-                } else if(nota === 'retraso') {
-                    divNota.innerHTML = '<span class="badge-nota" style="background:#fffde7; color:#f9a825;">RETRASO (-20%)</span>';
-                    infoP.innerHTML = "<b>Pendiente:</b> " + (app.db.aviso || "Revisar tarea.");
-                } else if(nota === 'critico') {
-                    divNota.innerHTML = '<span class="badge-nota" style="background:#ffebee; color:#c62828;">CRÍTICO (-50%)</span>';
-                    infoP.innerHTML = "<b>Urgente:</b> " + (app.db.aviso || "Hablar con Michael.");
-                } else {
-                    divNota.innerHTML = '<span class="badge-nota" style="background:#f4f4f4; color:#888;">PENDIENTE</span>';
-                    infoP.innerHTML = "Tu tarea aún no ha sido revisada.";
-                }
+            if(app.user) {
+                document.getElementById('txt-tarea-desc').innerText = app.data.tareaGlobal;
+                const miReg = (app.data.registros[hoy] && app.data.registros[hoy][app.user.id]) || {};
+                const notaDiv = document.getElementById('mi-nota');
+                if(miReg.nota) notaDiv.innerText = "NOTA: " + miReg.nota + "%";
+                else notaDiv.innerText = "SIN CALIFICAR";
             }
 
-            const aHoy = app.db.asist[hoy] || {};
-            const tHoy = app.db.tareas[hoy] || {};
-            document.getElementById('lista-master').innerHTML = app.db.jovenes.map(j => `
-                <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px 0;"><b>${j.n}</b><br><small style="color:#999">CI: ${j.c}</small></td>
-                    <td>
-                        <button class="btn-calif ${aHoy[j.id]=='p'?'active':''}" onclick="app.marcar('asist',${j.id},'p')">P</button>
-                    </td>
-                    <td>
-                        <div style="display:flex; gap:3px;">
-                            <button class="btn-calif c-aldia ${tHoy[j.id]=='dia'?'active':''}" onclick="app.marcar('tarea',${j.id},'dia')">100%</button>
-                            <button class="btn-calif c-retraso ${tHoy[j.id]=='retraso'?'active':''}" onclick="app.marcar('tarea',${j.id},'retraso')">80%</button>
-                            <button class="btn-calif c-critico ${tHoy[j.id]=='critico'?'active':''}" onclick="app.marcar('tarea',${j.id},'critico')">50%</button>
-                        </div>
-                    </td>
-                </tr>
-            `).join('');
+            const regHoy = app.data.registros[hoy] || {};
+            document.getElementById('lista-master').innerHTML = app.data.jovenes.map(j => {
+                const r = regHoy[j.id] || {};
+                return `
+                <div class="admin-row">
+                    <div><b>${j.nombre}</b></div>
+                    <div class="btn-group">
+                        <button class="b-sm ${r.asist=='p'?'active':''}" onclick="app.marcarAdmin(${j.id},'asist','p')">P</button>
+                        <button class="b-sm ${r.nota==100?'active':''}" onclick="app.marcarAdmin(${j.id},'nota',100)">100</button>
+                        <button class="b-sm ${r.nota==50?'active':''}" onclick="app.marcarAdmin(${j.id},'nota',50)">50</button>
+                    </div>
+                </div>`;
+            }).join('');
         },
 
-        exportar: () => {
-            const data = app.db.jovenes.map(j => ({ Nombre: j.n, CI: j.c }));
+        exportarExcel: () => {
+            const data = app.data.jovenes.map(j => ({ Nombre: j.nombre, CI: j.ci }));
             const ws = XLSX.utils.json_to_sheet(data);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Lista");
             XLSX.writeFile(wb, "Catequesis_Michael.xlsx");
         }
     };
+
     app.init();
 </script>
 </body>
