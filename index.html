@@ -3,215 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>100 Catequistas Dijeron</title>
+    <title>100 Catequistas - Versión Pro</title>
     <style>
-        :root {
-            --azul-oscuro: #003366;
-            --dorado: #ffd700;
-            --rojo-error: #ff0000;
+        body { background-color: #003366; color: white; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
+        h1 { color: #ffd700; margin-bottom: 10px; font-size: 24px; }
+        
+        /* Contenedor de X */
+        .x-container { height: 80px; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .x-mark { color: red; font-size: 60px; font-weight: bold; display: none; text-shadow: 2px 2px black; }
+
+        /* Tablero de tarjetas */
+        .board { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 400px; margin: 0 auto; }
+        .card { 
+            background: linear-gradient(#444, #111); 
+            border: 3px solid #ffd700; 
+            height: 60px; 
+            border-radius: 10px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 22px; 
+            font-weight: bold; 
+            cursor: pointer; 
         }
+        .card.open { background: linear-gradient(#0055ff, #0022aa); border-color: white; }
+        .card .ans { display: none; font-size: 16px; width: 100%; padding: 0 10px; justify-content: space-between; }
+        .card.open .ans { display: flex; }
+        .card.open .num { display: none; }
 
-        body {
-            background-color: var(--azul-oscuro);
-            color: white;
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-        }
+        /* Botones */
+        .controls { margin-top: 20px; display: flex; justify-content: center; gap: 10px; }
+        button { padding: 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-err { background: red; color: white; }
+        .btn-next { background: #ffd700; color: black; }
 
-        h1 { color: var(--dorado); text-shadow: 2px 2px #000; }
-
-        /* Contenedor de Errores */
-        #error-container {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            height: 100px;
-        }
-
-        .x-mark {
-            font-size: 80px;
-            color: var(--rojo-error);
-            visibility: hidden;
-            text-shadow: 3px 3px #000;
-        }
-
-        /* Tablero de Respuestas */
-        #board {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .card {
-            background: linear-gradient(180deg, #222, #444);
-            border: 3px solid var(--dorado);
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 15px;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            position: relative;
-            border-radius: 8px;
-        }
-
-        .card .content {
-            visibility: hidden; /* Oculto por defecto */
-            display: flex;
-            width: 100%;
-            justify-content: space-between;
-        }
-
-        .card.revealed .content {
-            visibility: visible;
-        }
-
-        .card.revealed {
-            background: linear-gradient(180deg, #0055ff, #0022aa);
-        }
-
-        .card .number {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .card.revealed .number {
-            display: none;
-        }
-
-        /* Botones de Control */
-        .controls {
-            margin-top: 30px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
-        }
-
-        .btn-error { background-color: var(--rojo-error); color: white; }
-        .btn-next { background-color: var(--dorado); color: black; }
+        /* TU PANEL SECRETO - Los chicos no deben ver esto */
+        .admin-panel { margin-top: 40px; border-top: 2px dashed #666; padding-top: 20px; color: #aaa; font-size: 14px; }
+        .cheat-sheet { background: rgba(0,0,0,0.3); padding: 10px; display: inline-block; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <h1 id="pregunta-titulo">Cargando pregunta...</h1>
+    <h1 id="pregunta">¿Cuántos evangelios hay?</h1>
 
-    <div id="error-container">
-        <div class="x-mark" id="x1">X</div>
-        <div class="x-mark" id="x2">X</div>
-        <div class="x-mark" id="x3">X</div>
+    <div class="x-container">
+        <span id="x1" class="x-mark">X</span>
+        <span id="x2" class="x-mark">X</span>
+        <span id="x3" class="x-mark">X</span>
     </div>
 
-    <div id="board">
+    <div class="board" id="board">
         </div>
 
     <div class="controls">
-        <button class="btn-error" onclick="marcarError()">¡ERROR (X)!</button>
-        <button class="btn-next" onclick="siguienteNivel()">Siguiente Nivel</button>
+        <button class="btn-err" onclick="playError()">¡ERROR (X)!</button>
+        <button class="btn-next" onclick="nextLevel()">Siguiente Nivel</button>
     </div>
 
-    <audio id="snd-acierto" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
-    <audio id="snd-error" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
+    <div class="admin-panel">
+        <p>SOLO PARA EL COORDINADOR (Baja el brillo si ellos ven esto):</p>
+        <div id="cheat-sheet" class="cheat-sheet"></div>
+    </div>
+
+    <audio id="snd-ding" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
+    <audio id="snd-buzzer" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
 
     <script>
-        const bancoPreguntas = [
-            {
-                pregunta: "¿Cuántos evangelios hay?",
-                respuestas: [
-                    { texto: "Mateo", puntos: 25 },
-                    { texto: "Marcos", puntos: 25 },
-                    { texto: "Lucas", puntos: 25 },
-                    { texto: "Juan", puntos: 25 }
-                ]
-            },
-            {
-                pregunta: "Menciona un Sacramento",
-                respuestas: [
-                    { texto: "Bautismo", puntos: 40 },
-                    { texto: "Eucaristía", puntos: 30 },
-                    { texto: "Confirmación", puntos: 20 },
-                    { texto: "Confesión", puntos: 10 }
-                ]
-            }
+        const niveles = [
+            { p: "¿Cuáles son los evangelios?", r: ["Mateo", "Marcos", "Lucas", "Juan"], pts: [25, 25, 25, 25] },
+            { p: "Menciona un Mandamiento", r: ["Amar a Dios", "No Matar", "No Robar", "Honrar Padre/Madre"], pts: [40, 30, 20, 10] }
         ];
 
-        let nivelActual = 0;
-        let errores = 0;
+        let cur = 0;
+        let errs = 0;
 
-        function cargarTablero() {
-            const data = bancoPreguntas[nivelActual];
-            document.getElementById('pregunta-titulo').innerText = data.pregunta;
-            const board = document.getElementById('board');
-            board.innerHTML = '';
-            errores = 0;
-            resetErrores();
+        function load() {
+            const n = niveles[cur];
+            document.getElementById('pregunta').innerText = n.p;
+            const b = document.getElementById('board');
+            const s = document.getElementById('cheat-sheet');
+            b.innerHTML = '';
+            s.innerHTML = '';
+            errs = 0;
+            hideX();
 
-            data.respuestas.forEach((r, index) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <div class="number">${index + 1}</div>
-                    <div class="content">
-                        <span>${r.texto}</span>
-                        <span>${r.puntos}</span>
-                    </div>
-                `;
-                card.onclick = () => revelar(card);
-                board.appendChild(card);
+            n.r.forEach((txt, i) => {
+                // Crear Tarjeta
+                const div = document.createElement('div');
+                div.className = 'card';
+                div.innerHTML = `<span class="num">${i+1}</span><div class="ans"><span>${txt}</span><span>${n.pts[i]}</span></div>`;
+                div.onclick = () => {
+                    if(!div.classList.contains('open')) {
+                        div.classList.add('open');
+                        document.getElementById('snd-ding').play();
+                    }
+                };
+                b.appendChild(div);
+
+                // Crear tu chuleta
+                s.innerHTML += `<b>${i+1}:</b> ${txt} | `;
             });
         }
 
-        function revelar(elemento) {
-            if (!elemento.classList.contains('revealed')) {
-                elemento.classList.add('revealed');
-                document.getElementById('snd-acierto').play();
+        function playError() {
+            if(errs < 3) {
+                errs++;
+                document.getElementById('x'+errs).style.display = 'block';
+                document.getElementById('snd-buzzer').play();
+                setTimeout(() => { if(errs<3) document.getElementById('x'+errs).style.display = 'none'; }, 1500);
             }
         }
 
-        function marcarError() {
-            if (errores < 3) {
-                errores++;
-                document.getElementById(`x${errores}`).style.visibility = 'visible';
-                document.getElementById('snd-error').play();
-            }
-        }
+        function hideX() { for(let i=1; i<=3; i++) document.getElementById('x'+i).style.display = 'none'; }
+        function nextLevel() { cur++; if(cur < niveles.length) load(); else alert("¡Fin!"); }
 
-        function resetErrores() {
-            for (let i = 1; i <= 3; i++) {
-                document.getElementById(`x${i}`).style.visibility = 'hidden';
-            }
-        }
-
-        function siguienteNivel() {
-            nivelActual++;
-            if (nivelActual < bancoPreguntas.length) {
-                cargarTablero();
-            } else {
-                alert("¡Fin del juego!");
-                nivelActual = 0;
-                cargarTablero();
-            }
-        }
-
-        // Iniciar el juego
-        window.onload = cargarTablero;
+        window.onload = load;
     </script>
 </body>
 </html>
