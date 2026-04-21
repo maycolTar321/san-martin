@@ -3,148 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>100 CATEQUISTAS DIJERON - FIX</title>
+    <title>100 Catequistas Dijeron - Sagrado Show</title>
     <style>
-        :root { --azul-fondo: #001a33; --dorado: #ffcc00; --azul-card: linear-gradient(180deg, #005eff, #003399); --rojo: #ff0000; }
-        body { background-color: var(--azul-fondo); color: white; font-family: 'Arial Black', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
-        
-        #selector { position: fixed; top:0; width: 100%; height: 100%; background: var(--azul-fondo); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; }
-        
-        .view { display: none; width: 100%; max-width: 600px; padding: 20px; box-sizing: border-box; }
-        #pregunta-txt { color: var(--dorado); font-size: 1.8rem; text-shadow: 2px 2px #000; min-height: 80px; margin: 10px 0; }
-        
-        .x-container { height: 80px; display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
-        .x-mark { font-size: 70px; color: var(--rojo); display: none; text-shadow: 3px 3px #000; }
+        :root {
+            --purpura: #4b0082;
+            --dorado: #ffd700;
+            --blanco-luz: #fdf5e6;
+            --rojo-pasion: #b22222;
+        }
 
-        .board { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .card { background: linear-gradient(180deg, #333, #111); border: 3px solid var(--dorado); height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; position: relative; }
-        .card.revealed { background: var(--azul-card); border-color: white; transform: rotateX(360deg); transition: 0.6s; }
-        .card .content { display: none; width: 100%; padding: 0 20px; justify-content: space-between; font-size: 18px; }
-        .card.revealed .content { display: flex; }
+        body {
+            background: radial-gradient(circle, var(--purpura) 0%, #1a0033 100%);
+            color: var(--blanco-luz);
+            font-family: 'Georgia', serif;
+            margin: 0;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        /* Estilo Vitral de Fondo */
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('https://www.transparenttextures.com/patterns/church-windows.png');
+            opacity: 0.1; z-index: -1;
+        }
+
+        #selector { position: fixed; inset: 0; background: var(--purpura); z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; }
+        
+        .btn-fancy {
+            padding: 20px 40px; border: 3px solid var(--dorado); background: transparent;
+            color: var(--dorado); font-weight: bold; border-radius: 50px; cursor: pointer;
+            font-size: 1.2rem; transition: 0.3s; text-transform: uppercase;
+        }
+        .btn-fancy:hover { background: var(--dorado); color: var(--purpura); }
+
+        /* VISTA PÚBLICO */
+        .view { display: none; padding: 15px; }
+        .score-container { display: flex; justify-content: center; gap: 40px; margin-bottom: 20px; }
+        .team-box { border: 2px solid var(--dorado); padding: 10px; border-radius: 15px; background: rgba(0,0,0,0.4); min-width: 140px; }
+        .team-box span { font-size: 12px; color: var(--dorado); display: block; }
+        .points { font-size: 45px; font-weight: bold; font-family: 'Impact', sans-serif; }
+
+        #pregunta { font-size: 2rem; color: var(--dorado); text-shadow: 2px 2px 4px #000; margin: 20px 0; }
+
+        .x-area { height: 90px; display: flex; justify-content: center; gap: 20px; }
+        .x-mark { font-size: 80px; color: var(--rojo-pasion); display: none; text-shadow: 3px 3px 0px #000; animation: shake 0.5s; }
+
+        /* TABLERO */
+        .board { display: grid; grid-template-columns: 1fr; gap: 15px; max-width: 600px; margin: 0 auto; }
+        .card {
+            background: linear-gradient(to bottom, #333, #000);
+            border: 3px solid var(--dorado); height: 75px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .card.revealed {
+            background: linear-gradient(to bottom, #fff, var(--dorado));
+            color: var(--purpura); transform: rotateX(360deg); transition: 0.7s;
+        }
+        .ans { display: none; width: 100%; padding: 0 30px; justify-content: space-between; font-weight: bold; }
+        .card.revealed .ans { display: flex; }
         .card.revealed .num { display: none; }
 
-        .admin-btn { width: 100%; background: #222; color: white; border: 1px solid #444; padding: 15px; margin: 5px 0; border-radius: 10px; text-align: left; font-size: 14px; }
-        .btn-main { padding: 20px; border-radius: 10px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; width: 80%; }
-        
-        .emoji { position: fixed; font-size: 60px; pointer-events: none; animation: fly 1s forwards; opacity: 0; z-index: 50; }
-        @keyframes fly { 0% { bottom: 0; opacity: 1; } 100% { bottom: 80%; opacity: 0; } }
+        /* MODO ADMIN */
+        .admin-view { padding: 20px; max-width: 500px; margin: 0 auto; }
+        .admin-card { background: #222; border: 1px solid #444; padding: 15px; margin: 10px 0; border-radius: 10px; text-align: left; }
+        .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }
     </style>
 </head>
 <body>
 
     <div id="selector">
-        <h2 style="color:var(--dorado)">ELIGE TU PANTALLA</h2>
-        <button class="btn-main" style="background:var(--azul-card); color:white;" onclick="setMode('player')">MODO JUGADOR (PROYECTOR)</button>
-        <button class="btn-main" style="background:var(--dorado);" onclick="setMode('admin')">MODO ADMIN (CONTROL)</button>
-        <p style="font-size: 12px; color: #888;">Nota: Debes abrir el mismo link en ambos.</p>
+        <h1 style="color:var(--dorado)">† CATEQUESIS SHOW †</h1>
+        <button class="btn-fancy" onclick="setMode('player')">PANTALLA PROYECTOR</button>
+        <button class="btn-fancy" onclick="setMode('admin')">MANDO COORDINADOR</button>
     </div>
 
     <div class="view" id="pv">
-        <h2 id="pregunta-txt">ESPERANDO AL LÍDER...</h2>
-        <div class="x-container">
-            <div id="px1" class="x-mark">X</div>
-            <div id="px2" class="x-mark">X</div>
-            <div id="px3" class="x-mark">X</div>
+        <div class="score-container">
+            <div class="team-box"><span>EQUIPO FE</span><div class="points" id="pts-a">0</div></div>
+            <div class="team-box"><span>EQUIPO ESPERANZA</span><div class="points" id="pts-b">0</div></div>
         </div>
+        <h2 id="pregunta">...</h2>
+        <div class="x-area"><div id="px1" class="x-mark">X</div><div id="px2" class="x-mark">X</div><div id="px3" class="x-mark">X</div></div>
         <div class="board" id="player-board"></div>
     </div>
 
     <div class="view" id="av">
-        <h3 style="color:var(--dorado)">CONTROL DE PREGUNTAS</h3>
+        <h2 id="adm-q"></h2>
         <div id="admin-board"></div>
-        <div style="display:flex; gap:10px; margin-top:20px;">
-            <button class="btn-main" style="background:var(--rojo); color:white;" onclick="doAction('error')">¡ERROR!</button>
-            <button class="btn-main" style="background:var(--dorado);" onclick="doAction('next')">SIGUIENTE</button>
+        <div class="controls-grid">
+            <button class="btn-fancy" style="border-color:var(--rojo-pasion); color:white; background:var(--rojo-pasion);" onclick="send('error')">¡ERROR!</button>
+            <button class="btn-fancy" onclick="send('next')">SIGUIENTE</button>
+        </div>
+        <div class="controls-grid">
+            <button class="btn-fancy" style="border-color:#28a745;" onclick="send('addA')">PUNTOS A FE</button>
+            <button class="btn-fancy" style="border-color:#28a745;" onclick="send('addB')">PUNTOS A ESPERANZA</button>
         </div>
     </div>
 
-    <audio id="s-ok" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
-    <audio id="s-no" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
+    <audio id="snd-ok" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
+    <audio id="snd-no" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
 
     <script>
-        const datos = [
+        const niveles = [
             { q: "¿Qué llevaron los Reyes Magos?", a: [{t:"ORO",p:40},{t:"INCIENSO",p:35},{t:"MIRRA",p:25}] },
-            { q: "¿Cuántos evangelios hay?", a: [{t:"MATEO",p:25},{t:"MARCOS",p:25},{t:"LUCAS",p:25},{t:"JUAN",p:25}] }
+            { q: "¿Cuáles son los Evangelios?", a: [{t:"MATEO",p:25},{t:"MARCOS",p:25},{t:"LUCAS",p:25},{t:"JUAN",p:25}] },
+            { q: "Menciona un color de la Iglesia", a: [{t:"BLANCO",p:50},{t:"MORADO",p:20},{t:"VERDE",p:20},{t:"ROJO",p:10}] }
         ];
 
-        let localState = { level: 0, rev: [], err: 0 };
+        let state = JSON.parse(localStorage.getItem('catholic_gs')) || { lvl: 0, rev: [], err: 0, pA: 0, pB: 0 };
 
         function setMode(m) {
             document.getElementById('selector').style.display = 'none';
             document.getElementById(m == 'player' ? 'pv' : 'av').style.display = 'block';
-            
-            // Inicializar estado si no existe
-            if(!localStorage.getItem('gs')) {
-                localStorage.setItem('gs', JSON.stringify(localState));
-            }
-
-            if(m == 'player') {
-                window.addEventListener('storage', () => sync());
-                sync();
-            } else {
-                updateAdmin();
+            if(m == 'player') { 
+                window.addEventListener('storage', renderPlayer); 
+                renderPlayer();
+                document.body.onclick = () => { document.getElementById('snd-ok').play().then(()=>document.getElementById('snd-ok').pause()); };
+            } else { 
+                renderAdmin(); 
             }
         }
 
-        function doAction(type, val = null) {
-            let s = JSON.parse(localStorage.getItem('gs'));
-            if(type == 'rev') { if(!s.rev.includes(val)) s.rev.push(val); }
-            if(type == 'error') s.err++;
-            if(type == 'next') { s.level++; s.rev = []; s.err = 0; }
-            if(s.level >= datos.length) s.level = 0;
+        function send(type, val = null) {
+            if(type == 'rev' && !state.rev.includes(val)) state.rev.push(val);
+            if(type == 'error') state.err++;
+            if(type == 'addA') state.pA += 15;
+            if(type == 'addB') state.pB += 15;
+            if(type == 'next') { state.lvl++; state.rev = []; state.err = 0; if(state.lvl >= niveles.length) state.lvl = 0; }
 
-            localStorage.setItem('gs', JSON.stringify(s));
-            localStorage.setItem('last_cmd', type + "_" + Date.now()); 
-            updateAdmin();
+            localStorage.setItem('catholic_gs', JSON.stringify(state));
+            localStorage.setItem('gs_trigger', Date.now());
+            renderAdmin();
         }
 
-        function sync() {
-            const s = JSON.parse(localStorage.getItem('gs'));
-            const lvl = datos[s.level];
-            document.getElementById('pregunta-txt').innerText = lvl.q;
-            
-            const cmd = localStorage.getItem('last_cmd') || "";
-            if(cmd.includes('rev')) { document.getElementById('s-ok').play(); popEmoji("👍"); }
-            if(cmd.includes('error')) { document.getElementById('s-no').play(); popEmoji("👎"); }
+        function renderPlayer() {
+            state = JSON.parse(localStorage.getItem('catholic_gs'));
+            const data = niveles[state.lvl];
+            document.getElementById('pregunta').innerText = data.q;
+            document.getElementById('pts-a').innerText = state.pA;
+            document.getElementById('pts-b').innerText = state.pB;
 
-            const pb = document.getElementById('player-board');
-            pb.innerHTML = '';
-            lvl.a.forEach((item, i) => {
-                const isR = s.rev.includes(i);
-                pb.innerHTML += `<div class="card ${isR?'revealed':''}">
+            const board = document.getElementById('player-board');
+            board.innerHTML = '';
+            data.a.forEach((ans, i) => {
+                const isR = state.rev.includes(i);
+                board.innerHTML += `<div class="card ${isR?'revealed':''}">
                     <div class="num">${i+1}</div>
-                    <div class="content"><span>${item.t}</span><span>${item.p}</span></div>
+                    <div class="ans"><span>${ans.t}</span><span>${ans.p}</span></div>
                 </div>`;
             });
 
-            for(let i=1; i<=3; i++) document.getElementById('px'+i).style.display = (s.err >= i) ? 'block' : 'none';
+            // Sonidos
+            if(window.lastR < state.rev.length) document.getElementById('snd-ok').play();
+            if(window.lastE < state.err) document.getElementById('snd-no').play();
+            window.lastR = state.rev.length; window.lastE = state.err;
+
+            for(let i=1; i<=3; i++) document.getElementById('px'+i).style.display = (state.err >= i) ? 'block' : 'none';
         }
 
-        function updateAdmin() {
-            const s = JSON.parse(localStorage.getItem('gs'));
-            const lvl = datos[s.level];
-            const ab = document.getElementById('admin-board');
-            ab.innerHTML = `<p>${lvl.q}</p>`;
-            lvl.a.forEach((item, i) => {
-                const isR = s.rev.includes(i);
-                ab.innerHTML += `<button class="admin-btn" style="${isR?'opacity:0.4':''}" onclick="doAction('rev', ${i})">${i+1}. ${item.t} (${item.p})</button>`;
+        function renderAdmin() {
+            const data = niveles[state.lvl];
+            document.getElementById('adm-q').innerText = data.q;
+            const container = document.getElementById('admin-board');
+            container.innerHTML = '';
+            data.a.forEach((ans, i) => {
+                const isR = state.rev.includes(i);
+                container.innerHTML += `<div class="admin-card" style="${isR?'opacity:0.4; border-color:green':''}" onclick="send('rev', ${i})">
+                    ${i+1}. ${ans.t} (${ans.p} pts)
+                </div>`;
             });
         }
-
-        function popEmoji(e) {
-            const div = document.createElement('div');
-            div.className = 'emoji';
-            div.innerText = e;
-            div.style.left = (Math.random() * 60 + 20) + "%";
-            document.body.appendChild(div);
-            setTimeout(() => div.remove(), 1000);
-        }
-
-        // Desbloquear audio al primer toque
-        document.addEventListener('click', () => { 
-            document.getElementById('s-ok').load(); 
-            document.getElementById('s-no').load(); 
-        }, {once: true});
     </script>
 </body>
 </html>
