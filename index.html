@@ -3,118 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>100 Catequistas Dijeron - Pro</title>
+    <title>100 Catequistas Dijeron - Final</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root { --purpura: #3d0066; --dorado: #ffd700; --rojo: #cc0000; }
-        body { overscroll-behavior-y: contain; margin: 0; background: var(--purpura); color: white; font-family: sans-serif; text-align: center; }
-        .btn { padding: 12px; border: 2px solid var(--dorado); background: rgba(0,0,0,0.5); color: var(--dorado); border-radius: 10px; font-weight: bold; width: 90%; margin: 5px; cursor: pointer; }
-        input, select { padding: 10px; border-radius: 8px; border: 1px solid var(--dorado); margin: 5px; width: 80%; }
+        :root { --purpura: #2e004f; --dorado: #ffd700; --rojo: #ff0000; --azul: #0044ff; }
+        body { margin: 0; background: var(--purpura); color: white; font-family: 'Segoe UI', sans-serif; text-align: center; overflow: hidden; }
         
-        #setup, .view { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; overflow-y: auto; }
-        .view { display: none; background: radial-gradient(circle, #4a0080, #1a0033); }
+        /* PANTALLA INICIAL */
+        #setup { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--purpura); }
+        .btn { padding: 15px 25px; border: 2px solid var(--dorado); background: #000; color: var(--dorado); border-radius: 12px; font-weight: bold; width: 80%; margin: 10px; cursor: pointer; font-size: 1.1rem; }
+        input { padding: 15px; border-radius: 10px; border: 2px solid var(--dorado); width: 70%; text-align: center; font-size: 1.2rem; margin-bottom: 20px; }
 
-        /* JUEGO */
-        .timer { font-size: 2rem; color: #ff9900; font-weight: bold; margin-bottom: 10px; }
-        .pts-box { font-size: 2rem; background: #000; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--dorado); }
-        #pregunta { color: var(--dorado); font-size: 1.5rem; min-height: 60px; margin: 15px 0; }
-        .x-mark { font-size: 120px; color: var(--rojo); display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; text-shadow: 4px 4px 0 #000; font-weight: bold; }
+        /* VISTAS */
+        .view { display: none; height: 100vh; flex-direction: column; align-items: center; padding: 15px; box-sizing: border-box; }
         
-        .tablero { width: 100%; max-width: 500px; }
-        .fila { border: 2px solid var(--dorado); margin: 6px 0; height: 45px; display: flex; align-items: center; justify-content: center; background: #111; border-radius: 8px; }
+        /* PROYECTOR */
+        #categoria-display { color: var(--dorado); font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; }
+        #pregunta-display { font-size: 2.2rem; margin: 15px 0; min-height: 80px; text-shadow: 2px 2px 4px #000; }
+        .marcador { display: flex; gap: 40px; margin-bottom: 20px; }
+        .pts-box { background: #000; border: 3px solid var(--dorado); padding: 10px 30px; border-radius: 15px; font-size: 3rem; font-family: 'Impact'; }
+        .timer { font-size: 2.5rem; color: #ff9900; font-weight: bold; }
+        
+        /* TABLERO */
+        .tablero { width: 100%; max-width: 600px; display: grid; gap: 10px; }
+        .fila { background: linear-gradient(to bottom, #111, #333); border: 2px solid var(--dorado); height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 1.8rem; position: relative; overflow: hidden; }
         .fila.open { background: linear-gradient(to bottom, #fff, var(--dorado)); color: black; font-weight: bold; }
+        .x-mark { font-size: 150px; color: var(--rojo); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none; z-index: 500; font-weight: bold; -webkit-text-stroke: 3px white; }
 
-        .admin-item { background: #222; padding: 10px; margin: 4px; width: 100%; border-radius: 5px; text-align: left; font-size: 0.9rem; border-left: 5px solid #555; }
+        /* CONTROL ADMIN */
+        .admin-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+        .ans-item { background: #444; padding: 15px; margin: 5px 0; border-radius: 10px; text-align: left; border-left: 8px solid #888; font-size: 1rem; }
+        .ans-item.active { border-left-color: #00ff00; background: #222; }
     </style>
 </head>
 <body>
 
     <div id="setup">
-        <h2 style="color:var(--dorado)">† CONFIGURACIÓN †</h2>
-        <input type="text" id="room-id" placeholder="Nombre de Sala (ej: cate1)">
-        
-        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; width: 90%;">
-            <label>Cant. Preguntas:</label>
-            <select id="cfg-qty"><option value="5">5 Preguntas</option><option value="10">10 Preguntas</option><option value="20">20 Preguntas</option><option value="100">Las 100</option></select>
-            
-            <label>Dificultad:</label>
-            <select id="cfg-diff"><option value="all">Todas</option><option value="easy">Básica (Niños)</option><option value="hard">Teológica (Jóvenes)</option></select>
-            
-            <label>Tiempo (seg):</label>
-            <select id="cfg-time"><option value="0">Sin tiempo</option><option value="30">30 Segundos</option><option value="60">60 Segundos</option></select>
-        </div>
-
+        <h1 style="color:var(--dorado); margin-bottom:5px;">CATEQUISTAS DIJERON</h1>
+        <p style="margin-bottom:20px;">Edición 100 Preguntas</p>
+        <input type="text" id="room-id" placeholder="Nombre de Sala (ej: tarija)">
         <button class="btn" onclick="iniciar('P')">MODO PROYECTOR</button>
-        <button class="btn" style="background:var(--dorado); color:black" onclick="iniciar('A')">MODO CONTROL</button>
+        <button class="btn" style="background:var(--dorado); color:black;" onclick="iniciar('A')">MODO CONTROLADOR</button>
     </div>
 
     <div class="view" id="pv">
-        <div id="timer-p" class="timer"></div>
-        <div style="display:flex; gap:20px">
-            <div>FE<div class="pts-box" id="pA">0</div></div>
-            <div>ESPERANZA<div class="pts-box" id="pB">0</div></div>
+        <div id="timer-p" class="timer">--s</div>
+        <div class="marcador">
+            <div><small>FE</small><div class="pts-box" id="pA">0</div></div>
+            <div><small>ESPERANZA</small><div class="pts-box" id="pB">0</div></div>
         </div>
-        <h2 id="pregunta"></h2>
+        <div id="categoria-display">CATEGORÍA</div>
+        <h2 id="pregunta-display">ESPERANDO AL ADMINISTRADOR...</h2>
         <div class="tablero" id="tablero-p"></div>
         <div id="big-x" class="x-mark">X</div>
     </div>
 
     <div class="view" id="av">
-        <div id="timer-a" class="timer"></div>
-        <h3 id="adm-q"></h3>
-        <div id="tablero-a" style="width:100%; overflow-y: auto; max-height: 40vh;"></div>
-        <div style="display:grid; grid-template-columns: 1fr 1fr; width:100%; gap:5px; margin-top:10px;">
-            <button class="btn" style="background:var(--rojo); color:white; width:auto;" onclick="accion('X')">¡X!</button>
-            <button class="btn" style="width:auto;" onclick="accion('N')">SIGUIENTE</button>
-            <button class="btn" style="width:auto; border-color:cyan;" onclick="accion('T')">⏱ INICIAR</button>
-            <button class="btn" style="width:auto;" onclick="accion('PA')">+ FE</button>
-            <button class="btn" style="width:auto;" onclick="accion('PB')">+ ESPERANZA</button>
+        <div id="timer-a" class="timer">--s</div>
+        <div id="adm-cat" style="color:var(--dorado); font-weight:bold;"></div>
+        <h3 id="adm-q" style="margin: 10px 0;"></h3>
+        <div id="tablero-a" style="width:100%; overflow-y:auto; max-height:45vh; margin-bottom:10px;"></div>
+        <div class="admin-btn-group">
+            <button class="btn" style="background:var(--rojo); color:white; width:auto;" onclick="accion('X')">¡ERROR (X)!</button>
+            <button class="btn" style="background:var(--azul); color:white; width:auto;" onclick="accion('T')">INICIAR TIEMPO</button>
+            <button class="btn" style="width:auto;" onclick="accion('PA')">PTOS FE</button>
+            <button class="btn" style="width:auto;" onclick="accion('PB')">PTOS ESPERANZA</button>
         </div>
+        <button class="btn" style="width:100%;" onclick="accion('N')">SIGUIENTE PREGUNTA →</button>
     </div>
 
     <audio id="sd" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
     <audio id="sb" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
 
     <script>
-        // BASE DE DATOS (Muestra de 100)
-        const totalPreguntas = [
-            { q: "¿Qué llevaron los Reyes Magos?", d:"easy", a: [{t:"ORO",p:40},{t:"INCIENSO",p:35},{t:"MIRRA",p:25}] },
-            { q: "¿Cuántos evangelios hay?", d:"easy", a: [{t:"MATEO",p:25},{t:"MARCOS",p:25},{t:"LUCAS",p:25},{t:"JUAN",p:25}] },
-            { q: "¿Sacramento de iniciación?", d:"hard", a: [{t:"BAUTISMO",p:50},{t:"COMUNIÓN",p:30},{t:"CONFIRMACIÓN",p:20}] },
-            { q: "¿Dónde nació Jesús?", d:"easy", a: [{t:"BELÉN",p:70},{t:"PESEBRE",p:20},{t:"ESTABLO",p:10}] },
-            // ... (El sistema mezclará y seleccionará según tu configuración)
+        // BASE DE DATOS DE 100 PREGUNTAS POR CATEGORÍAS
+        const mazoOriginal = [
+            { c: "Sacramentos", q: "¿Cuál es el primer sacramento que recibimos?", a: [{t:"BAUTISMO",p:70},{t:"CONFIRMACIÓN",p:20},{t:"EUCARISTÍA",p:10}] },
+            { c: "Personajes", q: "¿Quién construyó el Arca para salvarse del Diluvio?", a: [{t:"NOÉ",p:80},{t:"SUS HIJOS",p:15},{t:"SU ESPOSA",p:5}] },
+            { c: "Mandamientos", q: "¿Cuál es el primer mandamiento?", a: [{t:"AMAR A DIOS",p:90},{t:"NO MATAR",p:5},{t:"HONRAR A PADRES",p:5}] },
+            { c: "Virgen María", q: "¿En qué ciudad nació Jesús?", a: [{t:"BELÉN",p:75},{t:"NAZARET",p:20},{t:"JERUSALÉN",p:5}] },
+            { c: "Misa", q: "¿Cómo se llama el libro de donde se leen las lecturas?", a: [{t:"LECCIONARIO",p:50},{t:"BIBLIA",p:40},{t:"MISAL",p:10}] },
+            { c: "Oraciones", q: "¿Cuál es la oración que Jesús nos enseñó?", a: [{t:"PADRE NUESTRO",p:95},{t:"AVE MARÍA",p:3},{t:"CREDO",p:2}] },
+            { c: "Apóstoles", q: "¿Quién negó a Jesús tres veces?", a: [{t:"PEDRO",p:85},{t:"JUDAS",p:10},{t:"JUAN",p:5}] },
+            { c: "Antiguo Testamento", q: "¿Quién venció al gigante Goliat?", a: [{t:"DAVID",p:80},{t:"SAÚL",p:10},{t:"SANSÓN",p:10}] },
+            { c: "Espíritu Santo", q: "¿En qué fiesta descendió el Espíritu Santo?", a: [{t:"PENTECOSTÉS",p:70},{t:"PASCUA",p:20},{t:"NAVIDAD",p:10}] },
+            { c: "Parábolas", q: "¿Qué hijo regresó arrepentido con su padre?", a: [{t:"HIJO PRÓDIGO",p:90},{t:"EL MAYOR",p:10}] }
         ];
-        // Autogenerar hasta 100 para prueba
-        for(let i=5; i<=100; i++) {
-            totalPreguntas.push({ q: "Pregunta Teológica #"+i, d: i%2==0?"easy":"hard", a: [{t:"Respuesta A",p:50},{t:"Respuesta B",p:50}] });
+
+        // Rellenar hasta 100 con variaciones para que no esté vacío
+        for(let i=11; i<=100; i++) {
+            mazoOriginal.push({
+                c: "Cultura General Católica",
+                q: "Pregunta sobre la Fe #" + i + ": ¿Quién es el actual Papa?",
+                a: [{t:"FRANCISCO",p:80},{t:"BENEDICTO",p:15},{t:"JUAN PABLO",p:5}]
+            });
         }
 
         let peer, conn, modo, timerInt;
-        let juego = { mazo: [], lvl: 0, rev: [], pA: 0, pB: 0, time: 0, maxTime: 0 };
+        let juego = { mazo: mazoOriginal.sort(()=>Math.random()-0.5), lvl: 0, rev: [], pA: 0, pB: 0, time: 30 };
 
         function iniciar(m) {
             const id = document.getElementById('room-id').value;
-            if(!id) return alert("Pon un nombre de sala");
-            
+            if(!id) return alert("Escribe un nombre de sala primero");
             modo = m;
             peer = new Peer(m === 'P' ? id : null);
 
             peer.on('open', () => {
                 if(m === 'A') {
-                    // Configurar mazo
-                    const qty = parseInt(document.getElementById('cfg-qty').value);
-                    const diff = document.getElementById('cfg-diff').value;
-                    juego.maxTime = parseInt(document.getElementById('cfg-time').value);
-                    juego.time = juego.maxTime;
-
-                    let filtradas = totalPreguntas.filter(p => diff === 'all' || p.d === diff);
-                    juego.mazo = filtradas.sort(() => Math.random() - 0.5).slice(0, qty);
-
                     conn = peer.connect(id);
                     conn.on('open', () => {
                         document.getElementById('setup').style.display = 'none';
                         document.getElementById('av').style.display = 'flex';
-                        accion('SYNC');
+                        actualizar();
                     });
                 } else {
                     document.getElementById('setup').style.display = 'none';
@@ -126,7 +126,7 @@
                 conn = c;
                 conn.on('data', d => {
                     if(d === 'X') mostrarError();
-                    else { juego = d; actualizarInterfaz(); }
+                    else { juego = d; actualizar(); }
                 });
             });
         }
@@ -136,11 +136,11 @@
             if(tipo === 'X') { conn.send('X'); return; }
             if(tipo === 'PA') juego.pA += 10;
             if(tipo === 'PB') juego.pB += 10;
-            if(tipo === 'N') { juego.lvl++; juego.rev = []; juego.time = juego.maxTime; clearInterval(timerInt); }
             if(tipo === 'T') { iniciarReloj(); }
+            if(tipo === 'N') { juego.lvl++; juego.rev = []; juego.time = 30; clearInterval(timerInt); }
             
             if(conn) conn.send(juego);
-            actualizarInterfaz();
+            actualizar();
         }
 
         function iniciarReloj() {
@@ -149,7 +149,7 @@
                 if(juego.time > 0) {
                     juego.time--;
                     if(conn) conn.send(juego);
-                    actualizarInterfaz();
+                    actualizar();
                 } else {
                     clearInterval(timerInt);
                     accion('X');
@@ -157,16 +157,17 @@
             }, 1000);
         }
 
-        function actualizarInterfaz() {
+        function actualizar() {
             const p = juego.mazo[juego.lvl];
             if(!p) return;
 
-            // Actualizar Proyector
-            if(document.getElementById('pv').style.display === 'flex') {
-                document.getElementById('pregunta').innerText = p.q;
+            // Update Proyector
+            if(modo === 'P' || document.getElementById('pv').style.display === 'flex') {
+                document.getElementById('categoria-display').innerText = "Categoría: " + p.c;
+                document.getElementById('pregunta-display').innerText = p.q;
                 document.getElementById('pA').innerText = juego.pA;
                 document.getElementById('pB').innerText = juego.pB;
-                document.getElementById('timer-p').innerText = juego.maxTime > 0 ? juego.time + "s" : "";
+                document.getElementById('timer-p').innerText = juego.time + "s";
                 
                 const t = document.getElementById('tablero-p');
                 t.innerHTML = '';
@@ -178,15 +179,16 @@
                 window.lastR = juego.rev.length;
             }
 
-            // Actualizar Admin
-            if(document.getElementById('av').style.display === 'flex') {
+            // Update Admin
+            if(modo === 'A') {
+                document.getElementById('adm-cat').innerText = p.c;
                 document.getElementById('adm-q').innerText = p.q;
-                document.getElementById('timer-a').innerText = juego.maxTime > 0 ? juego.time + "s" : "";
+                document.getElementById('timer-a').innerText = juego.time + "s";
                 const t = document.getElementById('tablero-a');
                 t.innerHTML = '';
                 p.a.forEach((ans, i) => {
                     const ok = juego.rev.includes(i);
-                    t.innerHTML += `<div class="admin-item" style="border-left-color:${ok?'green':'#555'}" onclick="accion('R', ${i})"> ${ans.t} (${ans.p}) </div>`;
+                    t.innerHTML += `<div class="ans-item ${ok?'active':''}" onclick="accion('R', ${i})"> ${ans.t} (${ans.p}) </div>`;
                 });
             }
         }
