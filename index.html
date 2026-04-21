@@ -3,288 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>† 100 Catequistas Dijeron - Edición Oro †</title>
+    <title>100 Catequistas Dijeron - Pro</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root { 
-            --purpura: #3d0066; --dorado: #ffd700; --luz: #fff5e6; --rojo: #cc0000; --verde: #28a745; 
-            --alzacuellos: white; --estola: linear-gradient(90deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #9400D3);
-        }
+        :root { --purpura: #3d0066; --dorado: #ffd700; --rojo: #cc0000; }
+        body { overscroll-behavior-y: contain; margin: 0; background: var(--purpura); color: white; font-family: sans-serif; text-align: center; }
+        .btn { padding: 12px; border: 2px solid var(--dorado); background: rgba(0,0,0,0.5); color: var(--dorado); border-radius: 10px; font-weight: bold; width: 90%; margin: 5px; cursor: pointer; }
+        input, select { padding: 10px; border-radius: 8px; border: 1px solid var(--dorado); margin: 5px; width: 80%; }
         
-        /* FONDOS Y BLOQUEO DE DESLIZAMIENTO */
-        html, body { 
-            overscroll-behavior-y: contain; margin: 0; padding: 0; height: 100%; width: 100%;
-            background: radial-gradient(circle, var(--purpura) 0%, #1a0033 100%);
-            color: var(--luz); font-family: 'Georgia', serif; text-align: center;
-            overflow: hidden;
-        }
+        #setup, .view { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; overflow-y: auto; }
+        .view { display: none; background: radial-gradient(circle, #4a0080, #1a0033); }
 
-        /* FONTO DE VITRAL GENERADO CON CSS */
-        .stained-glass-bg {
-            position: fixed; inset: 0; z-index: -1;
-            background-color: transparent;
-            background-image:  linear-gradient(30deg, rgba(255,215,0,0.05) 12%, transparent 12.5%, transparent 87%, rgba(255,215,0,0.05) 87.5%, rgba(255,215,0,0.05)),
-                               linear-gradient(150deg, rgba(255,215,0,0.05) 12%, transparent 12.5%, transparent 87%, rgba(255,215,0,0.05) 87.5%, rgba(255,215,0,0.05)),
-                               linear-gradient(30deg, rgba(255,215,0,0.05) 12%, transparent 12.5%, transparent 87%, rgba(255,215,0,0.05) 87.5%, rgba(255,215,0,0.05)),
-                               linear-gradient(150deg, rgba(255,215,0,0.05) 12%, transparent 12.5%, transparent 87%, rgba(255,215,0,0.05) 87.5%, rgba(255,215,0,0.05)),
-                               linear-gradient(60deg, rgba(255,215,0,0.03) 25%, transparent 25.5%, transparent 75%, rgba(255,215,0,0.03) 75.5%, rgba(255,215,0,0.03)),
-                               linear-gradient(60deg, rgba(255,215,0,0.03) 25%, transparent 25.5%, transparent 75%, rgba(255,215,0,0.03) 75.5%, rgba(255,215,0,0.03));
-            background-size: 80px 140px;
-            background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
-        }
-
-        /* --- INTRO ANIMADO --- */
-        #intro {
-            position: fixed; inset: 0; background: var(--purpura); z-index: 2000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            opacity: 1; animation: fadeOut 1s forwards 5s;
-        }
-        #intro h1 { color: var(--dorado); font-size: 3rem; text-shadow: 2px 2px 8px #000; margin: 0; animation: scaleIn 1s ease; }
+        /* JUEGO */
+        .timer { font-size: 2rem; color: #ff9900; font-weight: bold; margin-bottom: 10px; }
+        .pts-box { font-size: 2rem; background: #000; padding: 10px 20px; border-radius: 10px; border: 1px solid var(--dorado); }
+        #pregunta { color: var(--dorado); font-size: 1.5rem; min-height: 60px; margin: 15px 0; }
+        .x-mark { font-size: 120px; color: var(--rojo); display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 100; text-shadow: 4px 4px 0 #000; font-weight: bold; }
         
-        /* LOGO DEL SACERDOTE DIBUJADO CON CSS */
-        .pope-logo {
-            width: 140px; height: 140px; border: 4px solid var(--dorado); border-radius: 50%;
-            background: radial-gradient(circle at 70px 70px, #ffdbac 40%, #f1c27d 100%);
-            position: relative; margin-top: 25px; animation: bounceIn 1.5s ease 0.5s; box-shadow: 0 0 15px rgba(255,215,0,0.5);
-        }
-        .pope-logo .eye { position: absolute; width: 12px; height: 12px; background: #333; border-radius: 50%; top: 50px; }
-        .pope-logo .eye.left { left: 45px; } .pope-logo .eye.right { right: 45px; }
-        .pope-logo .smile { 
-            position: absolute; width: 60px; height: 30px; border: 6px solid #333; 
-            border-top: none; border-radius: 0 0 60px 60px; bottom: 35px; left: 40px;
-        }
-        /* Alzacuellos y Estola */
-        .pope-stole {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 25px;
-            background: var(--estola); border-radius: 0 0 140px 140px;
-            display: flex; justify-content: center;
-        }
-        .pope-stole::before {
-            content: ""; position: absolute; bottom: 15px; width: 30px; height: 15px;
-            background: #222; border-radius: 3px;
-        }
-        .pope-stole::after {
-            content: "†"; position: absolute; bottom: 17px; color: var(--luz); font-size: 10px;
-        }
+        .tablero { width: 100%; max-width: 500px; }
+        .fila { border: 2px solid var(--dorado); margin: 6px 0; height: 45px; display: flex; align-items: center; justify-content: center; background: #111; border-radius: 8px; }
+        .fila.open { background: linear-gradient(to bottom, #fff, var(--dorado)); color: black; font-weight: bold; }
 
-        #intro .text-glow { color: white; font-size: 1.4rem; text-transform: uppercase; margin-top: 35px; animation: glow 1.5s infinite 1s; }
-
-        /* --- PANTALLAS DE JUEGO --- */
-        #setup { 
-            position: fixed; inset: 0; z-index: 100; 
-            display: none; flex-direction: column; justify-content: center; align-items: center; 
-            gap: 15px; padding: 20px; animation: fadeIn 1s;
-        }
-        .btn-fancy { 
-            padding: 15px 30px; border: 3px solid var(--dorado); background: rgba(0,0,0,0.5); 
-            color: var(--dorado); border-radius: 50px; font-weight: bold; cursor: pointer; 
-            font-size: 1.1rem; text-transform: uppercase; transition: 0.3s;
-        }
-        .btn-fancy:hover { background: var(--dorado); color: var(--purpura); }
-        input { padding: 12px; border-radius: 10px; border: 2px solid var(--dorado); text-align: center; font-size: 1rem; width: 80%; background: white; color: black; }
-
-        /* VISTA JUGADOR */
-        .view { display: none; padding: 20px; height: 100vh; overflow-y: auto; box-sizing: border-box; }
-        .marcador { display: flex; justify-content: space-around; margin-bottom: 10px; }
-        .equipo { border: 3px solid var(--dorado); background: rgba(0,0,0,0.6); padding: 10px; border-radius: 15px; min-width: 130px; }
-        .equipo small { color: var(--dorado); font-size: 11px; }
-        .pts { font-size: 40px; font-family: 'Impact', sans-serif; color: white; }
-
-        #pregunta { font-size: 2.2rem; color: var(--dorado); text-shadow: 2px 2px 4px #000; min-height: 80px; margin: 15px 0; }
-        .x-box { height: 90px; display: flex; justify-content: center; gap: 15px; }
-        .x-mark { font-size: 80px; color: var(--rojo); text-shadow: 3px 3px 0px #000; display: none; animation: shake 0.5s; }
-
-        /* TABLERO */
-        .tablero { display: grid; grid-template-columns: 1fr; gap: 12px; max-width: 550px; margin: 0 auto; }
-        .tarjeta { 
-            background: linear-gradient(#444, #000); border: 3px solid var(--dorado); height: 65px;
-            border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 28px;
-        }
-        .tarjeta.open { 
-            background: linear-gradient(to bottom, #fff, var(--dorado)); color: var(--purpura); 
-            transform: rotateX(360deg); transition: 0.7s; 
-        }
-        .ans { display: none; width: 100%; padding: 0 25px; justify-content: space-between; font-weight: bold; font-size: 20px; }
-        .open .ans { display: flex; } .open .num { display: none; }
-
-        /* ADMIN */
-        .admin-item { background: #222; border: 1px solid #555; padding: 12px; margin: 6px 0; border-radius: 10px; color: white; width: 100%; text-align: left; font-size: 14px; cursor: pointer; }
-        .grid-ctrl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
-
-        /* ANIMACIONES */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; visibility: hidden; } }
-        @keyframes scaleIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        @keyframes glow { 0%, 100% { text-shadow: 0 0 10px white; } 50% { text-shadow: 0 0 20px var(--dorado); } }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-        @keyframes bounceIn {
-          0% { opacity: 0; transform: scale(.3) translateY(200px); }
-          50% { opacity: 1; transform: scale(1.05) translateY(-10px); }
-          100% { transform: scale(1) translateY(0); }
-        }
+        .admin-item { background: #222; padding: 10px; margin: 4px; width: 100%; border-radius: 5px; text-align: left; font-size: 0.9rem; border-left: 5px solid #555; }
     </style>
 </head>
 <body>
 
-    <div class="stained-glass-bg"></div>
-
-    <div id="intro">
-        <h1>† 100 CATEQUISTAS †</h1>
-        <h1 style="color:white; font-size:2.5rem; margin-top:-10px;">DIJERON</h1>
-        
-        <div class="pope-logo">
-            <div class="eye left"></div>
-            <div class="eye right"></div>
-            <div class="smile"></div>
-            <div class="pope-stole"></div>
-        </div>
-        
-        <div class="text-glow">Cargando Sagrado Show...</div>
-    </div>
-
     <div id="setup">
-        <h1 style="color:var(--dorado); font-size: 26px;">MODO DE JUEGO</h1>
-        <button class="btn-fancy" onclick="initPlayer()">† PROYECTOR (RECIBIR)</button>
-        <div style="margin: 20px 0; border-top: 1px solid #555; width: 80%;"></div>
-        <p>Escribe el ID del Proyector:</p>
-        <input type="text" id="peer-id-input" placeholder="Ej: 1234">
-        <button class="btn-fancy" style="background:var(--dorado); color:var(--purpura); border-color:var(--purpura)" onclick="initAdmin()">† CONTROL (CONECTAR)</button>
+        <h2 style="color:var(--dorado)">† CONFIGURACIÓN †</h2>
+        <input type="text" id="room-id" placeholder="Nombre de Sala (ej: cate1)">
+        
+        <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; width: 90%;">
+            <label>Cant. Preguntas:</label>
+            <select id="cfg-qty"><option value="5">5 Preguntas</option><option value="10">10 Preguntas</option><option value="20">20 Preguntas</option><option value="100">Las 100</option></select>
+            
+            <label>Dificultad:</label>
+            <select id="cfg-diff"><option value="all">Todas</option><option value="easy">Básica (Niños)</option><option value="hard">Teológica (Jóvenes)</option></select>
+            
+            <label>Tiempo (seg):</label>
+            <select id="cfg-time"><option value="0">Sin tiempo</option><option value="30">30 Segundos</option><option value="60">60 Segundos</option></select>
+        </div>
+
+        <button class="btn" onclick="iniciar('P')">MODO PROYECTOR</button>
+        <button class="btn" style="background:var(--dorado); color:black" onclick="iniciar('A')">MODO CONTROL</button>
     </div>
 
     <div class="view" id="pv">
-        <div class="marcador">
-            <div class="equipo"><small>EQUIPO FE</small><div class="pts" id="ptsA">0</div></div>
-            <div class="equipo"><small>EQUIPO ESPERANZA</small><div class="pts" id="ptsB">0</div></div>
+        <div id="timer-p" class="timer"></div>
+        <div style="display:flex; gap:20px">
+            <div>FE<div class="pts-box" id="pA">0</div></div>
+            <div>ESPERANZA<div class="pts-box" id="pB">0</div></div>
         </div>
-        <h2 id="pregunta">† ESPERANDO INICIO †</h2>
-        <div class="x-box"><div id="x1" class="x-mark">X</div><div id="x2" class="x-mark">X</div><div id="x3" class="x-mark">X</div></div>
-        <div class="tablero" id="t-p"></div>
+        <h2 id="pregunta"></h2>
+        <div class="tablero" id="tablero-p"></div>
+        <div id="big-x" class="x-mark">X</div>
     </div>
 
     <div class="view" id="av">
-        <h3 id="adm-q" style="color:var(--dorado); margin:5px;">† SAGRADO MANDO †</h3>
-        <div id="admin-board"></div>
-        <div class="grid-ctrl">
-            <button class="btn-fancy" style="background:var(--rojo); color:white; border:none;" onclick="sendAction('error')">ERROR (X)</button>
-            <button class="btn-fancy" onclick="sendAction('next')">SIGUIENTE</button>
-            <button class="btn-fancy" style="border-color:var(--verde)" onclick="sendAction('ptsA')">+ FE</button>
-            <button class="btn-fancy" style="border-color:var(--verde)" onclick="sendAction('ptsB')">+ ESPERANZA</button>
+        <div id="timer-a" class="timer"></div>
+        <h3 id="adm-q"></h3>
+        <div id="tablero-a" style="width:100%; overflow-y: auto; max-height: 40vh;"></div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; width:100%; gap:5px; margin-top:10px;">
+            <button class="btn" style="background:var(--rojo); color:white; width:auto;" onclick="accion('X')">¡X!</button>
+            <button class="btn" style="width:auto;" onclick="accion('N')">SIGUIENTE</button>
+            <button class="btn" style="width:auto; border-color:cyan;" onclick="accion('T')">⏱ INICIAR</button>
+            <button class="btn" style="width:auto;" onclick="accion('PA')">+ FE</button>
+            <button class="btn" style="width:auto;" onclick="accion('PB')">+ ESPERANZA</button>
         </div>
-        <button class="btn-fancy" style="width:100%; margin-top:10px; font-size:12px; opacity:0.6;" onclick="location.reload()">Reset Conexión</button>
     </div>
 
-    <audio id="s-ding" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
-    <audio id="s-buzz" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
+    <audio id="sd" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
+    <audio id="sb" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
 
     <script>
-        // Ocultar Intro tras 6 segundos
-        setTimeout(() => {
-            document.getElementById('intro').style.display = 'none';
-            document.getElementById('setup').style.display = 'flex';
-        }, 6000);
-
-        const banco = [
-            { q: "¿Qué llevaron los Reyes Magos?", a: [{t:"ORO",p:40},{t:"INCIENSO",p:35},{t:"MIRRA",p:25}] },
-            { q: "¿Cuáles son los Evangelios?", a: [{t:"MATEO",p:25},{t:"MARCOS",p:25},{t:"LUCAS",p:25},{t:"JUAN",p:25}] }
+        // BASE DE DATOS (Muestra de 100)
+        const totalPreguntas = [
+            { q: "¿Qué llevaron los Reyes Magos?", d:"easy", a: [{t:"ORO",p:40},{t:"INCIENSO",p:35},{t:"MIRRA",p:25}] },
+            { q: "¿Cuántos evangelios hay?", d:"easy", a: [{t:"MATEO",p:25},{t:"MARCOS",p:25},{t:"LUCAS",p:25},{t:"JUAN",p:25}] },
+            { q: "¿Sacramento de iniciación?", d:"hard", a: [{t:"BAUTISMO",p:50},{t:"COMUNIÓN",p:30},{t:"CONFIRMACIÓN",p:20}] },
+            { q: "¿Dónde nació Jesús?", d:"easy", a: [{t:"BELÉN",p:70},{t:"PESEBRE",p:20},{t:"ESTABLO",p:10}] },
+            // ... (El sistema mezclará y seleccionará según tu configuración)
         ];
+        // Autogenerar hasta 100 para prueba
+        for(let i=5; i<=100; i++) {
+            totalPreguntas.push({ q: "Pregunta Teológica #"+i, d: i%2==0?"easy":"hard", a: [{t:"Respuesta A",p:50},{t:"Respuesta B",p:50}] });
+        }
 
-        let peer, conn;
-        let state = JSON.parse(localStorage.getItem('saved_game_catholic_v2')) || { lvl: 0, rev: [], err: 0, pA: 0, pB: 0 };
+        let peer, conn, modo, timerInt;
+        let juego = { mazo: [], lvl: 0, rev: [], pA: 0, pB: 0, time: 0, maxTime: 0 };
 
-        function saveGame() { localStorage.setItem('saved_game_catholic_v2', JSON.stringify(state)); }
+        function iniciar(m) {
+            const id = document.getElementById('room-id').value;
+            if(!id) return alert("Pon un nombre de sala");
+            
+            modo = m;
+            peer = new Peer(m === 'P' ? id : null);
 
-        function initPlayer() {
-            peer = new Peer();
-            peer.on('open', id => {
-                document.getElementById('setup').innerHTML = `
-                    <h2 style="color:white; font-size:18px;">ID DEL PROYECTOR:</h2>
-                    <h1 style="color:var(--dorado); font-size:45px; margin: 5px 0;">${id}</h1>
-                    <p style="color:#aaa;">Pon este ID en tu celular Admin</p>
-                    <button class="btn-fancy" onclick="startPlayerView()">ENTRAR AL TABLERO</button>
-                `;
+            peer.on('open', () => {
+                if(m === 'A') {
+                    // Configurar mazo
+                    const qty = parseInt(document.getElementById('cfg-qty').value);
+                    const diff = document.getElementById('cfg-diff').value;
+                    juego.maxTime = parseInt(document.getElementById('cfg-time').value);
+                    juego.time = juego.maxTime;
+
+                    let filtradas = totalPreguntas.filter(p => diff === 'all' || p.d === diff);
+                    juego.mazo = filtradas.sort(() => Math.random() - 0.5).slice(0, qty);
+
+                    conn = peer.connect(id);
+                    conn.on('open', () => {
+                        document.getElementById('setup').style.display = 'none';
+                        document.getElementById('av').style.display = 'flex';
+                        accion('SYNC');
+                    });
+                } else {
+                    document.getElementById('setup').style.display = 'none';
+                    document.getElementById('pv').style.display = 'flex';
+                }
             });
+
             peer.on('connection', c => {
                 conn = c;
-                conn.on('data', data => { state = data; saveGame(); renderPlayer(); });
-            });
-        }
-
-        function startPlayerView() {
-            document.getElementById('setup').style.display = 'none';
-            document.getElementById('pv').style.display = 'block';
-            renderPlayer();
-        }
-
-        function initAdmin() {
-            const targetId = document.getElementById('peer-id-input').value;
-            if(!targetId) return alert("† Pon el ID del proyector †");
-            peer = new Peer();
-            peer.on('open', () => {
-                conn = peer.connect(targetId);
-                conn.on('open', () => {
-                    document.getElementById('setup').style.display = 'none';
-                    document.getElementById('av').style.display = 'block';
-                    updateAdmin();
-                    conn.send(state);
+                conn.on('data', d => {
+                    if(d === 'X') mostrarError();
+                    else { juego = d; actualizarInterfaz(); }
                 });
             });
         }
 
-        function sendAction(type, val = null) {
-            if(type == 'rev' && !state.rev.includes(val)) state.rev.push(val);
-            if(type == 'error') state.err++;
-            if(type == 'ptsA') state.pA += 10;
-            if(type == 'ptsB') state.pB += 10;
-            if(type == 'next') { state.lvl++; state.rev = []; state.err = 0; if(state.lvl >= banco.length) state.lvl = 0; }
+        function accion(tipo, val) {
+            if(tipo === 'R') { if(!juego.rev.includes(val)) juego.rev.push(val); }
+            if(tipo === 'X') { conn.send('X'); return; }
+            if(tipo === 'PA') juego.pA += 10;
+            if(tipo === 'PB') juego.pB += 10;
+            if(tipo === 'N') { juego.lvl++; juego.rev = []; juego.time = juego.maxTime; clearInterval(timerInt); }
+            if(tipo === 'T') { iniciarReloj(); }
             
-            saveGame();
-            if(conn) conn.send(state);
-            updateAdmin();
+            if(conn) conn.send(juego);
+            actualizarInterfaz();
         }
 
-        function renderPlayer() {
-            const data = banco[state.lvl];
-            document.getElementById('pregunta').innerText = data.q;
-            document.getElementById('ptsA').innerText = state.pA;
-            document.getElementById('ptsB').innerText = state.pB;
-            
-            const tp = document.getElementById('t-p');
-            tp.innerHTML = '';
-            data.a.forEach((ans, i) => {
-                const isR = state.rev.includes(i);
-                tp.innerHTML += `<div class="tarjeta ${isR?'open':''}">
-                    <div class="num">${i+1}</div>
-                    <div class="ans"><span>${ans.t}</span><span>${ans.p}</span></div>
-                </div>`;
-            });
-
-            try {
-                if(window.lr < state.rev.length) document.getElementById('s-ding').play();
-                if(window.le < state.err) document.getElementById('s-buzz').play();
-            } catch(e) {}
-            window.lr = state.rev.length; window.le = state.err;
-
-            for(let i=1; i<=3; i++) document.getElementById('px'+i).style.display = (state.err >= i) ? 'block' : 'none';
+        function iniciarReloj() {
+            clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                if(juego.time > 0) {
+                    juego.time--;
+                    if(conn) conn.send(juego);
+                    actualizarInterfaz();
+                } else {
+                    clearInterval(timerInt);
+                    accion('X');
+                }
+            }, 1000);
         }
 
-        function updateAdmin() {
-            const data = banco[state.lvl];
-            document.getElementById('adm-q').innerText = data.q;
-            const container = document.getElementById('admin-board');
-            container.innerHTML = '';
-            data.a.forEach((ans, i) => {
-                const isR = state.rev.includes(i);
-                container.innerHTML += `<div class="admin-item" style="${isR?'opacity:0.4; border-color:green; color:green;':''}" onclick="sendAction('rev', ${i})">
-                    ${i+1}. ${ans.t} (${ans.p} pts)
-                </div>`;
-            });
+        function actualizarInterfaz() {
+            const p = juego.mazo[juego.lvl];
+            if(!p) return;
+
+            // Actualizar Proyector
+            if(document.getElementById('pv').style.display === 'flex') {
+                document.getElementById('pregunta').innerText = p.q;
+                document.getElementById('pA').innerText = juego.pA;
+                document.getElementById('pB').innerText = juego.pB;
+                document.getElementById('timer-p').innerText = juego.maxTime > 0 ? juego.time + "s" : "";
+                
+                const t = document.getElementById('tablero-p');
+                t.innerHTML = '';
+                p.a.forEach((ans, i) => {
+                    const ok = juego.rev.includes(i);
+                    t.innerHTML += `<div class="fila ${ok?'open':''}"> ${ok ? ans.t + " (" + ans.p + ")" : i+1} </div>`;
+                });
+                if(window.lastR < juego.rev.length) document.getElementById('sd').play();
+                window.lastR = juego.rev.length;
+            }
+
+            // Actualizar Admin
+            if(document.getElementById('av').style.display === 'flex') {
+                document.getElementById('adm-q').innerText = p.q;
+                document.getElementById('timer-a').innerText = juego.maxTime > 0 ? juego.time + "s" : "";
+                const t = document.getElementById('tablero-a');
+                t.innerHTML = '';
+                p.a.forEach((ans, i) => {
+                    const ok = juego.rev.includes(i);
+                    t.innerHTML += `<div class="admin-item" style="border-left-color:${ok?'green':'#555'}" onclick="accion('R', ${i})"> ${ans.t} (${ans.p}) </div>`;
+                });
+            }
         }
 
-        // Desbloquear audio en móviles
-        document.addEventListener('touchstart', () => {
-            const d = document.getElementById('s-ding'); const b = document.getElementById('s-buzz');
-            d.play().then(()=>d.pause()); b.play().then(()=>b.pause());
-        }, {once: true});
+        function mostrarError() {
+            document.getElementById('sb').play();
+            const x = document.getElementById('big-x');
+            x.style.display = 'block';
+            setTimeout(() => x.style.display = 'none', 1200);
+        }
+
+        document.addEventListener('touchstart', () => { 
+            document.getElementById('sd').play().then(()=>document.getElementById('sd').pause()); 
+        }, {once:true});
     </script>
 </body>
 </html>
