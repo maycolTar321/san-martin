@@ -3,43 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>† 100 Catequistas Dijeron - Sagrado Show †</title>
+    <title>† 100 Catequistas Dijeron - Edición Oro †</title>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root { --purpura: #3d0066; --dorado: #ffd700; --luz: #fff5e6; --rojo: #cc0000; --verde: #28a745; }
+        :root { 
+            --purpura: #3d0066; --dorado: #ffd700; --luz: #fff5e6; --rojo: #cc0000; --verde: #28a745; 
+            --alzacuellos: white; --estola: linear-gradient(90deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #9400D3);
+        }
         
-        /* BLOQUEO DE RECARGA Y FONDOS DE VITRAL */
+        /* FONDOS Y BLOQUEO DE DESLIZAMIENTO */
         html, body { 
             overscroll-behavior-y: contain; margin: 0; padding: 0; height: 100%; width: 100%;
             background: radial-gradient(circle, var(--purpura) 0%, #1a0033 100%);
             color: var(--luz); font-family: 'Georgia', serif; text-align: center;
-            background-image: url('https://www.transparenttextures.com/patterns/church-windows.png');
             overflow: hidden;
         }
 
-        /* --- INTRO ANIMADO (5 Segundos) --- */
+        /* FONTO DE VITRAL GENERADO CON CSS */
+        .stained-glass-bg {
+            position: fixed; inset: 0; z-index: -1;
+            background-color: transparent;
+            background-image:  linear-gradient(30deg, rgba(255,215,0,0.05) 12%, transparent 12.5%, transparent 87%, rgba(255,215,0,0.05) 87.5%, rgba(255,215,0,0.05)),
+                               linear-gradient(150deg, rgba(255,215,0,0.05) 12%, transparent 12.5%, transparent 87%, rgba(255,215,0,0.05) 87.5%, rgba(255,215,0,0.05)),
+                               linear-gradient(30deg, rgba(255,215,0,0.05) 12%, transparent 12.5%, transparent 87%, rgba(255,215,0,0.05) 87.5%, rgba(255,215,0,0.05)),
+                               linear-gradient(150deg, rgba(255,215,0,0.05) 12%, transparent 12.5%, transparent 87%, rgba(255,215,0,0.05) 87.5%, rgba(255,215,0,0.05)),
+                               linear-gradient(60deg, rgba(255,215,0,0.03) 25%, transparent 25.5%, transparent 75%, rgba(255,215,0,0.03) 75.5%, rgba(255,215,0,0.03)),
+                               linear-gradient(60deg, rgba(255,215,0,0.03) 25%, transparent 25.5%, transparent 75%, rgba(255,215,0,0.03) 75.5%, rgba(255,215,0,0.03));
+            background-size: 80px 140px;
+            background-position: 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
+        }
+
+        /* --- INTRO ANIMADO --- */
         #intro {
             position: fixed; inset: 0; background: var(--purpura); z-index: 2000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background-image: url('https://www.transparenttextures.com/patterns/church-windows.png');
-            opacity: 1; animation: fadeOut 1s forwards 4s;
+            opacity: 1; animation: fadeOut 1s forwards 5s;
         }
-        #intro h1 { 
-            color: var(--dorado); font-size: 3rem; text-shadow: 2px 2px 8px #000; 
-            margin: 0; animation: scaleIn 1s ease;
+        #intro h1 { color: var(--dorado); font-size: 3rem; text-shadow: 2px 2px 8px #000; margin: 0; animation: scaleIn 1s ease; }
+        
+        /* LOGO DEL SACERDOTE DIBUJADO CON CSS */
+        .pope-logo {
+            width: 140px; height: 140px; border: 4px solid var(--dorado); border-radius: 50%;
+            background: radial-gradient(circle at 70px 70px, #ffdbac 40%, #f1c27d 100%);
+            position: relative; margin-top: 25px; animation: bounceIn 1.5s ease 0.5s; box-shadow: 0 0 15px rgba(255,215,0,0.5);
         }
-        #intro img { 
-            width: 150px; margin-top: 20px; animation: bounceIn 1.5s ease 0.5s; 
-            border: 4px solid var(--dorado); border-radius: 50%; padding: 5px;
+        .pope-logo .eye { position: absolute; width: 12px; height: 12px; background: #333; border-radius: 50%; top: 50px; }
+        .pope-logo .eye.left { left: 45px; } .pope-logo .eye.right { right: 45px; }
+        .pope-logo .smile { 
+            position: absolute; width: 60px; height: 30px; border: 6px solid #333; 
+            border-top: none; border-radius: 0 0 60px 60px; bottom: 35px; left: 40px;
         }
-        #intro .text-glow { 
-            color: white; font-size: 1.5rem; text-transform: uppercase; margin-top: 30px;
-            animation: glow 1.5s infinite 1s;
+        /* Alzacuellos y Estola */
+        .pope-stole {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 25px;
+            background: var(--estola); border-radius: 0 0 140px 140px;
+            display: flex; justify-content: center;
+        }
+        .pope-stole::before {
+            content: ""; position: absolute; bottom: 15px; width: 30px; height: 15px;
+            background: #222; border-radius: 3px;
+        }
+        .pope-stole::after {
+            content: "†"; position: absolute; bottom: 17px; color: var(--luz); font-size: 10px;
         }
 
-        /* --- SECTOR DE CONEXIÓN --- */
+        #intro .text-glow { color: white; font-size: 1.4rem; text-transform: uppercase; margin-top: 35px; animation: glow 1.5s infinite 1s; }
+
+        /* --- PANTALLAS DE JUEGO --- */
         #setup { 
-            position: fixed; inset: 0; background: var(--purpura); z-index: 100; 
+            position: fixed; inset: 0; z-index: 100; 
             display: none; flex-direction: column; justify-content: center; align-items: center; 
             gap: 15px; padding: 20px; animation: fadeIn 1s;
         }
@@ -51,7 +83,7 @@
         .btn-fancy:hover { background: var(--dorado); color: var(--purpura); }
         input { padding: 12px; border-radius: 10px; border: 2px solid var(--dorado); text-align: center; font-size: 1rem; width: 80%; background: white; color: black; }
 
-        /* --- VISTA PÚBLICO (PROYECTOR) --- */
+        /* VISTA JUGADOR */
         .view { display: none; padding: 20px; height: 100vh; overflow-y: auto; box-sizing: border-box; }
         .marcador { display: flex; justify-content: space-around; margin-bottom: 10px; }
         .equipo { border: 3px solid var(--dorado); background: rgba(0,0,0,0.6); padding: 10px; border-radius: 15px; min-width: 130px; }
@@ -75,8 +107,8 @@
         .ans { display: none; width: 100%; padding: 0 25px; justify-content: space-between; font-weight: bold; font-size: 20px; }
         .open .ans { display: flex; } .open .num { display: none; }
 
-        /* --- MODO ADMIN (TU CELULAR) --- */
-        .admin-item { background: #222; border: 1px solid #555; padding: 12px; margin: 6px 0; border-radius: 10px; color: white; width: 100%; text-align: left; font-size: 14px; cursor: pointer;}
+        /* ADMIN */
+        .admin-item { background: #222; border: 1px solid #555; padding: 12px; margin: 6px 0; border-radius: 10px; color: white; width: 100%; text-align: left; font-size: 14px; cursor: pointer; }
         .grid-ctrl { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 15px; }
 
         /* ANIMACIONES */
@@ -94,10 +126,19 @@
 </head>
 <body>
 
+    <div class="stained-glass-bg"></div>
+
     <div id="intro">
         <h1>† 100 CATEQUISTAS †</h1>
         <h1 style="color:white; font-size:2.5rem; margin-top:-10px;">DIJERON</h1>
-        <img src="https://image.spreadshirtmedia.net/image-server/v1/mp/products/T1459A1MPA4459PT28D182650059W10000H10000/views/1,width=10000,height=10000,appearanceId=1,backgroundColor=F2F2F2/padre-feliz-emoji-cara-feliz-sacerdote-riendo.jpg" alt="Logo†">
+        
+        <div class="pope-logo">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="smile"></div>
+            <div class="pope-stole"></div>
+        </div>
+        
         <div class="text-glow">Cargando Sagrado Show...</div>
     </div>
 
@@ -108,7 +149,6 @@
         <p>Escribe el ID del Proyector:</p>
         <input type="text" id="peer-id-input" placeholder="Ej: 1234">
         <button class="btn-fancy" style="background:var(--dorado); color:var(--purpura); border-color:var(--purpura)" onclick="initAdmin()">† CONTROL (CONECTAR)</button>
-        <p style="font-size:12px; color:gray; margin-top:20px;">Nota: Se requiere internet.</p>
     </div>
 
     <div class="view" id="pv">
@@ -137,23 +177,21 @@
     <audio id="s-buzz" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
 
     <script>
-        // Ocultar Intro tras 5 segundos
+        // Ocultar Intro tras 6 segundos
         setTimeout(() => {
             document.getElementById('intro').style.display = 'none';
             document.getElementById('setup').style.display = 'flex';
-        }, 5000);
+        }, 6000);
 
         const banco = [
             { q: "¿Qué llevaron los Reyes Magos?", a: [{t:"ORO",p:40},{t:"INCIENSO",p:35},{t:"MIRRA",p:25}] },
-            { q: "¿Menciona un Mandamiento?", a: [{t:"AMARÁS A DIOS",p:50},{t:"NO MATARÁS",p:20},{t:"HONRARÁS PADRE",p:15},{t:"NO ROBARÁS",p:10}] },
             { q: "¿Cuáles son los Evangelios?", a: [{t:"MATEO",p:25},{t:"MARCOS",p:25},{t:"LUCAS",p:25},{t:"JUAN",p:25}] }
         ];
 
         let peer, conn;
-        // Memoria para no perder datos si se actualiza
-        let state = JSON.parse(localStorage.getItem('saved_game_catholic')) || { lvl: 0, rev: [], err: 0, pA: 0, pB: 0 };
+        let state = JSON.parse(localStorage.getItem('saved_game_catholic_v2')) || { lvl: 0, rev: [], err: 0, pA: 0, pB: 0 };
 
-        function saveGame() { localStorage.setItem('saved_game_catholic', JSON.stringify(state)); }
+        function saveGame() { localStorage.setItem('saved_game_catholic_v2', JSON.stringify(state)); }
 
         function initPlayer() {
             peer = new Peer();
@@ -187,7 +225,7 @@
                     document.getElementById('setup').style.display = 'none';
                     document.getElementById('av').style.display = 'block';
                     updateAdmin();
-                    conn.send(state); // Sincronizar estado guardado al conectar
+                    conn.send(state);
                 });
             });
         }
@@ -220,7 +258,6 @@
                 </div>`;
             });
 
-            // Sonidos con seguro para móviles
             try {
                 if(window.lr < state.rev.length) document.getElementById('s-ding').play();
                 if(window.le < state.err) document.getElementById('s-buzz').play();
@@ -243,7 +280,7 @@
             });
         }
 
-        // Desbloquear audio en móviles con el primer toque
+        // Desbloquear audio en móviles
         document.addEventListener('touchstart', () => {
             const d = document.getElementById('s-ding'); const b = document.getElementById('s-buzz');
             d.play().then(()=>d.pause()); b.play().then(()=>b.pause());
