@@ -3,83 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>100 CATEQUISTAS DIJERON - PRO</title>
+    <title>100 CATEQUISTAS DIJERON - FIX</title>
     <style>
-        :root {
-            --azul-fondo: #001a33;
-            --dorado: #ffcc00;
-            --azul-card: linear-gradient(180deg, #005eff, #003399);
-            --rojo: #ff0000;
-        }
+        :root { --azul-fondo: #001a33; --dorado: #ffcc00; --azul-card: linear-gradient(180deg, #005eff, #003399); --rojo: #ff0000; }
+        body { background-color: var(--azul-fondo); color: white; font-family: 'Arial Black', sans-serif; margin: 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
+        
+        #selector { position: fixed; top:0; width: 100%; height: 100%; background: var(--azul-fondo); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; }
+        
+        .view { display: none; width: 100%; max-width: 600px; padding: 20px; box-sizing: border-box; }
+        #pregunta-txt { color: var(--dorado); font-size: 1.8rem; text-shadow: 2px 2px #000; min-height: 80px; margin: 10px 0; }
+        
+        .x-container { height: 80px; display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
+        .x-mark { font-size: 70px; color: var(--rojo); display: none; text-shadow: 3px 3px #000; }
 
-        body {
-            background-color: var(--azul-fondo);
-            color: white;
-            font-family: 'Arial Black', sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-x: hidden;
-        }
-
-        /* SELECTOR DE MODO */
-        #mode-selector {
-            position: fixed; top:0; left:0; width: 100%; height: 100%;
-            background: var(--azul-fondo); z-index: 100;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px;
-        }
-
-        /* VISTA JUGADOR */
-        .player-view { width: 100%; max-width: 600px; padding: 20px; text-align: center; display: none; }
-        #pregunta-txt { color: var(--dorado); font-size: 1.8rem; text-shadow: 3px 3px #000; height: 80px; }
-
-        .x-container { height: 100px; display: flex; justify-content: center; gap: 20px; }
-        .x-mark { font-size: 80px; color: var(--rojo); display: none; text-shadow: 4px 4px #000; animation: bounce 0.5s infinite; }
-
-        .board { display: grid; grid-template-columns: 1fr; gap: 15px; }
-        .card {
-            background: linear-gradient(180deg, #333, #111);
-            border: 4px solid var(--dorado);
-            height: 70px; border-radius: 15px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 28px; position: relative; transition: 0.6s;
-        }
-        .card.revealed { background: var(--azul-card); border-color: white; transform: rotateX(360deg); }
-        .card .content { display: none; width: 100%; padding: 0 25px; justify-content: space-between; font-size: 22px; }
+        .board { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .card { background: linear-gradient(180deg, #333, #111); border: 3px solid var(--dorado); height: 60px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; position: relative; }
+        .card.revealed { background: var(--azul-card); border-color: white; transform: rotateX(360deg); transition: 0.6s; }
+        .card .content { display: none; width: 100%; padding: 0 20px; justify-content: space-between; font-size: 18px; }
         .card.revealed .content { display: flex; }
+        .card.revealed .num { display: none; }
 
-        /* ANIMACIÓN EMOJI */
-        .emoji-float {
-            position: absolute; font-size: 50px; opacity: 0; pointer-events: none;
-            animation: floatUp 1.5s forwards;
-        }
-
-        /* MODO ADMINISTRADOR */
-        .admin-view { width: 100%; max-width: 500px; padding: 20px; display: none; }
-        .admin-btn { 
-            width: 100%; background: #222; color: white; border: 1px solid #444; 
-            padding: 15px; margin: 5px 0; border-radius: 10px; text-align: left; font-size: 16px;
-        }
-        .admin-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .btn-action { padding: 20px; border-radius: 10px; border: none; font-weight: bold; font-size: 18px; cursor: pointer; }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-100px); opacity: 0; }
-        }
-        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        .admin-btn { width: 100%; background: #222; color: white; border: 1px solid #444; padding: 15px; margin: 5px 0; border-radius: 10px; text-align: left; font-size: 14px; }
+        .btn-main { padding: 20px; border-radius: 10px; border: none; font-weight: bold; font-size: 16px; cursor: pointer; width: 80%; }
+        
+        .emoji { position: fixed; font-size: 60px; pointer-events: none; animation: fly 1s forwards; opacity: 0; z-index: 50; }
+        @keyframes fly { 0% { bottom: 0; opacity: 1; } 100% { bottom: 80%; opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div id="mode-selector">
-        <button class="btn-action" style="background:var(--azul-card); color:white;" onclick="setMode('player')">MODO JUGADOR (PROYECTOR)</button>
-        <button class="btn-action" style="background:var(--dorado);" onclick="setMode('admin')">MODO ADMIN (CONTROL)</button>
+    <div id="selector">
+        <h2 style="color:var(--dorado)">ELIGE TU PANTALLA</h2>
+        <button class="btn-main" style="background:var(--azul-card); color:white;" onclick="setMode('player')">MODO JUGADOR (PROYECTOR)</button>
+        <button class="btn-main" style="background:var(--dorado);" onclick="setMode('admin')">MODO ADMIN (CONTROL)</button>
+        <p style="font-size: 12px; color: #888;">Nota: Debes abrir el mismo link en ambos.</p>
     </div>
 
-    <div class="player-view" id="pv">
-        <h2 id="pregunta-txt">ESPERANDO PREGUNTA...</h2>
+    <div class="view" id="pv">
+        <h2 id="pregunta-txt">ESPERANDO AL LÍDER...</h2>
         <div class="x-container">
             <div id="px1" class="x-mark">X</div>
             <div id="px2" class="x-mark">X</div>
@@ -88,106 +49,102 @@
         <div class="board" id="player-board"></div>
     </div>
 
-    <div class="admin-view" id="av">
-        <h3>CONTROL MAESTRO</h3>
+    <div class="view" id="av">
+        <h3 style="color:var(--dorado)">CONTROL DE PREGUNTAS</h3>
         <div id="admin-board"></div>
-        <div class="admin-controls">
-            <button class="btn-action" style="background:var(--rojo); color:white;" onclick="sendAction('error')">¡ERROR!</button>
-            <button class="btn-action" style="background:var(--dorado);" onclick="sendAction('next')">SIGUIENTE</button>
+        <div style="display:flex; gap:10px; margin-top:20px;">
+            <button class="btn-main" style="background:var(--rojo); color:white;" onclick="doAction('error')">¡ERROR!</button>
+            <button class="btn-main" style="background:var(--dorado);" onclick="doAction('next')">SIGUIENTE</button>
         </div>
     </div>
 
-    <audio id="snd-ok" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
-    <audio id="snd-no" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
+    <audio id="s-ok" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
+    <audio id="s-no" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
 
     <script>
-        const banco = [
-            { q: "¿Cuántos evangelios hay?", a: [{t:"MATEO",p:25},{t:"MARCOS",p:25},{t:"LUCAS",p:25},{t:"JUAN",p:25}] },
-            { q: "¿Qué animal habló con Eva?", a: [{t:"SERPIENTE",p:80},{t:"DIABLO",p:20}] }
+        const datos = [
+            { q: "¿Qué llevaron los Reyes Magos?", a: [{t:"ORO",p:40},{t:"INCIENSO",p:35},{t:"MIRRA",p:25}] },
+            { q: "¿Cuántos evangelios hay?", a: [{t:"MATEO",p:25},{t:"MARCOS",p:25},{t:"LUCAS",p:25},{t:"JUAN",p:25}] }
         ];
 
-        let state = { level: 0, revealed: [], errors: 0 };
+        let localState = { level: 0, rev: [], err: 0 };
 
         function setMode(m) {
-            document.getElementById('mode-selector').style.display = 'none';
+            document.getElementById('selector').style.display = 'none';
             document.getElementById(m == 'player' ? 'pv' : 'av').style.display = 'block';
+            
+            // Inicializar estado si no existe
+            if(!localStorage.getItem('gs')) {
+                localStorage.setItem('gs', JSON.stringify(localState));
+            }
+
             if(m == 'player') {
-                window.addEventListener('storage', () => syncPlayer());
-                syncPlayer();
+                window.addEventListener('storage', () => sync());
+                sync();
             } else {
                 updateAdmin();
             }
         }
 
-        // COMUNICACIÓN ENTRE PANTALLAS
-        function sendAction(type, data = null) {
-            let s = JSON.parse(localStorage.getItem('game_state')) || state;
-            if(type == 'reveal') s.revealed.push(data);
-            if(type == 'error') s.errors++;
-            if(type == 'next') { s.level++; s.revealed = []; s.errors = 0; }
-            
-            localStorage.setItem('game_state', JSON.stringify(s));
-            localStorage.setItem('last_action', type + "_" + Date.now()); // Forzar evento storage
+        function doAction(type, val = null) {
+            let s = JSON.parse(localStorage.getItem('gs'));
+            if(type == 'rev') { if(!s.rev.includes(val)) s.rev.push(val); }
+            if(type == 'error') s.err++;
+            if(type == 'next') { s.level++; s.rev = []; s.err = 0; }
+            if(s.level >= datos.length) s.level = 0;
+
+            localStorage.setItem('gs', JSON.stringify(s));
+            localStorage.setItem('last_cmd', type + "_" + Date.now()); 
             updateAdmin();
         }
 
-        function syncPlayer() {
-            const s = JSON.parse(localStorage.getItem('game_state'));
-            if(!s) return;
-            const level = banco[s.level];
-            document.getElementById('pregunta-txt').innerText = level.q;
+        function sync() {
+            const s = JSON.parse(localStorage.getItem('gs'));
+            const lvl = datos[s.level];
+            document.getElementById('pregunta-txt').innerText = lvl.q;
             
-            // Sonidos y Emojis según la última acción
-            const last = localStorage.getItem('last_action') || "";
-            if(last.includes('reveal')) {
-                document.getElementById('snd-ok').play();
-                showEmoji("👍");
-            } else if(last.includes('error')) {
-                document.getElementById('snd-no').play();
-                showEmoji("👎");
-            }
+            const cmd = localStorage.getItem('last_cmd') || "";
+            if(cmd.includes('rev')) { document.getElementById('s-ok').play(); popEmoji("👍"); }
+            if(cmd.includes('error')) { document.getElementById('s-no').play(); popEmoji("👎"); }
 
-            // Dibujar tablero
-            const board = document.getElementById('player-board');
-            board.innerHTML = '';
-            level.a.forEach((ans, i) => {
-                const isRev = s.revealed.includes(i);
-                board.innerHTML += `
-                    <div class="card ${isRev?'revealed':''}">
-                        <div class="num">${i+1}</div>
-                        <div class="content"><span>${ans.t}</span><span>${ans.p}</span></div>
-                    </div>`;
+            const pb = document.getElementById('player-board');
+            pb.innerHTML = '';
+            lvl.a.forEach((item, i) => {
+                const isR = s.rev.includes(i);
+                pb.innerHTML += `<div class="card ${isR?'revealed':''}">
+                    <div class="num">${i+1}</div>
+                    <div class="content"><span>${item.t}</span><span>${item.p}</span></div>
+                </div>`;
             });
 
-            // Errores
-            for(let i=1; i<=3; i++) {
-                document.getElementById('px'+i).style.display = (s.errors >= i) ? 'block' : 'none';
-            }
+            for(let i=1; i<=3; i++) document.getElementById('px'+i).style.display = (s.err >= i) ? 'block' : 'none';
         }
 
         function updateAdmin() {
-            const s = JSON.parse(localStorage.getItem('game_state')) || state;
-            const level = banco[s.level];
-            const container = document.getElementById('admin-board');
-            container.innerHTML = `<h4>Pregunta: ${level.q}</h4>`;
-            level.a.forEach((ans, i) => {
-                const isRev = s.revealed.includes(i);
-                container.innerHTML += `<button class="admin-btn" style="${isRev?'opacity:0.3':''}" onclick="sendAction('reveal', ${i})">${i+1}. ${ans.t} (${ans.p} pts)</button>`;
+            const s = JSON.parse(localStorage.getItem('gs'));
+            const lvl = datos[s.level];
+            const ab = document.getElementById('admin-board');
+            ab.innerHTML = `<p>${lvl.q}</p>`;
+            lvl.a.forEach((item, i) => {
+                const isR = s.rev.includes(i);
+                ab.innerHTML += `<button class="admin-btn" style="${isR?'opacity:0.4':''}" onclick="doAction('rev', ${i})">${i+1}. ${item.t} (${item.p})</button>`;
             });
         }
 
-        function showEmoji(e) {
-            const el = document.createElement('div');
-            el.className = 'emoji-float';
-            el.innerText = e;
-            el.style.left = Math.random() * 80 + 10 + "%";
-            el.style.top = "50%";
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 2000);
+        function popEmoji(e) {
+            const div = document.createElement('div');
+            div.className = 'emoji';
+            div.innerText = e;
+            div.style.left = (Math.random() * 60 + 20) + "%";
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 1000);
         }
 
-        // Limpiar al iniciar
-        localStorage.removeItem('game_state');
+        // Desbloquear audio al primer toque
+        document.addEventListener('click', () => { 
+            document.getElementById('s-ok').load(); 
+            document.getElementById('s-no').load(); 
+        }, {once: true});
     </script>
 </body>
 </html>
