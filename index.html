@@ -3,121 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>100 Catequistas - Versión Pro</title>
+    <title>100 CATEQUISTAS DIJERON - PRO</title>
     <style>
-        body { background-color: #003366; color: white; font-family: sans-serif; text-align: center; margin: 0; padding: 20px; }
-        h1 { color: #ffd700; margin-bottom: 10px; font-size: 24px; }
-        
-        /* Contenedor de X */
-        .x-container { height: 80px; display: flex; justify-content: center; align-items: center; gap: 10px; }
-        .x-mark { color: red; font-size: 60px; font-weight: bold; display: none; text-shadow: 2px 2px black; }
-
-        /* Tablero de tarjetas */
-        .board { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 400px; margin: 0 auto; }
-        .card { 
-            background: linear-gradient(#444, #111); 
-            border: 3px solid #ffd700; 
-            height: 60px; 
-            border-radius: 10px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 22px; 
-            font-weight: bold; 
-            cursor: pointer; 
+        :root {
+            --azul-fondo: #001a33;
+            --dorado: #ffcc00;
+            --azul-card: linear-gradient(180deg, #005eff, #003399);
+            --rojo: #ff0000;
         }
-        .card.open { background: linear-gradient(#0055ff, #0022aa); border-color: white; }
-        .card .ans { display: none; font-size: 16px; width: 100%; padding: 0 10px; justify-content: space-between; }
-        .card.open .ans { display: flex; }
-        .card.open .num { display: none; }
 
-        /* Botones */
-        .controls { margin-top: 20px; display: flex; justify-content: center; gap: 10px; }
-        button { padding: 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
-        .btn-err { background: red; color: white; }
-        .btn-next { background: #ffd700; color: black; }
+        body {
+            background-color: var(--azul-fondo);
+            color: white;
+            font-family: 'Arial Black', sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
 
-        /* TU PANEL SECRETO - Los chicos no deben ver esto */
-        .admin-panel { margin-top: 40px; border-top: 2px dashed #666; padding-top: 20px; color: #aaa; font-size: 14px; }
-        .cheat-sheet { background: rgba(0,0,0,0.3); padding: 10px; display: inline-block; border-radius: 5px; }
+        /* SELECTOR DE MODO */
+        #mode-selector {
+            position: fixed; top:0; left:0; width: 100%; height: 100%;
+            background: var(--azul-fondo); z-index: 100;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px;
+        }
+
+        /* VISTA JUGADOR */
+        .player-view { width: 100%; max-width: 600px; padding: 20px; text-align: center; display: none; }
+        #pregunta-txt { color: var(--dorado); font-size: 1.8rem; text-shadow: 3px 3px #000; height: 80px; }
+
+        .x-container { height: 100px; display: flex; justify-content: center; gap: 20px; }
+        .x-mark { font-size: 80px; color: var(--rojo); display: none; text-shadow: 4px 4px #000; animation: bounce 0.5s infinite; }
+
+        .board { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .card {
+            background: linear-gradient(180deg, #333, #111);
+            border: 4px solid var(--dorado);
+            height: 70px; border-radius: 15px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; position: relative; transition: 0.6s;
+        }
+        .card.revealed { background: var(--azul-card); border-color: white; transform: rotateX(360deg); }
+        .card .content { display: none; width: 100%; padding: 0 25px; justify-content: space-between; font-size: 22px; }
+        .card.revealed .content { display: flex; }
+
+        /* ANIMACIÓN EMOJI */
+        .emoji-float {
+            position: absolute; font-size: 50px; opacity: 0; pointer-events: none;
+            animation: floatUp 1.5s forwards;
+        }
+
+        /* MODO ADMINISTRADOR */
+        .admin-view { width: 100%; max-width: 500px; padding: 20px; display: none; }
+        .admin-btn { 
+            width: 100%; background: #222; color: white; border: 1px solid #444; 
+            padding: 15px; margin: 5px 0; border-radius: 10px; text-align: left; font-size: 16px;
+        }
+        .admin-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .btn-action { padding: 20px; border-radius: 10px; border: none; font-weight: bold; font-size: 18px; cursor: pointer; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
     </style>
 </head>
 <body>
 
-    <h1 id="pregunta">¿Cuántos evangelios hay?</h1>
-
-    <div class="x-container">
-        <span id="x1" class="x-mark">X</span>
-        <span id="x2" class="x-mark">X</span>
-        <span id="x3" class="x-mark">X</span>
+    <div id="mode-selector">
+        <button class="btn-action" style="background:var(--azul-card); color:white;" onclick="setMode('player')">MODO JUGADOR (PROYECTOR)</button>
+        <button class="btn-action" style="background:var(--dorado);" onclick="setMode('admin')">MODO ADMIN (CONTROL)</button>
     </div>
 
-    <div class="board" id="board">
+    <div class="player-view" id="pv">
+        <h2 id="pregunta-txt">ESPERANDO PREGUNTA...</h2>
+        <div class="x-container">
+            <div id="px1" class="x-mark">X</div>
+            <div id="px2" class="x-mark">X</div>
+            <div id="px3" class="x-mark">X</div>
         </div>
-
-    <div class="controls">
-        <button class="btn-err" onclick="playError()">¡ERROR (X)!</button>
-        <button class="btn-next" onclick="nextLevel()">Siguiente Nivel</button>
+        <div class="board" id="player-board"></div>
     </div>
 
-    <div class="admin-panel">
-        <p>SOLO PARA EL COORDINADOR (Baja el brillo si ellos ven esto):</p>
-        <div id="cheat-sheet" class="cheat-sheet"></div>
+    <div class="admin-view" id="av">
+        <h3>CONTROL MAESTRO</h3>
+        <div id="admin-board"></div>
+        <div class="admin-controls">
+            <button class="btn-action" style="background:var(--rojo); color:white;" onclick="sendAction('error')">¡ERROR!</button>
+            <button class="btn-action" style="background:var(--dorado);" onclick="sendAction('next')">SIGUIENTE</button>
+        </div>
     </div>
 
-    <audio id="snd-ding" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
-    <audio id="snd-buzzer" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
+    <audio id="snd-ok" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
+    <audio id="snd-no" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
 
     <script>
-        const niveles = [
-            { p: "¿Cuáles son los evangelios?", r: ["Mateo", "Marcos", "Lucas", "Juan"], pts: [25, 25, 25, 25] },
-            { p: "Menciona un Mandamiento", r: ["Amar a Dios", "No Matar", "No Robar", "Honrar Padre/Madre"], pts: [40, 30, 20, 10] }
+        const banco = [
+            { q: "¿Cuántos evangelios hay?", a: [{t:"MATEO",p:25},{t:"MARCOS",p:25},{t:"LUCAS",p:25},{t:"JUAN",p:25}] },
+            { q: "¿Qué animal habló con Eva?", a: [{t:"SERPIENTE",p:80},{t:"DIABLO",p:20}] }
         ];
 
-        let cur = 0;
-        let errs = 0;
+        let state = { level: 0, revealed: [], errors: 0 };
 
-        function load() {
-            const n = niveles[cur];
-            document.getElementById('pregunta').innerText = n.p;
-            const b = document.getElementById('board');
-            const s = document.getElementById('cheat-sheet');
-            b.innerHTML = '';
-            s.innerHTML = '';
-            errs = 0;
-            hideX();
-
-            n.r.forEach((txt, i) => {
-                // Crear Tarjeta
-                const div = document.createElement('div');
-                div.className = 'card';
-                div.innerHTML = `<span class="num">${i+1}</span><div class="ans"><span>${txt}</span><span>${n.pts[i]}</span></div>`;
-                div.onclick = () => {
-                    if(!div.classList.contains('open')) {
-                        div.classList.add('open');
-                        document.getElementById('snd-ding').play();
-                    }
-                };
-                b.appendChild(div);
-
-                // Crear tu chuleta
-                s.innerHTML += `<b>${i+1}:</b> ${txt} | `;
-            });
-        }
-
-        function playError() {
-            if(errs < 3) {
-                errs++;
-                document.getElementById('x'+errs).style.display = 'block';
-                document.getElementById('snd-buzzer').play();
-                setTimeout(() => { if(errs<3) document.getElementById('x'+errs).style.display = 'none'; }, 1500);
+        function setMode(m) {
+            document.getElementById('mode-selector').style.display = 'none';
+            document.getElementById(m == 'player' ? 'pv' : 'av').style.display = 'block';
+            if(m == 'player') {
+                window.addEventListener('storage', () => syncPlayer());
+                syncPlayer();
+            } else {
+                updateAdmin();
             }
         }
 
-        function hideX() { for(let i=1; i<=3; i++) document.getElementById('x'+i).style.display = 'none'; }
-        function nextLevel() { cur++; if(cur < niveles.length) load(); else alert("¡Fin!"); }
+        // COMUNICACIÓN ENTRE PANTALLAS
+        function sendAction(type, data = null) {
+            let s = JSON.parse(localStorage.getItem('game_state')) || state;
+            if(type == 'reveal') s.revealed.push(data);
+            if(type == 'error') s.errors++;
+            if(type == 'next') { s.level++; s.revealed = []; s.errors = 0; }
+            
+            localStorage.setItem('game_state', JSON.stringify(s));
+            localStorage.setItem('last_action', type + "_" + Date.now()); // Forzar evento storage
+            updateAdmin();
+        }
 
-        window.onload = load;
+        function syncPlayer() {
+            const s = JSON.parse(localStorage.getItem('game_state'));
+            if(!s) return;
+            const level = banco[s.level];
+            document.getElementById('pregunta-txt').innerText = level.q;
+            
+            // Sonidos y Emojis según la última acción
+            const last = localStorage.getItem('last_action') || "";
+            if(last.includes('reveal')) {
+                document.getElementById('snd-ok').play();
+                showEmoji("👍");
+            } else if(last.includes('error')) {
+                document.getElementById('snd-no').play();
+                showEmoji("👎");
+            }
+
+            // Dibujar tablero
+            const board = document.getElementById('player-board');
+            board.innerHTML = '';
+            level.a.forEach((ans, i) => {
+                const isRev = s.revealed.includes(i);
+                board.innerHTML += `
+                    <div class="card ${isRev?'revealed':''}">
+                        <div class="num">${i+1}</div>
+                        <div class="content"><span>${ans.t}</span><span>${ans.p}</span></div>
+                    </div>`;
+            });
+
+            // Errores
+            for(let i=1; i<=3; i++) {
+                document.getElementById('px'+i).style.display = (s.errors >= i) ? 'block' : 'none';
+            }
+        }
+
+        function updateAdmin() {
+            const s = JSON.parse(localStorage.getItem('game_state')) || state;
+            const level = banco[s.level];
+            const container = document.getElementById('admin-board');
+            container.innerHTML = `<h4>Pregunta: ${level.q}</h4>`;
+            level.a.forEach((ans, i) => {
+                const isRev = s.revealed.includes(i);
+                container.innerHTML += `<button class="admin-btn" style="${isRev?'opacity:0.3':''}" onclick="sendAction('reveal', ${i})">${i+1}. ${ans.t} (${ans.p} pts)</button>`;
+            });
+        }
+
+        function showEmoji(e) {
+            const el = document.createElement('div');
+            el.className = 'emoji-float';
+            el.innerText = e;
+            el.style.left = Math.random() * 80 + 10 + "%";
+            el.style.top = "50%";
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 2000);
+        }
+
+        // Limpiar al iniciar
+        localStorage.removeItem('game_state');
     </script>
 </body>
 </html>
