@@ -3,180 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>100 Catequistas Dijeron - Sagrado Show</title>
+    <title>100 Catequistas Dijeron</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        :root {
-            --purpura: #4b0082;
-            --dorado: #ffd700;
-            --blanco-luz: #fdf5e6;
-            --rojo-pasion: #b22222;
-        }
-
-        body {
+        :root { --purpura: #3d0066; --dorado: #ffd700; --luz: #fff5e6; --rojo: #cc0000; }
+        body { 
             background: radial-gradient(circle, var(--purpura) 0%, #1a0033 100%);
-            color: var(--blanco-luz);
-            font-family: 'Georgia', serif;
-            margin: 0;
-            text-align: center;
-            overflow-x: hidden;
-        }
-
-        /* Estilo Vitral de Fondo */
-        body::before {
-            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            color: var(--luz); font-family: 'Georgia', serif; margin: 0; text-align: center;
             background-image: url('https://www.transparenttextures.com/patterns/church-windows.png');
-            opacity: 0.1; z-index: -1;
         }
-
-        #selector { position: fixed; inset: 0; background: var(--purpura); z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; }
         
-        .btn-fancy {
-            padding: 20px 40px; border: 3px solid var(--dorado); background: transparent;
-            color: var(--dorado); font-weight: bold; border-radius: 50px; cursor: pointer;
-            font-size: 1.2rem; transition: 0.3s; text-transform: uppercase;
+        #setup { position: fixed; inset: 0; background: var(--purpura); z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; }
+        .btn { padding: 15px 30px; border: 2px solid var(--dorado); background: none; color: var(--dorado); border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        input { padding: 12px; border-radius: 10px; border: none; text-align: center; font-size: 1rem; }
+
+        /* VISTA JUGADOR */
+        .view { display: none; padding: 20px; }
+        .marcador { display: flex; justify-content: space-around; margin-bottom: 20px; }
+        .equipo { border: 2px solid var(--dorado); background: rgba(0,0,0,0.4); padding: 10px; border-radius: 15px; min-width: 130px; }
+        .pts { font-size: 40px; font-family: 'Impact', sans-serif; color: white; }
+
+        #pregunta { font-size: 2.2rem; color: var(--dorado); text-shadow: 2px 2px 4px #000; min-height: 80px; }
+        .x-box { height: 90px; display: flex; justify-content: center; gap: 15px; }
+        .x-mark { font-size: 80px; color: var(--rojo); text-shadow: 3px 3px 0px #000; display: none; animation: shake 0.5s; }
+
+        .tablero { display: grid; grid-template-columns: 1fr; gap: 15px; max-width: 600px; margin: 0 auto; }
+        .tarjeta { 
+            background: linear-gradient(#444, #000); border: 3px solid var(--dorado); height: 70px;
+            border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 30px;
         }
-        .btn-fancy:hover { background: var(--dorado); color: var(--purpura); }
-
-        /* VISTA PÚBLICO */
-        .view { display: none; padding: 15px; }
-        .score-container { display: flex; justify-content: center; gap: 40px; margin-bottom: 20px; }
-        .team-box { border: 2px solid var(--dorado); padding: 10px; border-radius: 15px; background: rgba(0,0,0,0.4); min-width: 140px; }
-        .team-box span { font-size: 12px; color: var(--dorado); display: block; }
-        .points { font-size: 45px; font-weight: bold; font-family: 'Impact', sans-serif; }
-
-        #pregunta { font-size: 2rem; color: var(--dorado); text-shadow: 2px 2px 4px #000; margin: 20px 0; }
-
-        .x-area { height: 90px; display: flex; justify-content: center; gap: 20px; }
-        .x-mark { font-size: 80px; color: var(--rojo-pasion); display: none; text-shadow: 3px 3px 0px #000; animation: shake 0.5s; }
-
-        /* TABLERO */
-        .board { display: grid; grid-template-columns: 1fr; gap: 15px; max-width: 600px; margin: 0 auto; }
-        .card {
-            background: linear-gradient(to bottom, #333, #000);
-            border: 3px solid var(--dorado); height: 75px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 35px; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-        .card.revealed {
-            background: linear-gradient(to bottom, #fff, var(--dorado));
-            color: var(--purpura); transform: rotateX(360deg); transition: 0.7s;
-        }
+        .tarjeta.open { background: linear-gradient(#fff, var(--dorado)); color: var(--purpura); transform: rotateX(360deg); transition: 0.7s; }
         .ans { display: none; width: 100%; padding: 0 30px; justify-content: space-between; font-weight: bold; }
-        .card.revealed .ans { display: flex; }
-        .card.revealed .num { display: none; }
+        .open .ans { display: flex; } .open .num { display: none; }
 
-        /* MODO ADMIN */
-        .admin-view { padding: 20px; max-width: 500px; margin: 0 auto; }
-        .admin-card { background: #222; border: 1px solid #444; padding: 15px; margin: 10px 0; border-radius: 10px; text-align: left; }
-        .controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-
-        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-10px);} 75% {transform: translateX(10px);} }
+        /* ADMIN */
+        .admin-item { background: #222; border: 1px solid #555; padding: 15px; margin: 8px 0; border-radius: 10px; color: white; width: 100%; text-align: left; }
+        
+        @keyframes shake { 0%, 100% {transform:translateX(0)} 25% {transform:translateX(-10px)} 75% {transform:translateX(10px)} }
     </style>
 </head>
 <body>
 
-    <div id="selector">
-        <h1 style="color:var(--dorado)">† CATEQUESIS SHOW †</h1>
-        <button class="btn-fancy" onclick="setMode('player')">PANTALLA PROYECTOR</button>
-        <button class="btn-fancy" onclick="setMode('admin')">MANDO COORDINADOR</button>
+    <div id="setup">
+        <h1 style="color:var(--dorado)">† 100 CATEQUISTAS DIJERON †</h1>
+        <button class="btn" onclick="initPlayer()">PANTALLA PROYECTOR (RECIBIR)</button>
+        <div style="margin: 20px 0; border-top: 1px solid #555; width: 80%;"></div>
+        <input type="text" id="peer-id-input" placeholder="ID DEL PROYECTOR">
+        <button class="btn" onclick="initAdmin()">MANDO COORDINADOR (CONECTAR)</button>
     </div>
 
     <div class="view" id="pv">
-        <div class="score-container">
-            <div class="team-box"><span>EQUIPO FE</span><div class="points" id="pts-a">0</div></div>
-            <div class="team-box"><span>EQUIPO ESPERANZA</span><div class="points" id="pts-b">0</div></div>
+        <div class="marcador">
+            <div class="equipo"><small>EQUIPO FE</small><div class="pts" id="ptsA">0</div></div>
+            <div class="equipo"><small>EQUIPO ESPERANZA</small><div class="pts" id="ptsB">0</div></div>
         </div>
         <h2 id="pregunta">...</h2>
-        <div class="x-area"><div id="px1" class="x-mark">X</div><div id="px2" class="x-mark">X</div><div id="px3" class="x-mark">X</div></div>
-        <div class="board" id="player-board"></div>
+        <div class="x-box"><div id="x1" class="x-mark">X</div><div id="x2" class="x-mark">X</div><div id="x3" class="x-mark">X</div></div>
+        <div class="tablero" id="t-p"></div>
+        <p id="my-id-display" style="font-size:10px; color:gray; margin-top:20px;"></p>
     </div>
 
     <div class="view" id="av">
-        <h2 id="adm-q"></h2>
+        <h3 id="adm-q"></h3>
         <div id="admin-board"></div>
-        <div class="controls-grid">
-            <button class="btn-fancy" style="border-color:var(--rojo-pasion); color:white; background:var(--rojo-pasion);" onclick="send('error')">¡ERROR!</button>
-            <button class="btn-fancy" onclick="send('next')">SIGUIENTE</button>
-        </div>
-        <div class="controls-grid">
-            <button class="btn-fancy" style="border-color:#28a745;" onclick="send('addA')">PUNTOS A FE</button>
-            <button class="btn-fancy" style="border-color:#28a745;" onclick="send('addB')">PUNTOS A ESPERANZA</button>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top:15px;">
+            <button class="btn" style="background:var(--rojo); color:white;" onclick="sendAction('error')">¡ERROR (X)!</button>
+            <button class="btn" onclick="sendAction('next')">SIGUIENTE</button>
+            <button class="btn" style="border-color:#28a745" onclick="sendAction('ptsA')">+ FE</button>
+            <button class="btn" style="border-color:#28a745" onclick="sendAction('ptsB')">+ ESPERANZA</button>
         </div>
     </div>
 
-    <audio id="snd-ok" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
-    <audio id="snd-no" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
+    <audio id="s-ding" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
+    <audio id="s-buzz" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
 
     <script>
-        const niveles = [
+        const banco = [
             { q: "¿Qué llevaron los Reyes Magos?", a: [{t:"ORO",p:40},{t:"INCIENSO",p:35},{t:"MIRRA",p:25}] },
-            { q: "¿Cuáles son los Evangelios?", a: [{t:"MATEO",p:25},{t:"MARCOS",p:25},{t:"LUCAS",p:25},{t:"JUAN",p:25}] },
-            { q: "Menciona un color de la Iglesia", a: [{t:"BLANCO",p:50},{t:"MORADO",p:20},{t:"VERDE",p:20},{t:"ROJO",p:10}] }
+            { q: "¿Cuáles son los Evangelios?", a: [{t:"MATEO",p:25},{t:"MARCOS",p:25},{t:"LUCAS",p:25},{t:"JUAN",p:25}] }
         ];
 
-        let state = JSON.parse(localStorage.getItem('catholic_gs')) || { lvl: 0, rev: [], err: 0, pA: 0, pB: 0 };
+        let peer, conn;
+        let state = { lvl: 0, rev: [], err: 0, pA: 0, pB: 0 };
 
-        function setMode(m) {
-            document.getElementById('selector').style.display = 'none';
-            document.getElementById(m == 'player' ? 'pv' : 'av').style.display = 'block';
-            if(m == 'player') { 
-                window.addEventListener('storage', renderPlayer); 
-                renderPlayer();
-                document.body.onclick = () => { document.getElementById('snd-ok').play().then(()=>document.getElementById('snd-ok').pause()); };
-            } else { 
-                renderAdmin(); 
-            }
+        function initPlayer() {
+            peer = new Peer();
+            peer.on('open', id => {
+                document.getElementById('setup').innerHTML = `<h1>ID DEL PROYECTOR: <span style="color:var(--dorado)">${id}</span></h1><p>Escribe este número en tu celular Admin</p>`;
+                setTimeout(() => { document.getElementById('setup').style.display = 'none'; document.getElementById('pv').style.display = 'block'; }, 5000);
+            });
+            peer.on('connection', c => {
+                conn = c;
+                conn.on('data', data => { state = data; renderPlayer(); });
+            });
         }
 
-        function send(type, val = null) {
+        function initAdmin() {
+            const targetId = document.getElementById('peer-id-input').value;
+            peer = new Peer();
+            peer.on('open', () => {
+                conn = peer.connect(targetId);
+                conn.on('open', () => {
+                    document.getElementById('setup').style.display = 'none';
+                    document.getElementById('av').style.display = 'block';
+                    updateAdmin();
+                });
+            });
+        }
+
+        function sendAction(type, val = null) {
             if(type == 'rev' && !state.rev.includes(val)) state.rev.push(val);
             if(type == 'error') state.err++;
-            if(type == 'addA') state.pA += 15;
-            if(type == 'addB') state.pB += 15;
-            if(type == 'next') { state.lvl++; state.rev = []; state.err = 0; if(state.lvl >= niveles.length) state.lvl = 0; }
-
-            localStorage.setItem('catholic_gs', JSON.stringify(state));
-            localStorage.setItem('gs_trigger', Date.now());
-            renderAdmin();
+            if(type == 'ptsA') state.pA += 10;
+            if(type == 'ptsB') state.pB += 10;
+            if(type == 'next') { state.lvl++; state.rev = []; state.err = 0; if(state.lvl >= banco.length) state.lvl = 0; }
+            
+            conn.send(state);
+            updateAdmin();
         }
 
         function renderPlayer() {
-            state = JSON.parse(localStorage.getItem('catholic_gs'));
-            const data = niveles[state.lvl];
+            const data = banco[state.lvl];
             document.getElementById('pregunta').innerText = data.q;
-            document.getElementById('pts-a').innerText = state.pA;
-            document.getElementById('pts-b').innerText = state.pB;
-
-            const board = document.getElementById('player-board');
-            board.innerHTML = '';
+            document.getElementById('ptsA').innerText = state.pA;
+            document.getElementById('ptsB').innerText = state.pB;
+            
+            const tp = document.getElementById('t-p');
+            tp.innerHTML = '';
             data.a.forEach((ans, i) => {
                 const isR = state.rev.includes(i);
-                board.innerHTML += `<div class="card ${isR?'revealed':''}">
+                tp.innerHTML += `<div class="tarjeta ${isR?'open':''}">
                     <div class="num">${i+1}</div>
                     <div class="ans"><span>${ans.t}</span><span>${ans.p}</span></div>
                 </div>`;
             });
 
-            // Sonidos
-            if(window.lastR < state.rev.length) document.getElementById('snd-ok').play();
-            if(window.lastE < state.err) document.getElementById('snd-no').play();
-            window.lastR = state.rev.length; window.lastE = state.err;
+            if(window.lr < state.rev.length) document.getElementById('s-ding').play();
+            if(window.le < state.err) document.getElementById('s-buzz').play();
+            window.lr = state.rev.length; window.le = state.err;
 
-            for(let i=1; i<=3; i++) document.getElementById('px'+i).style.display = (state.err >= i) ? 'block' : 'none';
+            for(let i=1; i<=3; i++) document.getElementById('x'+i).style.display = (state.err >= i) ? 'block' : 'none';
         }
 
-        function renderAdmin() {
-            const data = niveles[state.lvl];
+        function updateAdmin() {
+            const data = banco[state.lvl];
             document.getElementById('adm-q').innerText = data.q;
             const container = document.getElementById('admin-board');
             container.innerHTML = '';
             data.a.forEach((ans, i) => {
                 const isR = state.rev.includes(i);
-                container.innerHTML += `<div class="admin-card" style="${isR?'opacity:0.4; border-color:green':''}" onclick="send('rev', ${i})">
-                    ${i+1}. ${ans.t} (${ans.p} pts)
-                </div>`;
+                container.innerHTML += `<button class="admin-item" style="${isR?'opacity:0.3;border-color:green':''}" onclick="sendAction('rev', ${i})">${i+1}. ${ans.t} (${ans.p} pts)</button>`;
             });
         }
+
+        document.body.onclick = () => { document.getElementById('s-ding').play().then(()=>document.getElementById('s-ding').pause()); };
     </script>
 </body>
 </html>
