@@ -2,157 +2,202 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Neon Kart 2D - Pro Version</title>
+    <title>Geometry Shift | Minimal Arcade</title>
     <style>
-        body { margin: 0; background: #050505; color: white; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        canvas { border: 4px solid #333; box-shadow: 0 0 30px #ff00ff55; background: #000; cursor: crosshair; }
-        .hud { position: absolute; top: 20px; width: 760px; display: flex; justify-content: space-between; font-size: 24px; text-shadow: 0 0 10px #0ff; pointer-events: none; }
-        .inst { margin-top: 15px; color: #888; }
+        :root {
+            --bg: #f0f2f5;
+            --player: #3498db;
+            --obstacle: #2c3e50;
+            --text: #2c3e50;
+        }
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #game-container {
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+        }
+        canvas { display: block; background: white; }
+        .hud {
+            position: absolute;
+            top: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 300;
+            pointer-events: none;
+        }
+        .instructions {
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
 
-    <div class="hud">
-        <div>VUELTA: <span id="lap">0/3</span></div>
-        <div>VELOCIDAD: <span id="speed">0</span> km/h</div>
+    <div id="game-container">
+        <div class="hud">Puntos: <span id="score">0</span></div>
+        <canvas id="gameCanvas"></canvas>
     </div>
-    
-    <canvas id="kartCanvas"></canvas>
-    
-    <div class="inst">Usa las <b>Flechas</b> para conducir | Evita los muros oscuros</div>
+    <div class="instructions">Presiona <b>ESPACIO</b> o <b>CLIC</b> para cambiar de forma</div>
 
 <script>
-    const canvas = document.getElementById('kartCanvas');
+    const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = 800;
+    const scoreEl = document.getElementById('score');
+
+    canvas.width = 400;
     canvas.height = 600;
 
-    const kart = {
-        x: 400, y: 500,
-        angle: -Math.PI / 2,
-        speed: 0,
-        accel: 0.2,
-        decel: 0.96, // Fricción
-        maxSpeed: 7,
-        turnSpeed: 0.05,
-        width: 20, height: 30,
-        color: '#ff00ff'
+    let score = 0;
+    let gameActive = true;
+    let speed = 4;
+    let frame = 0;
+
+    // Formas: 0 = Cuadrado, 1 = Círculo
+    const player = {
+        x: canvas.width / 2,
+        y: canvas.height - 100,
+        size: 40,
+        shape: 0, 
+        color: '#3498db'
     };
 
-    const keys = {};
-    let laps = 0;
-    let checkpointPassed = false;
+    let obstacles = [];
 
-    window.onkeydown = (e) => keys[e.code] = true;
-    window.onkeyup = (e) => keys[e.code] = false;
-
-    // --- EL CIRCUITO (DIBUJO) ---
-    function drawTrack() {
-        ctx.strokeStyle = '#00ffff';
-        ctx.lineWidth = 80;
-        ctx.lineJoin = 'round';
-        ctx.beginPath();
-        // Circuito ovalado con curvas
-        ctx.arc(400, 300, 200, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // Meta
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.moveTo(400, 460);
-        ctx.lineTo(400, 540);
-        ctx.stroke();
+    function spawnObstacle() {
+        const shapeType = Math.floor(Math.random() * 2);
+        obstacles.push({
+            y: -50,
+            x: canvas.width / 2,
+            size: 80,
+            shape: shapeType,
+            passed: false
+        });
     }
 
-    function checkOnTrack(x, y) {
-        // Lógica simple: ¿está el kart dentro del anillo del circuito?
-        const dx = x - 400;
-        const dy = y - 300;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        return dist > 160 && dist < 240;
+    function drawPlayer() {
+        ctx.fillStyle = player.color;
+        ctx.beginPath();
+        if (player.shape === 0) {
+            // Dibujar cuadrado redondeado
+            const r = 8;
+            ctx.roundRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size, r);
+        } else {
+            // Dibujar círculo
+            ctx.arc(player.x, player.y, player.size/2, 0, Math.PI * 2);
+        }
+        ctx.fill();
+    }
+
+    function drawObstacle(obs) {
+        ctx.strokeStyle = '#2c3e50';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        
+        // Dibujamos el "hueco" por el que hay que pasar
+        if (obs.shape === 0) {
+            ctx.roundRect(obs.x - 30, obs.y - 30, 60, 60, 5);
+        } else {
+            ctx.arc(obs.x, obs.y, 35, 0, Math.PI * 2);
+        }
+        ctx.stroke();
+
+        // Líneas laterales decorativas
+        ctx.beginPath();
+        ctx.moveTo(0, obs.y);
+        ctx.lineTo(obs.x - 40, obs.y);
+        ctx.moveTo(obs.x + 40, obs.y);
+        ctx.lineTo(canvas.width, obs.y);
+        ctx.stroke();
     }
 
     function update() {
-        // Acelerar / Frenar
-        if (keys['ArrowUp']) kart.speed += kart.accel;
-        if (keys['ArrowDown']) kart.speed -= kart.accel;
+        if (!gameActive) return;
 
-        // Fricción constante
-        kart.speed *= kart.decel;
+        frame++;
+        if (frame % 100 === 0) spawnObstacle();
 
-        // Limitar velocidad
-        if (kart.speed > kart.maxSpeed) kart.speed = kart.maxSpeed;
-        if (kart.speed < -kart.maxSpeed / 2) kart.speed = -kart.maxSpeed / 2;
+        obstacles.forEach((obs, index) => {
+            obs.y += speed;
 
-        // Giro (solo si se mueve)
-        if (Math.abs(kart.speed) > 0.1) {
-            const direction = kart.speed > 0 ? 1 : -1;
-            if (keys['ArrowLeft']) kart.angle -= kart.turnSpeed * direction;
-            if (keys['ArrowRight']) kart.angle += kart.turnSpeed * direction;
-        }
-
-        // Movimiento
-        const nx = kart.x + Math.cos(kart.angle) * kart.speed;
-        const ny = kart.y + Math.sin(kart.angle) * kart.speed;
-
-        // Colisión con bordes de pista
-        if (checkOnTrack(nx, ny)) {
-            kart.x = nx;
-            kart.y = ny;
-        } else {
-            kart.speed *= 0.5; // Chocar te frena
-        }
-
-        // Sistema de Vueltas (Meta en x=400, y > 460)
-        if (kart.x > 390 && kart.x < 410 && kart.y > 400) {
-            if (checkpointPassed) {
-                laps++;
-                document.getElementById('lap').innerText = `${laps}/3`;
-                checkpointPassed = false;
-                if(laps >= 3) alert("¡VICTORIA! Eres el rey de la pista.");
+            // Detección de colisión / Paso exitoso
+            if (obs.y > player.y - 10 && obs.y < player.y + 10) {
+                if (player.shape !== obs.shape) {
+                    gameOver();
+                } else if (!obs.passed) {
+                    obs.passed = true;
+                    score++;
+                    scoreEl.innerText = score;
+                    if (score % 5 === 0) speed += 0.5; // Aumenta dificultad
+                }
             }
-        }
-        // Checkpoint al otro lado (para evitar trampas)
-        if (kart.x > 390 && kart.x < 410 && kart.y < 200) checkpointPassed = true;
 
-        document.getElementById('speed').innerText = Math.round(Math.abs(kart.speed) * 20);
+            if (obs.y > canvas.height) obstacles.splice(index, 1);
+        });
+    }
+
+    function gameOver() {
+        gameActive = false;
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.fillRect(0,0,canvas.width, canvas.height);
+        ctx.fillStyle = '#2c3e50';
+        ctx.font = 'bold 30px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('FIN DEL JUEGO', canvas.width/2, canvas.height/2);
+        ctx.font = '18px sans-serif';
+        ctx.fillText('Clic para reiniciar', canvas.width/2, canvas.height/2 + 40);
     }
 
     function draw() {
-        // Limpiar
-        ctx.fillStyle = '#050505';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Fondo sutil
+        ctx.fillStyle = '#fafafa';
+        ctx.fillRect(0,0, canvas.width, canvas.height);
 
-        drawTrack();
-
-        // Dibujar Kart
-        ctx.save();
-        ctx.translate(kart.x, kart.y);
-        ctx.rotate(kart.angle);
-        
-        // Sombra neón
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = kart.color;
-        
-        // Cuerpo del Kart
-        ctx.fillStyle = kart.color;
-        ctx.fillRect(-kart.height/2, -kart.width/2, kart.height, kart.width);
-        
-        // Dirección (frente)
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(5, -kart.width/2, 10, kart.width);
-        
-        ctx.restore();
+        obstacles.forEach(drawObstacle);
+        drawPlayer();
     }
 
-    function gameLoop() {
+    function loop() {
         update();
         draw();
-        requestAnimationFrame(gameLoop);
+        requestAnimationFrame(loop);
     }
 
-    gameLoop();
+    const toggleShape = () => {
+        if (!gameActive) {
+            // Reiniciar
+            score = 0;
+            scoreEl.innerText = 0;
+            obstacles = [];
+            speed = 4;
+            gameActive = true;
+        } else {
+            player.shape = player.shape === 0 ? 1 : 0;
+            player.color = player.shape === 0 ? '#3498db' : '#e74c3c';
+        }
+    };
+
+    window.addEventListener('keydown', (e) => { if(e.code === 'Space') toggleShape(); });
+    canvas.addEventListener('mousedown', toggleShape);
+
+    loop();
 </script>
 </body>
 </html>
+
