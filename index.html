@@ -2,245 +2,157 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Dash: Matrix Runner</title>
+    <title>Neon Kart 2D - Pro Version</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: #0a0a0a;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        canvas {
-            border: 2px solid #333;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-            background: linear-gradient(180deg, #050505 0%, #111 100%);
-            cursor: pointer;
-        }
-        #ui {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            pointer-events: none;
-        }
-        .stats { font-size: 20px; font-weight: bold; text-shadow: 0 0 10px cyan; }
-        #msg {
-            position: absolute;
-            text-align: center;
-            width: 100%;
-            font-size: 40px;
-            text-transform: uppercase;
-            letter-spacing: 5px;
-            text-shadow: 0 0 15px white;
-        }
+        body { margin: 0; background: #050505; color: white; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        canvas { border: 4px solid #333; box-shadow: 0 0 30px #ff00ff55; background: #000; cursor: crosshair; }
+        .hud { position: absolute; top: 20px; width: 760px; display: flex; justify-content: space-between; font-size: 24px; text-shadow: 0 0 10px #0ff; pointer-events: none; }
+        .inst { margin-top: 15px; color: #888; }
     </style>
 </head>
 <body>
 
-    <div id="ui">
-        <div class="stats">NIVEL: <span id="level">1</span></div>
-        <div class="stats">PUNTOS: <span id="score">0</span></div>
+    <div class="hud">
+        <div>VUELTA: <span id="lap">0/3</span></div>
+        <div>VELOCIDAD: <span id="speed">0</span> km/h</div>
     </div>
-    <div id="msg">CLIC PARA EMPEZAR</div>
-    <canvas id="gameCanvas"></canvas>
+    
+    <canvas id="kartCanvas"></canvas>
+    
+    <div class="inst">Usa las <b>Flechas</b> para conducir | Evita los muros oscuros</div>
 
 <script>
-    const canvas = document.getElementById('gameCanvas');
+    const canvas = document.getElementById('kartCanvas');
     const ctx = canvas.getContext('2d');
-    const scoreEl = document.getElementById('score');
-    const levelEl = document.getElementById('level');
-    const msgEl = document.getElementById('msg');
-
-    // Configuración
     canvas.width = 800;
-    canvas.height = 400;
+    canvas.height = 600;
 
-    let gameActive = false;
-    let score = 0;
-    let level = 1;
-    let speed = 5;
-    let frame = 0;
-
-    const player = {
-        x: 100,
-        y: canvas.height - 60,
-        w: 30,
-        h: 30,
-        color: '#00ffff',
-        gravity: 0.8,
-        jumpForce: 15,
-        dy: 0,
-        onGround: true,
-        inverted: false
+    const kart = {
+        x: 400, y: 500,
+        angle: -Math.PI / 2,
+        speed: 0,
+        accel: 0.2,
+        decel: 0.96, // Fricción
+        maxSpeed: 7,
+        turnSpeed: 0.05,
+        width: 20, height: 30,
+        color: '#ff00ff'
     };
 
-    let obstacles = [];
-    let particles = [];
+    const keys = {};
+    let laps = 0;
+    let checkpointPassed = false;
 
-    // --- LÓGICA DE PARTÍCULAS (Para mejores gráficos) ---
-    function createParticles(x, y, color) {
-        for(let i=0; i<10; i++) {
-            particles.push({
-                x: x, y: y,
-                dx: (Math.random() - 0.5) * 8,
-                dy: (Math.random() - 0.5) * 8,
-                life: 1.0,
-                color: color
-            });
-        }
+    window.onkeydown = (e) => keys[e.code] = true;
+    window.onkeyup = (e) => keys[e.code] = false;
+
+    // --- EL CIRCUITO (DIBUJO) ---
+    function drawTrack() {
+        ctx.strokeStyle = '#00ffff';
+        ctx.lineWidth = 80;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        // Circuito ovalado con curvas
+        ctx.arc(400, 300, 200, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Meta
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(400, 460);
+        ctx.lineTo(400, 540);
+        ctx.stroke();
     }
 
-    function updateParticles() {
-        for(let i = particles.length - 1; i >= 0; i--) {
-            let p = particles[i];
-            p.x += p.dx;
-            p.y += p.dy;
-            p.life -= 0.02;
-            if(p.life <= 0) particles.splice(i, 1);
-        }
-    }
-
-    function drawParticles() {
-        particles.forEach(p => {
-            ctx.globalAlpha = p.life;
-            ctx.fillStyle = p.color;
-            ctx.fillRect(p.x, p.y, 4, 4);
-        });
-        ctx.globalAlpha = 1;
-    }
-
-    // --- MOTOR DEL JUEGO ---
-    function spawnObstacle() {
-        let h = 30 + Math.random() * 40;
-        let isTop = Math.random() > 0.5;
-        obstacles.push({
-            x: canvas.width,
-            y: isTop ? 0 : canvas.height - h,
-            w: 30,
-            h: h,
-            color: level % 2 === 0 ? '#ff00ff' : '#00ffff'
-        });
-    }
-
-    function resetGame() {
-        score = 0;
-        level = 1;
-        speed = 5;
-        obstacles = [];
-        player.y = canvas.height - 60;
-        player.inverted = false;
-        player.dy = 0;
-        gameActive = true;
-        msgEl.innerText = "";
+    function checkOnTrack(x, y) {
+        // Lógica simple: ¿está el kart dentro del anillo del circuito?
+        const dx = x - 400;
+        const dy = y - 300;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        return dist > 160 && dist < 240;
     }
 
     function update() {
-        if(!gameActive) return;
+        // Acelerar / Frenar
+        if (keys['ArrowUp']) kart.speed += kart.accel;
+        if (keys['ArrowDown']) kart.speed -= kart.accel;
 
-        frame++;
-        score++;
-        scoreEl.innerText = score;
+        // Fricción constante
+        kart.speed *= kart.decel;
 
-        // Subir de nivel
-        if(score % 500 === 0) {
-            level++;
-            speed += 1;
-            levelEl.innerText = level;
-            createParticles(player.x, player.y, 'yellow');
+        // Limitar velocidad
+        if (kart.speed > kart.maxSpeed) kart.speed = kart.maxSpeed;
+        if (kart.speed < -kart.maxSpeed / 2) kart.speed = -kart.maxSpeed / 2;
+
+        // Giro (solo si se mueve)
+        if (Math.abs(kart.speed) > 0.1) {
+            const direction = kart.speed > 0 ? 1 : -1;
+            if (keys['ArrowLeft']) kart.angle -= kart.turnSpeed * direction;
+            if (keys['ArrowRight']) kart.angle += kart.turnSpeed * direction;
         }
 
-        // Gravedad y Movimiento
-        if(player.inverted) {
-            player.dy -= player.gravity;
+        // Movimiento
+        const nx = kart.x + Math.cos(kart.angle) * kart.speed;
+        const ny = kart.y + Math.sin(kart.angle) * kart.speed;
+
+        // Colisión con bordes de pista
+        if (checkOnTrack(nx, ny)) {
+            kart.x = nx;
+            kart.y = ny;
         } else {
-            player.dy += player.gravity;
-        }
-        
-        player.y += player.dy;
-
-        // Colisión Suelo/Techo
-        if(player.y + player.h > canvas.height) {
-            player.y = canvas.height - player.h;
-            player.dy = 0;
-        } else if(player.y < 0) {
-            player.y = 0;
-            player.dy = 0;
+            kart.speed *= 0.5; // Chocar te frena
         }
 
-        // Obstáculos
-        if(frame % Math.max(20, (80 - speed * 2)) === 0) spawnObstacle();
-
-        for(let i = obstacles.length - 1; i >= 0; i--) {
-            let o = obstacles[i];
-            o.x -= speed;
-
-            // Colisión con jugador
-            if (player.x < o.x + o.w &&
-                player.x + player.w > o.x &&
-                player.y < o.y + o.h &&
-                player.y + player.h > o.y) {
-                gameOver();
+        // Sistema de Vueltas (Meta en x=400, y > 460)
+        if (kart.x > 390 && kart.x < 410 && kart.y > 400) {
+            if (checkpointPassed) {
+                laps++;
+                document.getElementById('lap').innerText = `${laps}/3`;
+                checkpointPassed = false;
+                if(laps >= 3) alert("¡VICTORIA! Eres el rey de la pista.");
             }
-
-            if(o.x + o.w < 0) obstacles.splice(i, 1);
         }
+        // Checkpoint al otro lado (para evitar trampas)
+        if (kart.x > 390 && kart.x < 410 && kart.y < 200) checkpointPassed = true;
 
-        updateParticles();
-    }
-
-    function gameOver() {
-        gameActive = false;
-        createParticles(player.x, player.y, 'red');
-        msgEl.innerText = "GAME OVER - CLIC PARA REINTENTAR";
+        document.getElementById('speed').innerText = Math.round(Math.abs(kart.speed) * 20);
     }
 
     function draw() {
-        // Fondo con estela
-        ctx.fillStyle = 'rgba(10, 10, 10, 0.3)';
+        // Limpiar
+        ctx.fillStyle = '#050505';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Dibujar Jugador con resplandor
+        drawTrack();
+
+        // Dibujar Kart
+        ctx.save();
+        ctx.translate(kart.x, kart.y);
+        ctx.rotate(kart.angle);
+        
+        // Sombra neón
         ctx.shadowBlur = 15;
-        ctx.shadowColor = player.color;
-        ctx.fillStyle = player.color;
-        ctx.fillRect(player.x, player.y, player.w, player.h);
-        ctx.shadowBlur = 0;
-
-        // Dibujar Obstáculos
-        obstacles.forEach(o => {
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = o.color;
-            ctx.fillStyle = o.color;
-            ctx.fillRect(o.x, o.y, o.w, o.h);
-        });
-        ctx.shadowBlur = 0;
-
-        drawParticles();
+        ctx.shadowColor = kart.color;
+        
+        // Cuerpo del Kart
+        ctx.fillStyle = kart.color;
+        ctx.fillRect(-kart.height/2, -kart.width/2, kart.height, kart.width);
+        
+        // Dirección (frente)
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(5, -kart.width/2, 10, kart.width);
+        
+        ctx.restore();
     }
 
-    function loop() {
+    function gameLoop() {
         update();
         draw();
-        requestAnimationFrame(loop);
+        requestAnimationFrame(gameLoop);
     }
 
-    // Controles
-    window.addEventListener('mousedown', () => {
-        if(!gameActive) {
-            resetGame();
-        } else {
-            player.inverted = !player.inverted;
-            createParticles(player.x, player.y, player.color);
-        }
-    });
-
-    loop();
+    gameLoop();
 </script>
 </body>
 </html>
-
