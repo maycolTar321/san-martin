@@ -1,1 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Dash: Matrix Runner</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #0a0a0a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            border: 2px solid #333;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            background: linear-gradient(180deg, #050505 0%, #111 100%);
+            cursor: pointer;
+        }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+        }
+        .stats { font-size: 20px; font-weight: bold; text-shadow: 0 0 10px cyan; }
+        #msg {
+            position: absolute;
+            text-align: center;
+            width: 100%;
+            font-size: 40px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 0 0 15px white;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui">
+        <div class="stats">NIVEL: <span id="level">1</span></div>
+        <div class="stats">PUNTOS: <span id="score">0</span></div>
+    </div>
+    <div id="msg">CLIC PARA EMPEZAR</div>
+    <canvas id="gameCanvas"></canvas>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('score');
+    const levelEl = document.getElementById('level');
+    const msgEl = document.getElementById('msg');
+
+    // Configuración
+    canvas.width = 800;
+    canvas.height = 400;
+
+    let gameActive = false;
+    let score = 0;
+    let level = 1;
+    let speed = 5;
+    let frame = 0;
+
+    const player = {
+        x: 100,
+        y: canvas.height - 60,
+        w: 30,
+        h: 30,
+        color: '#00ffff',
+        gravity: 0.8,
+        jumpForce: 15,
+        dy: 0,
+        onGround: true,
+        inverted: false
+    };
+
+    let obstacles = [];
+    let particles = [];
+
+    // --- LÓGICA DE PARTÍCULAS (Para mejores gráficos) ---
+    function createParticles(x, y, color) {
+        for(let i=0; i<10; i++) {
+            particles.push({
+                x: x, y: y,
+                dx: (Math.random() - 0.5) * 8,
+                dy: (Math.random() - 0.5) * 8,
+                life: 1.0,
+                color: color
+            });
+        }
+    }
+
+    function updateParticles() {
+        for(let i = particles.length - 1; i >= 0; i--) {
+            let p = particles[i];
+            p.x += p.dx;
+            p.y += p.dy;
+            p.life -= 0.02;
+            if(p.life <= 0) particles.splice(i, 1);
+        }
+    }
+
+    function drawParticles() {
+        particles.forEach(p => {
+            ctx.globalAlpha = p.life;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, 4, 4);
+        });
+        ctx.globalAlpha = 1;
+    }
+
+    // --- MOTOR DEL JUEGO ---
+    function spawnObstacle() {
+        let h = 30 + Math.random() * 40;
+        let isTop = Math.random() > 0.5;
+        obstacles.push({
+            x: canvas.width,
+            y: isTop ? 0 : canvas.height - h,
+            w: 30,
+            h: h,
+            color: level % 2 === 0 ? '#ff00ff' : '#00ffff'
+        });
+    }
+
+    function resetGame() {
+        score = 0;
+        level = 1;
+        speed = 5;
+        obstacles = [];
+        player.y = canvas.height - 60;
+        player.inverted = false;
+        player.dy = 0;
+        gameActive = true;
+        msgEl.innerText = "";
+    }
+
+    function update() {
+        if(!gameActive) return;
+
+        frame++;
+        score++;
+        scoreEl.innerText = score;
+
+        // Subir de nivel
+        if(score % 500 === 0) {
+            level++;
+            speed += 1;
+            levelEl.innerText = level;
+            createParticles(player.x, player.y, 'yellow');
+        }
+
+        // Gravedad y Movimiento
+        if(player.inverted) {
+            player.dy -= player.gravity;
+        } else {
+            player.dy += player.gravity;
+        }
+        
+        player.y += player.dy;
+
+        // Colisión Suelo/Techo
+        if(player.y + player.h > canvas.height) {
+            player.y = canvas.height - player.h;
+            player.dy = 0;
+        } else if(player.y < 0) {
+            player.y = 0;
+            player.dy = 0;
+        }
+
+        // Obstáculos
+        if(frame % Math.max(20, (80 - speed * 2)) === 0) spawnObstacle();
+
+        for(let i = obstacles.length - 1; i >= 0; i--) {
+            let o = obstacles[i];
+            o.x -= speed;
+
+            // Colisión con jugador
+            if (player.x < o.x + o.w &&
+                player.x + player.w > o.x &&
+                player.y < o.y + o.h &&
+                player.y + player.h > o.y) {
+                gameOver();
+            }
+
+            if(o.x + o.w < 0) obstacles.splice(i, 1);
+        }
+
+        updateParticles();
+    }
+
+    function gameOver() {
+        gameActive = false;
+        createParticles(player.x, player.y, 'red');
+        msgEl.innerText = "GAME OVER - CLIC PARA REINTENTAR";
+    }
+
+    function draw() {
+        // Fondo con estela
+        ctx.fillStyle = 'rgba(10, 10, 10, 0.3)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Dibujar Jugador con resplandor
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = player.color;
+        ctx.fillStyle = player.color;
+        ctx.fillRect(player.x, player.y, player.w, player.h);
+        ctx.shadowBlur = 0;
+
+        // Dibujar Obstáculos
+        obstacles.forEach(o => {
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = o.color;
+            ctx.fillStyle = o.color;
+            ctx.fillRect(o.x, o.y, o.w, o.h);
+        });
+        ctx.shadowBlur = 0;
+
+        drawParticles();
+    }
+
+    function loop() {
+        update();
+        draw();
+        requestAnimationFrame(loop);
+    }
+
+    // Controles
+    window.addEventListener('mousedown', () => {
+        if(!gameActive) {
+            resetGame();
+        } else {
+            player.inverted = !player.inverted;
+            createParticles(player.x, player.y, player.color);
+        }
+    });
+
+    loop();
+</script>
+</body>
+</html>
 
