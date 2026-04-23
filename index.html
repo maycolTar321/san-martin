@@ -2,410 +2,336 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZOE | Vida en Abundancia - Gestión Profesional</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZOE | Vida en Abundancia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-white text-slate-800">
+<body class="bg-slate-50 text-slate-800 font-['Plus_Jakarta_Sans']">
 
-    <nav class="fixed w-full z-[100] glass border-b border-green-50 h-20">
-        <div class="max-w-7xl mx-auto px-6 h-full flex justify-between items-center">
-            <div class="flex items-center gap-3 cursor-pointer" onclick="navigate('landing')">
-                <div class="bg-green-500 p-2 rounded-xl text-white shadow-zoe"><i class="fas fa-leaf rotate-12"></i></div>
-                <span class="text-2xl font-black text-green-600 tracking-tighter">ZOE</span>
+    <nav class="fixed w-full z-[100] bg-white/80 backdrop-blur-lg border-b border-green-100 h-16 md:h-20">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 h-full flex justify-between items-center">
+            <div class="flex items-center gap-2 md:gap-3 cursor-pointer" onclick="showPage('landing')">
+                <div class="bg-green-500 p-1.5 md:p-2 rounded-lg md:rounded-xl text-white shadow-lg shadow-green-200">
+                    <i class="fas fa-leaf rotate-12 text-sm md:text-base"></i>
+                </div>
+                <span class="text-xl md:text-2xl font-black text-green-600 tracking-tighter">ZOE</span>
             </div>
-            <div class="hidden lg:flex gap-10 font-extrabold text-slate-500 uppercase text-[11px] tracking-widest">
-                <a href="#mision" class="hover:text-green-600 transition">Misión</a>
-                <a href="#funcionalidades" class="hover:text-green-600 transition">Herramientas</a>
-                <a href="#planes" class="hover:text-green-600 transition">Planes</a>
-            </div>
-            <div class="flex items-center gap-4">
-                <button onclick="navigate('dashboard')" class="bg-green-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-green-700 transition transform hover:scale-105">Panel de Gestión</button>
+            
+            <div class="flex items-center gap-2 md:gap-4">
+                <button onclick="showPage('dashboard')" class="bg-green-600 text-white px-4 md:px-6 py-2 rounded-full font-bold text-sm md:text-base shadow-md hover:bg-green-700 transition">Panel</button>
             </div>
         </div>
     </nav>
 
-    <section id="page-landing" class="pt-32 pb-20 fade-in">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-24">
-                <span class="badge-zoe mb-6 inline-block">EVANGELIZACIÓN DIGITAL</span>
-                <h1 class="hero-title">Vida en <br><span class="text-green-500">Abundancia.</span></h1>
-                <p class="mt-10 text-xl text-slate-500 max-w-3xl mx-auto leading-relaxed">
-                    Gestiona tu parroquia en Tarija con la tecnología de ZOE. Control de asistencia, biblioteca de temas y asistencia con IA, todo en un solo lugar.
+    <main class="pt-16 md:pt-20">
+        
+        <section id="page-landing" class="active-page fade-in">
+            <div class="max-w-7xl mx-auto px-6 py-12 md:py-20 text-center">
+                <div class="inline-block bg-green-50 text-green-700 px-4 py-1 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest mb-6">
+                    Juan 10:10 • Bolivia
+                </div>
+                <h1 class="text-4xl md:text-7xl font-black leading-tight mb-6">
+                    Gestión de fe <br><span class="text-green-500">Hecha Simple.</span>
+                </h1>
+                <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-10">
+                    La plataforma SaaS líder para la catequesis en Tarija. Administra grupos, asistencia y contenidos con un toque moderno.
                 </p>
-                <div class="mt-12 flex justify-center gap-6">
-                    <button class="bg-slate-900 text-white px-10 py-5 rounded-3xl font-black text-lg shadow-2xl hover:bg-slate-800 transition">Comenzar Ahora</button>
-                    <button class="bg-white border-2 border-slate-200 px-10 py-5 rounded-3xl font-black text-lg hover:bg-slate-50 transition">Explorar Demo</button>
-                </div>
-            </div>
-
-            <div id="planes" class="grid lg:grid-cols-3 gap-10 mt-20">
-                <div class="card-plan p-12 bg-white rounded-[50px] border border-slate-100">
-                    <h3 class="text-2xl font-bold">Semilla</h3>
-                    <p class="text-5xl font-black my-6">0 Bs.</p>
-                    <ul class="space-y-4 text-slate-500 font-medium">
-                        <li><i class="fas fa-check text-green-500 mr-2"></i> 20 Jóvenes</li>
-                        <li><i class="fas fa-check text-green-500 mr-2"></i> Asistencia Básica</li>
-                        <li><i class="fas fa-check text-green-500 mr-2"></i> Zoe AI (Limitado)</li>
-                    </ul>
-                </div>
-                <div class="card-plan-featured p-12 bg-green-600 text-white rounded-[50px] scale-105">
-                    <div class="popular-tag">MÁS ELEGIDO</div>
-                    <h3 class="text-2xl font-bold">Parroquia</h3>
-                    <p class="text-5xl font-black my-6">150 Bs.</p>
-                    <ul class="space-y-4 text-green-50 font-medium">
-                        <li><i class="fas fa-check mr-2"></i> Jóvenes Ilimitados</li>
-                        <li><i class="fas fa-check mr-2"></i> Biblioteca Completa</li>
-                        <li><i class="fas fa-check mr-2"></i> Exportar a PDF</li>
-                    </ul>
-                </div>
-                <div class="card-plan p-12 bg-white rounded-[50px] border border-slate-100">
-                    <h3 class="text-2xl font-bold">Diócesis</h3>
-                    <p class="text-5xl font-black my-6">400 Bs.</p>
-                    <ul class="space-y-4 text-slate-500 font-medium">
-                        <li><i class="fas fa-check text-green-500 mr-2"></i> Varias Sedes</li>
-                        <li><i class="fas fa-check text-green-500 mr-2"></i> Admin Multi-usuario</li>
-                        <li><i class="fas fa-check text-green-500 mr-2"></i> Soporte 24/7</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="page-dashboard" class="hidden min-h-screen bg-[#F4F7F6] pt-28 pb-12">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid lg:grid-cols-12 gap-10">
-                <aside class="lg:col-span-3">
-                    <div class="bg-white p-8 rounded-[40px] shadow-sm mb-6 text-center">
-                        <div class="relative inline-block mb-4">
-                            <img src="https://ui-avatars.com/api/?name=Michael+Vargas&background=22c55e&color=fff" class="w-20 h-20 rounded-3xl shadow-lg">
-                            <div class="absolute -bottom-2 -right-2 bg-green-500 w-6 h-6 rounded-full border-4 border-white"></div>
-                        </div>
-                        <h4 class="font-black text-xl">Michael Vargas</h4>
-                        <p class="text-slate-400 text-xs font-bold uppercase tracking-widest mt-1">Coordinador Tarija</p>
+                
+                <div id="planes" class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-12 md:mt-20">
+                    <div class="pricing-card bg-white p-8 rounded-[35px] border border-slate-100 shadow-sm">
+                        <h3 class="font-bold text-xl">Gratis</h3>
+                        <div class="text-3xl font-black my-4">0 Bs.</div>
+                        <p class="text-slate-400 text-sm mb-6 font-medium">Hasta 20 jóvenes</p>
+                        <button class="w-full py-3 rounded-xl bg-slate-100 font-bold hover:bg-green-600 hover:text-white transition">Empezar</button>
                     </div>
-                    <nav class="space-y-3">
-                        <button class="nav-btn active"><i class="fas fa-th-large mr-3"></i> Resumen General</button>
-                        <button class="nav-btn"><i class="fas fa-users mr-3"></i> Gestión de Grupos</button>
-                        <button class="nav-btn"><i class="fas fa-file-invoice mr-3"></i> Reportes PDF</button>
-                        <button class="nav-btn" onclick="toggleServerInfo()"><i class="fas fa-server mr-3"></i> Servidor Local</button>
-                    </nav>
-                </aside>
-
-                <div class="lg:col-span-9 space-y-10">
-                    <div class="bg-white p-10 rounded-[50px] border-2 border-dashed border-green-200">
-                        <div class="flex justify-between items-center mb-10">
-                            <div>
-                                <h2 class="text-3xl font-black text-slate-800">Centro de Control ZOE</h2>
-                                <p class="text-slate-400 font-bold">Administra tu plataforma en tiempo real</p>
-                            </div>
-                            <button onclick="toggleVisualEditor()" id="btn-visual-editor" class="bg-blue-600 text-white px-8 py-3 rounded-2xl font-black shadow-xl hover:bg-blue-700 transition">Modo Editor: OFF</button>
-                        </div>
-                        
-                        <div class="grid md:grid-cols-3 gap-6">
-                            <div class="admin-card">
-                                <i class="fas fa-image text-purple-500 text-2xl mb-4"></i>
-                                <h5 class="font-bold">Mural de Fotos</h5>
-                                <input type="file" id="input-mural" class="hidden" onchange="handleMuralUpload(event)">
-                                <button onclick="document.getElementById('input-mural').click()" class="mt-4 w-full bg-slate-100 py-3 rounded-xl font-bold hover:bg-purple-100 hover:text-purple-600 transition">Subir Imagen</button>
-                            </div>
-                            <div class="admin-card">
-                                <i class="fas fa-quote-left text-orange-500 text-2xl mb-4"></i>
-                                <h5 class="font-bold">Santo del Día</h5>
-                                <input type="text" id="santo-txt" placeholder="Nombre del Santo..." class="mt-4 w-full p-3 bg-slate-50 rounded-xl outline-none text-sm">
-                                <button onclick="saveSanto()" class="mt-2 w-full bg-orange-500 text-white py-3 rounded-xl font-bold">Actualizar</button>
-                            </div>
-                            <div id="server-status" class="admin-card border-green-500 bg-green-50">
-                                <i class="fas fa-mobile-alt text-green-600 text-2xl mb-4 animate-pulse"></i>
-                                <h5 class="font-bold text-green-700">Servidor Celular</h5>
-                                <p class="text-[10px] text-green-600 mt-2 font-bold uppercase">Estado: Activo</p>
-                                <p id="ip-local" class="text-xs font-mono mt-1 text-slate-500">IP: 192.168.1.XX:8080</p>
-                            </div>
-                        </div>
+                    <div class="pricing-card bg-green-600 p-8 rounded-[35px] shadow-xl text-white transform md:scale-105">
+                        <h3 class="font-bold text-xl">Parroquia</h3>
+                        <div class="text-3xl font-black my-4">150 Bs.</div>
+                        <p class="text-green-100 text-sm mb-6 font-medium">Gestión Profesional</p>
+                        <button class="w-full py-3 rounded-xl bg-white text-green-600 font-bold">Popular</button>
                     </div>
-
-                    <div class="bg-white p-10 rounded-[50px] shadow-sm">
-                        <div class="flex justify-between items-center mb-8">
-                            <h3 class="text-2xl font-black flex items-center gap-3"><i class="fas fa-camera-retro text-green-500"></i> Galería de la Comunidad</h3>
-                        </div>
-                        <div id="mural-grid" class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                            </div>
+                    <div class="pricing-card bg-white p-8 rounded-[35px] border border-slate-100 shadow-sm">
+                        <h3 class="font-bold text-xl">Diócesis</h3>
+                        <div class="text-3xl font-black my-4">400 Bs.</div>
+                        <p class="text-slate-400 text-sm mb-6 font-medium">Control Total</p>
+                        <button class="w-full py-3 rounded-xl bg-slate-100 font-bold hover:bg-green-600 hover:text-white transition">Contactar</button>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <div id="zoe-fab" onclick="toggleZoeChat()" class="fixed bottom-8 right-8 z-[2000] cursor-pointer group">
-        <div class="zoe-bubble">¿Necesitas ayuda con la catequesis?</div>
-        <div class="w-20 h-20 bg-green-600 rounded-full flex items-center justify-center text-white text-3xl shadow-zoe transition-all transform group-hover:scale-110 group-hover:rotate-12 ring-8 ring-white">
+        <section id="page-dashboard" class="hidden fade-in bg-slate-50 min-h-screen p-4 md:p-8">
+            <div class="max-w-7xl mx-auto space-y-6 md:space-y-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-black">Panel de Michael Vargas</h2>
+                        <p class="text-slate-500 text-sm italic">"Yo soy el camino, la verdad y la vida."</p>
+                    </div>
+                    <button onclick="toggleAdminEditor()" id="btn-admin" class="w-full md:w-auto bg-blue-600 text-white px-6 py-3 rounded-2xl font-black shadow-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                        <i class="fas fa-edit"></i> Activar Editor Maestro
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+                    <div class="stat-card">
+                        <span class="text-slate-400 text-[10px] font-bold uppercase">Jóvenes</span>
+                        <div class="text-2xl font-black">48</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="text-slate-400 text-[10px] font-bold uppercase">Asistencia</span>
+                        <div class="text-2xl font-black text-green-500">92%</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="text-slate-400 text-[10px] font-bold uppercase">Grupos</span>
+                        <div class="text-2xl font-black">3</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="text-slate-400 text-[10px] font-bold uppercase">Tareas</span>
+                        <div class="text-2xl font-black">12</div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                    <div class="bg-white p-6 md:p-8 rounded-[35px] shadow-sm border border-slate-100">
+                        <h3 class="font-bold text-xl mb-6 flex items-center justify-between">
+                            Mural de Fotos <i class="fas fa-camera text-green-500"></i>
+                        </h3>
+                        <div class="flex gap-4 mb-6">
+                            <input type="file" id="upload-photo" class="hidden" onchange="uploadToMural(event)">
+                            <button onclick="document.getElementById('upload-photo').click()" class="flex-1 bg-green-50 text-green-600 py-3 rounded-xl font-bold border-2 border-dashed border-green-200">
+                                <i class="fas fa-plus mr-2"></i> Subir Foto
+                            </button>
+                        </div>
+                        <div id="mural-container" class="grid grid-cols-2 gap-3 h-48 overflow-y-auto pr-2">
+                            </div>
+                    </div>
+
+                    <div class="bg-white p-6 md:p-8 rounded-[35px] shadow-sm border border-slate-100">
+                        <h3 class="font-bold text-xl mb-6 flex items-center justify-between">
+                            Avisos Rápidos <i class="fas fa-bell text-orange-500"></i>
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="p-4 bg-slate-50 rounded-2xl border-l-4 border-green-500">
+                                <p class="text-sm font-bold">Retiro de Confirmación</p>
+                                <p class="text-xs text-slate-500">Sábado 08:00 AM - Parroquia</p>
+                            </div>
+                            <div class="p-4 bg-slate-50 rounded-2xl border-l-4 border-orange-500">
+                                <p class="text-sm font-bold">Reunión de Guías</p>
+                                <p class="text-xs text-slate-500">Hoy 19:00 PM vía Zoom</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="zoe-fab" onclick="toggleZoeChat()" class="fixed bottom-6 right-6 z-[1000] cursor-pointer">
+        <div class="w-14 h-14 md:w-16 md:h-16 bg-green-600 rounded-full flex items-center justify-center text-white text-xl md:text-2xl shadow-2xl ring-4 ring-white transform hover:scale-110 active:scale-95 transition-all">
             <i class="fas fa-leaf"></i>
         </div>
     </div>
 
-    <div id="zoe-chat" class="fixed bottom-32 right-8 w-[400px] h-[600px] bg-white rounded-[40px] shadow-2xl z-[2001] hidden flex-col overflow-hidden border border-green-50">
-        <div class="bg-green-600 p-8 text-white flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-md">
-                    <i class="fas fa-robot text-xl"></i>
+    <div id="zoe-chat" class="fixed bottom-24 right-6 left-6 md:left-auto md:w-[380px] h-[70vh] md:h-[550px] bg-white rounded-[30px] shadow-2xl z-[1001] hidden flex-col overflow-hidden border border-green-50 animate-slide-up">
+        <div class="bg-green-600 p-5 text-white flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-md">
+                    <i class="fas fa-robot"></i>
                 </div>
                 <div>
-                    <h4 class="font-black">Zoe AI</h4>
-                    <p class="text-[10px] uppercase font-bold opacity-70">Vida en Abundancia</p>
+                    <h4 class="font-black text-sm">Zoe AI</h4>
+                    <p class="text-[9px] uppercase font-bold tracking-widest opacity-80">Vida en Abundancia</p>
                 </div>
             </div>
-            <button onclick="toggleZoeChat()" class="hover:rotate-90 transition duration-300"><i class="fas fa-times"></i></button>
+            <button onclick="toggleZoeChat()" class="p-2 hover:bg-white/10 rounded-full"><i class="fas fa-times"></i></button>
         </div>
-        <div id="chat-messages" class="flex-1 p-8 overflow-y-auto bg-slate-50 space-y-6">
-            <div class="bot-msg">¡Paz y Bien, Michael! Soy Zoe. Estoy conectada a tu servidor local. ¿Qué deseas gestionar hoy? 🌱</div>
+        <div id="chat-box" class="flex-1 p-6 overflow-y-auto bg-slate-50 space-y-4">
+            <div class="bot-bubble">¡Paz y Bien, Michael! Estoy lista para ayudarte con la gestión de tu parroquia. 🌱</div>
         </div>
-        <div class="p-6 bg-white border-t border-slate-100 flex gap-3">
-            <input type="text" id="chat-input" placeholder="Escribe un mensaje..." class="flex-1 bg-slate-100 rounded-2xl px-6 py-4 outline-none text-sm font-medium focus:ring-2 focus:ring-green-500 transition-all">
-            <button onclick="sendZoeMsg()" class="bg-green-600 text-white w-14 h-14 rounded-2xl shadow-lg shadow-green-100 flex items-center justify-center hover:bg-green-700 transition">
-                <i class="fas fa-paper-plane"></i>
-            </button>
+        <div class="p-4 bg-white border-t flex gap-2">
+            <input type="text" id="chat-input" placeholder="Escribe un mensaje..." class="flex-1 bg-slate-100 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-500">
+            <button onclick="sendMessage()" class="bg-green-600 text-white w-12 h-12 rounded-xl flex items-center justify-center shadow-lg"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
-                    </html>
+</html>
+/* ZOE MASTER STYLE */
 
-                            /* DISEÑO ZOE MAESTRO */
-:root {
-    --zoe-green: #22c55e;
-    --zoe-dark: #15803d;
-}
+/* Reset y Base */
+* { -webkit-tap-highlight-color: transparent; }
+body { overflow-x: hidden; }
 
-body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
+/* Animaciones */
+.fade-in { animation: fadeIn 0.5s ease-in-out; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-/* Glassmorphism */
-.glass {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
+.animate-slide-up { animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-.shadow-zoe { box-shadow: 0 20px 40px rgba(34, 197, 94, 0.25); }
-
-/* Tipografía y Títulos */
-.hero-title {
-    font-size: clamp(3.5rem, 10vw, 7rem);
-    font-weight: 900;
-    line-height: 0.85;
-    letter-spacing: -4px;
-}
-
-.badge-zoe {
-    background: #f0fdf4;
-    color: var(--zoe-dark);
-    padding: 10px 24px;
-    border-radius: 999px;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 2px;
-}
-
-/* Dashboard Sidebar */
-.nav-btn {
-    width: 100%;
-    padding: 18px 25px;
-    text-align: left;
-    border-radius: 22px;
-    font-weight: 800;
-    font-size: 14px;
-    color: #64748b;
-    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.nav-btn.active {
-    background: var(--zoe-green);
-    color: white;
-    box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
-}
-
-.nav-btn:hover:not(.active) {
+/* Cards y Dashboard */
+.stat-card {
     background: white;
-    color: var(--zoe-green);
-    transform: translateX(10px);
-}
-
-/* Admin Cards */
-.admin-card {
-    background: white;
-    padding: 30px;
-    border-radius: 35px;
+    padding: 20px;
+    border-radius: 25px;
     border: 1px solid #f1f5f9;
-    text-align: center;
-    transition: 0.3s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
-.admin-card:hover {
-    border-color: var(--zoe-green);
-    transform: translateY(-5px);
+.pricing-card {
+    transition: transform 0.3s ease, shadow 0.3s ease;
 }
+.pricing-card:hover { transform: translateY(-10px); }
 
 /* Chat Bubbles */
-.zoe-bubble {
-    position: absolute;
-    right: 100px;
-    top: 15px;
+.bot-bubble {
     background: white;
-    padding: 15px 25px;
-    border-radius: 25px;
+    padding: 15px 20px;
+    border-radius: 20px 20px 20px 5px;
     font-size: 13px;
-    font-weight: 800;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    width: max-content;
-    opacity: 0;
-    transform: translateX(20px);
-    transition: 0.4s;
-    pointer-events: none;
-}
-
-#zoe-fab:hover .zoe-bubble {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.bot-msg {
-    background: white;
-    padding: 20px;
-    border-radius: 25px;
-    border-top-left-radius: 5px;
-    font-size: 14px;
-    line-height: 1.6;
-    color: #475569;
+    line-height: 1.5;
     border: 1px solid #f1f5f9;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    max-width: 85%;
 }
 
-.user-msg {
-    background: var(--zoe-green);
+.user-bubble {
+    background: #22c55e;
     color: white;
-    padding: 20px;
-    border-radius: 25px;
-    border-top-right-radius: 5px;
-    font-size: 14px;
+    padding: 15px 20px;
+    border-radius: 20px 20px 5px 20px;
+    font-size: 13px;
     align-self: flex-end;
-    box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+    max-width: 85%;
 }
 
-/* Modo Edición */
-.editing-active {
-    outline: 3px dashed #3b82f6 !important;
-    background: rgba(59, 130, 246, 0.05);
+/* Modo Edición Visual */
+.editing-mode-active {
+    outline: 2px dashed #3b82f6 !important;
+    background: rgba(59, 130, 246, 0.05) !important;
     cursor: text;
 }
+
+/* Scrollbar Elegante */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: #22c55e; border-radius: 10px; }
 /**
- * ZOE PLATFORM - LÓGICA DE GESTIÓN PROFESIONAL
+ * ZOE PLATFORM - CORE LOGIC
  */
 
-// 1. Navegación SPA
-function navigate(pageId) {
-    document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+// 1. NAVEGACIÓN SIN ERRORES (SPA)
+function showPage(pageId) {
+    // Ocultar todas las páginas
+    const pages = ['landing', 'dashboard'];
+    pages.forEach(id => {
+        const el = document.getElementById('page-' + id);
+        if (el) el.classList.add('hidden');
+    });
+
+    // Mostrar la seleccionada
     const target = document.getElementById('page-' + pageId);
-    if(target) {
+    if (target) {
         target.classList.remove('hidden');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 }
 
-// 2. Control de Zoe AI Chat
+// 2. CHAT ZOE AI
 function toggleZoeChat() {
     const chat = document.getElementById('zoe-chat');
-    chat.classList.toggle('hidden');
-    chat.style.display = chat.classList.contains('hidden') ? 'none' : 'flex';
-}
-
-function sendZoeMsg() {
-    const input = document.getElementById('chat-input');
-    const container = document.getElementById('chat-messages');
-    
-    if(!input.value.trim()) return;
-
-    // Mensaje Usuario
-    const userDiv = document.createElement('div');
-    userDiv.className = 'user-msg flex self-end max-w-[85%]';
-    userDiv.innerText = input.value;
-    container.appendChild(userDiv);
-
-    const prompt = input.value;
-    input.value = '';
-    container.scrollTop = container.scrollHeight;
-
-    // Simulación de respuesta IA (Zoe)
-    setTimeout(() => {
-        const botDiv = document.createElement('div');
-        botDiv.className = 'bot-msg max-w-[85%]';
-        botDiv.innerHTML = `Entendido, Michael. Estoy procesando <b>"${prompt}"</b> en tu servidor local de Tarija. ¿Deseas que actualice el mural con esta información?`;
-        container.appendChild(botDiv);
-        container.scrollTop = container.scrollHeight;
-    }, 1000);
-}
-
-// 3. MODO ADMINISTRADOR VISUAL (EDICIÓN SIN CÓDIGO)
-let isEditorActive = false;
-
-function toggleVisualEditor() {
-    isEditorActive = !isEditorActive;
-    const btn = document.getElementById('btn-visual-editor');
-    const editableElements = document.querySelectorAll('h1, h2, h3, p, span');
-
-    if(isEditorActive) {
-        btn.innerText = "Modo Editor: ON";
-        btn.style.background = "#ef4444";
-        editableElements.forEach(el => {
-            el.contentEditable = "true";
-            el.classList.add('editing-active');
-        });
-        alert("¡Modo Edición Activado! Puedes cambiar cualquier texto de la web simplemente haciendo clic en él.");
+    const isHidden = chat.classList.contains('hidden');
+    chat.classList.toggle('hidden', !isHidden);
+    if (isHidden) {
+        chat.style.display = 'flex';
+        document.getElementById('chat-input').focus();
     } else {
-        btn.innerText = "Modo Editor: OFF";
-        btn.style.background = "#2563eb";
-        editableElements.forEach(el => {
-            el.contentEditable = "false";
-            el.classList.remove('editing-active');
-        });
-        // Guardamos los cambios en el LocalStorage (Persistencia en el Celular)
-        localStorage.setItem('zoe_html_data', document.body.innerHTML);
-        alert("¡Cambios guardados con éxito en tu servidor local!");
+        chat.style.display = 'none';
     }
 }
 
-// 4. GESTIÓN DEL MURAL (SUBIDA DE FOTOS DESDE CELULAR)
-function handleMuralUpload(event) {
+function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const box = document.getElementById('chat-box');
+    
+    if (!input.value.trim()) return;
+
+    // Mensaje Usuario
+    const userDiv = document.createElement('div');
+    userDiv.className = 'user-bubble flex flex-col self-end';
+    userDiv.innerText = input.value;
+    box.appendChild(userDiv);
+
+    const userText = input.value;
+    input.value = '';
+    box.scrollTop = box.scrollHeight;
+
+    // Respuesta Bot (Simulación)
+    setTimeout(() => {
+        const botDiv = document.createElement('div');
+        botDiv.className = 'bot-bubble';
+        botDiv.innerHTML = `Michael, estoy procesando <b>"${userText}"</b>. ¿Deseas que lo guarde en tu servidor local? 🌱`;
+        box.appendChild(botDiv);
+        box.scrollTop = box.scrollHeight;
+    }, 1000);
+}
+
+// 3. EDITOR MAESTRO (PARA EDITAR TODO DESDE EL CELULAR)
+let isEditing = false;
+function toggleAdminEditor() {
+    isEditing = !isEditing;
+    const btn = document.getElementById('btn-admin');
+    const editables = document.querySelectorAll('h1, h2, h3, p, span, div.stat-card div');
+
+    if (isEditing) {
+        btn.innerText = "Guardar Cambios";
+        btn.classList.replace('bg-blue-600', 'bg-red-600');
+        editables.forEach(el => {
+            el.contentEditable = "true";
+            el.classList.add('editing-mode-active');
+        });
+        alert("¡Modo Edición! Toca cualquier texto para cambiarlo.");
+    } else {
+        btn.innerText = "Activar Editor Maestro";
+        btn.classList.replace('bg-red-600', 'bg-blue-600');
+        editables.forEach(el => {
+            el.contentEditable = "false";
+            el.classList.remove('editing-mode-active');
+        });
+        // GUARDAR EN MEMORIA LOCAL (SERVIDOR CELULAR)
+        localStorage.setItem('zoe_version_final', document.body.innerHTML);
+        alert("¡Cambios guardados en tu dispositivo!");
+    }
+}
+
+// 4. MURAL DE FOTOS (SUBIDA REAL)
+function uploadToMural(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
     const reader = new FileReader();
-    reader.onload = function() {
-        const mural = document.getElementById('mural-grid');
-        const imgContainer = `
-            <div class="relative group overflow-hidden rounded-[30px] shadow-lg aspect-square">
-                <img src="${reader.result}" class="w-full h-full object-cover transform hover:scale-110 transition duration-700">
-                <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                    <button class="bg-white/90 p-2 rounded-full text-red-500 shadow-xl" onclick="this.parentElement.parentElement.remove(); saveMuralState();"><i class="fas fa-trash"></i></button>
-                </div>
-            </div>
-        `;
-        mural.insertAdjacentHTML('afterbegin', imgContainer);
-        saveMuralState();
+    reader.onload = function(e) {
+        const container = document.getElementById('mural-container');
+        const img = document.createElement('div');
+        img.className = 'rounded-2xl overflow-hidden h-24 shadow-sm';
+        img.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+        container.prepend(img);
+        
+        // Persistencia de fotos
+        localStorage.setItem('zoe_mural', container.innerHTML);
     };
-    reader.readAsDataURL(event.target.files[0]);
+    reader.readAsDataURL(file);
 }
 
-function saveMuralState() {
-    const muralGrid = document.getElementById('mural-grid').innerHTML;
-    localStorage.setItem('zoe_mural_content', muralGrid);
-}
-
-// 5. CARGA INICIAL Y PERSISTENCIA
+// 5. CARGA INICIAL
 window.onload = () => {
-    // Recuperamos el mural guardado
-    const savedMural = localStorage.getItem('zoe_mural_content');
-    if(savedMural) document.getElementById('mural-grid').innerHTML = savedMural;
-
-    // Detectar IP Local (Simulado para UI)
-    console.log("Iniciando ZOE v1.0 - Vida en Abundancia");
+    // Recuperar mural
+    const savedMural = localStorage.getItem('zoe_mural');
+    if (savedMural) document.getElementById('mural-container').innerHTML = savedMural;
+    
+    console.log("ZOE Plataforma v1.1 - Lista para Tarija.");
 };
