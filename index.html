@@ -2,207 +2,217 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>100 Catequistas Dijeron - Final</title>
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZOE - Plataforma de Gestión Pastoral</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        :root { --purpura: #2e004f; --dorado: #ffd700; --rojo: #ff0000; --azul: #0044ff; }
-        body { margin: 0; background: var(--purpura); color: white; font-family: 'Segoe UI', sans-serif; text-align: center; overflow: hidden; }
-        
-        /* PANTALLA INICIAL */
-        #setup { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; background: var(--purpura); }
-        .btn { padding: 15px 25px; border: 2px solid var(--dorado); background: #000; color: var(--dorado); border-radius: 12px; font-weight: bold; width: 80%; margin: 10px; cursor: pointer; font-size: 1.1rem; }
-        input { padding: 15px; border-radius: 10px; border: 2px solid var(--dorado); width: 70%; text-align: center; font-size: 1.2rem; margin-bottom: 20px; }
-
-        /* VISTAS */
-        .view { display: none; height: 100vh; flex-direction: column; align-items: center; padding: 15px; box-sizing: border-box; }
-        
-        /* PROYECTOR */
-        #categoria-display { color: var(--dorado); font-size: 1.5rem; text-transform: uppercase; letter-spacing: 2px; margin-top: 10px; }
-        #pregunta-display { font-size: 2.2rem; margin: 15px 0; min-height: 80px; text-shadow: 2px 2px 4px #000; }
-        .marcador { display: flex; gap: 40px; margin-bottom: 20px; }
-        .pts-box { background: #000; border: 3px solid var(--dorado); padding: 10px 30px; border-radius: 15px; font-size: 3rem; font-family: 'Impact'; }
-        .timer { font-size: 2.5rem; color: #ff9900; font-weight: bold; }
-        
-        /* TABLERO */
-        .tablero { width: 100%; max-width: 600px; display: grid; gap: 10px; }
-        .fila { background: linear-gradient(to bottom, #111, #333); border: 2px solid var(--dorado); height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-size: 1.8rem; position: relative; overflow: hidden; }
-        .fila.open { background: linear-gradient(to bottom, #fff, var(--dorado)); color: black; font-weight: bold; }
-        .x-mark { font-size: 150px; color: var(--rojo); position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none; z-index: 500; font-weight: bold; -webkit-text-stroke: 3px white; }
-
-        /* CONTROL ADMIN */
-        .admin-btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
-        .ans-item { background: #444; padding: 15px; margin: 5px 0; border-radius: 10px; text-align: left; border-left: 8px solid #888; font-size: 1rem; }
-        .ans-item.active { border-left-color: #00ff00; background: #222; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .serif { font-family: 'Fraunces', serif; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
+        .gradient-green { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); }
+        .scroll-reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+        .scroll-reveal.active { opacity: 1; transform: translateY(0); }
+        /* Animación para el icono de Zoe */
+        @keyframes pulse-soft { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.9; } }
+        .zoe-icon-pulse { animation: pulse-soft 3s infinite ease-in-out; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
 
-    <div id="setup">
-        <h1 style="color:var(--dorado); margin-bottom:5px;">CATEQUISTAS DIJERON</h1>
-        <p style="margin-bottom:20px;">Edición 100 Preguntas</p>
-        <input type="text" id="room-id" placeholder="Nombre de Sala (ej: tarija)">
-        <button class="btn" onclick="iniciar('P')">MODO PROYECTOR</button>
-        <button class="btn" style="background:var(--dorado); color:black;" onclick="iniciar('A')">MODO CONTROLADOR</button>
-    </div>
-
-    <div class="view" id="pv">
-        <div id="timer-p" class="timer">--s</div>
-        <div class="marcador">
-            <div><small>FE</small><div class="pts-box" id="pA">0</div></div>
-            <div><small>ESPERANZA</small><div class="pts-box" id="pB">0</div></div>
+    <nav class="fixed w-full z-50 transition-all duration-300 py-4 px-6" id="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center glass rounded-2xl px-6 py-3 shadow-sm border border-white/20">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 gradient-green rounded-lg flex items-center justify-center zoe-icon-pulse">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 6V12L16 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7 14.5C7 14.5 8.5 13 10.5 13C12.5 13 14 14.5 14 14.5V17.5C14 17.5 12.5 19 10.5 19C8.5 19 7 17.5 7 17.5V14.5Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span class="text-xl font-bold tracking-tight">ZOE</span>
+            </div>
+            <div class="hidden md:flex gap-8 font-medium text-sm">
+                <a href="#features" class="hover:text-green-600">Funciones</a>
+                <a href="#gamification" class="hover:text-green-600">Gamificación</a>
+                <a href="#pricing" class="hover:text-green-600">Planes</a>
+            </div>
+            <button class="bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-slate-800 transition">
+                Acceso Demo
+            </button>
         </div>
-        <div id="categoria-display">CATEGORÍA</div>
-        <h2 id="pregunta-display">ESPERANDO AL ADMINISTRADOR...</h2>
-        <div class="tablero" id="tablero-p"></div>
-        <div id="big-x" class="x-mark">X</div>
-    </div>
+    </nav>
 
-    <div class="view" id="av">
-        <div id="timer-a" class="timer">--s</div>
-        <div id="adm-cat" style="color:var(--dorado); font-weight:bold;"></div>
-        <h3 id="adm-q" style="margin: 10px 0;"></h3>
-        <div id="tablero-a" style="width:100%; overflow-y:auto; max-height:45vh; margin-bottom:10px;"></div>
-        <div class="admin-btn-group">
-            <button class="btn" style="background:var(--rojo); color:white; width:auto;" onclick="accion('X')">¡ERROR (X)!</button>
-            <button class="btn" style="background:var(--azul); color:white; width:auto;" onclick="accion('T')">INICIAR TIEMPO</button>
-            <button class="btn" style="width:auto;" onclick="accion('PA')">PTOS FE</button>
-            <button class="btn" style="width:auto;" onclick="accion('PB')">PTOS ESPERANZA</button>
+    <section class="pt-32 pb-20 px-6">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-8">
+                <span class="inline-block px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-wider">
+                    Gestión Pastoral Inteligente
+                </span>
+                <h1 class="text-5xl lg:text-7xl font-bold leading-[1.1] serif">
+                    Digitaliza tu comunidad con <span class="text-green-600 italic">vida.</span>
+                </h1>
+                <p class="text-lg text-slate-600 max-w-md">
+                    Control de asistencia, gamificación para jóvenes y reportes automáticos para padres en una sola plataforma.
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    <button class="gradient-green text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-green-200 hover:scale-105 transition">
+                        Empezar ahora
+                    </button>
+                    <button class="bg-white border border-slate-200 px-8 py-4 rounded-2xl font-bold hover:bg-slate-50 transition flex items-center gap-2">
+                        <i data-lucide="play-circle" class="w-5 h-5"></i> Ver video
+                    </button>
+                </div>
+            </div>
+            
+            <div class="relative">
+                <div class="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-green-100/50 rounded-full blur-3xl"></div>
+                <div class="glass border border-white p-4 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800" alt="App Preview" class="rounded-[2rem] w-full">
+                    <div class="absolute bottom-10 -left-6 glass p-4 rounded-2xl shadow-xl border border-white/50">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white">
+                                <i data-lucide="check-circle" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500">Asistencia Hoy</p>
+                                <p class="font-bold text-lg text-slate-800">98% Logrado</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <button class="btn" style="width:100%;" onclick="accion('N')">SIGUIENTE PREGUNTA →</button>
-    </div>
+    </section>
 
-    <audio id="sd" src="https://www.myinstants.com/media/sounds/ding-sound-effect_2.mp3"></audio>
-    <audio id="sb" src="https://www.myinstants.com/media/sounds/family-feud-buzzer.mp3"></audio>
+    <section id="features" class="py-24 px-6 max-w-4xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold serif mb-4">Pregúntale a ZOE (Prueba)</h2>
+            <p class="text-slate-600">Tu asistente inteligente que representa la "vida abundante" en tu gestión.</p>
+        </div>
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden">
+            <div class="bg-slate-900 p-4 flex items-center gap-3">
+                <div class="w-6 h-6 gradient-green rounded-md flex items-center justify-center zoe-icon-pulse">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 6V12L16 14" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7 14.5C7 14.5 8.5 13 10.5 13C12.5 13 14 14.5 14 14.5V17.5C14 17.5 12.5 19 10.5 19C8.5 19 7 17.5 7 17.5V14.5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <span class="text-slate-400 text-xs font-mono italic">Zoe_AI_Assistant_Demo</span>
+            </div>
+            <div class="p-6 space-y-4 h-[300px] overflow-y-auto flex flex-col-reverse" id="chat-container">
+                <div class="flex gap-3 justify-start">
+                    <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center flex-shrink-0 zoe-icon-pulse">
+                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12 6V12L16 14" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M7 14.5C7 14.5 8.5 13 10.5 13C12.5 13 14 14.5 14 14.5V17.5C14 17.5 12.5 19 10.5 19C8.5 19 7 17.5 7 17.5V14.5Z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="bg-slate-100 p-3 rounded-2xl rounded-tl-none text-sm max-w-[70%]">
+                        ¡Hola! Soy Zoe, tu asistente de vida abundante. En este modo de prueba, puedo responder preguntas básicas sobre la plataforma. ¡Intenta preguntarme qué significa mi nombre!
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-t border-slate-100 flex gap-2">
+                <input type="text" id="chat-input" placeholder="Escribe '¿Qué significa Zoe?'..." class="flex-1 bg-slate-50 border-none rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none text-sm">
+                <button id="send-btn" class="gradient-green text-white p-2 rounded-xl hover:opacity-90 transition">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-slate-100 py-12 border-t border-slate-200 text-center">
+        <p class="serif italic text-slate-500 mb-6 mx-6">"Yo he venido para que tengan vida (Zoe), y para que la tengan en abundancia." - Juan 10:10</p>
+        <div class="flex justify-center gap-6 text-slate-400">
+            <i data-lucide="instagram" class="w-5 h-5 cursor-pointer hover:text-green-600"></i>
+            <i data-lucide="facebook" class="w-5 h-5 cursor-pointer hover:text-green-600"></i>
+            <i data-lucide="mail" class="w-5 h-5 cursor-pointer hover:text-green-600"></i>
+        </div>
+    </footer>
 
     <script>
-        // BASE DE DATOS DE 100 PREGUNTAS POR CATEGORÍAS
-        const mazoOriginal = [
-            { c: "Sacramentos", q: "¿Cuál es el primer sacramento que recibimos?", a: [{t:"BAUTISMO",p:70},{t:"CONFIRMACIÓN",p:20},{t:"EUCARISTÍA",p:10}] },
-            { c: "Personajes", q: "¿Quién construyó el Arca para salvarse del Diluvio?", a: [{t:"NOÉ",p:80},{t:"SUS HIJOS",p:15},{t:"SU ESPOSA",p:5}] },
-            { c: "Mandamientos", q: "¿Cuál es el primer mandamiento?", a: [{t:"AMAR A DIOS",p:90},{t:"NO MATAR",p:5},{t:"HONRAR A PADRES",p:5}] },
-            { c: "Virgen María", q: "¿En qué ciudad nació Jesús?", a: [{t:"BELÉN",p:75},{t:"NAZARET",p:20},{t:"JERUSALÉN",p:5}] },
-            { c: "Misa", q: "¿Cómo se llama el libro de donde se leen las lecturas?", a: [{t:"LECCIONARIO",p:50},{t:"BIBLIA",p:40},{t:"MISAL",p:10}] },
-            { c: "Oraciones", q: "¿Cuál es la oración que Jesús nos enseñó?", a: [{t:"PADRE NUESTRO",p:95},{t:"AVE MARÍA",p:3},{t:"CREDO",p:2}] },
-            { c: "Apóstoles", q: "¿Quién negó a Jesús tres veces?", a: [{t:"PEDRO",p:85},{t:"JUDAS",p:10},{t:"JUAN",p:5}] },
-            { c: "Antiguo Testamento", q: "¿Quién venció al gigante Goliat?", a: [{t:"DAVID",p:80},{t:"SAÚL",p:10},{t:"SANSÓN",p:10}] },
-            { c: "Espíritu Santo", q: "¿En qué fiesta descendió el Espíritu Santo?", a: [{t:"PENTECOSTÉS",p:70},{t:"PASCUA",p:20},{t:"NAVIDAD",p:10}] },
-            { c: "Parábolas", q: "¿Qué hijo regresó arrepentido con su padre?", a: [{t:"HIJO PRÓDIGO",p:90},{t:"EL MAYOR",p:10}] }
-        ];
+        // Initialize Icons
+        lucide.createIcons();
 
-        // Rellenar hasta 100 con variaciones para que no esté vacío
-        for(let i=11; i<=100; i++) {
-            mazoOriginal.push({
-                c: "Cultura General Católica",
-                q: "Pregunta sobre la Fe #" + i + ": ¿Quién es el actual Papa?",
-                a: [{t:"FRANCISCO",p:80},{t:"BENEDICTO",p:15},{t:"JUAN PABLO",p:5}]
-            });
+        // Chatbot Demo Logic
+        const chatContainer = document.getElementById('chat-container');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        const zoeResponses = {
+            "default": "En este modo de prueba solo puedo responder preguntas predefinidas. Intenta con: '¿Qué significa Zoe?' o '¿Qué hace esta plataforma?'.",
+            "hola": "¡Hola! Es un gusto saludarte. Soy Zoe.",
+            "que significa zoe": "Mi nombre proviene del griego bíblico 'Ζωή' y significa 'Vida', específicamente la vida eterna, divina y abundante que proviene de Dios. Mi misión es traer esa vitalidad a la gestión de tu comunidad.",
+            "que hace esta plataforma": "ZOE te ayuda a digitalizar la gestión pastoral: control de asistencia, reportes para padres, gamificación con insignias y más. Todo para facilitar la vida comunitaria.",
+            "gamificacion": "¡Sí! Incluimos un sistema de puntos e insignias como 'Testigo de la Fe' o 'Servidor Fiel' para motivar la participación de los jóvenes."
+        };
+
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`;
+
+            const iconHtml = isUser ? '' : `
+                <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center flex-shrink-0 zoe-icon-pulse">
+                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 6V12L16 14" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7 14.5C7 14.5 8.5 13 10.5 13C12.5 13 14 14.5 14 14.5V17.5C14 17.5 12.5 19 10.5 19C8.5 19 7 17.5 7 17.5V14.5Z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>`;
+
+            const bgClass = isUser ? 'gradient-green text-white rounded-br-none' : 'bg-slate-100 rounded-tl-none';
+
+            messageDiv.innerHTML = `
+                ${iconHtml}
+                <div class="${bgClass} p-3 rounded-2xl text-sm max-w-[70%]">
+                    ${message}
+                </div>
+            `;
+            chatContainer.prepend(messageDiv); // Add to top because of flex-col-reverse
         }
 
-        let peer, conn, modo, timerInt;
-        let juego = { mazo: mazoOriginal.sort(()=>Math.random()-0.5), lvl: 0, rev: [], pA: 0, pB: 0, time: 30 };
+        function handleSend() {
+            const text = chatInput.value.trim();
+            if (!text) return;
 
-        function iniciar(m) {
-            const id = document.getElementById('room-id').value;
-            if(!id) return alert("Escribe un nombre de sala primero");
-            modo = m;
-            peer = new Peer(m === 'P' ? id : null);
+            addMessage(text, true);
+            chatInput.value = '';
 
-            peer.on('open', () => {
-                if(m === 'A') {
-                    conn = peer.connect(id);
-                    conn.on('open', () => {
-                        document.getElementById('setup').style.display = 'none';
-                        document.getElementById('av').style.display = 'flex';
-                        actualizar();
-                    });
-                } else {
-                    document.getElementById('setup').style.display = 'none';
-                    document.getElementById('pv').style.display = 'flex';
-                }
-            });
-
-            peer.on('connection', c => {
-                conn = c;
-                conn.on('data', d => {
-                    if(d === 'X') mostrarError();
-                    else { juego = d; actualizar(); }
-                });
-            });
-        }
-
-        function accion(tipo, val) {
-            if(tipo === 'R') { if(!juego.rev.includes(val)) juego.rev.push(val); }
-            if(tipo === 'X') { conn.send('X'); return; }
-            if(tipo === 'PA') juego.pA += 10;
-            if(tipo === 'PB') juego.pB += 10;
-            if(tipo === 'T') { iniciarReloj(); }
-            if(tipo === 'N') { juego.lvl++; juego.rev = []; juego.time = 30; clearInterval(timerInt); }
+            const lowerText = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Remove accents
             
-            if(conn) conn.send(juego);
-            actualizar();
-        }
-
-        function iniciarReloj() {
-            clearInterval(timerInt);
-            timerInt = setInterval(() => {
-                if(juego.time > 0) {
-                    juego.time--;
-                    if(conn) conn.send(juego);
-                    actualizar();
-                } else {
-                    clearInterval(timerInt);
-                    accion('X');
+            let response = zoeResponses["default"];
+            for (const key in zoeResponses) {
+                if (lowerText.includes(key)) {
+                    response = zoeResponses[key];
+                    break;
                 }
-            }, 1000);
-        }
-
-        function actualizar() {
-            const p = juego.mazo[juego.lvl];
-            if(!p) return;
-
-            // Update Proyector
-            if(modo === 'P' || document.getElementById('pv').style.display === 'flex') {
-                document.getElementById('categoria-display').innerText = "Categoría: " + p.c;
-                document.getElementById('pregunta-display').innerText = p.q;
-                document.getElementById('pA').innerText = juego.pA;
-                document.getElementById('pB').innerText = juego.pB;
-                document.getElementById('timer-p').innerText = juego.time + "s";
-                
-                const t = document.getElementById('tablero-p');
-                t.innerHTML = '';
-                p.a.forEach((ans, i) => {
-                    const ok = juego.rev.includes(i);
-                    t.innerHTML += `<div class="fila ${ok?'open':''}"> ${ok ? ans.t + " (" + ans.p + ")" : i+1} </div>`;
-                });
-                if(window.lastR < juego.rev.length) document.getElementById('sd').play();
-                window.lastR = juego.rev.length;
             }
 
-            // Update Admin
-            if(modo === 'A') {
-                document.getElementById('adm-cat').innerText = p.c;
-                document.getElementById('adm-q').innerText = p.q;
-                document.getElementById('timer-a').innerText = juego.time + "s";
-                const t = document.getElementById('tablero-a');
-                t.innerHTML = '';
-                p.a.forEach((ans, i) => {
-                    const ok = juego.rev.includes(i);
-                    t.innerHTML += `<div class="ans-item ${ok?'active':''}" onclick="accion('R', ${i})"> ${ans.t} (${ans.p}) </div>`;
-                });
-            }
+            setTimeout(() => addMessage(response), 800);
         }
 
-        function mostrarError() {
-            document.getElementById('sb').play();
-            const x = document.getElementById('big-x');
-            x.style.display = 'block';
-            setTimeout(() => x.style.display = 'none', 1200);
-        }
+        sendBtn.addEventListener('click', handleSend);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSend();
+        });
 
-        document.addEventListener('touchstart', () => { 
-            document.getElementById('sd').play().then(()=>document.getElementById('sd').pause()); 
-        }, {once:true});
+        // Simple Animation Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('section').forEach(section => {
+            section.classList.add('scroll-reveal');
+            observer.observe(section);
+        });
     </script>
 </body>
 </html>
