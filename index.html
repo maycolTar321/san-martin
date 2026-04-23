@@ -3,216 +3,462 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZOE - Plataforma de Gestión Pastoral</title>
+    <title>ZOE | Vida en abundancia</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Fraunces:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        :root { --zoe-green: #22c55e; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
         .serif { font-family: 'Fraunces', serif; }
-        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); }
-        .gradient-green { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); }
-        .scroll-reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
-        .scroll-reveal.active { opacity: 1; transform: translateY(0); }
-        /* Animación para el icono de Zoe */
-        @keyframes pulse-soft { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.9; } }
-        .zoe-icon-pulse { animation: pulse-soft 3s infinite ease-in-out; }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+        .gradient-green { background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); }
+        .sidebar-link.active { background: #f0fdf4; color: #16a34a; border-right: 4px solid #22c55e; }
+        .hidden-section { display: none; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .zoe-float { animation: float 4s ease-in-out infinite; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
+<body class="bg-slate-50 text-slate-900">
 
-    <nav class="fixed w-full z-50 transition-all duration-300 py-4 px-6" id="navbar">
-        <div class="max-w-7xl mx-auto flex justify-between items-center glass rounded-2xl px-6 py-3 shadow-sm border border-white/20">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 gradient-green rounded-lg flex items-center justify-center zoe-icon-pulse">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M12 6V12L16 14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M7 14.5C7 14.5 8.5 13 10.5 13C12.5 13 14 14.5 14 14.5V17.5C14 17.5 12.5 19 10.5 19C8.5 19 7 17.5 7 17.5V14.5Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <div id="section-landing">
+        <nav class="fixed w-full z-50 p-6">
+            <div class="max-w-7xl mx-auto glass rounded-2xl px-6 py-3 flex justify-between items-center shadow-sm border border-white/20">
+                <div class="flex items-center gap-2">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" class="zoe-float">
+                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="#22c55e"/>
+                        <path d="M8 12L12 8L16 12L12 16L8 12Z" fill="white"/>
                     </svg>
+                    <span class="text-2xl font-bold tracking-tighter text-green-600">ZOE</span>
                 </div>
-                <span class="text-xl font-bold tracking-tight">ZOE</span>
+                <div class="hidden md:flex gap-8 font-semibold text-sm">
+                    <a href="#que-es" class="hover:text-green-600 transition">¿Qué es?</a>
+                    <a href="#planes" class="hover:text-green-600 transition">Planes</a>
+                </div>
+                <button onclick="showSection('section-login')" class="gradient-green text-white px-6 py-2 rounded-xl font-bold text-sm shadow-lg shadow-green-200 hover:scale-105 transition">Entrar</button>
             </div>
-            <div class="hidden md:flex gap-8 font-medium text-sm">
-                <a href="#features" class="hover:text-green-600">Funciones</a>
-                <a href="#gamification" class="hover:text-green-600">Gamificación</a>
-                <a href="#pricing" class="hover:text-green-600">Planes</a>
-            </div>
-            <button class="bg-slate-900 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-slate-800 transition">
-                Acceso Demo
-            </button>
-        </div>
-    </nav>
+        </nav>
 
-    <section class="pt-32 pb-20 px-6">
-        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-            <div class="space-y-8">
-                <span class="inline-block px-4 py-1.5 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-wider">
-                    Gestión Pastoral Inteligente
-                </span>
-                <h1 class="text-5xl lg:text-7xl font-bold leading-[1.1] serif">
-                    Digitaliza tu comunidad con <span class="text-green-600 italic">vida.</span>
-                </h1>
-                <p class="text-lg text-slate-600 max-w-md">
-                    Control de asistencia, gamificación para jóvenes y reportes automáticos para padres en una sola plataforma.
-                </p>
-                <div class="flex flex-wrap gap-4">
-                    <button class="gradient-green text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-green-200 hover:scale-105 transition">
-                        Empezar ahora
-                    </button>
-                    <button class="bg-white border border-slate-200 px-8 py-4 rounded-2xl font-bold hover:bg-slate-50 transition flex items-center gap-2">
-                        <i data-lucide="play-circle" class="w-5 h-5"></i> Ver video
-                    </button>
+        <header class="pt-48 pb-20 px-6">
+            <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8">
+                    <span class="bg-green-100 text-green-700 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">SaaS Católico Juvenil</span>
+                    <h1 class="text-6xl lg:text-8xl font-bold serif leading-none">Vida en <br><span class="text-green-600 italic font-normal">abundancia.</span></h1>
+                    <p class="text-slate-500 text-lg max-w-md italic">"Yo he venido para que tengan vida, y para que la tengan en abundancia." — Juan 10:10</p>
+                    <div class="flex gap-4">
+                        <button onclick="showSection('section-login')" class="gradient-green text-white px-8 py-4 rounded-2xl font-bold shadow-xl">Comenzar Gratis</button>
+                        <button class="bg-white border border-slate-200 px-8 py-4 rounded-2xl font-bold flex items-center gap-2"><i data-lucide="play-circle"></i> Ver Demo</button>
+                    </div>
                 </div>
+                <div class="relative">
+                    <div class="absolute -z-10 w-full h-full bg-green-200/50 blur-3xl rounded-full"></div>
+                    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=800" class="rounded-[3rem] shadow-2xl border-8 border-white" alt="Jóvenes ZOE">
+                </div>
+            </div>
+        </header>
+
+        <section id="planes" class="py-24 bg-white px-6">
+            <div class="max-w-7xl mx-auto text-center mb-16">
+                <h2 class="text-4xl font-bold serif">Planes para cada comunidad</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div class="p-8 rounded-3xl border border-slate-100 hover:border-green-500 transition group">
+                    <h3 class="font-bold text-xl mb-4">Plan Semilla</h3>
+                    <div class="text-4xl font-bold mb-6">Bs. 0 <span class="text-sm text-slate-400 font-normal">/mes</span></div>
+                    <ul class="text-left space-y-3 mb-8 text-slate-600 text-sm">
+                        <li><i data-lucide="check" class="inline w-4 mr-2 text-green-500"></i> Hasta 20 jóvenes</li>
+                        <li><i data-lucide="check" class="inline w-4 mr-2 text-green-500"></i> Asistencia básica</li>
+                        <li><i data-lucide="check" class="inline w-4 mr-2 text-green-500"></i> Mural de avisos</li>
+                    </ul>
+                    <button class="w-full py-3 rounded-xl border border-slate-200 font-bold group-hover:bg-green-600 group-hover:text-white transition">Elegir</button>
+                </div>
+                <div class="p-8 rounded-3xl border-2 border-green-500 bg-green-50 relative">
+                    <span class="absolute -top-4 left-1/2 -translate-x-1/2 bg-green-500 text-white px-4 py-1 rounded-full text-xs font-bold">RECOMENDADO</span>
+                    <h3 class="font-bold text-xl mb-4">Plan Parroquia</h3>
+                    <div class="text-4xl font-bold mb-6">Bs. 150 <span class="text-sm text-slate-400 font-normal">/mes</span></div>
+                    <ul class="text-left space-y-3 mb-8 text-slate-600 text-sm font-semibold">
+                        <li><i data-lucide="check" class="inline w-4 mr-2 text-green-500"></i> Hasta 100 jóvenes</li>
+                        <li><i data-lucide="check" class="inline w-4 mr-2 text-green-500"></i> Zoe AI Ilimitado</li>
+                        <li><i data-lucide="check" class="inline w-4 mr-2 text-green-500"></i> Biblioteca & Editor</li>
+                        <li><i data-lucide="check" class="inline w-4 mr-2 text-green-500"></i> Reportes PDF</li>
+                    </ul>
+                    <button class="w-full py-3 rounded-xl gradient-green text-white font-bold shadow-lg">Elegir</button>
+                </div>
+                <div class="p-8 rounded-3xl border border-slate-100 hover:border-green-500 transition group">
+                    <h3 class="font-bold text-xl mb-4">Plan Diócesis</h3>
+                    <div class="text-4xl font-bold mb-6">Bs. 400 <span class="text-sm text-slate-400 font-normal">/mes</span></div>
+                    <ul class="text-left space-y-3 mb-8 text-slate-600 text-sm">
+                        <li><i data-lucide="check" class="inline w-4 mr-2 text-green-500"></i> Jóvenes ilimitados</li>
+                        <li><i data-lucide="check" class="inline w-4 mr-2 text-green-500"></i> Multi-parroquia</li>
+                        <li><i data-lucide="check" class="inline w-4 mr-2 text-green-500"></i> Soporte VIP</li>
+                    </ul>
+                    <button class="w-full py-3 rounded-xl border border-slate-200 font-bold group-hover:bg-green-600 group-hover:text-white transition">Elegir</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div id="section-login" class="hidden-section min-h-screen flex items-center justify-center p-6 bg-green-50">
+        <div class="bg-white p-10 rounded-[2.5rem] shadow-2xl w-full max-w-md space-y-8">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold serif">Bienvenido a ZOE</h2>
+                <p class="text-slate-400 text-sm">Ingresa tus credenciales para continuar</p>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase mb-2">Email</label>
+                    <input type="email" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 transition" placeholder="tu@parroquia.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase mb-2">Contraseña</label>
+                    <input type="password" class="w-full p-4 bg-slate-50 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 transition" placeholder="••••••••">
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+                <button onclick="login('admin')" class="py-2 bg-slate-900 text-white rounded-lg text-[10px] font-bold">SOY ADMIN</button>
+                <button onclick="login('catequista')" class="py-2 bg-green-600 text-white rounded-lg text-[10px] font-bold">SOY CATEQUISTA</button>
+                <button onclick="login('joven')" class="py-2 bg-green-200 text-green-800 rounded-lg text-[10px] font-bold">SOY JOVEN</button>
+            </div>
+            <p class="text-center text-xs text-slate-400">¿Olvidaste tu contraseña? <a href="#" class="text-green-600 font-bold">Recupérala</a></p>
+        </div>
+    </div>
+
+    <div id="section-app" class="hidden-section min-h-screen flex flex-col md:flex-row">
+        <aside class="w-full md:w-64 bg-white border-r border-slate-100 flex flex-col">
+            <div class="p-6 flex items-center gap-2 mb-8">
+                <div class="w-8 h-8 gradient-green rounded-lg flex items-center justify-center">
+                    <i data-lucide="leaf" class="text-white w-5 h-5"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tighter">ZOE</span>
             </div>
             
-            <div class="relative">
-                <div class="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-green-100/50 rounded-full blur-3xl"></div>
-                <div class="glass border border-white p-4 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800" alt="App Preview" class="rounded-[2rem] w-full">
-                    <div class="absolute bottom-10 -left-6 glass p-4 rounded-2xl shadow-xl border border-white/50">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white">
-                                <i data-lucide="check-circle" class="w-6 h-6"></i>
+            <nav class="flex-1 px-4 space-y-2 font-semibold text-slate-500" id="sidebar-nav">
+                </nav>
+
+            <div class="p-6 border-t">
+                <div class="flex items-center gap-3 mb-4">
+                    <img src="https://i.pravatar.cc/150?u=michael" class="w-10 h-10 rounded-xl" alt="Avatar">
+                    <div>
+                        <p class="text-xs font-bold" id="user-name">Michael Vargas</p>
+                        <p class="text-[10px] text-slate-400 uppercase tracking-widest" id="user-role">ADMIN</p>
+                    </div>
+                </div>
+                <button onclick="showSection('section-landing')" class="w-full py-2 bg-slate-50 text-slate-400 rounded-lg text-xs font-bold flex items-center justify-center gap-2 hover:bg-red-50 hover:text-red-500 transition">
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Salir
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-4 md:p-10 overflow-y-auto bg-slate-50 h-screen">
+            <div class="flex justify-between items-center mb-10">
+                <div>
+                    <h2 class="text-2xl font-bold serif" id="current-view-title">Resumen General</h2>
+                    <p class="text-xs text-slate-400 font-medium" id="current-date">Jueves, 23 de Abril, 2026</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="bg-white px-4 py-2 rounded-xl text-[11px] font-bold flex items-center gap-2 shadow-sm border border-slate-100">
+                        <i data-lucide="calendar" class="w-4 text-green-500"></i>
+                        SAN JORGE MÁRTIR
+                    </div>
+                    <button class="relative bg-white p-2.5 rounded-xl shadow-sm border border-slate-100">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="app-content-area" class="space-y-8">
+                <div id="view-admin-dashboard" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                        <p class="text-xs text-slate-400 uppercase font-bold tracking-widest mb-2">Jóvenes</p>
+                        <h4 class="text-3xl font-bold">1,240</h4>
+                        <p class="text-[10px] text-green-500 font-bold mt-2">+12% este mes</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
+                        <p class="text-xs text-slate-400 uppercase font-bold tracking-widest mb-2">Parroquias</p>
+                        <h4 class="text-3xl font-bold">45</h4>
+                        <p class="text-[10px] text-blue-500 font-bold mt-2">Bolivia & Latam</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 col-span-2">
+                        <canvas id="mainChart" height="100"></canvas>
+                    </div>
+                </div>
+
+                <div id="view-catequista-asistencia" class="hidden-section bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="p-6 border-b flex justify-between items-center bg-green-50/50">
+                        <h3 class="font-bold">Pasar Lista: Grupo Confirmación B</h3>
+                        <span class="text-xs font-bold text-green-600">Abril 23, 2026</span>
+                    </div>
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 uppercase text-[10px] font-bold text-slate-400">
+                            <tr>
+                                <th class="p-4">Joven</th>
+                                <th class="p-4 text-center">Asistencia</th>
+                                <th class="p-4">Observación</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="p-4 flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-slate-200"></div>
+                                    <span class="font-semibold">Luis Alberto Arce</span>
+                                </td>
+                                <td class="p-4 text-center space-x-2">
+                                    <button class="px-3 py-1 bg-green-500 text-white rounded-lg text-xs font-bold">P</button>
+                                    <button class="px-3 py-1 bg-slate-100 text-slate-400 rounded-lg text-xs font-bold">F</button>
+                                    <button class="px-3 py-1 bg-slate-100 text-slate-400 rounded-lg text-xs font-bold">J</button>
+                                </td>
+                                <td class="p-4"><input type="text" class="bg-slate-50 w-full p-2 rounded-lg outline-none" placeholder="..."></td>
+                            </tr>
+                            <tr>
+                                <td class="p-4 flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-slate-200"></div>
+                                    <span class="font-semibold">Maria Fernanda Ramos</span>
+                                </td>
+                                <td class="p-4 text-center space-x-2">
+                                    <button class="px-3 py-1 bg-slate-100 text-slate-400 rounded-lg text-xs font-bold">P</button>
+                                    <button class="px-3 py-1 bg-red-500 text-white rounded-lg text-xs font-bold">F</button>
+                                    <button class="px-3 py-1 bg-slate-100 text-slate-400 rounded-lg text-xs font-bold">J</button>
+                                </td>
+                                <td class="p-4"><input type="text" class="bg-slate-50 w-full p-2 rounded-lg outline-none" placeholder="Sin permiso"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="p-6 bg-slate-50 text-right">
+                        <button class="gradient-green text-white px-6 py-2 rounded-xl font-bold text-xs shadow-lg">Guardar Asistencia</button>
+                    </div>
+                </div>
+
+                <div id="view-joven-home" class="hidden-section space-y-8">
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="col-span-2 bg-white p-8 rounded-[2.5rem] shadow-sm border-2 border-green-500/10">
+                            <h3 class="text-xl font-bold mb-4">¡Paz y Bien, Michael!</h3>
+                            <p class="text-sm text-slate-500 mb-6">"El que no vive para servir, no sirve para vivir." — Sta. Teresa de Calcuta</p>
+                            <div class="space-y-4">
+                                <div class="flex justify-between text-xs font-bold uppercase mb-1">
+                                    <span>Progreso Confirmación</span>
+                                    <span>75%</span>
+                                </div>
+                                <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full gradient-green w-3/4"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900 text-white p-8 rounded-[2.5rem] shadow-xl relative overflow-hidden">
+                            <i data-lucide="award" class="absolute -bottom-4 -right-4 w-32 h-32 text-white/5 opacity-20"></i>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-green-400 mb-2">Tu Nivel</p>
+                            <h4 class="text-2xl font-bold mb-4">Servidor Fiel</h4>
+                            <div class="flex gap-2">
+                                <span class="bg-white/10 px-3 py-1 rounded-full text-[10px]">1,200 Puntos</span>
+                                <span class="bg-green-500 px-3 py-1 rounded-full text-[10px] font-bold">TOP 5</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center">
+                                <i data-lucide="file-warning"></i>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500">Asistencia Hoy</p>
-                                <p class="font-bold text-lg text-slate-800">98% Logrado</p>
+                                <h4 class="font-bold text-sm">Resumen del Evangelio de Juan</h4>
+                                <p class="text-xs text-slate-400">Vence mañana 23:59</p>
                             </div>
+                        </div>
+                        <button class="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-bold">Subir Tarea</button>
+                    </div>
+                </div>
+
+                <div id="view-biblioteca" class="hidden-section">
+                    <div class="flex flex-wrap gap-4 mb-8">
+                        <button class="px-4 py-2 bg-green-600 text-white rounded-xl text-xs font-bold">Todo</button>
+                        <button class="px-4 py-2 bg-white text-slate-500 border border-slate-100 rounded-xl text-xs font-bold">Biblia</button>
+                        <button class="px-4 py-2 bg-white text-slate-500 border border-slate-100 rounded-xl text-xs font-bold">Valores</button>
+                        <button class="px-4 py-2 bg-white text-slate-500 border border-slate-100 rounded-xl text-xs font-bold">Retiros</button>
+                    </div>
+                     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="bg-white p-4 rounded-[2rem] shadow-sm border border-slate-100 hover:scale-105 transition cursor-pointer">
+                            <div class="aspect-[3/4] bg-green-50 rounded-2xl mb-4 flex items-center justify-center">
+                                <i data-lucide="book-open" class="text-green-500 w-12"></i>
+                            </div>
+                            <h4 class="font-bold text-xs">YouCat: Catecismo Juvenil</h4>
+                            <p class="text-[10px] text-slate-400">Fundación Youcat</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-[2rem] shadow-sm border border-slate-100 hover:scale-105 transition cursor-pointer">
+                            <div class="aspect-[3/4] bg-blue-50 rounded-2xl mb-4 flex items-center justify-center">
+                                <i data-lucide="file-text" class="text-blue-500 w-12"></i>
+                            </div>
+                            <h4 class="font-bold text-xs">Guía del Confirmando</h4>
+                            <p class="text-[10px] text-slate-400">Diócesis de Tarija</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </main>
+    </div>
 
-    <section id="features" class="py-24 px-6 max-w-4xl mx-auto">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl font-bold serif mb-4">Pregúntale a ZOE (Prueba)</h2>
-            <p class="text-slate-600">Tu asistente inteligente que representa la "vida abundante" en tu gestión.</p>
-        </div>
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-100 overflow-hidden">
-            <div class="bg-slate-900 p-4 flex items-center gap-3">
-                <div class="w-6 h-6 gradient-green rounded-md flex items-center justify-center zoe-icon-pulse">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M12 6V12L16 14" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M7 14.5C7 14.5 8.5 13 10.5 13C12.5 13 14 14.5 14 14.5V17.5C14 17.5 12.5 19 10.5 19C8.5 19 7 17.5 7 17.5V14.5Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <span class="text-slate-400 text-xs font-mono italic">Zoe_AI_Assistant_Demo</span>
-            </div>
-            <div class="p-6 space-y-4 h-[300px] overflow-y-auto flex flex-col-reverse" id="chat-container">
-                <div class="flex gap-3 justify-start">
-                    <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center flex-shrink-0 zoe-icon-pulse">
-                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M12 6V12L16 14" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M7 14.5C7 14.5 8.5 13 10.5 13C12.5 13 14 14.5 14 14.5V17.5C14 17.5 12.5 19 10.5 19C8.5 19 7 17.5 7 17.5V14.5Z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
+    <div id="zoe-ai-container" class="fixed bottom-6 right-6 z-[100]">
+        <button onclick="toggleZoe()" class="w-16 h-16 gradient-green rounded-full shadow-2xl flex items-center justify-center zoe-float border-4 border-white">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="white"/>
+                <path d="M8 12L12 8L16 12L12 16L8 12Z" fill="#22c55e"/>
+            </svg>
+        </button>
+
+        <div id="zoe-chat-window" class="hidden-section absolute bottom-20 right-0 w-[350px] h-[500px] bg-white rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden border border-slate-100">
+            <div class="p-6 gradient-green text-white flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                        <i data-lucide="bot"></i>
                     </div>
-                    <div class="bg-slate-100 p-3 rounded-2xl rounded-tl-none text-sm max-w-[70%]">
-                        ¡Hola! Soy Zoe, tu asistente de vida abundante. En este modo de prueba, puedo responder preguntas básicas sobre la plataforma. ¡Intenta preguntarme qué significa mi nombre!
+                    <div>
+                        <h4 class="font-bold text-sm leading-none">Zoe AI</h4>
+                        <p class="text-[10px] opacity-70">Vida en abundancia</p>
                     </div>
                 </div>
+                <button onclick="toggleZoe()"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
-            <div class="p-4 border-t border-slate-100 flex gap-2">
-                <input type="text" id="chat-input" placeholder="Escribe '¿Qué significa Zoe?'..." class="flex-1 bg-slate-50 border-none rounded-xl px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none text-sm">
-                <button id="send-btn" class="gradient-green text-white p-2 rounded-xl hover:opacity-90 transition">
-                    <i data-lucide="send" class="w-5 h-5"></i>
+            
+            <div id="chat-messages" class="flex-1 p-6 space-y-4 overflow-y-auto bg-slate-50">
+                <div class="bg-white p-4 rounded-2xl rounded-tl-none shadow-sm text-[13px] text-slate-700 max-w-[85%] border border-slate-100">
+                    ¡Paz y Bien! Soy **Zoe**, tu asistente virtual. ¿En qué puedo ayudarte con tu fe o tus tareas hoy? 🌱
+                </div>
+            </div>
+
+            <div class="p-4 bg-white border-t border-slate-100 flex gap-2">
+                <input type="text" id="chat-input" placeholder="Escribe tu pregunta..." class="flex-1 bg-slate-50 border-none px-4 py-3 rounded-2xl text-xs outline-none focus:ring-1 focus:ring-green-500">
+                <button onclick="sendMessage()" class="gradient-green text-white p-3 rounded-xl shadow-lg shadow-green-100">
+                    <i data-lucide="send" class="w-4 h-4"></i>
                 </button>
             </div>
         </div>
-    </section>
-
-    <footer class="bg-slate-100 py-12 border-t border-slate-200 text-center">
-        <p class="serif italic text-slate-500 mb-6 mx-6">"Yo he venido para que tengan vida (Zoe), y para que la tengan en abundancia." - Juan 10:10</p>
-        <div class="flex justify-center gap-6 text-slate-400">
-            <i data-lucide="instagram" class="w-5 h-5 cursor-pointer hover:text-green-600"></i>
-            <i data-lucide="facebook" class="w-5 h-5 cursor-pointer hover:text-green-600"></i>
-            <i data-lucide="mail" class="w-5 h-5 cursor-pointer hover:text-green-600"></i>
-        </div>
-    </footer>
+    </div>
 
     <script>
-        // Initialize Icons
+        // Inicialización de iconos
         lucide.createIcons();
 
-        // Chatbot Demo Logic
-        const chatContainer = document.getElementById('chat-container');
-        const chatInput = document.getElementById('chat-input');
-        const sendBtn = document.getElementById('send-btn');
-
-        const zoeResponses = {
-            "default": "En este modo de prueba solo puedo responder preguntas predefinidas. Intenta con: '¿Qué significa Zoe?' o '¿Qué hace esta plataforma?'.",
-            "hola": "¡Hola! Es un gusto saludarte. Soy Zoe.",
-            "que significa zoe": "Mi nombre proviene del griego bíblico 'Ζωή' y significa 'Vida', específicamente la vida eterna, divina y abundante que proviene de Dios. Mi misión es traer esa vitalidad a la gestión de tu comunidad.",
-            "que hace esta plataforma": "ZOE te ayuda a digitalizar la gestión pastoral: control de asistencia, reportes para padres, gamificación con insignias y más. Todo para facilitar la vida comunitaria.",
-            "gamificacion": "¡Sí! Incluimos un sistema de puntos e insignias como 'Testigo de la Fe' o 'Servidor Fiel' para motivar la participación de los jóvenes."
-        };
-
-        function addMessage(message, isUser = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `flex gap-3 ${isUser ? 'justify-end' : 'justify-start'}`;
-
-            const iconHtml = isUser ? '' : `
-                <div class="w-8 h-8 rounded-lg gradient-green flex items-center justify-center flex-shrink-0 zoe-icon-pulse">
-                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M12 6V12L16 14" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M7 14.5C7 14.5 8.5 13 10.5 13C12.5 13 14 14.5 14 14.5V17.5C14 17.5 12.5 19 10.5 19C8.5 19 7 17.5 7 17.5V14.5Z" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>`;
-
-            const bgClass = isUser ? 'gradient-green text-white rounded-br-none' : 'bg-slate-100 rounded-tl-none';
-
-            messageDiv.innerHTML = `
-                ${iconHtml}
-                <div class="${bgClass} p-3 rounded-2xl text-sm max-w-[70%]">
-                    ${message}
-                </div>
-            `;
-            chatContainer.prepend(messageDiv); // Add to top because of flex-col-reverse
-        }
-
-        function handleSend() {
-            const text = chatInput.value.trim();
-            if (!text) return;
-
-            addMessage(text, true);
-            chatInput.value = '';
-
-            const lowerText = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); // Remove accents
-            
-            let response = zoeResponses["default"];
-            for (const key in zoeResponses) {
-                if (lowerText.includes(key)) {
-                    response = zoeResponses[key];
-                    break;
-                }
+        // Manejo de Secciones Principales
+        function showSection(sectionId) {
+            document.querySelectorAll('body > div').forEach(div => div.classList.add('hidden-section'));
+            document.getElementById(sectionId).classList.remove('hidden-section');
+            if(sectionId === 'section-app') {
+                document.getElementById('zoe-ai-container').classList.remove('hidden-section');
+            } else {
+                document.getElementById('zoe-ai-container').classList.add('hidden-section');
             }
-
-            setTimeout(() => addMessage(response), 800);
+            window.scrollTo(0,0);
         }
 
-        sendBtn.addEventListener('click', handleSend);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleSend();
-        });
+        // Simulación de Login con Roles
+        function login(role) {
+            const userName = document.getElementById('user-name');
+            const userRole = document.getElementById('user-role');
+            const nav = document.getElementById('sidebar-nav');
 
-        // Simple Animation Observer
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
+            showSection('section-app');
+            nav.innerHTML = ''; 
+
+            const commonLinks = `
+                <a href="#" class="sidebar-link active flex items-center gap-3 p-3 rounded-xl transition"><i data-lucide="layout-dashboard" class="w-5"></i> Inicio</a>
+                <a href="#" onclick="showSubView('view-biblioteca', 'Biblioteca Juvenil')" class="sidebar-link flex items-center gap-3 p-3 rounded-xl transition"><i data-lucide="book-open" class="w-5"></i> Biblioteca</a>
+                <a href="#" class="sidebar-link flex items-center gap-3 p-3 rounded-xl transition"><i data-lucide="message-square" class="w-5"></i> Foro</a>
+            `;
+
+            if(role === 'admin') {
+                userName.innerText = 'Administrador Parroquial';
+                userRole.innerText = 'ADMIN BOLIVIA';
+                nav.innerHTML = commonLinks + `
+                    <a href="#" class="sidebar-link flex items-center gap-3 p-3 rounded-xl transition"><i data-lucide="users" class="w-5"></i> Parroquias</a>
+                    <a href="#" class="sidebar-link flex items-center gap-3 p-3 rounded-xl transition"><i data-lucide="credit-card" class="w-5"></i> Pagos</a>
+                `;
+                showSubView('view-admin-dashboard', 'Resumen General');
+                initChart();
+            } else if(role === 'catequista') {
+                userName.innerText = 'Catequista Guía';
+                userRole.innerText = 'CATEQUISTA';
+                nav.innerHTML = commonLinks + `
+                    <a href="#" onclick="showSubView('view-catequista-asistencia', 'Control de Asistencia')" class="sidebar-link flex items-center gap-3 p-3 rounded-xl transition"><i data-lucide="check-square" class="w-5"></i> Asistencia</a>
+                `;
+                showSubView('view-catequista-asistencia', 'Asistencia');
+            } else {
+                userName.innerText = 'Joven Confirmando';
+                userRole.innerText = 'JOVEN';
+                nav.innerHTML = commonLinks + `
+                    <a href="#" class="sidebar-link flex items-center gap-3 p-3 rounded-xl transition"><i data-lucide="calendar" class="w-5"></i> Eventos</a>
+                `;
+                showSubView('view-joven-home', 'Mi Camino de Fe');
+            }
+            lucide.createIcons();
+        }
+
+        // Navegación interna del Dashboard
+        function showSubView(viewId, title) {
+            document.querySelectorAll('#app-content-area > div').forEach(div => div.classList.add('hidden-section'));
+            document.getElementById(viewId).classList.remove('hidden-section');
+            document.getElementById('current-view-title').innerText = title;
+        }
+
+        // Lógica del Chatbot Zoe
+        function toggleZoe() {
+            document.getElementById('zoe-chat-window').classList.toggle('hidden-section');
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const messages = document.getElementById('chat-messages');
+            if(!input.value.trim()) return;
+
+            const userMsg = document.createElement('div');
+            userMsg.className = "gradient-green text-white self-end p-4 rounded-2xl rounded-br-none shadow-sm text-[13px] max-w-[85%] ml-auto";
+            userMsg.innerText = input.value;
+            messages.appendChild(userMsg);
+
+            const text = input.value.toLowerCase();
+            input.value = '';
+            messages.scrollTop = messages.scrollHeight;
+
+            setTimeout(() => {
+                const botMsg = document.createElement('div');
+                botMsg.className = "bg-white p-4 rounded-2xl rounded-tl-none shadow-sm text-[13px] text-slate-700 max-w-[85%] border border-slate-100";
+                
+                let response = "¡Qué buena pregunta! Como asistente de ZOE, te animo a profundizar en ello con tu grupo de catequesis. ¿Quieres que busque algo en la biblioteca?";
+                
+                if(text.includes("asistencia")) response = "He revisado tu registro y vas muy bien. ¡La perseverancia es clave en la vida cristiana!";
+                if(text.includes("tarea")) response = "Recuerda que las tareas nos ayudan a reflexionar. Tienes una pendiente sobre el Evangelio.";
+                
+                botMsg.innerHTML = response;
+                messages.appendChild(botMsg);
+                messages.scrollTop = messages.scrollHeight;
+            }, 800);
+        }
+
+        // Gráfica Estadística (Solo Admin)
+        function initChart() {
+            const canvas = document.getElementById('mainChart');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Ene', 'Feb', 'Mar', 'Abr'],
+                    datasets: [{
+                        label: 'Nuevos Jóvenes',
+                        data: [65, 85, 110, 160],
+                        borderColor: '#22c55e',
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { display: false }, x: { grid: { display: false } } }
                 }
             });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('section').forEach(section => {
-            section.classList.add('scroll-reveal');
-            observer.observe(section);
-        });
+        }
     </script>
 </body>
 </html>
