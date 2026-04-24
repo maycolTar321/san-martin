@@ -3,467 +3,324 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZOE Pro | Gestión de Uniformes 2026</title>
+    <title>ZOE Pro | Sistema de Gestión 2026</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
     <style>
-        /* =========================================
-           SISTEMA VISUAL PREMIUM (GLASSMORPHISM)
-           ========================================= */
         :root {
-            --primary: #4f46e5;
-            --primary-dark: #3730a3;
-            --accent: #10b981;
-            --bg-body: #f1f5f9;
-            --white: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --radius: 24px;
-            --shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            --primary: #4f46e5; --primary-dark: #3730a3; --accent: #10b981;
+            --bg-body: #f8fafc; --white: #ffffff; --text-main: #1e293b;
+            --text-muted: #64748b; --radius: 28px;
+            --shadow: 0 25px 50px -12px rgba(0,0,0,0.08);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body {
-            background: var(--bg-body);
-            background-image: radial-gradient(circle at top right, rgba(79, 70, 229, 0.08), transparent), 
-                              radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.05), transparent);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 20px 15px;
-        }
+        body { background: var(--bg-body); min-height: 100vh; display: flex; justify-content: center; padding: 20px 15px; color: var(--text-main); }
 
-        /* --- CONTENEDOR PRINCIPAL --- */
         .app-shell {
-            width: 100%;
-            max-width: 550px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(15px);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(255, 255, 255, 0.7);
-            overflow: hidden;
-            position: relative;
+            width: 100%; max-width: 500px; background: var(--white);
+            border-radius: var(--radius); box-shadow: var(--shadow);
+            overflow: hidden; position: relative; border: 1px solid #f1f5f9;
         }
 
-        /* --- VISTAS --- */
-        .view { display: none; padding: 35px 25px; animation: slideUp 0.4s ease-out forwards; }
-        .view.active { display: block; }
+        /* --- VISTAS Y PASOS --- */
+        .step-view { display: none; padding: 35px 25px; animation: fadeIn 0.4s ease forwards; }
+        .step-view.active { display: block; }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- BARRA DE PROGRESO --- */
+        .progress-bar { display: flex; gap: 8px; padding: 25px 25px 0 25px; }
+        .dot { height: 6px; flex: 1; background: #e2e8f0; border-radius: 10px; transition: 0.4s; }
+        .dot.active { background: var(--primary); }
+
+        /* --- UI COMPONENTS --- */
+        .h-title { font-weight: 800; font-size: 1.7rem; letter-spacing: -1px; margin-bottom: 8px; text-align: center; }
+        .h-sub { color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 30px; display: block; }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
+        
+        .field {
+            width: 100%; padding: 18px; border: 2px solid #f1f5f9; border-radius: 20px;
+            font-size: 1rem; background: #f8fafc; transition: 0.3s; font-weight: 500;
         }
+        .field:focus { outline: none; border-color: var(--primary); background: white; }
 
-        /* --- DISEÑO DE FORMULARIO --- */
-        .header-box { text-align: center; margin-bottom: 30px; }
-        .header-box h1 { font-weight: 800; font-size: 1.8rem; color: var(--text-main); letter-spacing: -1px; }
-        .header-box p { color: var(--text-muted); font-size: 0.9rem; font-weight: 500; }
-
-        .card {
-            background: var(--white);
-            padding: 22px;
-            border-radius: 20px;
-            border: 1px solid #f1f5f9;
-            margin-bottom: 18px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
-        }
-
-        .label-style {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 800;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            margin-bottom: 10px;
-        }
-
-        .input-style {
-            width: 100%;
-            padding: 16px;
-            border: 2px solid #f1f5f9;
-            border-radius: 16px;
-            font-size: 1rem;
-            background: #f8fafc;
-            transition: 0.3s;
-            color: var(--text-main);
-            font-weight: 500;
-        }
-
-        .input-style:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-        }
-
-        /* --- SELECTOR DE COLOR (FIXED) --- */
+        /* --- SELECTOR DE COLOR (CORREGIDO) --- */
         .color-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 10px;
-            max-height: 250px;
-            overflow-y: auto;
-            padding: 5px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+            max-height: 300px; overflow-y: auto; padding: 4px;
         }
-
-        .color-item { position: relative; cursor: pointer; }
-        .color-box {
-            background: #f8fafc;
-            border: 2px solid #f1f5f9;
-            padding: 12px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: 0.3s;
+        .color-card { cursor: pointer; position: relative; }
+        .color-ui {
+            background: #f8fafc; border: 2px solid #f1f5f9; padding: 15px;
+            border-radius: 18px; display: flex; align-items: center; gap: 12px; transition: 0.3s;
         }
+        .color-circle { width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .color-name { font-size: 0.85rem; font-weight: 700; color: #475569; }
 
-        .color-preview { width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .color-label { font-size: 0.8rem; font-weight: 700; color: #475569; }
-
-        input[type="radio"]:checked + .color-box {
-            border-color: var(--primary);
-            background: #eef2ff;
-            transform: translateY(-2px);
-        }
+        input[type="radio"]:checked + .color-ui { border-color: var(--primary); background: #eef2ff; transform: scale(1.02); }
         input[type="radio"] { display: none; }
 
         /* --- BOTONES --- */
-        .btn-main {
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 18px;
-            font-size: 1rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+        .btn-row { display: flex; gap: 10px; margin-top: 25px; }
+        .btn {
+            flex: 1; padding: 20px; border: none; border-radius: 20px;
+            font-size: 1rem; font-weight: 800; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
+        .btn-next { background: var(--primary); color: white; }
+        .btn-back { background: #f1f5f9; color: var(--text-muted); }
+        .btn-wa { background: #25d366; color: white; text-decoration: none; margin-top: 10px; width: 100%; }
 
-        .btn-main:active { transform: scale(0.98); }
-
-        .btn-wa { background: #25d366; text-decoration: none; color: white; margin-top: 10px; }
-        .btn-pdf { background: var(--text-main); color: white; margin-bottom: 10px; }
-
-        /* --- TABLA ADMIN --- */
-        .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-item { background: var(--white); padding: 15px; border-radius: 18px; text-align: center; border: 1px solid #f1f5f9; }
-        .stat-item small { font-size: 0.65rem; font-weight: 800; color: var(--text-muted); }
-        .stat-item div { font-size: 1.3rem; font-weight: 800; color: var(--text-main); }
-
-        .table-container { border-radius: 18px; border: 1px solid #f1f5f9; overflow: hidden; background: white; margin-top: 15px; }
-        .table-scroll { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 500px; }
-        th { background: #f8fafc; padding: 15px; text-align: left; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
-        td { padding: 15px; font-size: 0.85rem; border-top: 1px solid #f1f5f9; }
-
-        .badge-status { padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 0.7rem; }
-        .bg-red { background: #fee2e2; color: #b91c1c; }
-        .bg-green { background: #d1fae5; color: #065f46; }
-
-        /* --- NOTIFICACIÓN TOAST --- */
-        #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--text-main); color: white; padding: 12px 25px;
-            border-radius: 50px; font-weight: 700; font-size: 0.9rem;
-            z-index: 1000; display: none; box-shadow: var(--shadow);
-        }
-
-        .footer-tag { text-align: center; padding: 25px; color: #cbd5e1; font-size: 0.7rem; font-weight: 800; cursor: pointer; letter-spacing: 2px; }
+        /* --- ADMIN TABLE --- */
+        .table-box { border: 1px solid #f1f5f9; border-radius: 20px; overflow: hidden; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { background: #f8fafc; padding: 15px; text-align: left; color: var(--text-muted); font-size: 0.7rem; }
+        td { padding: 15px; border-top: 1px solid #f1f5f9; }
+        .status { padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 0.7rem; }
     </style>
 </head>
 <body>
 
-    <div id="toast">Acción completada</div>
-
     <div class="app-shell">
-        
-        <div id="view-form" class="view active">
-            <div class="header-box">
-                <h1>Catequistas 2026</h1>
-                <p>Gestión de Pedidos y Uniformes</p>
-            </div>
-
-            <form id="orderForm">
-                <div class="card">
-                    <label class="label-style">Nombre Completo</label>
-                    <input type="text" id="u_nombre" class="input-style" required placeholder="Escribe tu nombre">
-                    
-                    <div style="margin-top: 15px;">
-                        <label class="label-style">Celular WhatsApp</label>
-                        <input type="tel" id="u_tel" class="input-style" required placeholder="77173169">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <label class="label-style">Talla de Polera</label>
-                    <select id="u_talla" class="input-style" required>
-                        <option value="S">Small (S)</option>
-                        <option value="M">Medium (M)</option>
-                        <option value="L">Large (L)</option>
-                        <option value="XL">Extra Large (XL)</option>
-                        <option value="XXL">Especial (XXL)</option>
-                    </select>
-                </div>
-
-                <div class="card">
-                    <label class="label-style">Elige el Color de Tela</label>
-                    <div id="colorContainer" class="color-grid">
-                        </div>
-                </div>
-
-                <div class="card">
-                    <label class="label-style">Monto de Adelanto (Bs.)</label>
-                    <input type="number" id="u_pago" class="input-style" value="0" min="0">
-                    
-                    <div style="margin-top: 15px;">
-                        <label class="label-style">Observaciones / Sugerencias</label>
-                        <textarea id="u_obs" class="input-style" rows="2" placeholder="Ej: Manga larga, sin bolsillos..."></textarea>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-main">
-                    <span>Confirmar mi Registro</span>
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                </button>
-            </form>
-
-            <div class="footer-tag" onclick="abrirAdmin()">PANEL DE COORDINACIÓN</div>
+        <div class="progress-bar">
+            <div class="dot active" id="dot1"></div>
+            <div class="dot" id="dot2"></div>
+            <div class="dot" id="dot3"></div>
         </div>
 
-        <div id="view-success" class="view">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 60px; margin-bottom: 20px;">🎉</div>
-                <h2 style="font-weight: 800; font-size: 1.8rem; color: var(--text-main);">¡Registro Recibido!</h2>
-                <p style="color: var(--text-muted); margin-top: 10px;">Tus datos se guardaron correctamente en el sistema ZOE.</p>
+        <div id="step1" class="step-view active">
+            <h1 class="h-title">Identificación</h1>
+            <span class="h-sub">Cuéntanos quién eres</span>
+            
+            <div class="input-group">
+                <label>Nombre Completo</label>
+                <input type="text" id="reg_nombre" class="field" placeholder="Tu nombre y apellido">
             </div>
-
-            <div id="pagoBox" style="display: none; background: #fffbeb; border: 2px dashed #fcd34d; padding: 25px; border-radius: 25px; margin: 20px 0; text-align: center;">
-                <p style="font-weight: 800; color: #92400e; font-size: 0.8rem; text-transform: uppercase;">Manda tu comprobante aquí:</p>
-                <a id="btnCoor" href="#" target="_blank" class="btn-main btn-wa">Coordinador Principal</a>
-                <a id="btnSub" href="#" target="_blank" class="btn-main btn-wa" style="background: #075e54;">Subcoordinadora</a>
+            <div class="input-group">
+                <label>WhatsApp (Bolivia)</label>
+                <input type="tel" id="reg_tel" class="field" placeholder="77173169">
             </div>
-
-            <button onclick="volverInicio()" class="btn-main" style="background: #f1f5f9; color: #64748b; box-shadow: none;">Nuevo Registro</button>
+            
+            <button onclick="validaPaso1()" class="btn btn-next">Continuar</button>
+            <div onclick="accesoAdmin()" style="text-align: center; margin-top: 40px; color: #cbd5e1; font-weight: 800; font-size: 0.65rem; cursor: pointer; letter-spacing: 2px;">PANEL COORDINACIÓN</div>
         </div>
 
-        <div id="view-admin" class="view">
-            <div class="header-box">
-                <h1>Panel Maestro</h1>
-                <p>Control de Caja y Entregas</p>
+        <div id="step2" class="step-view">
+            <h1 class="h-title">Personalización</h1>
+            <span class="h-sub">Elige tu estilo para el uniforme</span>
+            
+            <div class="input-group">
+                <label>Talla de Uniforme</label>
+                <select id="reg_talla" class="field">
+                    <option value="S">Small (S)</option>
+                    <option value="M">Medium (M)</option>
+                    <option value="L">Large (L)</option>
+                    <option value="XL">Extra Large (XL)</option>
+                </select>
             </div>
 
-            <div class="stats-row">
-                <div class="stat-item">
-                    <small>RECAUDADO</small>
-                    <div id="statRec" style="color: var(--accent);">0 Bs.</div>
+            <div class="input-group">
+                <label>Color de Polera</label>
+                <div id="colorPicker" class="color-grid">
+                    </div>
+            </div>
+
+            <div class="btn-row">
+                <button onclick="go(1)" class="btn btn-back">Atrás</button>
+                <button onclick="validaPaso2()" class="btn btn-next">Siguiente</button>
+            </div>
+        </div>
+
+        <div id="step3" class="step-view">
+            <h1 class="h-title">Finalizar</h1>
+            <span class="h-sub">Registro de adelanto y envío</span>
+            
+            <div class="input-group">
+                <label>Monto de Adelanto (Bs.)</label>
+                <input type="number" id="reg_pago" class="field" value="0">
+            </div>
+            <div class="input-group">
+                <label>Observaciones Especiales</label>
+                <textarea id="reg_obs" class="field" rows="3" placeholder="Ej. Cuello en V, logo pequeño..."></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button onclick="go(2)" class="btn btn-back">Atrás</button>
+                <button onclick="finalizarRegistro()" class="btn btn-next" style="background: var(--accent);">Confirmar Registro</button>
+            </div>
+        </div>
+
+        <div id="view-success" class="step-view">
+            <div style="text-align: center;">
+                <div style="font-size: 60px; margin-bottom: 20px;">✅</div>
+                <h1 class="h-title">¡Todo Listo!</h1>
+                <p style="color: var(--text-muted); margin-bottom: 30px;">Tus datos fueron procesados por el sistema.</p>
+                
+                <div id="wa-box" style="display:none; background: #fffbeb; padding: 20px; border-radius: 20px; border: 2px dashed #fcd34d;">
+                    <p style="font-weight: 800; color: #92400e; font-size: 0.75rem; margin-bottom: 15px;">ENVÍA TU COMPROBANTE:</p>
+                    <a id="linkMichael" href="#" target="_blank" class="btn btn-wa">Michael (Coordinador)</a>
                 </div>
-                <div class="stat-item">
-                    <small>POR COBRAR</small>
-                    <div id="statPen" style="color: #ef4444;">0 Bs.</div>
+                
+                <button onclick="location.reload()" class="btn btn-back" style="margin-top: 20px;">Nuevo Registro</button>
+            </div>
+        </div>
+
+        <div id="view-admin" class="step-view">
+            <h1 class="h-title">Administración</h1>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0;">
+                <div style="background: #eef2ff; padding: 15px; border-radius: 15px; text-align: center;">
+                    <small style="font-weight: 800; font-size: 0.6rem;">CAJA TOTAL</small>
+                    <div id="adm_caja" style="font-weight: 800; font-size: 1.2rem;">0 Bs.</div>
+                </div>
+                <div style="background: #fef2f2; padding: 15px; border-radius: 15px; text-align: center;">
+                    <small style="font-weight: 800; font-size: 0.6rem;">PENDIENTE</small>
+                    <div id="adm_deuda" style="font-weight: 800; font-size: 1.2rem; color: #ef4444;">0 Bs.</div>
                 </div>
             </div>
 
-            <button onclick="descargarPDF()" class="btn-main btn-pdf">Descargar Reporte PDF</button>
-            <button onclick="compartirReporteWA()" class="btn-main btn-wa">Compartir en WhatsApp</button>
-
-            <div class="table-container">
-                <div class="table-scroll">
-                    <table id="adminTable">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Detalle</th>
-                                <th>Saldo</th>
-                                <th>Cobrar</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
+            <button onclick="exportarPDF()" class="btn btn-next" style="background: #1e293b; margin-bottom: 10px;">Generar PDF Oficial</button>
+            
+            <div class="table-box">
+                <table id="tableAdmin">
+                    <thead><tr><th>Catequista</th><th>Talla</th><th>Saldo</th><th>Cobrar</th></tr></thead>
+                    <tbody></tbody>
+                </table>
             </div>
 
-            <button onclick="borrarTodo()" class="btn-main" style="background: #fee2e2; color: #b91c1c; margin-top: 30px; font-size: 0.8rem; box-shadow: none;">⚠️ REINICIAR TODO EL SISTEMA</button>
-            <button onclick="volverInicio()" class="btn-main" style="background: none; color: var(--text-muted); box-shadow: none;">Cerrar Panel</button>
+            <button onclick="location.reload()" class="btn btn-back" style="margin-top: 20px;">Cerrar Panel</button>
         </div>
     </div>
 
     <script>
-        /* =========================================
-           CONFIGURACIÓN Y LÓGICA DE NEGOCIO
-           ========================================= */
-
-        const COSTO_POLERA = 100; // Puedes cambiar el precio total aquí
-        const CEL_COORDINADOR = "59177173169";
-        const CEL_SUBCOORDINADORA = "59168733199";
-
-        const LISTA_COLORES = [
-            {nombre: 'Negro Classic', codigo: '#0f172a'},
-            {nombre: 'Blanco Puro', codigo: '#ffffff'},
-            {nombre: 'Azul Marino', codigo: '#1e3a8a'},
-            {nombre: 'Vino Tinto', codigo: '#7f1d1d'},
-            {nombre: 'Verde Militar', codigo: '#365314'},
-            {nombre: 'Gris Melange', codigo: '#94a3b8'},
-            {nombre: 'Rojo Pasión', codigo: '#dc2626'},
-            {nombre: 'Azul Eléctrico', codigo: '#2563eb'}
+        const PRECIO = 100;
+        const COLORES = [
+            {n: 'Negro', c: '#000000'}, {n: 'Blanco', c: '#ffffff'},
+            {n: 'Azul Marino', c: '#1e3a8a'}, {n: 'Vino', c: '#7f1d1d'},
+            {n: 'Gris', c: '#94a3b8'}, {n: 'Rojo', c: '#dc2626'}
         ];
 
-        // --- CARGAR COLORES (FIXED) ---
-        function cargarColores() {
-            const container = document.getElementById('colorContainer');
-            container.innerHTML = ""; // Limpiar
-            LISTA_COLORES.forEach((col, index) => {
-                const item = `
-                    <label class="color-item">
-                        <input type="radio" name="u_color" value="${col.nombre}" required>
-                        <div class="color-box">
-                            <div class="color-preview" style="background: ${col.codigo}; border: 1px solid #e2e8f0;"></div>
-                            <span class="color-label">${col.nombre}</span>
+        // Inicializar Colores al Cargar
+        window.onload = () => {
+            const container = document.getElementById('colorPicker');
+            COLORES.forEach(col => {
+                container.innerHTML += `
+                    <label class="color-card">
+                        <input type="radio" name="u_color" value="${col.n}">
+                        <div class="color-ui">
+                            <div class="color-circle" style="background: ${col.c}"></div>
+                            <span class="color-name">${col.n}</span>
                         </div>
                     </label>
                 `;
-                container.innerHTML += item;
+            });
+        };
+
+        function go(step) {
+            document.querySelectorAll('.step-view').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + step).classList.add('active');
+            
+            document.querySelectorAll('.dot').forEach((d, i) => {
+                d.classList.toggle('active', i < step);
             });
         }
 
-        // --- FORMATEAR CELULAR +591 ---
-        function formatearCelular(num) {
-            let limpio = num.replace(/\D/g, '');
-            if (!limpio.startsWith('591')) limpio = '591' + limpio;
-            return limpio;
+        function validaPaso1() {
+            if(!document.getElementById('reg_nombre').value || !document.getElementById('reg_tel').value) {
+                return alert("Por favor completa tus datos.");
+            }
+            go(2);
         }
 
-        // --- PROCESAR PEDIDO ---
-        document.getElementById('orderForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+        function validaPaso2() {
+            if(!document.querySelector('input[name="u_color"]:checked')) {
+                return alert("Debes elegir un color de polera.");
+            }
+            go(3);
+        }
 
-            const nombre = document.getElementById('u_nombre').value.trim();
-            const celular = formatearCelular(document.getElementById('u_tel').value);
-            const talla = document.getElementById('u_talla').value;
-            const color = document.querySelector('input[name="u_color"]:checked').value;
-            const pago = parseFloat(document.getElementById('u_pago').value) || 0;
-            const obs = document.getElementById('u_obs').value || "Ninguna";
+        function finalizarRegistro() {
+            const nombre = document.getElementById('reg_nombre').value;
+            let tel = document.getElementById('reg_tel').value.replace(/\D/g, '');
+            if(!tel.startsWith('591')) tel = '591' + tel;
 
-            const nuevoPedido = {
+            const pago = parseFloat(document.getElementById('reg_pago').value) || 0;
+            const data = {
                 id: Date.now(),
                 nombre: nombre,
-                celular: celular,
-                talla: talla,
-                color: color,
-                adelanto: pago,
-                deuda: COSTO_POLERA - pago,
-                observacion: obs,
-                fecha: new Date().toLocaleDateString()
+                tel: tel,
+                talla: document.getElementById('reg_talla').value,
+                color: document.querySelector('input[name="u_color"]:checked').value,
+                pago: pago,
+                deuda: PRECIO - pago,
+                obs: document.getElementById('reg_obs').value || "Ninguna"
             };
 
-            let baseDatos = JSON.parse(localStorage.getItem('db_catequistas_2026')) || [];
-            baseDatos.push(nuevoPedido);
-            localStorage.setItem('db_catequistas_2026', JSON.stringify(baseDatos));
+            let db = JSON.parse(localStorage.getItem('zoe_db_26')) || [];
+            db.push(data);
+            localStorage.setItem('zoe_db_26', JSON.stringify(db));
 
-            // Configurar botones de WhatsApp en éxito
+            // Éxito
+            document.querySelectorAll('.step-view').forEach(s => s.classList.remove('active'));
+            document.getElementById('view-success').classList.add('active');
+            
             if(pago > 0) {
-                document.getElementById('pagoBox').style.display = 'block';
-                const texto = encodeURIComponent(`¡Hola! Soy ${nombre}. Aquí envío el comprobante de mi adelanto de Bs. ${pago} por mi uniforme.`);
-                document.getElementById('btnCoor').href = `https://wa.me/${CEL_COORDINADOR}?text=${texto}`;
-                document.getElementById('btnSub').href = `https://wa.me/${CEL_SUBCOORDINADORA}?text=${texto}`;
-            }
-
-            lanzarToast("✅ Datos guardados correctamente");
-            cambiarVista('view-success');
-            this.reset();
-        });
-
-        // --- PANEL ADMINISTRATIVO ---
-        function abrirAdmin() {
-            const pass = prompt("Clave de Acceso:");
-            if(pass === "2026") {
-                renderizarAdmin();
-                cambiarVista('view-admin');
-            } else if(pass !== null) {
-                alert("Clave Incorrecta");
+                document.getElementById('wa-box').style.display = 'block';
+                const msg = encodeURIComponent(`¡Hola Michael! Soy ${nombre}. Registré mi pedido y mi adelanto es de Bs. ${pago}.`);
+                document.getElementById('linkMichael').href = `https://wa.me/59177173169?text=${msg}`;
             }
         }
 
-        function renderizarAdmin() {
-            const db = JSON.parse(localStorage.getItem('db_catequistas_2026')) || [];
-            const tbody = document.querySelector('#adminTable tbody');
-            let totalRec = 0;
-            let totalPen = 0;
-            
+        function accesoAdmin() {
+            if(prompt("PIN Maestro:") === "2026") {
+                renderAdmin();
+                document.querySelectorAll('.step-view').forEach(s => s.classList.remove('active'));
+                document.getElementById('view-admin').classList.add('active');
+            }
+        }
+
+        function renderAdmin() {
+            const db = JSON.parse(localStorage.getItem('zoe_db_26')) || [];
+            const tbody = document.querySelector('#tableAdmin tbody');
+            let tPago = 0, tDeuda = 0;
             tbody.innerHTML = "";
 
             db.forEach((p, i) => {
-                totalRec += p.adelanto;
-                totalPen += p.deuda;
-
-                const tr = `
+                tPago += p.pago; tDeuda += p.deuda;
+                tbody.innerHTML += `
                     <tr>
-                        <td><b>${p.nombre}</b><br><small>${p.celular}</small></td>
-                        <td>${p.talla} | ${p.color}</td>
-                        <td><span class="badge-status ${p.deuda <= 0 ? 'bg-green' : 'bg-red'}">Bs. ${p.deuda}</span></td>
-                        <td>
-                            <button onclick="cobrarWA(${i})" style="border:none; background:none; cursor:pointer; font-size:1.2rem;">🔔</button>
-                        </td>
+                        <td><b>${p.nombre}</b></td>
+                        <td>${p.talla}</td>
+                        <td><span class="status ${p.deuda <= 0 ? 'bg-green' : 'bg-red'}">${p.deuda} Bs.</span></td>
+                        <td><button onclick="cobrarWA(${i})" style="border:none; background:none; cursor:pointer;">🔔</button></td>
                     </tr>
                 `;
-                tbody.innerHTML += tr;
             });
-
-            document.getElementById('statRec').innerText = totalRec + " Bs.";
-            document.getElementById('statPen').innerText = totalPen + " Bs.";
+            document.getElementById('adm_caja').innerText = tPago + " Bs.";
+            document.getElementById('adm_deuda').innerText = tDeuda + " Bs.";
         }
 
-        function cobrarWA(index) {
-            const db = JSON.parse(localStorage.getItem('db_catequistas_2026')) || [];
-            const p = db[index];
-            if(p.deuda <= 0) return alert("Este pedido ya está totalmente pagado.");
-
-            const msg = encodeURIComponent(`*NOTIFICACIÓN DE COBRO*\nHola ${p.nombre}, te recordamos que tienes un saldo pendiente de *Bs. ${p.deuda}* por tu polera de Catequistas. Por favor, regulariza tu pago.`);
-            window.open(`https://wa.me/${p.celular}?text=${msg}`);
+        function cobrarWA(idx) {
+            const p = (JSON.parse(localStorage.getItem('zoe_db_26')))[idx];
+            const msg = encodeURIComponent(`Hola ${p.nombre}, recordatorio de pago pendiente de Bs. ${p.deuda} por tu uniforme.`);
+            window.open(`https://wa.me/${p.tel}?text=${msg}`);
         }
 
-        function descargarPDF() {
+        function exportarPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            const db = JSON.parse(localStorage.getItem('db_catequistas_2026')) || [];
-
-            doc.setFontSize(18);
-            doc.text("LISTA OFICIAL UNIFORMES 2026", 14, 20);
-            
-            const filas = db.map(p => [p.nombre, p.celular, p.talla, p.color, "Bs. "+p.adelanto, "Bs. "+p.deuda]);
-            
-            doc.autoTable({
-                head: [['Nombre', 'Celular', 'Talla', 'Color', 'Adelanto', 'Saldo']],
-                body: filas,
-                startY: 30,
-                theme: 'grid',
-                headStyles: { fillStyle: [79, 70, 229] }
-            });
-
-            doc.save("Reporte_Zoe_Admin.pdf");
+            const db = JSON.parse(localStorage.getItem('zoe_db_26')) || [];
+            doc.text("REPORTE CATEQUISTAS 2026", 14, 20);
+            const filas = db.map(p => [p.nombre, p.talla, p.color, p.pago, p.deuda]);
+            doc.autoTable({ head: [['Nombre', 'Talla', 'Color', 'Pagó', 'Saldo']], body: filas, startY: 30 });
+            doc.save("Reporte_Zoe_2026.pdf");
         }
-
-        function borrarTodo() {
-            if(confirm("¿Estás seguro de borrar todos los datos? Esta acción no se puede deshacer.")) {
-                localStorage.removeItem('db_catequistas_2026');
-                renderizarAdmin();
-                lanzarToast("🗑️ Sistema reiniciado");
-            }
-        }
-
-        // --- UTILIDADES ---
-        function cambiarVista(id) {
-            document.querySelectorAll('.view').forEach(v => 
+    </script>
+</body>
+</html>
