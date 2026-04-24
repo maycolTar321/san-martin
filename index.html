@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZOE Pro | Gestión de Poleras 2026</title>
+    <title>Gestión de Poleras 2026</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -71,7 +71,7 @@
         }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: #f1f5f9; color: var(--text-muted); }
-        .btn-wa { background: #25d366; color: white; text-decoration: none; margin-top: 20px; }
+        .btn-wa { background: #25d366; color: white; text-decoration: none; margin-top: 10px; }
 
         .report-box { background: #f1f5f9; padding: 20px; border-radius: 22px; margin-top: 20px; text-align: left; }
         .report-line { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
@@ -92,7 +92,7 @@
 <div class="app-shell">
     <div id="view-reg" class="view active">
         <h1 class="h1">CATEQUISTAS 2026</h1>
-        <span class="sub">Registro de Poleras - Zoe Management</span>
+        <span class="sub">Registro de Poleras - Gestión Administrativa</span>
         
         <div class="input-group">
             <label>Nombre Completo</label>
@@ -129,13 +129,14 @@
         <div style="text-align:center">
             <div style="font-size:50px">📝</div>
             <h1 class="h1">¡Registro Exitoso!</h1>
-            <p style="color:var(--text-muted)">Tu información ha sido guardada. Michael verificará tu pago.</p>
+            <p style="color:var(--text-muted)">Tu información ha sido guardada. Se notificará a los coordinadores.</p>
             
             <div id="resumen-pantalla" class="report-box"></div>
 
             <div class="qr-box">
-                <p style="font-size:0.85rem; margin-bottom:15px;">Para validar tu adelanto, envía el comprobante:</p>
-                <a id="btnPedirQR" href="#" target="_blank" class="btn btn-wa">Enviar Comprobante</a>
+                <p style="font-size:0.85rem; margin-bottom:15px;">Paso final: Envía el comprobante:</p>
+                <a id="btnPedirQR" href="#" target="_blank" class="btn btn-wa">Enviar a Michael</a>
+                <a id="btnEnviarAdri" href="#" target="_blank" class="btn btn-wa" style="background:#8b5cf6">Enviar a Adriana</a>
             </div>
             <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:20px;">Volver al Inicio</button>
         </div>
@@ -157,6 +158,11 @@
 </div>
 
 <script>
+    // --- CONFIGURACIÓN DE COSTOS (CAMBIA ESTO) ---
+    const PRECIO_POLERA = 100; // Valor total de la polera
+    const APORTE_COORDINACION = 20; // Cuánto se descuenta para coordinación
+    const TEL_ADRIANA = "591XXXXXXXX"; // Pon aquí el número de la subcoordinadora Adriana
+
     const COLORES = [
         {n:'Negro', c:'#000'}, {n:'Blanco', c:'#fff'}, {n:'Azul Marino', c:'#1e3a8a'}, {n:'Rojo', c:'#dc2626'}, 
         {n:'Verde Militar', c:'#365314'}, {n:'Gris', c:'#94a3b8'}, {n:'Vino', c:'#7f1d1d'}, {n:'Celeste', c:'#93c5fd'},
@@ -166,8 +172,7 @@
         {n:'Fucsia', c:'#d946ef'}, {n:'Ocre', c:'#92400e'}
     ];
 
-    let db = JSON.parse(localStorage.getItem('zoe_poleras_2026')) || [];
-    let config = { total: 100, coord: 20 }; // Precio final 80 Bs.
+    let db = JSON.parse(localStorage.getItem('poleras_2026_final')) || [];
 
     window.onload = () => {
         const grid = document.getElementById('colorContainer');
@@ -204,10 +209,11 @@
         };
 
         db.push(entry);
-        localStorage.setItem('zoe_poleras_2026', JSON.stringify(db));
+        localStorage.setItem('poleras_2026_final', JSON.stringify(db));
 
-        // Reporte para el usuario
-        const saldo = config.total - config.coord - entry.pago;
+        // Cálculo de saldo con los valores asignados
+        const saldo = PRECIO_POLERA - APORTE_COORDINACION - entry.pago;
+        
         document.getElementById('resumen-pantalla').innerHTML = `
             <div class="report-line"><b>Catequista:</b> <span>${entry.nombre}</span></div>
             <div class="report-line"><b>Detalle:</b> <span>Polera ${entry.talla} (${entry.color})</span></div>
@@ -215,18 +221,18 @@
             <div class="report-line"><b>Saldo Pendiente:</b> <span style="color:red; font-weight:bold">${saldo} Bs.</span></div>
         `;
 
-        // WhatsApp con +591
-        const msg = encodeURIComponent(`Hola Michael, registré mi polera (${entry.talla} ${entry.color}). Adjunto el comprobante de pago de Bs. ${entry.pago}`);
-        document.getElementById('btnPedirQR').href = `https://wa.me/59177173169?text=${msg}`;
+        const msgText = `Hola, registré mi polera (${entry.talla} ${entry.color}). Nombre: ${entry.nombre}. Adjunto comprobante de Bs. ${entry.pago}. Saldo pendiente: ${saldo} Bs.`;
+        const msgEnc = encodeURIComponent(msgText);
+        
+        document.getElementById('btnPedirQR').href = `https://wa.me/59177173169?text=${msgEnc}`;
+        document.getElementById('btnEnviarAdri').href = `https://wa.me/${TEL_ADRIANA}?text=${msgEnc}`;
 
-        // Limpiar formulario para el siguiente
         nombreInput.value = "";
         telInput.value = "";
         pagoInput.value = "0";
         obsInput.value = "";
         document.querySelectorAll('input[name="pick_color"]').forEach(r => r.checked = false);
         
-        // Cambiar a vista de éxito
         document.getElementById('view-reg').classList.remove('active');
         document.getElementById('view-wait').classList.add('active');
     }
@@ -245,7 +251,7 @@
         cont.innerHTML = "";
         
         db.forEach(item => {
-            const neto = config.total - config.coord - item.pago;
+            const neto = PRECIO_POLERA - APORTE_COORDINACION - item.pago;
             if(item.verificado) caja += item.pago;
             deuda += neto;
 
@@ -255,7 +261,7 @@
                     <b>${item.nombre}</b><br>
                     <small>Talla: ${item.talla} | Color: ${item.color} | Pagó: ${item.pago} Bs.</small><br>
                     <b style="color:red">Falta: ${neto} Bs.</b><br>
-                    ${!item.verificado ? `<button onclick="confirmarPago(${item.id}, ${neto})" class="btn" style="background:var(--accent); color:white; padding:10px; font-size:0.8rem; margin-top:10px">Confirmar Pago y Avisar Saldo</button>` : ''}
+                    ${!item.verificado ? `<button onclick="confirmarPago(${item.id}, ${neto})" class="btn" style="background:var(--accent); color:white; padding:10px; font-size:0.8rem; margin-top:10px">Confirmar Pago</button>` : ''}
                 </div>`;
         });
         document.getElementById('label_caja').innerText = caja + " Bs.";
@@ -265,11 +271,10 @@
     function confirmarPago(id, falta) {
         const user = db.find(i => i.id === id);
         user.verificado = true;
-        localStorage.setItem('zoe_poleras_2026', JSON.stringify(db));
+        localStorage.setItem('poleras_2026_final', JSON.stringify(db));
         
-        // WhatsApp automático al usuario con su número y +591
         const cleanTel = user.tel.replace(/\D/g,'');
-        const msg = encodeURIComponent(`¡Hola ${user.nombre}! He confirmado tu adelanto de Bs. ${user.pago}. ✅ Tu polera ${user.talla} color ${user.color} está en lista. Te falta cancelar: ${falta} Bs.`);
+        const msg = encodeURIComponent(`¡Hola ${user.nombre}! He confirmado tu adelanto de Bs. ${user.pago}. ✅ Tu pedido de polera ${user.talla} (${user.color}) está en lista. Te falta cancelar: ${falta} Bs.`);
         window.open(`https://wa.me/591${cleanTel}?text=${msg}`);
         
         refreshAdmin();
@@ -278,7 +283,7 @@
     function resetSistema() {
         if(confirm("🛑 ¿BORRAR TODO EL REGISTRO? No podrás recuperar los datos.")) {
             db = [];
-            localStorage.removeItem('zoe_poleras_2026');
+            localStorage.removeItem('poleras_2026_final');
             location.reload();
         }
     }
@@ -287,14 +292,14 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         doc.setFontSize(18);
-        doc.text("REPORTE GENERAL - POLERAS ZOE 2026", 14, 20);
+        doc.text("REPORTE GENERAL - POLERAS 2026", 14, 20);
         
         const rows = db.map(i => [
             i.nombre, 
             i.talla, 
             i.color, 
             i.pago + " Bs.", 
-            (config.total - config.coord - i.pago) + " Bs.", 
+            (PRECIO_POLERA - APORTE_COORDINACION - i.pago) + " Bs.", 
             i.verificado ? 'PAGADO' : 'PENDIENTE'
         ]);
 
@@ -305,7 +310,7 @@
             theme: 'grid'
         });
         
-        doc.save("Reporte_Zoe_Poleras.pdf");
+        doc.save("Reporte_Poleras_2026.pdf");
     }
 </script>
 </body>
