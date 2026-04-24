@@ -23,35 +23,18 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body { 
-            background: var(--bg-base); 
-            color: var(--text-main); 
-            min-height: 100vh; 
-            display: flex; 
-            justify-content: center; 
-            padding: 15px;
-        }
+        body { background: var(--bg-base); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; padding: 15px; }
 
         .app-shell {
-            width: 100%;
-            max-width: 550px;
-            background: var(--white);
-            border-radius: var(--radius-xl);
-            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #f1f5f9;
+            width: 100%; max-width: 550px; background: var(--white);
+            border-radius: var(--radius-xl); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05);
+            overflow: hidden; display: flex; flex-direction: column; border: 1px solid #f1f5f9;
         }
 
         .view { display: none; padding: 30px 25px; animation: slideIn 0.5s ease forwards; }
         .view.active { display: block; }
 
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .stepper { display: flex; gap: 10px; padding: 25px 25px 0 25px; }
-        .dot { height: 6px; flex: 1; background: #e2e8f0; border-radius: 10px; transition: 0.5s; }
-        .dot.active { background: var(--primary); }
 
         .h1 { font-weight: 800; font-size: 1.7rem; letter-spacing: -1.5px; text-align: center; margin-bottom: 10px; color: var(--text-main); line-height: 1.1; }
         .sub { display: block; text-align: center; color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; }
@@ -65,17 +48,10 @@
         }
         .field:focus { border-color: var(--primary); background: white; }
 
-        /* SELECTOR DE COLOR RESPONSIVE */
         .color-grid {
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
-            gap: 12px;
-            max-height: 320px; 
-            overflow-y: auto; 
-            padding: 10px;
-            background: #fcfcfc; 
-            border-radius: 20px; 
-            border: 1px solid #f1f5f9;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+            gap: 12px; max-height: 320px; overflow-y: auto; padding: 10px;
+            background: #fcfcfc; border-radius: 20px; border: 1px solid #f1f5f9;
         }
         .color-card { cursor: pointer; }
         .color-ui {
@@ -88,31 +64,25 @@
         input[type="radio"]:checked + .color-ui { border-color: var(--primary); background: #f5f3ff; transform: translateY(-2px); }
         input[type="radio"] { display: none; }
 
-        .btn-row { display: flex; gap: 12px; margin-top: 30px; }
         .btn {
-            flex: 1; padding: 20px; border: none; border-radius: 20px;
+            width: 100%; padding: 20px; border: none; border-radius: 20px;
             font-size: 1.05rem; font-weight: 800; cursor: pointer; transition: 0.3s;
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: #f1f5f9; color: var(--text-muted); }
-        .btn-danger { background: #fee2e2; color: #b91c1c; margin-top: 20px; border: 1px solid #fecaca; }
+        .btn-wa { background: #25d366; color: white; text-decoration: none; margin-top: 20px; }
 
-        /* ADMIN STYLE */
+        .report-box { background: #f1f5f9; padding: 20px; border-radius: 22px; margin-top: 20px; text-align: left; }
+        .report-line { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; }
+
         .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
         .stat-card { background: #f8fafc; padding: 20px; border-radius: 22px; text-align: center; border: 1px solid #f1f5f9; }
         .stat-num { display: block; font-size: 1.3rem; font-weight: 800; }
 
-        .list-item {
-            background: white; border: 1px solid #f1f5f9; padding: 20px;
-            border-radius: 22px; margin-bottom: 15px; position: relative;
-        }
-        .badge {
-            position: absolute; top: 20px; right: 20px;
-            padding: 5px 12px; border-radius: 10px; font-size: 0.65rem; font-weight: 800;
-        }
-        .pending { background: #fffbeb; color: #b45309; }
-        .verified { background: #ecfdf5; color: #065f46; }
+        .list-item { background: white; border: 1px solid #f1f5f9; padding: 20px; border-radius: 22px; margin-bottom: 15px; position: relative; }
+        .badge { position: absolute; top: 20px; right: 20px; padding: 5px 12px; border-radius: 10px; font-size: 0.65rem; font-weight: 800; background: #fffbeb; color: #b45309; }
+        .badge.ver { background: #ecfdf5; color: #065f46; }
 
         .qr-box { background: #f0fdf4; border: 2px dashed #22c55e; padding: 20px; border-radius: 22px; margin-top: 25px; text-align: center; }
     </style>
@@ -120,61 +90,52 @@
 <body>
 
 <div class="app-shell">
-    <div class="stepper" id="stepperControl">
-        <div class="dot active"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-    </div>
-
-    <div id="step1" class="view active">
-        <h1 class="h1">REGISTRO DE POLERAS<br>CONFIRMACIÓN 2026</h1>
-        <span class="sub">Inicia tu proceso de inscripción</span>
+    <div id="view-reg" class="view active">
+        <h1 class="h1">CATEQUISTAS 2026</h1>
+        <span class="sub">Registro privado de tallas y adelantos</span>
+        
         <div class="input-group">
             <label>Nombre Completo</label>
             <input type="text" id="u_nombre" class="field" placeholder="EJ: PEDRO VARGAS" oninput="this.value = this.value.toUpperCase()">
         </div>
         <div class="input-group">
-            <label>WhatsApp Personal</label>
+            <label>Celular WhatsApp</label>
             <input type="tel" id="u_tel" class="field" placeholder="77173169">
         </div>
-        <button onclick="changeView(2)" class="btn btn-primary">Siguiente</button>
-        <p onclick="openAdmin()" style="text-align:center; font-size:0.6rem; color:#cbd5e1; margin-top:40px; cursor:pointer; font-weight:800;">ADMIN PANEL</p>
-    </div>
-
-    <div id="step2" class="view">
-        <h1 class="h1">TALLA Y COLOR</h1>
         <div class="input-group">
-            <label>Talla</label>
+            <label>Talla de Uniforme</label>
             <select id="u_talla" class="field">
                 <option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
             </select>
         </div>
         <div class="input-group">
-            <label>Elige un Color</label>
+            <label>Color de Polera (22 opciones)</label>
             <div id="colorContainer" class="color-grid"></div>
         </div>
-        <div class="btn-row">
-            <button onclick="changeView(1)" class="btn btn-secondary">Atrás</button>
-            <button onclick="changeView(3)" class="btn btn-primary">Continuar</button>
-        </div>
-    </div>
-
-    <div id="step3" class="view">
-        <h1 class="h1">FINALIZAR REGISTRO</h1>
         <div class="input-group">
-            <label>Adelanto (Bs.)</label>
+            <label>Monto de Adelanto (Bs.)</label>
             <input type="number" id="u_pago" class="field" value="0">
         </div>
-        <button onclick="processRegister()" class="btn btn-primary" style="width:100%">Enviar Registro</button>
-        <button onclick="changeView(2)" class="btn btn-secondary" style="width:100%; margin-top:10px;">Atrás</button>
+        <div class="input-group">
+            <label>Observaciones / Sugerencias</label>
+            <textarea id="u_obs" class="field" rows="2" placeholder="Ej. Manga larga..."></textarea>
+        </div>
+        
+        <button onclick="processRegister()" class="btn btn-primary">Confirmar mi Registro</button>
+        <p onclick="openAdmin()" style="text-align:center; font-size:0.6rem; color:#cbd5e1; margin-top:40px; cursor:pointer; font-weight:800;">PANEL COORDINACIÓN</p>
     </div>
 
-    <div id="view-success" class="view">
+    <div id="view-wait" class="view">
         <div style="text-align:center">
-            <h1 class="h1">¡REGISTRO ENVIADO!</h1>
+            <div style="font-size:50px">⏳</div>
+            <h1 class="h1">Registro Recibido</h1>
+            <p style="color:var(--text-muted)">Espera la confirmación por WhatsApp para validar tu pago.</p>
+            
+            <div id="resumen-pantalla" class="report-box"></div>
+
             <div class="qr-box">
-                <p style="font-size:0.85rem; margin-bottom:15px;">Para confirmar, pide el QR al Michael:</p>
-                <a id="btnPedirQR" href="#" target="_blank" class="btn" style="background:#25d366; color:white; text-decoration:none">Pedir QR por WhatsApp</a>
+                <p style="font-size:0.85rem; margin-bottom:15px;">Para confirmar, envía tu comprobante:</p>
+                <a id="btnPedirQR" href="#" target="_blank" class="btn btn-wa">Enviar por WhatsApp</a>
             </div>
             <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:20px;">Volver</button>
         </div>
@@ -190,9 +151,7 @@
         <div id="admin_content"></div>
 
         <button onclick="downloadPDF()" class="btn btn-primary" style="background:#1e293b; margin-top:20px;">PDF Reporte</button>
-        
-        <button onclick="resetSistema()" class="btn btn-danger">⚠️ ELIMINAR TODO Y RESETEAR</button>
-        
+        <button onclick="resetSistema()" class="btn" style="background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; margin-top:20px">⚠️ ELIMINAR TODO Y RESETEAR</button>
         <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:10px;">Cerrar</button>
     </div>
 </div>
@@ -207,7 +166,7 @@
         {n:'Fucsia', c:'#d946ef'}, {n:'Ocre', c:'#92400e'}
     ];
 
-    let db = JSON.parse(localStorage.getItem('zoe_2026_final')) || [];
+    let db = JSON.parse(localStorage.getItem('zoe_2026_v3')) || [];
     let config = { total: 100, coord: 20 };
 
     window.onload = () => {
@@ -224,39 +183,42 @@
         });
     };
 
-    function changeView(v) {
-        document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-        document.getElementById('step' + v).classList.add('active');
-    }
-
     function processRegister() {
         const color = document.querySelector('input[name="pick_color"]:checked');
-        if(!color) return alert("Elige un color");
+        const nombre = document.getElementById('u_nombre').value;
+        const tel = document.getElementById('u_tel').value;
+        if(!color || !nombre || !tel) return alert("Completa tus datos y elige un color");
         
         const entry = {
             id: Date.now(),
-            nombre: document.getElementById('u_nombre').value,
-            tel: document.getElementById('u_tel').value,
+            nombre, tel,
             talla: document.getElementById('u_talla').value,
             color: color.value,
             pago: parseFloat(document.getElementById('u_pago').value) || 0,
+            obs: document.getElementById('u_obs').value,
             verificado: false
         };
 
         db.push(entry);
-        localStorage.setItem('zoe_2026_final', JSON.stringify(db));
+        localStorage.setItem('zoe_2026_v3', JSON.stringify(db));
 
-        const msg = encodeURIComponent(`Hola Michael, soy ${entry.nombre}. Registré mi polera ${entry.color}. Pásame el QR para mi adelanto de Bs. ${entry.pago}`);
+        // Reporte en pantalla para el usuario
+        document.getElementById('resumen-pantalla').innerHTML = `
+            <div class="report-line"><b>Nombre:</b> <span>${entry.nombre}</span></div>
+            <div class="report-line"><b>Pedido:</b> <span>${entry.talla} - ${entry.color}</span></div>
+            <div class="report-line"><b>Adelanto:</b> <span>${entry.pago} Bs.</span></div>
+            <div class="report-line"><b>Estado:</b> <span style="color:orange; font-weight:800">PENDIENTE</span></div>
+        `;
+
+        const msg = encodeURIComponent(`Hola Michael, registré mi polera (${entry.talla} ${entry.color}). Adjunto comprobante de Bs. ${entry.pago}`);
         document.getElementById('btnPedirQR').href = `https://wa.me/59177173169?text=${msg}`;
         
-        document.getElementById('stepperControl').style.display = 'none';
-        document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-        document.getElementById('view-success').classList.add('active');
+        document.getElementById('view-reg').classList.remove('active');
+        document.getElementById('view-wait').classList.add('active');
     }
 
     function openAdmin() {
         if(prompt("PASSWORD:") === "2026") {
-            document.getElementById('stepperControl').style.display = 'none';
             document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
             document.getElementById('view-admin').classList.add('active');
             refreshAdmin();
@@ -273,30 +235,33 @@
             deuda += neto;
             cont.innerHTML += `
                 <div class="list-item">
-                    <span class="badge ${item.verificado ? 'verified' : 'pending'}">${item.verificado ? 'OK' : 'PENDIENTE'}</span>
-                    <b>${item.nombre}</b><br><small>${item.talla} | ${item.color} | Resta: ${neto} Bs.</small><br>
-                    ${!item.verificado ? `<button onclick="confirmar(${item.id})" style="margin-top:10px; padding:5px 10px; background:var(--accent); color:white; border:none; border-radius:8px;">Verificar Pago</button>` : ''}
+                    <span class="badge ${item.verificado ? 'ver' : ''}">${item.verificado ? 'CONFIRMADO ✅' : 'PENDIENTE'}</span>
+                    <b>${item.nombre}</b><br><small>${item.talla} | ${item.color} | Pagó: ${item.pago} Bs.</small><br>
+                    <b style="color:red">Falta: ${neto} Bs.</b><br>
+                    ${!item.verificado ? `<button onclick="confirmarPago(${item.id}, ${neto})" class="btn" style="background:var(--accent); color:white; padding:10px; font-size:0.8rem; margin-top:10px">Verificar y Avisar Saldo</button>` : ''}
                 </div>`;
         });
         document.getElementById('label_caja').innerText = caja + " Bs.";
         document.getElementById('label_deuda').innerText = deuda + " Bs.";
     }
 
-    function confirmar(id) {
-        db = db.map(i => i.id === id ? {...i, verificado:true} : i);
-        localStorage.setItem('zoe_2026_final', JSON.stringify(db));
+    function confirmarPago(id, falta) {
+        const user = db.find(i => i.id === id);
+        user.verificado = true;
+        localStorage.setItem('zoe_2026_v3', JSON.stringify(db));
+        
+        // Notificación automática de saldo por WhatsApp
+        const msg = encodeURIComponent(`¡Hola ${user.nombre}! Tu pago de Bs. ${user.pago} ha sido verificado. ✅ Tu polera ${user.talla} ${user.color} está registrada. Te falta cancelar: ${falta} Bs.`);
+        window.open(`https://wa.me/591${user.tel.replace(/\D/g,'')}?text=${msg}`);
+        
         refreshAdmin();
     }
 
-    // FUNCIÓN DE RESET TOTAL
     function resetSistema() {
-        if(confirm("⚠️ ¿ESTÁS SEGURO? Se borrarán todos los catequistas registrados y la caja volverá a cero.")) {
-            if(confirm("🛑 ESTA ACCIÓN NO SE PUEDE DESHACER. ¿Eliminar todo ahora?")) {
-                db = [];
-                localStorage.removeItem('zoe_2026_final');
-                alert("Sistema reseteado con éxito.");
-                location.reload();
-            }
+        if(confirm("⚠️ ¿BORRAR TODO? Se perderán todos los registros.")) {
+            db = [];
+            localStorage.removeItem('zoe_2026_v3');
+            location.reload();
         }
     }
 
@@ -305,8 +270,8 @@
         const doc = new jsPDF();
         doc.text("REPORTE ZOE 2026", 14, 20);
         const rows = db.map(i => [i.nombre, i.talla, i.color, i.pago, (config.total - config.coord - i.pago), i.verificado ? 'SÍ' : 'NO']);
-        doc.autoTable({ head:[['NOMBRE', 'TALLA', 'COLOR', 'PAGÓ', 'DEUDA', 'VERIF']], body: rows, startY:30 });
-        doc.save("Reporte_Zoe.pdf");
+        doc.autoTable({ head:[['NOMBRE', 'TALLA', 'COLOR', 'PAGÓ', 'SALDO', 'VERIF']], body: rows, startY:30 });
+        doc.save("Reporte_Zoe_2026.pdf");
     }
 </script>
 </body>
