@@ -2,202 +2,235 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Geometry Shift | Minimal Arcade</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Poleras - Catequesis</title>
     <style>
         :root {
-            --bg: #f0f2f5;
-            --player: #3498db;
-            --obstacle: #2c3e50;
-            --text: #2c3e50;
+            --primary: #2563eb;
+            --success: #059669;
+            --warning: #d97706;
+            --bg: #f1f5f9;
         }
+
         body {
-            margin: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', Roboto, sans-serif;
             display: flex;
-            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            padding: 20px;
+            color: #1e293b;
+            margin: 0;
         }
-        #game-container {
-            position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-            border-radius: 12px;
-            overflow: hidden;
+
+        .card {
             background: white;
-        }
-        canvas { display: block; background: white; }
-        .hud {
-            position: absolute;
-            top: 20px;
+            padding: 2rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
             width: 100%;
-            text-align: center;
-            font-size: 24px;
-            font-weight: 300;
-            pointer-events: none;
         }
-        .instructions {
-            margin-top: 20px;
-            color: #7f8c8d;
+
+        .header { text-align: center; margin-bottom: 1.5rem; }
+        .header h2 { margin: 0; color: var(--primary); }
+
+        .budget-box {
+            background: #f0f7ff;
+            border: 2px solid #bfdbfe;
+            padding: 1.2rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #475569; }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+
+        /* --- LISTA DE COLORES MEJORADA --- */
+        .color-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* Dos columnas para que se vea ordenado */
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .color-option {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .color-option input {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .color-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .color-circle {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .color-option input:checked + .color-content {
+            border-color: var(--primary);
+            background-color: #eff6ff;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
+        }
+
+        /* --- SECCIÓN DE PAGO --- */
+        .payment-card {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            cursor: pointer;
             font-size: 0.9rem;
         }
+
+        button {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        button:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <div class="hud">Puntos: <span id="score">0</span></div>
-        <canvas id="gameCanvas"></canvas>
+<div class="card">
+    <div class="header">
+        <h2>👕 Poleras Catequistas</h2>
+        <p>Elige tu opción para el uniforme</p>
     </div>
-    <div class="instructions">Presiona <b>ESPACIO</b> o <b>CLIC</b> para cambiar de forma</div>
+
+    <div class="budget-box">
+        <span style="color: #64748b; font-size: 0.9rem;">Aporte Coordinación: Bs. 20</span><br>
+        <strong style="font-size: 1.2rem; color: var(--success);">Diferencia a pagar: Bs. 30</strong>
+    </div>
+
+    <form id="orderForm">
+        <div class="form-group">
+            <label>Nombre Completo</label>
+            <input type="text" id="userName" required placeholder="Tu nombre">
+        </div>
+
+        <div class="form-group">
+            <label>Talla</label>
+            <select id="userSize" required>
+                <option value="">Selecciona tu talla...</option>
+                <option value="S">S (Pequeña)</option>
+                <option value="M">M (Mediana)</option>
+                <option value="L">L (Grande)</option>
+                <option value="XL">XL (Extra Grande)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Color Disponible</label>
+            <div class="color-list">
+                <label class="color-option">
+                    <input type="radio" name="shirtColor" value="Blanco" required>
+                    <div class="color-content">
+                        <div class="color-circle" style="background: white;"></div>
+                        <span>Blanco</span>
+                    </div>
+                </label>
+                <label class="color-option">
+                    <input type="radio" name="shirtColor" value="Azul Marino">
+                    <div class="color-content">
+                        <div class="color-circle" style="background: #1e3a8a;"></div>
+                        <span>Azul Marino</span>
+                    </div>
+                </label>
+                <label class="color-option">
+                    <input type="radio" name="shirtColor" value="Negro">
+                    <div class="color-content">
+                        <div class="color-circle" style="background: #000;"></div>
+                        <span>Negro</span>
+                    </div>
+                </label>
+                <label class="color-option">
+                    <input type="radio" name="shirtColor" value="Gris">
+                    <div class="color-content">
+                        <div class="color-circle" style="background: #94a3b8;"></div>
+                        <span>Gris</span>
+                    </div>
+                </label>
+                <label class="color-option">
+                    <input type="radio" name="shirtColor" value="Vino">
+                    <div class="color-content">
+                        <div class="color-circle" style="background: #7f1d1d;"></div>
+                        <span>Vino</span>
+                    </div>
+                </label>
+                <label class="color-option">
+                    <input type="radio" name="shirtColor" value="Verde">
+                    <div class="color-content">
+                        <div class="color-circle" style="background: #064e3b;"></div>
+                        <span>Verde</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="payment-card">
+            <label class="checkbox-container">
+                <input type="checkbox" required>
+                <span>Confirmo que deseo la polera y pagaré la diferencia de <b>Bs. 30</b>.</span>
+            </label>
+        </div>
+
+        <button type="submit">Enviar mi elección</button>
+    </form>
+</div>
 
 <script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    const scoreEl = document.getElementById('score');
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = document.getElementById('userName').value;
+        const color = document.querySelector('input[name="shirtColor"]:checked').value;
+        const size = document.getElementById('userSize').value;
 
-    canvas.width = 400;
-    canvas.height = 600;
-
-    let score = 0;
-    let gameActive = true;
-    let speed = 4;
-    let frame = 0;
-
-    // Formas: 0 = Cuadrado, 1 = Círculo
-    const player = {
-        x: canvas.width / 2,
-        y: canvas.height - 100,
-        size: 40,
-        shape: 0, 
-        color: '#3498db'
-    };
-
-    let obstacles = [];
-
-    function spawnObstacle() {
-        const shapeType = Math.floor(Math.random() * 2);
-        obstacles.push({
-            y: -50,
-            x: canvas.width / 2,
-            size: 80,
-            shape: shapeType,
-            passed: false
-        });
-    }
-
-    function drawPlayer() {
-        ctx.fillStyle = player.color;
-        ctx.beginPath();
-        if (player.shape === 0) {
-            // Dibujar cuadrado redondeado
-            const r = 8;
-            ctx.roundRect(player.x - player.size/2, player.y - player.size/2, player.size, player.size, r);
-        } else {
-            // Dibujar círculo
-            ctx.arc(player.x, player.y, player.size/2, 0, Math.PI * 2);
-        }
-        ctx.fill();
-    }
-
-    function drawObstacle(obs) {
-        ctx.strokeStyle = '#2c3e50';
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-        
-        // Dibujamos el "hueco" por el que hay que pasar
-        if (obs.shape === 0) {
-            ctx.roundRect(obs.x - 30, obs.y - 30, 60, 60, 5);
-        } else {
-            ctx.arc(obs.x, obs.y, 35, 0, Math.PI * 2);
-        }
-        ctx.stroke();
-
-        // Líneas laterales decorativas
-        ctx.beginPath();
-        ctx.moveTo(0, obs.y);
-        ctx.lineTo(obs.x - 40, obs.y);
-        ctx.moveTo(obs.x + 40, obs.y);
-        ctx.lineTo(canvas.width, obs.y);
-        ctx.stroke();
-    }
-
-    function update() {
-        if (!gameActive) return;
-
-        frame++;
-        if (frame % 100 === 0) spawnObstacle();
-
-        obstacles.forEach((obs, index) => {
-            obs.y += speed;
-
-            // Detección de colisión / Paso exitoso
-            if (obs.y > player.y - 10 && obs.y < player.y + 10) {
-                if (player.shape !== obs.shape) {
-                    gameOver();
-                } else if (!obs.passed) {
-                    obs.passed = true;
-                    score++;
-                    scoreEl.innerText = score;
-                    if (score % 5 === 0) speed += 0.5; // Aumenta dificultad
-                }
-            }
-
-            if (obs.y > canvas.height) obstacles.splice(index, 1);
-        });
-    }
-
-    function gameOver() {
-        gameActive = false;
-        ctx.fillStyle = 'rgba(255,255,255,0.8)';
-        ctx.fillRect(0,0,canvas.width, canvas.height);
-        ctx.fillStyle = '#2c3e50';
-        ctx.font = 'bold 30px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('FIN DEL JUEGO', canvas.width/2, canvas.height/2);
-        ctx.font = '18px sans-serif';
-        ctx.fillText('Clic para reiniciar', canvas.width/2, canvas.height/2 + 40);
-    }
-
-    function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Fondo sutil
-        ctx.fillStyle = '#fafafa';
-        ctx.fillRect(0,0, canvas.width, canvas.height);
-
-        obstacles.forEach(drawObstacle);
-        drawPlayer();
-    }
-
-    function loop() {
-        update();
-        draw();
-        requestAnimationFrame(loop);
-    }
-
-    const toggleShape = () => {
-        if (!gameActive) {
-            // Reiniciar
-            score = 0;
-            scoreEl.innerText = 0;
-            obstacles = [];
-            speed = 4;
-            gameActive = true;
-        } else {
-            player.shape = player.shape === 0 ? 1 : 0;
-            player.color = player.shape === 0 ? '#3498db' : '#e74c3c';
-        }
-    };
-
-    window.addEventListener('keydown', (e) => { if(e.code === 'Space') toggleShape(); });
-    canvas.addEventListener('mousedown', toggleShape);
-
-    loop();
+        // "Magia" extra: Alerta personalizada
+        alert(`¡Excelente registro, ${name}!\n\nHas elegido:\n- Color: ${color}\n- Talla: ${size}\n\nRecuerda el saldo de Bs. 30.`);
+    });
 </script>
+
 </body>
 </html>
-
