@@ -3,233 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Encuesta de Poleras - Catequesis</title>
+    <title>Gestión de Poleras - Coordinación</title>
     <style>
-        :root {
-            --primary: #2563eb;
-            --success: #059669;
-            --warning: #d97706;
-            --bg: #f1f5f9;
-        }
+        :root { --primary: #7c3aed; --secondary: #ede9fe; --accent: #059669; --dark: #1f2937; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f3f4f6; margin: 0; display: flex; justify-content: center; padding: 15px; }
+        
+        .app-container { background: white; max-width: 500px; width: 100%; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden; min-height: 90vh; display: flex; flex-direction: column; }
+        
+        /* Vistas */
+        .view { display: none; padding: 25px; flex-grow: 1; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-            color: #1e293b;
-            margin: 0;
-        }
+        h2 { color: var(--primary); font-size: 1.5rem; text-align: center; margin-bottom: 1rem; }
+        p.subtitle { text-align: center; color: #6b7280; font-size: 0.9rem; margin-bottom: 2rem; }
 
-        .card {
-            background: white;
-            padding: 2rem;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
-            width: 100%;
-        }
+        /* Formulario */
+        .field { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark); }
+        input, select { width: 100%; padding: 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 1rem; transition: border 0.3s; }
+        input:focus { border-color: var(--primary); outline: none; }
 
-        .header { text-align: center; margin-bottom: 1.5rem; }
-        .header h2 { margin: 0; color: var(--primary); }
+        /* Selector de Colores Pro */
+        .color-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .color-card { border: 2px solid #f3f4f6; padding: 12px; border-radius: 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
+        .color-dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+        input[type="radio"] { display: none; }
+        input[type="radio"]:checked + .color-card { border-color: var(--primary); background: var(--secondary); }
 
-        .budget-box {
-            background: #f0f7ff;
-            border: 2px solid #bfdbfe;
-            padding: 1.2rem;
-            border-radius: 1rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-        }
+        /* Botones */
+        .btn { width: 100%; padding: 16px; border: none; border-radius: 14px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-main { background: var(--primary); color: white; }
+        .btn-main:active { transform: scale(0.98); }
+        .btn-admin { background: transparent; color: #9ca3af; font-size: 0.8rem; margin-top: 20px; }
 
-        .form-group { margin-bottom: 1.2rem; }
-        label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: #475569; }
+        /* QR Final */
+        .qr-wrapper { background: #faf5ff; border: 3px dashed #ddd6fe; border-radius: 20px; padding: 20px; text-align: center; }
+        .qr-img { width: 100%; max-width: 250px; border-radius: 15px; margin: 15px 0; }
 
-        input[type="text"], select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            transition: border 0.2s;
-        }
-
-        /* --- LISTA DE COLORES MEJORADA --- */
-        .color-list {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Dos columnas para que se vea ordenado */
-            gap: 12px;
-            margin-top: 10px;
-        }
-
-        .color-option {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .color-option input {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .color-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px;
-            border: 2px solid #e2e8f0;
-            border-radius: 0.75rem;
-            transition: all 0.2s;
-        }
-
-        .color-circle {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 1px solid rgba(0,0,0,0.1);
-            flex-shrink: 0;
-        }
-
-        .color-option input:checked + .color-content {
-            border-color: var(--primary);
-            background-color: #eff6ff;
-            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
-        }
-
-        /* --- SECCIÓN DE PAGO --- */
-        .payment-card {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            padding: 1rem;
-            border-radius: 0.75rem;
-            margin-top: 1rem;
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        button {
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            padding: 1rem;
-            border: none;
-            border-radius: 0.75rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 1.5rem;
-            transition: transform 0.1s, background 0.2s;
-        }
-
-        button:active { transform: scale(0.98); }
+        /* Tabla Admin */
+        .table-res { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <div class="header">
-        <h2>👕 Poleras Catequistas</h2>
-        <p>Elige tu opción para el uniforme</p>
-    </div>
-
-    <div class="budget-box">
-        <span style="color: #64748b; font-size: 0.9rem;">Aporte Coordinación: Bs. 20</span><br>
-        <strong style="font-size: 1.2rem; color: var(--success);">Diferencia a pagar: Bs. 30</strong>
-    </div>
-
-    <form id="orderForm">
-        <div class="form-group">
-            <label>Nombre Completo</label>
-            <input type="text" id="userName" required placeholder="Tu nombre">
-        </div>
-
-        <div class="form-group">
-            <label>Talla</label>
-            <select id="userSize" required>
-                <option value="">Selecciona tu talla...</option>
-                <option value="S">S (Pequeña)</option>
-                <option value="M">M (Mediana)</option>
-                <option value="L">L (Grande)</option>
-                <option value="XL">XL (Extra Grande)</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>Color Disponible</label>
-            <div class="color-list">
-                <label class="color-option">
-                    <input type="radio" name="shirtColor" value="Blanco" required>
-                    <div class="color-content">
-                        <div class="color-circle" style="background: white;"></div>
-                        <span>Blanco</span>
-                    </div>
-                </label>
-                <label class="color-option">
-                    <input type="radio" name="shirtColor" value="Azul Marino">
-                    <div class="color-content">
-                        <div class="color-circle" style="background: #1e3a8a;"></div>
-                        <span>Azul Marino</span>
-                    </div>
-                </label>
-                <label class="color-option">
-                    <input type="radio" name="shirtColor" value="Negro">
-                    <div class="color-content">
-                        <div class="color-circle" style="background: #000;"></div>
-                        <span>Negro</span>
-                    </div>
-                </label>
-                <label class="color-option">
-                    <input type="radio" name="shirtColor" value="Gris">
-                    <div class="color-content">
-                        <div class="color-circle" style="background: #94a3b8;"></div>
-                        <span>Gris</span>
-                    </div>
-                </label>
-                <label class="color-option">
-                    <input type="radio" name="shirtColor" value="Vino">
-                    <div class="color-content">
-                        <div class="color-circle" style="background: #7f1d1d;"></div>
-                        <span>Vino</span>
-                    </div>
-                </label>
-                <label class="color-option">
-                    <input type="radio" name="shirtColor" value="Verde">
-                    <div class="color-content">
-                        <div class="color-circle" style="background: #064e3b;"></div>
-                        <span>Verde</span>
-                    </div>
-                </label>
+<div class="app-container">
+    
+    <div id="view-form" class="view active">
+        <h2>👕 Pedido de Polera</h2>
+        <p class="subtitle">Completa tus datos para coordinar el uniforme de este año.</p>
+        
+        <form id="mainForm">
+            <div class="field">
+                <label>Nombre Completo</label>
+                <input type="text" id="u_nombre" placeholder="Escribe tu nombre aquí" required>
             </div>
+
+            <div class="field">
+                <label>Talla de Polera</label>
+                <select id="u_talla" required>
+                    <option value="">Selecciona tu talla...</option>
+                    <option value="S">S - Pequeña</option>
+                    <option value="M">M - Mediana</option>
+                    <option value="L">L - Grande</option>
+                    <option value="XL">XL - Extra Grande</option>
+                    <option value="XXL">XXL - Especial</option>
+                </select>
+            </div>
+
+            <label>Color Favorito</label>
+            <div class="color-grid" id="colorList"></div>
+
+            <button type="submit" class="btn btn-main" style="margin-top: 25px;">Registrar mi Pedido</button>
+        </form>
+        
+        <button class="btn btn-admin" onclick="goAdmin()">Acceso Privado Coordinación</button>
+    </div>
+
+    <div id="view-success" class="view">
+        <div style="text-align: center;">
+            <div style="font-size: 50px;">✅</div>
+            <h2 style="color: var(--accent);">¡Recibido!</h2>
+            <p>Tus datos han sido guardados correctamente.</p>
         </div>
 
-        <div class="payment-card">
-            <label class="checkbox-container">
-                <input type="checkbox" required>
-                <span>Confirmo que deseo la polera y pagaré la diferencia de <b>Bs. 30</b>.</span>
-            </label>
+        <div class="qr-wrapper">
+            <p style="font-weight: bold; margin: 0;">📸 GUARDA ESTA IMAGEN</p>
+            <p style="font-size: 0.8rem; color: #6b7280;">Cuando se defina el monto a pagar, deberás usar este QR para cubrir la diferencia.</p>
+            <img src="https://i.postimg.cc/k4G6VskF/1000544014.jpg" class="qr-img" alt="QR Pago">
+            <p style="font-weight: bold; color: var(--primary);">Maycol Anghelo Avila Zenteno</p>
         </div>
 
-        <button type="submit">Enviar mi elección</button>
-    </form>
+        <button onclick="location.reload()" class="btn btn-main" style="margin-top: 20px; background: #6b7280;">Volver al Inicio</button>
+    </div>
+
+    <div id="view-admin" class="view">
+        <h2>📊 Reporte de Pedidos</h2>
+        <div id="stats" style="display: flex; gap: 10px; margin-bottom: 15px;"></div>
+        <div class="table-res" id="tableBox"></div>
+        
+        <button onclick="exportCSV()" class="btn btn-main" style="background: var(--accent); margin-top: 20px;">Descargar Excel (.csv)</button>
+        <button onclick="location.reload()" class="btn btn-admin">Regresar al Formulario</button>
+    </div>
+
 </div>
 
 <script>
-    document.getElementById('orderForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const name = document.getElementById('userName').value;
-        const color = document.querySelector('input[name="shirtColor"]:checked').value;
-        const size = document.getElementById('userSize').value;
+    // Configuración de Colores (14 opciones)
+    const db_colores = [
+        {n: 'Blanco', c: '#ffffff'}, {n: 'Negro', c: '#000000'}, 
+        {n: 'Azul Marino', c: '#1e3a8a'}, {n: 'Gris Melange', c: '#94a3b8'},
+        {n: 'Vino', c: '#7f1d1d'}, {n: 'Verde Militar', c: '#365314'},
+        {n: 'Celeste', c: '#7dd3fc'}, {n: 'Rojo', c: '#dc2626'},
+        {n: 'Turquesa', c: '#06b6d4'}, {n: 'Verde Olivo', c: '#65a30d'},
+        {n: 'Coral', c: '#fb7185'}, {n: 'Naranja', c: '#f97316'},
+        {n: 'Amarillo', c: '#facc15'}, {n: 'Lila', c: '#c084fc'}
+    ];
 
-        // "Magia" extra: Alerta personalizada
-        alert(`¡Excelente registro, ${name}!\n\nHas elegido:\n- Color: ${color}\n- Talla: ${size}\n\nRecuerda el saldo de Bs. 30.`);
+    // Renderizar colores
+    const colorList = document.getElementById('colorList');
+    db_colores.forEach((item, index) => {
+        colorList.innerHTML += `
+            <label>
+                <input type="radio" name="color_opt" value="${item.n}" required>
+                <div class="color-card">
+                    <div class="color-dot" style="background: ${item.c}"></div>
+                    <span>${item.n}</span>
+                </div>
+            </label>
+        `;
     });
+
+    // Manejo de Formulario
+    document.getElementById('mainForm').onsubmit = function(e) {
+        e.preventDefault();
+        const data = {
+            nombre: document.getElementById('u_nombre').value,
+            talla: document.getElementById('u_talla').value,
+            color: document.querySelector('input[name="color_opt"]:checked').value,
+            fecha: new Date().toLocaleDateString()
+        };
+
+        let db = JSON.parse(localStorage.getItem('pedidos_2026')) || [];
+        db.push(data);
+        localStorage.setItem('pedidos_2026', JSON.stringify(db));
+
+        document.getElementById('view-form').classList.remove('active');
+        document.getElementById('view-success').classList.add('active');
+    };
+
+    // Funciones Admin
+    function goAdmin() {
+        const pin = prompt("Clave de Acceso:");
+        if(pin === "2026") {
+            document.getElementById('view-form').classList.remove('active');
+            document.getElementById('view-admin').classList.add('active');
+            loadTable();
+        } else { alert("Acceso Denegado"); }
+    }
+
+    function loadTable() {
+        const db = JSON.parse(localStorage.getItem('pedidos_2026')) || [];
+        let html = `<table><tr><th>Catequista</th><th>Talla</th><th>Color</th></tr>`;
+        db.forEach(row => {
+            html += `<tr><td>${row.nombre}</td><td>${row.talla}</td><td>${row.color}</td></tr>`;
+        });
+        html += `</table>`;
+        document.getElementById('tableBox').innerHTML = db.length > 0 ? html : "<p style='text-align:center'>No hay pedidos aún.</p>";
+        document.getElementById('stats').innerHTML = `<div style="background:var(--secondary); padding:10px; border-radius:10px; flex-grow:1; text-align:center"><b>Total:</b> ${db.length}</div>`;
+    }
+
+    function exportCSV() {
+        const db = JSON.parse(localStorage.getItem('pedidos_2026')) || [];
+        if(db.length === 0) return alert("Nada que exportar");
+        
+        let csv = "Nombre,Talla,Color,Fecha\n";
+        db.forEach(r => csv += `${r.nombre},${r.talla},${r.color},${r.fecha}\n`);
+        
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "Reporte_Poleras_2026.csv";
+        a.click();
+    }
 </script>
 
 </body>
