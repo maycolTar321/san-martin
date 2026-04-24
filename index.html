@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZOE Pro | Sistema de Gestión de Poleras 2026</title>
+    <title>ZOE Pro | Gestión de Poleras 2026</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -12,390 +12,302 @@
     <style>
         :root {
             --primary: #4f46e5;
-            --primary-dark: #3730a3;
             --accent: #10b981;
-            --warning: #f59e0b;
             --danger: #ef4444;
-            --bg: #f8fafc;
+            --bg-base: #f8fafc;
             --white: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --radius: 24px;
+            --radius-xl: 30px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body { background: var(--bg); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; padding: 20px 15px; }
+        body { 
+            background: var(--bg-base); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            display: flex; 
+            justify-content: center; 
+            padding: 15px;
+        }
 
         .app-shell {
             width: 100%;
             max-width: 550px;
             background: var(--white);
-            border-radius: var(--radius);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.08);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05);
             overflow: hidden;
             display: flex;
             flex-direction: column;
             border: 1px solid #f1f5f9;
         }
 
-        /* --- Vistas --- */
-        .view { display: none; padding: 30px 25px; animation: slideUp 0.4s ease-out forwards; }
+        .view { display: none; padding: 30px 25px; animation: slideIn 0.5s ease forwards; }
         .view.active { display: block; }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- Navegación de Pasos --- */
-        .stepper { display: flex; gap: 8px; padding: 25px 25px 0 25px; }
-        .step-dot { height: 6px; flex: 1; background: #e2e8f0; border-radius: 10px; transition: 0.4s; }
-        .step-dot.active { background: var(--primary); }
+        .stepper { display: flex; gap: 10px; padding: 25px 25px 0 25px; }
+        .dot { height: 6px; flex: 1; background: #e2e8f0; border-radius: 10px; transition: 0.5s; }
+        .dot.active { background: var(--primary); }
 
-        /* --- Tipografía --- */
-        .h1 { font-weight: 800; font-size: 1.8rem; letter-spacing: -1px; text-align: center; margin-bottom: 8px; color: var(--text-main); }
-        .sub { display: block; text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 25px; }
+        .h1 { font-weight: 800; font-size: 1.7rem; letter-spacing: -1.5px; text-align: center; margin-bottom: 10px; color: var(--text-main); line-height: 1.1; }
+        .sub { display: block; text-align: center; color: var(--text-muted); font-size: 0.95rem; margin-bottom: 30px; }
 
-        /* --- Componentes de Formulario --- */
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+        .input-group { margin-bottom: 22px; }
+        label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1.2px; }
         
         .field {
             width: 100%; padding: 18px; border: 2px solid #f1f5f9; border-radius: 18px;
-            font-size: 1rem; background: #f8fafc; transition: 0.3s; font-weight: 500; outline: none;
+            font-size: 1rem; background: #f8fafc; outline: none; transition: 0.3s;
         }
-        .field:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+        .field:focus { border-color: var(--primary); background: white; }
 
-        /* --- Selector de Color --- */
+        /* SELECTOR DE COLOR RESPONSIVE */
         .color-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
-            max-height: 300px; overflow-y: auto; padding: 8px;
-            background: #f8fafc; border-radius: 18px; border: 1px solid #f1f5f9;
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+            gap: 12px;
+            max-height: 320px; 
+            overflow-y: auto; 
+            padding: 10px;
+            background: #fcfcfc; 
+            border-radius: 20px; 
+            border: 1px solid #f1f5f9;
         }
-        .color-item { cursor: pointer; position: relative; }
+        .color-card { cursor: pointer; }
         .color-ui {
-            background: white; border: 2px solid #f1f5f9; padding: 12px;
-            border-radius: 15px; display: flex; align-items: center; gap: 12px; transition: 0.2s;
+            background: white; border: 2px solid #f1f5f9; padding: 14px;
+            border-radius: 18px; display: flex; align-items: center; gap: 12px; transition: 0.25s;
         }
-        .color-circle { width: 22px; height: 22px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
+        .color-circle { width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.05); flex-shrink: 0; }
         .color-name { font-size: 0.85rem; font-weight: 700; color: #475569; }
 
-        input[type="radio"]:checked + .color-ui { border-color: var(--primary); background: #eef2ff; transform: scale(1.02); }
+        input[type="radio"]:checked + .color-ui { border-color: var(--primary); background: #f5f3ff; transform: translateY(-2px); }
         input[type="radio"] { display: none; }
 
-        /* --- Botones --- */
-        .btn-box { display: flex; gap: 12px; margin-top: 25px; }
+        .btn-row { display: flex; gap: 12px; margin-top: 30px; }
         .btn {
-            flex: 1; padding: 18px; border: none; border-radius: 18px;
-            font-size: 1rem; font-weight: 800; cursor: pointer; transition: 0.3s;
+            flex: 1; padding: 20px; border: none; border-radius: 20px;
+            font-size: 1.05rem; font-weight: 800; cursor: pointer; transition: 0.3s;
             display: flex; align-items: center; justify-content: center; gap: 10px;
         }
-        .btn-next { background: var(--primary); color: white; }
-        .btn-back { background: #f1f5f9; color: var(--text-muted); }
-        .btn-confirm { background: var(--accent); color: white; width: 100%; margin-top: 15px; }
-        
-        /* --- Panel Admin --- */
-        .stat-card {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
-        }
-        .stat-box { background: #f1f5f9; padding: 15px; border-radius: 18px; text-align: center; }
-        .stat-val { display: block; font-size: 1.2rem; font-weight: 800; }
-        .stat-lab { font-size: 0.6rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: #f1f5f9; color: var(--text-muted); }
+        .btn-danger { background: #fee2e2; color: #b91c1c; margin-top: 20px; border: 1px solid #fecaca; }
 
-        .user-card {
-            background: white; border: 1px solid #f1f5f9; padding: 18px;
-            border-radius: 20px; margin-bottom: 12px; position: relative;
-        }
-        .status-badge {
-            position: absolute; top: 18px; right: 18px;
-            padding: 4px 10px; border-radius: 8px; font-size: 0.65rem; font-weight: 800;
-        }
-        .status-pending { background: #fef3c7; color: #92400e; }
-        .status-verified { background: #dcfce7; color: #166534; }
+        /* ADMIN STYLE */
+        .stat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; }
+        .stat-card { background: #f8fafc; padding: 20px; border-radius: 22px; text-align: center; border: 1px solid #f1f5f9; }
+        .stat-num { display: block; font-size: 1.3rem; font-weight: 800; }
 
-        .verify-btn {
-            background: var(--accent); color: white; border: none;
-            padding: 8px 15px; border-radius: 10px; font-weight: 800;
-            font-size: 0.75rem; cursor: pointer; margin-top: 10px;
+        .list-item {
+            background: white; border: 1px solid #f1f5f9; padding: 20px;
+            border-radius: 22px; margin-bottom: 15px; position: relative;
         }
+        .badge {
+            position: absolute; top: 20px; right: 20px;
+            padding: 5px 12px; border-radius: 10px; font-size: 0.65rem; font-weight: 800;
+        }
+        .pending { background: #fffbeb; color: #b45309; }
+        .verified { background: #ecfdf5; color: #065f46; }
 
-        /* --- Scrollbar --- */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        .qr-box { background: #f0fdf4; border: 2px dashed #22c55e; padding: 20px; border-radius: 22px; margin-top: 25px; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="app-shell">
-    <div class="stepper" id="mainStepper">
-        <div class="step-dot active"></div>
-        <div class="step-dot"></div>
-        <div class="step-dot"></div>
+    <div class="stepper" id="stepperControl">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
     </div>
 
     <div id="step1" class="view active">
-        <h1 class="h1">Identificación</h1>
-        <span class="sub">Registro Oficial de Poleras 2026</span>
-        
+        <h1 class="h1">REGISTRO DE POLERAS<br>CONFIRMACIÓN 2026</h1>
+        <span class="sub">Inicia tu proceso de inscripción</span>
         <div class="input-group">
-            <label>Nombre y Apellido</label>
-            <input type="text" id="reg_nombre" class="field" placeholder="EJ: JUAN VARGAS" oninput="this.value = this.value.toUpperCase()">
+            <label>Nombre Completo</label>
+            <input type="text" id="u_nombre" class="field" placeholder="EJ: PEDRO VARGAS" oninput="this.value = this.value.toUpperCase()">
         </div>
         <div class="input-group">
-            <label>WhatsApp (Bolivia)</label>
-            <input type="tel" id="reg_tel" class="field" placeholder="77173169">
+            <label>WhatsApp Personal</label>
+            <input type="tel" id="u_tel" class="field" placeholder="77173169">
         </div>
-        <button onclick="nav(2)" class="btn btn-next">Continuar</button>
-        <p onclick="accesoAdmin()" style="text-align:center; font-size:0.6rem; color:#cbd5e1; margin-top:30px; cursor:pointer; letter-spacing:2px;">PANEL COORDINACIÓN</p>
+        <button onclick="changeView(2)" class="btn btn-primary">Siguiente</button>
+        <p onclick="openAdmin()" style="text-align:center; font-size:0.6rem; color:#cbd5e1; margin-top:40px; cursor:pointer; font-weight:800;">ADMIN PANEL</p>
     </div>
 
     <div id="step2" class="view">
-        <h1 class="h1">Estilo</h1>
-        <span class="sub">Elige tu combinación favorita</span>
-        
+        <h1 class="h1">TALLA Y COLOR</h1>
         <div class="input-group">
-            <label>Talla de Polera</label>
-            <select id="reg_talla" class="field">
-                <option value="S">S - Small</option>
-                <option value="M">M - Medium</option>
-                <option value="L">L - Large</option>
-                <option value="XL">XL - Extra Large</option>
-                <option value="XXL">XXL - Especial</option>
+            <label>Talla</label>
+            <select id="u_talla" class="field">
+                <option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
             </select>
         </div>
-
         <div class="input-group">
-            <label>Color de Polera (22 opciones)</label>
-            <div id="colorPicker" class="color-grid"></div>
+            <label>Elige un Color</label>
+            <div id="colorContainer" class="color-grid"></div>
         </div>
-
-        <div class="btn-box">
-            <button onclick="nav(1)" class="btn btn-back">Atrás</button>
-            <button onclick="nav(3)" class="btn btn-next">Siguiente</button>
+        <div class="btn-row">
+            <button onclick="changeView(1)" class="btn btn-secondary">Atrás</button>
+            <button onclick="changeView(3)" class="btn btn-primary">Continuar</button>
         </div>
     </div>
 
     <div id="step3" class="view">
-        <h1 class="h1">Finalizar</h1>
-        <span class="sub">Cierre de registro y adelanto</span>
-        
+        <h1 class="h1">FINALIZAR REGISTRO</h1>
         <div class="input-group">
-            <label>Monto de Adelanto (Bs.)</label>
-            <input type="number" id="reg_pago" class="field" value="0">
+            <label>Adelanto (Bs.)</label>
+            <input type="number" id="u_pago" class="field" value="0">
         </div>
-        <div class="input-group">
-            <label>Observaciones</label>
-            <textarea id="reg_obs" class="field" rows="3" placeholder="Ej: Bordado extra, cambio de cuello..." spellcheck="true"></textarea>
-        </div>
+        <button onclick="processRegister()" class="btn btn-primary" style="width:100%">Enviar Registro</button>
+        <button onclick="changeView(2)" class="btn btn-secondary" style="width:100%; margin-top:10px;">Atrás</button>
+    </div>
 
-        <div class="btn-box">
-            <button onclick="nav(2)" class="btn btn-back">Atrás</button>
-            <button onclick="finalizar()" class="btn btn-confirm">Confirmar Registro</button>
+    <div id="view-success" class="view">
+        <div style="text-align:center">
+            <h1 class="h1">¡REGISTRO ENVIADO!</h1>
+            <div class="qr-box">
+                <p style="font-size:0.85rem; margin-bottom:15px;">Para confirmar, pide el QR al Michael:</p>
+                <a id="btnPedirQR" href="#" target="_blank" class="btn" style="background:#25d366; color:white; text-decoration:none">Pedir QR por WhatsApp</a>
+            </div>
+            <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:20px;">Volver</button>
         </div>
     </div>
 
     <div id="view-admin" class="view">
-        <h1 class="h1">Administración</h1>
+        <h1 class="h1">CONTROL MICHAEL</h1>
+        <div class="stat-row">
+            <div class="stat-card"><span class="stat-label">CAJA</span><span id="label_caja" class="stat-num">0</span></div>
+            <div class="stat-card"><span class="stat-label">DEUDA</span><span id="label_deuda" class="stat-num" style="color:red">0</span></div>
+        </div>
+
+        <div id="admin_content"></div>
+
+        <button onclick="downloadPDF()" class="btn btn-primary" style="background:#1e293b; margin-top:20px;">PDF Reporte</button>
         
-        <div class="user-card" style="background: #eef2ff; border-color: #c7d2fe;">
-            <label style="color: var(--primary);">Configuración Maestra</label>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <input type="number" id="cfg_total" class="field" style="padding:10px" placeholder="Precio Polera">
-                <input type="number" id="cfg_coord" class="field" style="padding:10px" placeholder="Aporte Coord.">
-            </div>
-            <button onclick="saveCfg()" class="btn btn-next" style="padding:10px; margin-top:10px; font-size:0.8rem;">Actualizar Precios</button>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-box">
-                <span class="stat-lab">Caja Verificada</span>
-                <span id="adm_caja" class="stat-val">0 Bs.</span>
-            </div>
-            <div class="stat-box">
-                <span class="stat-lab">Pendiente Cobro</span>
-                <span id="adm_deuda" class="stat-val" style="color:var(--danger)">0 Bs.</span>
-            </div>
-        </div>
-
-        <button onclick="exportarPDF()" class="btn btn-next" style="background:#1e293b; margin-bottom:15px;">Generar PDF Oficial</button>
-
-        <div id="admin_list">
-            </div>
-
-        <button onclick="location.reload()" class="btn btn-back" style="margin-top:20px;">Cerrar Sesión</button>
+        <button onclick="resetSistema()" class="btn btn-danger">⚠️ ELIMINAR TODO Y RESETEAR</button>
+        
+        <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:10px;">Cerrar</button>
     </div>
 </div>
 
 <script>
-    // --- LÓGICA DE COLORES ---
     const COLORES = [
-        {n: 'Negro', c: '#000000'}, {n: 'Blanco', c: '#ffffff'}, {n: 'Azul Marino', c: '#1e3a8a'},
-        {n: 'Rojo Carmesí', c: '#dc2626'}, {n: 'Verde Militar', c: '#365314'}, {n: 'Gris Melange', c: '#94a3b8'},
-        {n: 'Vino Tinto', c: '#7f1d1d'}, {n: 'Celeste', c: '#93c5fd'}, {n: 'Azul Francia', c: '#2563eb'},
-        {n: 'Amarillo', c: '#facc15'}, {n: 'Naranja', c: '#f97316'}, {n: 'Lila', c: '#c084fc'},
-        {n: 'Verde Limón', c: '#84cc16'}, {n: 'Rosa Pastel', c: '#fbcfe8'}, {n: 'Marrón Café', c: '#451a03'},
-        {n: 'Beige', c: '#f5f5dc'}, {n: 'Azul Turquesa', c: '#06b6d4'}, {n: 'Verde Esmeralda', c: '#10b981'},
-        {n: 'Mostaza', c: '#ca8a04'}, {n: 'Cian', c: '#22d3ee'}, {n: 'Fucsia', c: '#d946ef'},
-        {n: 'Ocre', c: '#92400e'}
+        {n:'Negro', c:'#000'}, {n:'Blanco', c:'#fff'}, {n:'Azul Marino', c:'#1e3a8a'}, {n:'Rojo', c:'#dc2626'}, 
+        {n:'Verde Militar', c:'#365314'}, {n:'Gris', c:'#94a3b8'}, {n:'Vino', c:'#7f1d1d'}, {n:'Celeste', c:'#93c5fd'},
+        {n:'Azul Francia', c:'#2563eb'}, {n:'Amarillo', c:'#facc15'}, {n:'Naranja', c:'#f97316'}, {n:'Lila', c:'#c084fc'},
+        {n:'Verde Limón', c:'#84cc16'}, {n:'Rosa', c:'#fbcfe8'}, {n:'Marrón', c:'#451a03'}, {n:'Beige', c:'#f5f5dc'},
+        {n:'Turquesa', c:'#06b6d4'}, {n:'Esmeralda', c:'#10b981'}, {n:'Mostaza', c:'#ca8a04'}, {n:'Cian', c:'#22d3ee'},
+        {n:'Fucsia', c:'#d946ef'}, {n:'Ocre', c:'#92400e'}
     ];
 
-    // --- ESTADO GLOBAL ---
-    let db = JSON.parse(localStorage.getItem('zoe_data_2026')) || [];
-    let config = JSON.parse(localStorage.getItem('zoe_config')) || { total: 100, coord: 0 };
+    let db = JSON.parse(localStorage.getItem('zoe_2026_final')) || [];
+    let config = { total: 100, coord: 20 };
 
     window.onload = () => {
-        const picker = document.getElementById('colorPicker');
-        COLORES.forEach(col => {
-            picker.innerHTML += `
-                <label class="color-item">
-                    <input type="radio" name="u_color" value="${col.n}">
+        const grid = document.getElementById('colorContainer');
+        COLORES.forEach(item => {
+            grid.innerHTML += `
+                <label class="color-card">
+                    <input type="radio" name="pick_color" value="${item.n}">
                     <div class="color-ui">
-                        <div class="color-circle" style="background: ${col.c}"></div>
-                        <span class="color-name">${col.n}</span>
+                        <div class="color-circle" style="background:${item.c}"></div>
+                        <span class="color-name">${item.n}</span>
                     </div>
-                </label>
-            `;
+                </label>`;
         });
     };
 
-    // --- NAVEGACIÓN ---
-    function nav(s) {
-        if(s === 2 && (!document.getElementById('reg_nombre').value || !document.getElementById('reg_tel').value)) {
-            return alert("Por favor, completa tus datos de contacto.");
-        }
-        
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        document.getElementById('step' + s).classList.add('active');
-        
-        document.querySelectorAll('.step-dot').forEach((d, i) => {
-            d.classList.toggle('active', i < s);
-        });
+    function changeView(v) {
+        document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+        document.getElementById('step' + v).classList.add('active');
     }
 
-    // --- REGISTRO ---
-    function finalizar() {
-        const colorSel = document.querySelector('input[name="u_color"]:checked');
-        if(!colorSel) return alert("Por favor elige un color de polera.");
-
-        const nombre = document.getElementById('reg_nombre').value.trim();
-        let tel = document.getElementById('reg_tel').value.replace(/\D/g, '');
-        if(!tel.startsWith('591')) tel = '591' + tel;
-
-        const pago = parseFloat(document.getElementById('reg_pago').value) || 0;
-
-        const nuevo = {
+    function processRegister() {
+        const color = document.querySelector('input[name="pick_color"]:checked');
+        if(!color) return alert("Elige un color");
+        
+        const entry = {
             id: Date.now(),
-            nombre, tel, pago,
-            talla: document.getElementById('reg_talla').value,
-            color: colorSel.value,
-            obs: document.getElementById('reg_obs').value || "Ninguna",
+            nombre: document.getElementById('u_nombre').value,
+            tel: document.getElementById('u_tel').value,
+            talla: document.getElementById('u_talla').value,
+            color: color.value,
+            pago: parseFloat(document.getElementById('u_pago').value) || 0,
             verificado: false
         };
 
-        db.push(nuevo);
-        localStorage.setItem('zoe_data_2026', JSON.stringify(db));
+        db.push(entry);
+        localStorage.setItem('zoe_2026_final', JSON.stringify(db));
 
-        alert("¡Registro enviado con éxito! Michael verificará tu pago pronto.");
-        location.reload();
+        const msg = encodeURIComponent(`Hola Michael, soy ${entry.nombre}. Registré mi polera ${entry.color}. Pásame el QR para mi adelanto de Bs. ${entry.pago}`);
+        document.getElementById('btnPedirQR').href = `https://wa.me/59177173169?text=${msg}`;
+        
+        document.getElementById('stepperControl').style.display = 'none';
+        document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+        document.getElementById('view-success').classList.add('active');
     }
 
-    // --- ADMINISTRACIÓN ---
-    function accesoAdmin() {
-        if(prompt("PIN DE SEGURIDAD:") === "2026") {
-            document.getElementById('mainStepper').style.display = 'none';
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    function openAdmin() {
+        if(prompt("PASSWORD:") === "2026") {
+            document.getElementById('stepperControl').style.display = 'none';
+            document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
             document.getElementById('view-admin').classList.add('active');
-            
-            document.getElementById('cfg_total').value = config.total;
-            document.getElementById('cfg_coord').value = config.coord;
-            renderAdmin();
+            refreshAdmin();
         }
     }
 
-    function saveCfg() {
-        config.total = parseFloat(document.getElementById('cfg_total').value) || 0;
-        config.coord = parseFloat(document.getElementById('cfg_coord').value) || 0;
-        localStorage.setItem('zoe_config', JSON.stringify(config));
-        renderAdmin();
-        alert("Costos actualizados correctamente.");
-    }
-
-    function verificar(id) {
-        db = db.map(u => u.id === id ? {...u, verificado: true} : u);
-        localStorage.setItem('zoe_data_2026', JSON.stringify(db));
-        renderAdmin();
-    }
-
-    function renderAdmin() {
-        const list = document.getElementById('admin_list');
+    function refreshAdmin() {
+        const cont = document.getElementById('admin_content');
         let caja = 0, deuda = 0;
-        list.innerHTML = "";
-
-        db.forEach(u => {
-            const netoPagar = config.total - config.coord;
-            const resta = netoPagar - u.pago;
-            
-            if(u.verificado) caja += u.pago;
-            deuda += resta;
-
-            list.innerHTML += `
-                <div class="user-card">
-                    <span class="status-badge ${u.verificado ? 'status-verified' : 'status-pending'}">
-                        ${u.verificado ? 'VERIFICADO ✅' : 'PENDIENTE ⏳'}
-                    </span>
-                    <b style="font-size:1rem;">${u.nombre}</b>
-                    <p style="font-size:0.75rem; color:var(--text-muted); margin-top:5px;">
-                        Talla: ${u.talla} | Color: ${u.color} | Tel: ${u.tel}
-                    </p>
-                    <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:flex-end;">
-                        <div>
-                            <small style="font-weight:700;">Pagó: ${u.pago} Bs.</small><br>
-                            <b style="color:${resta > 0 ? 'var(--danger)' : 'var(--accent)'}">Resta: ${resta} Bs.</b>
-                        </div>
-                        <div style="display:flex; gap:5px;">
-                            ${!u.verificado ? `<button onclick="verificar(${u.id})" class="verify-btn">VERIFICAR</button>` : ''}
-                            <button onclick="sendWA('${u.tel}', '${u.nombre}', ${resta})" style="background:#25d366; border:none; padding:8px; border-radius:10px; cursor:pointer;">🔔</button>
-                        </div>
-                    </div>
-                </div>
-            `;
+        cont.innerHTML = "";
+        db.forEach(item => {
+            const neto = config.total - config.coord - item.pago;
+            if(item.verificado) caja += item.pago;
+            deuda += neto;
+            cont.innerHTML += `
+                <div class="list-item">
+                    <span class="badge ${item.verificado ? 'verified' : 'pending'}">${item.verificado ? 'OK' : 'PENDIENTE'}</span>
+                    <b>${item.nombre}</b><br><small>${item.talla} | ${item.color} | Resta: ${neto} Bs.</small><br>
+                    ${!item.verificado ? `<button onclick="confirmar(${item.id})" style="margin-top:10px; padding:5px 10px; background:var(--accent); color:white; border:none; border-radius:8px;">Verificar Pago</button>` : ''}
+                </div>`;
         });
-
-        document.getElementById('adm_caja').innerText = caja + " Bs.";
-        document.getElementById('adm_deuda').innerText = deuda + " Bs.";
+        document.getElementById('label_caja').innerText = caja + " Bs.";
+        document.getElementById('label_deuda').innerText = deuda + " Bs.";
     }
 
-    function sendWA(tel, nom, resta) {
-        const msg = encodeURIComponent(`Hola ${nom}, te hablamos de la coordinación ZOE. Tu saldo pendiente por la polera es de Bs. ${resta}. Por favor regularizar. ¡Gracias!`);
-        window.open(`https://wa.me/${tel}?text=${msg}`);
+    function confirmar(id) {
+        db = db.map(i => i.id === id ? {...i, verificado:true} : i);
+        localStorage.setItem('zoe_2026_final', JSON.stringify(db));
+        refreshAdmin();
     }
 
-    function exportarPDF() {
+    // FUNCIÓN DE RESET TOTAL
+    function resetSistema() {
+        if(confirm("⚠️ ¿ESTÁS SEGURO? Se borrarán todos los catequistas registrados y la caja volverá a cero.")) {
+            if(confirm("🛑 ESTA ACCIÓN NO SE PUEDE DESHACER. ¿Eliminar todo ahora?")) {
+                db = [];
+                localStorage.removeItem('zoe_2026_final');
+                alert("Sistema reseteado con éxito.");
+                location.reload();
+            }
+        }
+    }
+
+    function downloadPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.setFontSize(16);
-        doc.text("REPORTE OFICIAL POLERAS 2026", 14, 20);
-        doc.setFontSize(10);
-        doc.text(`Precio: ${config.total} | Aporte Coord: ${config.coord}`, 14, 28);
-
-        const rows = db.map(u => [
-            u.nombre, u.talla, u.color, u.pago + " Bs.", 
-            (config.total - config.coord - u.pago) + " Bs.",
-            u.verificado ? "SÍ" : "NO"
-        ]);
-
-        doc.autoTable({
-            head: [['NOMBRE', 'TALLA', 'COLOR', 'PAGO', 'SALDO', 'VERIF.']],
-            body: rows,
-            startY: 35,
-            theme: 'grid',
-            headStyles: { fillStyle: [79, 70, 229] }
-        });
-        
-        doc.save("Reporte_ZOE_2026.pdf");
+        doc.text("REPORTE ZOE 2026", 14, 20);
+        const rows = db.map(i => [i.nombre, i.talla, i.color, i.pago, (config.total - config.coord - i.pago), i.verificado ? 'SÍ' : 'NO']);
+        doc.autoTable({ head:[['NOMBRE', 'TALLA', 'COLOR', 'PAGÓ', 'DEUDA', 'VERIF']], body: rows, startY:30 });
+        doc.save("Reporte_Zoe.pdf");
     }
 </script>
 </body>
-    </html>
-    
+</html>
