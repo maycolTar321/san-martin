@@ -86,7 +86,6 @@
 
         .qr-box { background: #f0fdf4; border: 2px dashed #22c55e; padding: 20px; border-radius: 22px; margin-top: 25px; text-align: center; }
 
-        /* Estilo para los inputs de configuración en admin */
         .config-panel { background: #eff6ff; padding: 15px; border-radius: 20px; margin-bottom: 20px; border: 1px solid #dbeafe; }
         .config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .field-small { width: 100%; padding: 10px; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 0.9rem; text-align: center; font-weight: bold; }
@@ -126,21 +125,21 @@
             <textarea id="u_obs" class="field" rows="2" placeholder="Detalles adicionales..."></textarea>
         </div>
         
-        <button onclick="processRegister()" class="btn btn-primary">Guardar Registro</button>
+        <button onclick="processRegister()" class="btn btn-primary">Siguiente: Pedir QR</button>
         <p onclick="openAdmin()" style="text-align:center; font-size:0.6rem; color:#cbd5e1; margin-top:40px; cursor:pointer; font-weight:800;">SISTEMA ADMINISTRATIVO</p>
     </div>
 
     <div id="view-wait" class="view">
         <div style="text-align:center">
-            <div style="font-size:50px">📝</div>
-            <h1 class="h1">¡Registro Exitoso!</h1>
-            <p style="color:var(--text-muted)">Tu información ha sido guardada. Michael verificará tu pago.</p>
+            <div style="font-size:50px">💳</div>
+            <h1 class="h1">PASO FINAL: PAGO</h1>
+            <p style="color:var(--text-muted)">Confirma tu registro pidiendo el QR de pago a Michael.</p>
             
             <div id="resumen-pantalla" class="report-box"></div>
 
             <div class="qr-box">
-                <p style="font-size:0.85rem; margin-bottom:15px;">Para validar tu adelanto, envía el comprobante:</p>
-                <a id="btnPedirQR" href="#" target="_blank" class="btn btn-wa">Enviar Comprobante</a>
+                <p style="font-size:0.85rem; margin-bottom:15px;">Toca el botón para solicitar el QR por WhatsApp:</p>
+                <a id="btnPedirQR" href="#" target="_blank" class="btn btn-wa">📲 Solicitar QR de Pago</a>
             </div>
             <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:20px;">Volver al Inicio</button>
         </div>
@@ -187,12 +186,9 @@
     ];
 
     let db = JSON.parse(localStorage.getItem('zoe_poleras_2026')) || [];
-    
-    // Cargar configuración guardada o usar por defecto
     let config = JSON.parse(localStorage.getItem('zoe_config')) || { total: 100, coord: 20 };
 
     window.onload = () => {
-        // Cargar valores en los inputs de admin
         document.getElementById('cfg_total').value = config.total;
         document.getElementById('cfg_coord').value = config.coord;
 
@@ -239,24 +235,17 @@
         db.push(entry);
         localStorage.setItem('zoe_poleras_2026', JSON.stringify(db));
 
-        // Reporte para el usuario usando la config actual
         const saldo = config.total - config.coord - entry.pago;
         document.getElementById('resumen-pantalla').innerHTML = `
             <div class="report-line"><b>Catequista:</b> <span>${entry.nombre}</span></div>
             <div class="report-line"><b>Detalle:</b> <span>Polera ${entry.talla} (${entry.color})</span></div>
-            <div class="report-line"><b>Adelantado:</b> <span>${entry.pago} Bs.</span></div>
-            <div class="report-line"><b>Saldo Pendiente:</b> <span style="color:red; font-weight:bold">${saldo} Bs.</span></div>
+            <div class="report-line"><b>Adelanto:</b> <span>${entry.pago} Bs.</span></div>
+            <div class="report-line"><b>Saldo a Deber:</b> <span style="color:red; font-weight:bold">${saldo} Bs.</span></div>
         `;
 
-        const msg = encodeURIComponent(`Hola Michael, registré mi polera (${entry.talla} ${entry.color}). Adjunto el comprobante de pago de Bs. ${entry.pago}`);
+        const msg = encodeURIComponent(`Hola Michael, soy ${entry.nombre}. Registré mi polera (${entry.talla} ${entry.color}). Por favor pásame el QR para cancelar mi adelanto de Bs. ${entry.pago}`);
         document.getElementById('btnPedirQR').href = `https://wa.me/59177173169?text=${msg}`;
 
-        nombreInput.value = "";
-        telInput.value = "";
-        pagoInput.value = "0";
-        obsInput.value = "";
-        document.querySelectorAll('input[name="pick_color"]').forEach(r => r.checked = false);
-        
         document.getElementById('view-reg').classList.remove('active');
         document.getElementById('view-wait').classList.add('active');
     }
@@ -285,7 +274,7 @@
                     <b>${item.nombre}</b><br>
                     <small>Talla: ${item.talla} | Color: ${item.color} | Pagó: ${item.pago} Bs.</small><br>
                     <b style="color:red">Falta: ${neto} Bs.</b><br>
-                    ${!item.verificado ? `<button onclick="confirmarPago(${item.id}, ${neto})" class="btn" style="background:var(--accent); color:white; padding:10px; font-size:0.8rem; margin-top:10px">Confirmar Pago y Avisar Saldo</button>` : ''}
+                    ${!item.verificado ? `<button onclick="confirmarPago(${item.id}, ${neto})" class="btn" style="background:var(--accent); color:white; padding:10px; font-size:0.8rem; margin-top:10px">Verificar y Enviar Saldo</button>` : ''}
                 </div>`;
         });
         document.getElementById('label_caja').innerText = caja + " Bs.";
@@ -298,14 +287,14 @@
         localStorage.setItem('zoe_poleras_2026', JSON.stringify(db));
         
         const cleanTel = user.tel.replace(/\D/g,'');
-        const msg = encodeURIComponent(`¡Hola ${user.nombre}! He confirmado tu adelanto de Bs. ${user.pago}. ✅ Tu polera ${user.talla} color ${user.color} está en lista. Te falta cancelar: ${falta} Bs.`);
+        const msg = encodeURIComponent(`¡Hola ${user.nombre}! He verificado tu pago de Bs. ${user.pago}. ✅ Tu polera ${user.talla} (${user.color}) ya está registrada. Saldo pendiente: ${falta} Bs.`);
         window.open(`https://wa.me/591${cleanTel}?text=${msg}`);
         
         refreshAdmin();
     }
 
     function resetSistema() {
-        if(confirm("🛑 ¿BORRAR TODO EL REGISTRO? No podrás recuperar los datos.")) {
+        if(confirm("🛑 ¿BORRAR TODO EL REGISTRO?")) {
             db = [];
             localStorage.removeItem('zoe_poleras_2026');
             location.reload();
@@ -315,25 +304,9 @@
     function downloadPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.setFontSize(18);
-        doc.text("REPORTE GENERAL - POLERAS 2026", 14, 20);
-        
-        const rows = db.map(i => [
-            i.nombre, 
-            i.talla, 
-            i.color, 
-            i.pago + " Bs.", 
-            (config.total - config.coord - i.pago) + " Bs.", 
-            i.verificado ? 'PAGADO' : 'PENDIENTE'
-        ]);
-
-        doc.autoTable({ 
-            head:[['NOMBRE', 'TALLA', 'COLOR', 'ADELANTO', 'SALDO', 'ESTADO']], 
-            body: rows, 
-            startY:30,
-            theme: 'grid'
-        });
-        
+        doc.text("REPORTE DE POLERAS 2026", 14, 20);
+        const rows = db.map(i => [i.nombre, i.talla, i.color, i.pago + " Bs.", (config.total - config.coord - i.pago) + " Bs.", i.verificado ? 'SÍ' : 'NO']);
+        doc.autoTable({ head:[['NOMBRE', 'TALLA', 'COLOR', 'PAGÓ', 'SALDO', 'OK']], body: rows, startY:30 });
         doc.save("Reporte_Poleras.pdf");
     }
 </script>
