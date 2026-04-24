@@ -3,48 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Poleras - Coordinación</title>
+    <title>👕 Uniformes 2026 | Gestión Pro</title>
     <style>
-        :root { --primary: #7c3aed; --secondary: #ede9fe; --accent: #059669; --dark: #1f2937; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f3f4f6; margin: 0; display: flex; justify-content: center; padding: 15px; }
-        
-        .app-container { background: white; max-width: 500px; width: 100%; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); overflow: hidden; min-height: 90vh; display: flex; flex-direction: column; }
-        
-        /* Vistas */
-        .view { display: none; padding: 25px; flex-grow: 1; animation: fadeIn 0.3s ease; }
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f8fafc;
+            --accent: #22c55e;
+            --danger: #ef4444;
+            --glass: rgba(255, 255, 255, 0.95);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        .app-container {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            width: 100%;
+            max-width: 450px;
+            margin: 15px;
+            border-radius: 32px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .view {
+            display: none;
+            padding: 30px;
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
         .view.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        h2 { color: var(--primary); font-size: 1.5rem; text-align: center; margin-bottom: 1rem; }
-        p.subtitle { text-align: center; color: #6b7280; font-size: 0.9rem; margin-bottom: 2rem; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        /* Formulario */
+        h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(to right, #4f46e5, #9333ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        /* Formulario Moderno */
         .field { margin-bottom: 20px; }
-        label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--dark); }
-        input, select { width: 100%; padding: 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 1rem; transition: border 0.3s; }
-        input:focus { border-color: var(--primary); outline: none; }
+        label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.9rem; color: #475569; }
+        
+        input, select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background: #fff;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
 
         /* Selector de Colores Pro */
         .color-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .color-card { border: 2px solid #f3f4f6; padding: 12px; border-radius: 14px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: 0.2s; }
-        .color-dot { width: 24px; height: 24px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); }
-        input[type="radio"] { display: none; }
-        input[type="radio"]:checked + .color-card { border-color: var(--primary); background: var(--secondary); }
+        .color-card {
+            background: white;
+            border: 2px solid #f1f5f9;
+            padding: 12px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        input[type="radio"]:checked + .color-card {
+            border-color: var(--primary);
+            background: #eef2ff;
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
 
         /* Botones */
-        .btn { width: 100%; padding: 16px; border: none; border-radius: 14px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-main { background: var(--primary); color: white; }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 18px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s active;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-main { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4); }
+        .btn-main:hover { background: var(--primary-dark); transform: translateY(-2px); }
         .btn-main:active { transform: scale(0.98); }
-        .btn-admin { background: transparent; color: #9ca3af; font-size: 0.8rem; margin-top: 20px; }
 
-        /* QR Final */
-        .qr-wrapper { background: #faf5ff; border: 3px dashed #ddd6fe; border-radius: 20px; padding: 20px; text-align: center; }
-        .qr-img { width: 100%; max-width: 250px; border-radius: 15px; margin: 15px 0; }
+        .btn-ws { background: #25d366; color: white; text-decoration: none; }
+        
+        /* Dashboard Admin */
+        .stat-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        .stat-card b { display: block; font-size: 1.5rem; color: var(--primary); }
 
-        /* Tabla Admin */
-        .table-res { overflow-x: auto; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        .table-container {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f8fafc; padding: 15px; text-align: left; font-size: 0.8rem; text-transform: uppercase; color: #64748b; }
+        td { padding: 15px; border-top: 1px solid #f1f5f9; font-size: 0.9rem; }
+
+        .footer-admin {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .footer-admin:hover { color: white; }
     </style>
 </head>
 <body>
@@ -52,142 +183,167 @@
 <div class="app-container">
     
     <div id="view-form" class="view active">
-        <h2>👕 Pedido de Polera</h2>
-        <p class="subtitle">Completa tus datos para coordinar el uniforme de este año.</p>
+        <h2>Uniformes 2026</h2>
+        <p class="subtitle">Personaliza tu polera y asegura tu pedido</p>
         
         <form id="mainForm">
             <div class="field">
                 <label>Nombre Completo</label>
-                <input type="text" id="u_nombre" placeholder="Escribe tu nombre aquí" required>
+                <input type="text" id="u_nombre" placeholder="Ej. Michael Vargas" required>
             </div>
 
             <div class="field">
                 <label>Talla de Polera</label>
                 <select id="u_talla" required>
-                    <option value="">Selecciona tu talla...</option>
-                    <option value="S">S - Pequeña</option>
-                    <option value="M">M - Mediana</option>
-                    <option value="L">L - Grande</option>
-                    <option value="XL">XL - Extra Grande</option>
-                    <option value="XXL">XXL - Especial</option>
+                    <option value="">Selecciona una opción...</option>
+                    <option value="S">Small (S)</option>
+                    <option value="M">Medium (M)</option>
+                    <option value="L">Large (L)</option>
+                    <option value="XL">Extra Large (XL)</option>
                 </select>
             </div>
 
-            <label>Color Favorito</label>
+            <label>Color de Preferencia</label>
             <div class="color-grid" id="colorList"></div>
 
-            <button type="submit" class="btn btn-main" style="margin-top: 25px;">Registrar mi Pedido</button>
+            <div class="field" style="margin-top: 20px;">
+                <label>¿Algo más? (Sugerencia de color)</label>
+                <input type="text" id="u_extra" placeholder="Ej. Cuello blanco, otro color...">
+            </div>
+
+            <div class="field">
+                <label>Adelanto Económico (Bs.)</label>
+                <input type="number" id="u_monto" value="0" min="0">
+            </div>
+
+            <button type="submit" class="btn btn-main">Confirmar mi Pedido</button>
         </form>
-        
-        <button class="btn btn-admin" onclick="goAdmin()">Acceso Privado Coordinación</button>
+        <div class="footer-admin" onclick="openAdmin()">Acceso Privado Coordinación</div>
     </div>
 
     <div id="view-success" class="view">
         <div style="text-align: center;">
-            <div style="font-size: 50px;">✅</div>
-            <h2 style="color: var(--accent);">¡Recibido!</h2>
-            <p>Tus datos han sido guardados correctamente.</p>
+            <div style="background: #dcfce7; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <span style="font-size: 40px;">✅</span>
+            </div>
+            <h2>¡Pedido Recibido!</h2>
+            <div id="resumen" style="background: #f1f5f9; padding: 20px; border-radius: 20px; margin: 20px 0; text-align: left; font-size: 0.95rem;"></div>
         </div>
 
-        <div class="qr-wrapper">
-            <p style="font-weight: bold; margin: 0;">📸 GUARDA ESTA IMAGEN</p>
-            <p style="font-size: 0.8rem; color: #6b7280;">Cuando se defina el monto a pagar, deberás usar este QR para cubrir la diferencia.</p>
-            <img src="https://i.postimg.cc/k4G6VskF/1000544014.jpg" class="qr-img" alt="QR Pago">
-            <p style="font-weight: bold; color: var(--primary);">Maycol Anghelo Avila Zenteno</p>
+        <div id="pay-section" style="display: none;">
+            <p style="text-align: center; font-weight: 700; color: #b45309;">💰 PASO FINAL: PAGO</p>
+            <p style="text-align: center; font-size: 0.85rem; color: #64748b; margin-bottom: 20px;">Para validar tu adelanto, solicita el QR al encargado de tu preferencia:</p>
+            
+            <a id="ws-1" href="#" target="_blank" class="btn btn-ws">📱 Coordinador (QR)</a>
+            <a id="ws-2" href="#" target="_blank" class="btn btn-ws" style="background: #075e54;">📱 Subcoordinadora (QR)</a>
         </div>
 
-        <button onclick="location.reload()" class="btn btn-main" style="margin-top: 20px; background: #6b7280;">Volver al Inicio</button>
+        <button onclick="location.reload()" class="btn" style="background: #e2e8f0; color: #475569;">Cerrar y Volver</button>
     </div>
 
     <div id="view-admin" class="view">
-        <h2>📊 Reporte de Pedidos</h2>
-        <div id="stats" style="display: flex; gap: 10px; margin-bottom: 15px;"></div>
-        <div class="table-res" id="tableBox"></div>
+        <h2>Panel de Control</h2>
         
-        <button onclick="exportCSV()" class="btn btn-main" style="background: var(--accent); margin-top: 20px;">Descargar Excel (.csv)</button>
-        <button onclick="location.reload()" class="btn btn-admin">Regresar al Formulario</button>
+        <div class="stat-group">
+            <div class="stat-card">Pedidos<b id="st-count">0</b></div>
+            <div class="stat-card">Total Bs.<b id="st-money">0</b></div>
+        </div>
+
+        <button onclick="sendReport()" class="btn btn-ws" style="margin-bottom: 20px;">📢 Enviar Reporte General</button>
+
+        <div class="table-container">
+            <table id="adminTable">
+                <thead><tr><th>Nombre</th><th>Talla</th><th>Bs.</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <button onclick="location.reload()" class="btn btn-main" style="background: #64748b; margin-top: 20px;">Regresar</button>
     </div>
 
 </div>
 
 <script>
-    // Configuración de Colores (14 opciones)
-    const db_colores = [
-        {n: 'Blanco', c: '#ffffff'}, {n: 'Negro', c: '#000000'}, 
-        {n: 'Azul Marino', c: '#1e3a8a'}, {n: 'Gris Melange', c: '#94a3b8'},
-        {n: 'Vino', c: '#7f1d1d'}, {n: 'Verde Militar', c: '#365314'},
-        {n: 'Celeste', c: '#7dd3fc'}, {n: 'Rojo', c: '#dc2626'},
-        {n: 'Turquesa', c: '#06b6d4'}, {n: 'Verde Olivo', c: '#65a30d'},
-        {n: 'Coral', c: '#fb7185'}, {n: 'Naranja', c: '#f97316'},
-        {n: 'Amarillo', c: '#facc15'}, {n: 'Lila', c: '#c084fc'}
+    const colores = [
+        {n: 'Negro', c: '#1e293b'}, {n: 'Blanco', c: '#ffffff'}, 
+        {n: 'Azul', c: '#1e40af'}, {n: 'Vino', c: '#991b1b'},
+        {n: 'Verde', c: '#166534'}, {n: 'Gris', c: '#64748b'}
     ];
 
-    // Renderizar colores
-    const colorList = document.getElementById('colorList');
-    db_colores.forEach((item, index) => {
-        colorList.innerHTML += `
+    const list = document.getElementById('colorList');
+    colores.forEach(col => {
+        list.innerHTML += `
             <label>
-                <input type="radio" name="color_opt" value="${item.n}" required>
+                <input type="radio" name="color_sel" value="${col.n}" required>
                 <div class="color-card">
-                    <div class="color-dot" style="background: ${item.c}"></div>
-                    <span>${item.n}</span>
+                    <div class="color-dot" style="background: ${col.c}"></div>
+                    <span>${col.n}</span>
                 </div>
             </label>
         `;
     });
 
-    // Manejo de Formulario
     document.getElementById('mainForm').onsubmit = function(e) {
         e.preventDefault();
+        
         const data = {
-            nombre: document.getElementById('u_nombre').value,
-            talla: document.getElementById('u_talla').value,
-            color: document.querySelector('input[name="color_opt"]:checked').value,
-            fecha: new Date().toLocaleDateString()
+            n: document.getElementById('u_nombre').value,
+            t: document.getElementById('u_talla').value,
+            m: document.getElementById('u_monto').value || 0,
+            c: document.querySelector('input[name="color_sel"]:checked').value + (document.getElementById('u_extra').value ? ` - ${document.getElementById('u_extra').value}` : ""),
+            f: new Date().toLocaleDateString()
         };
 
-        let db = JSON.parse(localStorage.getItem('pedidos_2026')) || [];
+        let db = JSON.parse(localStorage.getItem('pedidos_2026_pro')) || [];
         db.push(data);
-        localStorage.setItem('pedidos_2026', JSON.stringify(db));
+        localStorage.setItem('pedidos_2026_pro', JSON.stringify(db));
+
+        document.getElementById('resumen').innerHTML = `
+            <b>Persona:</b> ${data.n}<br>
+            <b>Detalle:</b> Talla ${data.t} / Color ${data.c}<br>
+            <b>Adelanto:</b> Bs. ${data.m}
+        `;
+
+        if(data.m > 0) {
+            document.getElementById('pay-section').style.display = 'block';
+            const text = window.encodeURIComponent(`¡Hola! Soy ${data.n}. Registré mi pedido Talla ${data.t} y quiero el QR para pagar mi adelanto de Bs. ${data.m}.`);
+            document.getElementById('ws-1').href = `https://wa.me/59177173169?text=${text}`;
+            document.getElementById('ws-2').href = `https://wa.me/59168733199?text=${text}`;
+        }
 
         document.getElementById('view-form').classList.remove('active');
         document.getElementById('view-success').classList.add('active');
     };
 
-    // Funciones Admin
-    function goAdmin() {
-        const pin = prompt("Clave de Acceso:");
-        if(pin === "2026") {
+    function openAdmin() {
+        if(prompt("Clave de Acceso:") === "2026") {
+            const db = JSON.parse(localStorage.getItem('pedidos_2026_pro')) || [];
+            const tbody = document.querySelector('#adminTable tbody');
+            tbody.innerHTML = "";
+            let total = 0;
+
+            db.forEach(p => {
+                total += parseFloat(p.m);
+                tbody.innerHTML += `<tr><td>${p.n}</td><td>${p.t}</td><td>${p.m}</td></tr>`;
+            });
+
+            document.getElementById('st-count').innerText = db.length;
+            document.getElementById('st-money').innerText = total;
             document.getElementById('view-form').classList.remove('active');
             document.getElementById('view-admin').classList.add('active');
-            loadTable();
-        } else { alert("Acceso Denegado"); }
+        }
     }
 
-    function loadTable() {
-        const db = JSON.parse(localStorage.getItem('pedidos_2026')) || [];
-        let html = `<table><tr><th>Catequista</th><th>Talla</th><th>Color</th></tr>`;
-        db.forEach(row => {
-            html += `<tr><td>${row.nombre}</td><td>${row.talla}</td><td>${row.color}</td></tr>`;
+    function sendReport() {
+        const db = JSON.parse(localStorage.getItem('pedidos_2026_pro')) || [];
+        let total = 0;
+        let msg = "*📊 REPORTE UNIFORMES 2026*\n\n";
+        db.forEach((p, i) => {
+            total += parseFloat(p.m);
+            msg += `${i+1}. ${p.n} (${p.t}) - Bs. ${p.m}\n`;
         });
-        html += `</table>`;
-        document.getElementById('tableBox').innerHTML = db.length > 0 ? html : "<p style='text-align:center'>No hay pedidos aún.</p>";
-        document.getElementById('stats').innerHTML = `<div style="background:var(--secondary); padding:10px; border-radius:10px; flex-grow:1; text-align:center"><b>Total:</b> ${db.length}</div>`;
-    }
-
-    function exportCSV() {
-        const db = JSON.parse(localStorage.getItem('pedidos_2026')) || [];
-        if(db.length === 0) return alert("Nada que exportar");
-        
-        let csv = "Nombre,Talla,Color,Fecha\n";
-        db.forEach(r => csv += `${r.nombre},${r.talla},${r.color},${r.fecha}\n`);
-        
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "Reporte_Poleras_2026.csv";
-        a.click();
+        msg += `\n*TOTAL EN CAJA: Bs. ${total}*`;
+        window.open(`https://wa.me/59168733199?text=${window.encodeURIComponent(msg)}`);
     }
 </script>
 
