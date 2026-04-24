@@ -2,392 +2,435 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catequistas 2026 | Sistema de Registro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ZOE Admin | Gestión de Uniformes 2026</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
+
     <style>
-        /* --- VARIABLES Y CONFIGURACIÓN --- */
+        /* =========================================
+           SISTEMA DE DISEÑO (DESIGN SYSTEM)
+           ========================================= */
         :root {
-            --primary: #4f46e5;
-            --primary-light: #eef2ff;
-            --secondary: #1e293b;
-            --accent: #10b981;
-            --bg: #f8fafc;
-            --white: #ffffff;
-            --shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --p-500: #4f46e5;
+            --p-600: #4338ca;
+            --p-soft: #eef2ff;
+            --s-900: #0f172a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-main: #f1f5f9;
+            --glass: rgba(255, 255, 255, 0.9);
+            --radius-lg: 24px;
+            --radius-md: 16px;
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
-
+        /* --- RESET Y BASE --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            background-color: var(--bg);
-            background-image: radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.05) 0px, transparent 50%);
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-main);
+            color: var(--s-900);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 15px;
+            align-items: flex-start;
+            padding: env(safe-area-inset-top) 15px 40px 15px;
+            overflow-x: hidden;
         }
 
-        /* --- CONTENEDOR PRINCIPAL --- */
-        .app-card {
-            background: var(--white);
+        /* --- CONTENEDOR APP --- */
+        .app-container {
             width: 100%;
-            max-width: 500px;
-            border-radius: 35px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
+            max-width: 550px;
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            margin-top: 20px;
             position: relative;
-            border: 1px solid rgba(255,255,255,0.7);
+            z-index: 10;
         }
 
-        /* --- SISTEMA DE VISTAS --- */
-        .view { display: none; padding: 40px 30px; animation: slideIn 0.5s ease forwards; }
+        /* --- SISTEMA DE NAVEGACIÓN --- */
+        .view { display: none; padding: 35px 25px; animation: view-slide 0.5s ease-out; }
         .view.active { display: block; }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes view-slide {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        /* --- ENCABEZADOS --- */
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { color: var(--secondary); font-size: 1.9rem; font-weight: 800; letter-spacing: -1px; }
-        .header p { color: #64748b; font-size: 0.95rem; margin-top: 5px; }
+        /* --- CABECERAS --- */
+        .nav-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+        .brand-h { font-weight: 800; font-size: 1.6rem; letter-spacing: -1px; color: var(--s-900); }
+        .brand-h span { color: var(--p-500); }
 
-        /* --- FORMULARIO --- */
-        .form-group { margin-bottom: 22px; }
-        label { display: block; font-weight: 700; font-size: 0.85rem; color: var(--secondary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        /* --- COMPONENTES DE FORMULARIO --- */
+        .form-card { background: white; padding: 25px; border-radius: var(--radius-md); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
         
-        .input-field {
+        .input-ui {
             width: 100%;
             padding: 16px 20px;
             border: 2px solid #f1f5f9;
-            border-radius: 18px;
+            border-radius: var(--radius-md);
             font-size: 1rem;
-            background: #f8fafc;
+            font-weight: 500;
             transition: var(--transition);
-            color: var(--secondary);
+            background: #f8fafc;
         }
 
-        .input-field:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 4px var(--primary-light);
-        }
+        .input-ui:focus { outline: none; border-color: var(--p-500); background: white; box-shadow: 0 0 0 5px var(--p-soft); }
 
-        /* --- SELECTOR DE COLOR MEJORADO --- */
-        .color-selector-label { margin-bottom: 15px; }
-        
-        .color-grid {
+        /* --- SELECTOR DE COLOR AVANZADO --- */
+        .color-selector {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 12px;
-            max-height: 280px;
+            max-height: 250px;
             overflow-y: auto;
             padding: 10px;
             background: #f8fafc;
-            border-radius: 22px;
-            border: 1px solid #f1f5f9;
+            border-radius: var(--radius-md);
         }
 
-        /* Scroll personalizado */
-        .color-grid::-webkit-scrollbar { width: 5px; }
-        .color-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-
-        .color-option {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .color-card {
+        .color-node { cursor: pointer; position: relative; }
+        .color-info {
             background: white;
             border: 2px solid #f1f5f9;
             padding: 12px;
-            border-radius: 16px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             gap: 10px;
             transition: var(--transition);
         }
 
-        .color-blob {
-            width: 24px;
-            height: 24px;
-            border-radius: 8px;
-            flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
+        .color-dot { width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0; }
         .color-name { font-size: 0.85rem; font-weight: 600; color: #475569; }
 
-        input[type="radio"]:checked + .color-card {
-            border-color: var(--primary);
-            background: var(--primary-light);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15);
+        input[type="radio"]:checked + .color-info {
+            border-color: var(--p-500);
+            background: var(--p-soft);
+            transform: scale(1.03);
         }
-
-        input[type="radio"] { position: absolute; opacity: 0; }
+        input[type="radio"] { display: none; }
 
         /* --- BOTONES --- */
         .btn {
             width: 100%;
             padding: 18px;
             border: none;
-            border-radius: 20px;
+            border-radius: var(--radius-md);
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: var(--transition);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
+            transition: var(--transition);
         }
 
-        .btn-primary { 
-            background: var(--primary); 
-            color: white; 
-            margin-top: 10px;
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
-        }
-
-        .btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); }
-
-        .btn-whatsapp { background: #25d366; color: white; text-decoration: none; margin-top: 12px; }
-        .btn-secondary { background: #f1f5f9; color: #475569; margin-top: 15px; }
+        .btn-p { background: var(--p-500); color: white; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
+        .btn-p:hover { transform: translateY(-3px); filter: brightness(1.1); }
+        
+        .btn-wa { background: #25d366; color: white; text-decoration: none; }
+        .btn-pdf { background: var(--s-900); color: white; }
+        .btn-ghost { background: #f1f5f9; color: #64748b; margin-top: 15px; }
 
         /* --- DASHBOARD ADMIN --- */
-        .admin-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-item { background: var(--primary-light); padding: 20px; border-radius: 22px; text-align: center; }
-        .stat-item span { display: block; font-size: 0.7rem; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 5px; }
-        .stat-item h3 { font-size: 1.5rem; color: var(--secondary); }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .stat-card { background: white; padding: 20px; border-radius: var(--radius-md); text-align: center; border: 1px solid #f1f5f9; }
+        .stat-card small { font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; }
+        .stat-card h2 { font-size: 1.6rem; color: var(--s-900); margin-top: 5px; }
 
-        .table-wrap { width: 100%; overflow-x: auto; border-radius: 20px; border: 1px solid #f1f5f9; }
-        table { width: 100%; border-collapse: collapse; background: white; min-width: 450px; }
-        th { background: #f8fafc; padding: 15px; text-align: left; font-size: 0.75rem; color: #64748b; }
-        td { padding: 15px; border-top: 1px solid #f1f5f9; font-size: 0.85rem; color: var(--secondary); }
+        .table-area { background: white; border-radius: var(--radius-md); border: 1px solid #f1f5f9; overflow: hidden; margin-top: 20px; }
+        .table-scroll { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 550px; }
+        th { background: #f8fafc; padding: 15px; text-align: left; font-size: 0.75rem; color: #94a3b8; border-bottom: 1px solid #f1f5f9; }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; }
 
-        /* --- NOTIFICACIÓN --- */
+        .badge { padding: 5px 10px; border-radius: 8px; font-weight: 800; font-size: 0.7rem; }
+        .b-paid { background: #d1fae5; color: #065f46; }
+        .b-debt { background: #fee2e2; color: #991b1b; }
+
+        /* --- NOTIFICACIONES --- */
         #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--secondary); color: white; padding: 12px 25px;
-            border-radius: 50px; font-size: 0.9rem; font-weight: 600;
-            display: none; z-index: 1000; box-shadow: var(--shadow);
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--s-900); color: white; padding: 15px 30px;
+            border-radius: 50px; font-weight: 600; z-index: 1000;
+            box-shadow: var(--shadow-xl); opacity: 0; transition: 0.4s;
         }
 
-        .footer-tag { text-align: center; padding: 25px; color: #cbd5e1; font-size: 0.75rem; cursor: pointer; font-weight: 700; letter-spacing: 1px; }
+        /* --- RESPONSIVE ADJUSTMENTS --- */
+        @media (max-width: 480px) {
+            .view { padding: 25px 15px; }
+            .brand-h { font-size: 1.3rem; }
+            .btn { padding: 15px; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="toast">Mensaje enviado</div>
+    <div id="toast">Operación Exitosa</div>
 
-    <div class="app-card">
-        <div id="view-form" class="view active">
-            <div class="header">
-                <h1>Catequistas 2026</h1>
-                <p>Registro de uniforme y sugerencias</p>
+    <main class="app-container">
+        
+        <section id="view-form" class="view active">
+            <div class="nav-header">
+                <div class="brand-h">ZOE<span>2026</span></div>
+                <div style="font-size: 0.7rem; font-weight: 800; color: #94a3b8;">SISTEMA DE REGISTRO</div>
             </div>
 
-            <form id="mainForm">
-                <div class="form-group">
-                    <label>Nombre Completo</label>
-                    <input type="text" id="user_nombre" class="input-field" required placeholder="Tu nombre y apellido">
+            <form id="mainOrderForm">
+                <div class="form-card">
+                    <div class="group">
+                        <label>Nombre del Catequista</label>
+                        <input type="text" id="u_nombre" class="input-ui" required placeholder="Ej. Michael Vargas">
+                    </div>
+                    <div class="group">
+                        <label>Celular WhatsApp (Bolivia)</label>
+                        <input type="tel" id="u_celular" class="input-ui" required placeholder="77173169">
+                    </div>
+                    <div class="group">
+                        <label>Talla de Polera</label>
+                        <select id="u_talla" class="input-ui" required>
+                            <option value="">Seleccione talla...</option>
+                            <option value="S">Small (S)</option>
+                            <option value="M">Medium (M)</option>
+                            <option value="L">Large (L)</option>
+                            <option value="XL">Extra Large (XL)</option>
+                            <option value="XXL">Especial (XXL)</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Talla de Uniforme</label>
-                    <select id="user_talla" class="input-field" required>
-                        <option value="">Elegir talla...</option>
-                        <option value="S">Small (S)</option>
-                        <option value="M">Medium (M)</option>
-                        <option value="L">Large (L)</option>
-                        <option value="XL">Extra Large (XL)</option>
-                        <option value="XXL">Especial (XXL)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Color de Polera (Elige uno)</label>
-                    <div id="colorPicker" class="color-grid">
+                <div class="form-card">
+                    <label>Elegir Color de Tela</label>
+                    <div id="colorPicker" class="color-selector">
                         </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Sugerencia o Detalle Extra</label>
-                    <textarea id="user_sugerencia" class="input-field" rows="2" placeholder="Ej: Manga corta, cuello de otro color..."></textarea>
+                <div class="form-card">
+                    <div class="group">
+                        <label>Adelanto en efectivo (Bs.)</label>
+                        <input type="number" id="u_adelanto" class="input-ui" value="0" min="0">
+                    </div>
+                    <div class="group">
+                        <label>Observaciones / Sugerencias</label>
+                        <textarea id="u_obs" class="input-ui" rows="2" placeholder="Ej. Manga larga, bordado extra..."></textarea>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Monto de Adelanto (Bs.)</label>
-                    <input type="number" id="user_monto" class="input-field" value="0" min="0">
-                </div>
-
-                <button type="submit" class="btn btn-primary">Confirmar mi Registro</button>
+                <button type="submit" class="btn btn-p">
+                    <span>Confirmar Registro</span>
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                </button>
             </form>
-            <div class="footer-tag" onclick="accesoAdmin()">PANEL COORDINACIÓN</div>
-        </div>
+            
+            <div onclick="requestAdminAccess()" style="text-align: center; margin-top: 25px; color: #cbd5e1; font-weight: 800; font-size: 0.7rem; cursor: pointer; letter-spacing: 2px;">
+                MODO COORDINADOR
+            </div>
+        </section>
 
-        <div id="view-success" class="view">
+        <section id="view-success" class="view">
             <div style="text-align: center; margin-bottom: 30px;">
-                <div style="font-size: 70px; margin-bottom: 15px;">🌟</div>
-                <h1>¡Datos Guardados!</h1>
-                <p>Tu registro se procesó correctamente.</p>
+                <div id="lottie-success" style="width: 120px; height: 120px; margin: 0 auto;">✅</div>
+                <h2 style="font-weight: 800; font-size: 1.8rem; margin-top: 15px;">¡Pedido Recibido!</h2>
+                <p style="color: #64748b; margin-top: 10px;">Tus datos han sido guardados en el sistema central de la parroquia.</p>
             </div>
 
-            <div id="qrSection" style="display: none; background: #fffbeb; border: 2px dashed #fcd34d; padding: 25px; border-radius: 25px; margin-bottom: 25px;">
-                <p style="text-align: center; font-weight: 800; color: #92400e; font-size: 0.85rem; margin-bottom: 15px;">MANDA TU COMPROBANTE:</p>
-                <a id="linkC" href="#" target="_blank" class="btn btn-whatsapp">Coordinador Principal</a>
-                <a id="linkS" href="#" target="_blank" class="btn btn-whatsapp" style="background: #075e54;">Subcoordinadora</a>
+            <div id="paymentPanel" style="display: none; background: #fffbeb; border: 2px dashed #fcd34d; padding: 25px; border-radius: 20px; margin-bottom: 25px;">
+                <h4 style="text-align: center; font-weight: 800; color: #92400e; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 15px;">Validación de Pago</h4>
+                <p style="font-size: 0.9rem; color: #b45309; text-align: center; margin-bottom: 20px;">Envía tu comprobante de adelanto al Coordinador para validar tu pedido.</p>
+                <a id="linkCoord" href="#" target="_blank" class="btn btn-wa">Enviar Comprobante</a>
             </div>
 
-            <button onclick="volverInicio()" class="btn btn-secondary">Nuevo Registro (Limpiar)</button>
-        </div>
+            <button onclick="nav('view-form')" class="btn btn-ghost">Hacer otro Registro</button>
+        </section>
 
-        <div id="view-admin" class="view">
-            <div class="header"><h1>Reporte General</h1></div>
-            <div class="admin-stats">
-                <div class="stat-item"><span>Pedidos</span><h3 id="countA">0</h3></div>
-                <div class="stat-item"><span>Total Bs.</span><h3 id="moneyA">0</h3></div>
+        <section id="view-admin" class="view">
+            <div class="nav-header">
+                <div class="brand-h">Panel<span>Admin</span></div>
+                <button onclick="nav('view-form')" style="background: none; border: none; font-weight: 800; color: var(--p-500); cursor: pointer;">SALIR</button>
             </div>
-            <button onclick="enviarReporteGlobal()" class="btn btn-whatsapp">📢 Compartir Reporte Completo</button>
-            <div class="table-wrap" style="margin-top: 20px;">
-                <table id="adminTable">
-                    <thead><tr><th>Nombre</th><th>Talla</th><th>Color</th><th>Sugerencia</th></tr></thead>
-                    <tbody></tbody>
-                </table>
+
+            <div class="stats-grid">
+                <div class="stat-card"><small>Recaudado</small><h2 id="total_cash">0 Bs.</h2></div>
+                <div class="stat-card"><small>Por Cobrar</small><h2 id="total_debt" style="color: var(--danger);">0 Bs.</h2></div>
             </div>
-            <button onclick="volverInicio()" class="btn btn-secondary">Cerrar Sesión</button>
-        </div>
-    </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button onclick="exportPDF()" class="btn btn-pdf">Descargar PDF</button>
+                <button onclick="shareGlobalReport()" class="btn btn-wa" style="background: #075e54;">Reporte WhatsApp</button>
+            </div>
+
+            <div class="table-area">
+                <div style="padding: 15px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 800; font-size: 0.75rem; color: #64748b;">REGISTROS RECIENTES</span>
+                    <button onclick="resetData()" style="color: var(--danger); background: none; border: none; font-size: 0.7rem; font-weight: 800; cursor: pointer;">LIMPIAR TODO</button>
+                </div>
+                <div class="table-scroll">
+                    <table id="adminTable">
+                        <thead>
+                            <tr>
+                                <th>CATEQUISTA</th>
+                                <th>DETALLE</th>
+                                <th>SALDO</th>
+                                <th>ACCIÓN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
 
     <script>
-        /* --- LISTA DE COLORES --- */
-        const COLORES_LISTA = [
-            {n: 'Negro Classic', c: '#1e293b'}, {n: 'Blanco Puro', c: '#ffffff'}, {n: 'Azul Marino', c: '#1e3a8a'},
-            {n: 'Rojo Pasión', c: '#be123c'}, {n: 'Verde Bosque', c: '#14532d'}, {n: 'Vino Tinto', c: '#7f1d1d'},
-            {n: 'Gris Melange', c: '#94a3b8'}, {n: 'Celeste Cielo', c: '#7dd3fc'}, {n: 'Amarillo Oro', c: '#eab308'},
-            {n: 'Naranja Vital', c: '#f97316'}, {n: 'Rosa Fucsia', c: '#db2777'}, {n: 'Menta Fresca', c: '#6ee7b7'},
-            {n: 'Azul Eléctrico', c: '#2563eb'}, {n: 'Verde Lima', c: '#84cc16'}, {n: 'Coral Vivo', c: '#fb7185'}
+        /* =========================================
+           LÓGICA DE NEGOCIO Y MOTOR DE LA APP
+           ========================================= */
+
+        const PRECIO_UNITARIO = 100; // Precio base de la polera
+        const MI_CELULAR = "59177173169"; // Celular del Coordinador
+        const SUB_CELULAR = "59168733199"; // Celular Subcoordinadora
+
+        const COLORES_DB = [
+            {n: 'Negro Profundo', c: '#0f172a'}, {n: 'Blanco Nieve', c: '#ffffff'},
+            {n: 'Azul Marino', c: '#1e3a8a'}, {n: 'Vino Tinto', c: '#7f1d1d'},
+            {n: 'Verde Militar', c: '#365314'}, {n: 'Gris Espacial', c: '#475569'},
+            {n: 'Rojo Carmesí', c: '#991b1b'}, {n: 'Celeste Pastel', c: '#bae6fd'}
         ];
 
-        /* --- RENDERIZAR COLORES --- */
-        const colorPicker = document.getElementById('colorPicker');
-        COLORES_LISTA.forEach((col, i) => {
-            colorPicker.innerHTML += `
-                <label class="color-option">
-                    <input type="radio" name="user_color" value="${col.n}" required>
-                    <div class="color-card">
-                        <div class="color-blob" style="background: ${col.c}"></div>
+        // 1. Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+            renderColors();
+            setupForm();
+            console.log("ZOE Admin v3.0 - Ready");
+        });
+
+        function renderColors() {
+            const container = document.getElementById('colorPicker');
+            container.innerHTML = COLORES_DB.map((col, i) => `
+                <label class="color-node">
+                    <input type="radio" name="u_color" value="${col.n}" required>
+                    <div class="color-info">
+                        <div class="color-dot" style="background: ${col.c}; border: 1px solid #e2e8f0;"></div>
                         <span class="color-name">${col.n}</span>
                     </div>
                 </label>
-            `;
-        });
-
-        /* --- MANEJO DE DATOS --- */
-        const mainForm = document.getElementById('mainForm');
-        
-        mainForm.onsubmit = function(e) {
-            e.preventDefault();
-            
-            const data = {
-                nombre: document.getElementById('user_nombre').value,
-                talla: document.getElementById('user_talla').value,
-                color: document.querySelector('input[name="user_color"]:checked').value,
-                sugerencia: document.getElementById('user_sugerencia').value || "Ninguna",
-                monto: parseFloat(document.getElementById('user_monto').value) || 0,
-                fecha: new Date().toLocaleString()
-            };
-
-            // Guardar en LocalStorage
-            let pedidos = JSON.parse(localStorage.getItem('pedidos_2026')) || [];
-            pedidos.push(data);
-            localStorage.setItem('pedidos_2026', JSON.stringify(pedidos));
-
-            // Configurar WhatsApp
-            if(data.monto > 0) {
-                document.getElementById('qrSection').style.display = 'block';
-                const msg = encodeURIComponent(`¡Hola! Soy ${data.nombre}. Registré mi pedido de uniforme (Talla ${data.talla}, Color ${data.color}) y mi adelanto es de Bs. ${data.monto}. ¿Me pasan el QR?`);
-                document.getElementById('linkC').href = `https://wa.me/59177173169?text=${msg}`;
-                document.getElementById('linkS').href = `https://wa.me/59168733199?text=${msg}`;
-            }
-
-            // LIMPIAR PARA EL SIGUIENTE
-            mainForm.reset();
-            switchView('view-success');
-            showToast("✅ Registro Exitoso");
-        };
-
-        function volverInicio() {
-            mainForm.reset();
-            document.getElementById('qrSection').style.display = 'none';
-            switchView('view-form');
+            `).join('');
         }
 
-        /* --- ADMINISTRACIÓN --- */
-        function accesoAdmin() {
-            const pass = prompt("Clave de Acceso:");
-            if(pass === "2026") {
+        // 2. Gestión de Prefijo +591 Automático
+        function formatPhone(num) {
+            let clean = num.replace(/\D/g, '');
+            if (!clean.startsWith('591')) clean = '591' + clean;
+            return clean;
+        }
+
+        // 3. Manejo de Formulario
+        function setupForm() {
+            const form = document.getElementById('mainOrderForm');
+            form.onsubmit = (e) => {
+                e.preventDefault();
+                
+                const adelanto = parseFloat(document.getElementById('u_adelanto').value) || 0;
+                const nombre = document.getElementById('u_nombre').value.trim();
+                const celular = formatPhone(document.getElementById('u_celular').value);
+
+                const nuevoPedido = {
+                    id: Date.now(),
+                    nombre: nombre,
+                    celular: celular,
+                    talla: document.getElementById('u_talla').value,
+                    color: document.querySelector('input[name="u_color"]:checked').value,
+                    adelanto: adelanto,
+                    saldo: PRECIO_UNITARIO - adelanto,
+                    obs: document.getElementById('u_obs').value || "Ninguna",
+                    fecha: new Date().toLocaleString()
+                };
+
+                saveToDB(nuevoPedido);
+                showToast("✅ Registro Guardado");
+                handleSuccess(nuevoPedido);
+                form.reset();
+            };
+        }
+
+        function saveToDB(pedido) {
+            let db = JSON.parse(localStorage.getItem('zoe_db_2026')) || [];
+            db.push(pedido);
+            localStorage.setItem('zoe_db_2026', JSON.stringify(db));
+        }
+
+        function handleSuccess(pedido) {
+            const panel = document.getElementById('paymentPanel');
+            if (pedido.adelanto > 0) {
+                panel.style.display = 'block';
+                const textoWA = encodeURIComponent(`¡Hola Michael! Soy ${pedido.nombre}. Acabo de registrar mi pedido de uniforme (Talla ${pedido.talla}) y realicé un adelanto de Bs. ${pedido.adelanto}. Aquí envío mi comprobante.`);
+                document.getElementById('linkCoord').href = `https://wa.me/${MI_CELULAR}?text=${textoWA}`;
+            } else {
+                panel.style.display = 'none';
+            }
+            nav('view-success');
+        }
+
+        // 4. Panel Administrativo
+        function requestAdminAccess() {
+            const pin = prompt("Ingrese PIN de Coordinador:");
+            if (pin === "2026") {
                 renderAdmin();
-                switchView('view-admin');
-            } else if(pass !== null) {
-                alert("Clave incorrecta");
+                nav('view-admin');
+            } else if (pin !== null) {
+                showToast("❌ PIN Incorrecto");
             }
         }
 
         function renderAdmin() {
-            const pedidos = JSON.parse(localStorage.getItem('pedidos_2026')) || [];
+            const db = JSON.parse(localStorage.getItem('zoe_db_2026')) || [];
             const tbody = document.querySelector('#adminTable tbody');
-            let totalM = 0;
-            tbody.innerHTML = "";
-            
-            pedidos.forEach(p => {
-                totalM += p.monto;
-                tbody.innerHTML += `
-                    <tr>
-                        <td><b>${p.nombre}</b></td>
-                        <td>${p.talla}</td>
-                        <td>${p.color}</td>
-                        <td style="font-size:0.75rem; color:#64748b">${p.sugerencia}</td>
-                    </tr>
+            let tCash = 0, tDebt = 0;
+
+            tbody.innerHTML = db.length === 0 ? '<tr><td colspan="4" style="text-align:center; padding:30px; color:#94a3b8;">No hay registros</td></tr>' : '';
+
+            db.forEach((p, index) => {
+                tCash += p.adelanto;
+                tDebt += p.saldo;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><div style="font-weight:700">${p.nombre}</div><div style="font-size:0.7rem; color:#94a3b8">${p.celular}</div></td>
+                    <td><div style="font-size:0.75rem">${p.talla} | ${p.color}</div></td>
+                    <td><span class="badge ${p.saldo <= 0 ? 'b-paid' : 'b-debt'}">Bs. ${p.saldo}</span></td>
+                    <td>
+                        <button onclick="remindPayment(${index})" style="background:none; border:none; cursor:pointer;">🔔</button>
+                    </td>
                 `;
+                tbody.appendChild(tr);
             });
-            
-            document.getElementById('countA').innerText = pedidos.length;
-            document.getElementById('moneyA').innerText = totalM;
+
+            document.getElementById('total_cash').innerText = tCash + " Bs.";
+            document.getElementById('total_debt').innerText = tDebt + " Bs.";
         }
 
-        function enviarReporteGlobal() {
-            const pedidos = JSON.parse(localStorage.getItem('pedidos_2026')) || [];
-            let total = 0;
-            let reporte = "*📊 REPORTE CATEQUISTAS 2026*\n\n";
-            
-            pedidos.forEach((p, i) => {
-                total += p.monto;
-                reporte += `${i+1}. ${p.nombre} (${p.talla})\n🎨 Color: ${p.color}\n💡 Sugerencia: ${p.sugerencia}\n💰 Bs. ${p.monto}\n\n`;
-            });
-            
-            reporte += `*TOTAL RECAUDADO: Bs. ${total}*`;
-            window.open(`https://wa.me/59168733199?text=${encodeURIComponent(reporte)}`);
-        }
+        // 5. Gestión de Cobros y Reportes
+        function remindPayment(index) {
+            const db = JSON.parse(localStorage.getItem('zoe_db_2026')) || [];
+            const p = db[index];
+            if (p.saldo <= 0) return showToast("Este pedido ya está pagado");
 
-        /* --- UTILIDADES --- */
-        function switchView(id) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            window.scrollTo(0,0);
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
-        }
-    </script>
-</body>
-</html>
+            const msg = encodeURIComponent(`*NOTIFICACIÓN DE COBRO - CATEQUISTAS 2026*\n\nHola ${p.nombre}, te recordamos que tienes un saldo pendiente de *Bs. ${p.saldo}* por tu polera de uniforme. Por favor, realiza el depósito para confirmar tu pedido.`);
+            window.open(`https://wa.me/${p.ce
