@@ -92,7 +92,7 @@
 <div class="app-shell">
     <div id="view-reg" class="view active">
         <h1 class="h1">CATEQUISTAS 2026</h1>
-        <span class="sub">Registro privado de tallas y adelantos</span>
+        <span class="sub">Registro privado de poleras</span>
         
         <div class="input-group">
             <label>Nombre Completo</label>
@@ -103,17 +103,17 @@
             <input type="tel" id="u_tel" class="field" placeholder="77173169">
         </div>
         <div class="input-group">
-            <label>Talla de Uniforme</label>
+            <label>Talla</label>
             <select id="u_talla" class="field">
                 <option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option>
             </select>
         </div>
         <div class="input-group">
-            <label>Color de Polera (22 opciones)</label>
+            <label>Color de Tela</label>
             <div id="colorContainer" class="color-grid"></div>
         </div>
         <div class="input-group">
-            <label>Monto de Adelanto (Bs.)</label>
+            <label>Adelanto en Efectivo (Bs.)</label>
             <input type="number" id="u_pago" class="field" value="0">
         </div>
         <div class="input-group">
@@ -122,22 +122,22 @@
         </div>
         
         <button onclick="processRegister()" class="btn btn-primary">Confirmar mi Registro</button>
-        <p onclick="openAdmin()" style="text-align:center; font-size:0.6rem; color:#cbd5e1; margin-top:40px; cursor:pointer; font-weight:800;">PANEL COORDINACIÓN</p>
+        <p onclick="openAdmin()" style="text-align:center; font-size:0.6rem; color:#cbd5e1; margin-top:40px; cursor:pointer; font-weight:800;">ADMIN PANEL</p>
     </div>
 
     <div id="view-wait" class="view">
         <div style="text-align:center">
             <div style="font-size:50px">⏳</div>
-            <h1 class="h1">Registro Recibido</h1>
-            <p style="color:var(--text-muted)">Espera la confirmación por WhatsApp para validar tu pago.</p>
+            <h1 class="h1">Espera Confirmación</h1>
+            <p style="color:var(--text-muted)">Michael validará tu registro pronto.</p>
             
             <div id="resumen-pantalla" class="report-box"></div>
 
             <div class="qr-box">
-                <p style="font-size:0.85rem; margin-bottom:15px;">Para confirmar, envía tu comprobante:</p>
+                <p style="font-size:0.85rem; margin-bottom:15px;">Envía tu comprobante ahora:</p>
                 <a id="btnPedirQR" href="#" target="_blank" class="btn btn-wa">Enviar por WhatsApp</a>
             </div>
-            <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:20px;">Volver</button>
+            <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:20px;">Nuevo Registro</button>
         </div>
     </div>
 
@@ -150,7 +150,7 @@
 
         <div id="admin_content"></div>
 
-        <button onclick="downloadPDF()" class="btn btn-primary" style="background:#1e293b; margin-top:20px;">PDF Reporte</button>
+        <button onclick="downloadPDF()" class="btn btn-primary" style="background:#1e293b; margin-top:20px;">Generar PDF</button>
         <button onclick="resetSistema()" class="btn" style="background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; margin-top:20px">⚠️ ELIMINAR TODO Y RESETEAR</button>
         <button onclick="location.reload()" class="btn btn-secondary" style="margin-top:10px;">Cerrar</button>
     </div>
@@ -159,14 +159,14 @@
 <script>
     const COLORES = [
         {n:'Negro', c:'#000'}, {n:'Blanco', c:'#fff'}, {n:'Azul Marino', c:'#1e3a8a'}, {n:'Rojo', c:'#dc2626'}, 
-        {n:'Verde Militar', c:'#365314'}, {n:'Gris', c:'#94a3b8'}, {n:'Vino', c:'#7f1d1d'}, {n:'Celeste', c:'#93c5fd'},
-        {n:'Azul Francia', c:'#2563eb'}, {n:'Amarillo', c:'#facc15'}, {n:'Naranja', c:'#f97316'}, {n:'Lila', c:'#c084fc'},
-        {n:'Verde Limón', c:'#84cc16'}, {n:'Rosa', c:'#fbcfe8'}, {n:'Marrón', c:'#451a03'}, {n:'Beige', c:'#f5f5dc'},
-        {n:'Turquesa', c:'#06b6d4'}, {n:'Esmeralda', c:'#10b981'}, {n:'Mostaza', c:'#ca8a04'}, {n:'Cian', c:'#22d3ee'},
-        {n:'Fucsia', c:'#d946ef'}, {n:'Ocre', c:'#92400e'}
-    ];
+    {n:'Verde Militar', c:'#365314'}, {n:'Gris', c:'#94a3b8'}, {n:'Vino', c:'#7f1d1d'}, {n:'Celeste', c:'#93c5fd'},
+    {n:'Azul Francia', c:'#2563eb'}, {n:'Amarillo', c:'#facc15'}, {n:'Naranja', c:'#f97316'}, {n:'Lila', c:'#c084fc'},
+    {n:'Verde Limón', c:'#84cc16'}, {n:'Rosa', c:'#fbcfe8'}, {n:'Marrón', c:'#451a03'}, {n:'Beige', c:'#f5f5dc'},
+    {n:'Turquesa', c:'#06b6d4'}, {n:'Esmeralda', c:'#10b981'}, {n:'Mostaza', c:'#ca8a04'}, {n:'Cian', c:'#22d3ee'},
+    {n:'Fucsia', c:'#d946ef'}, {n:'Ocre', c:'#92400e'}
+];
 
-    let db = JSON.parse(localStorage.getItem('zoe_2026_v3')) || [];
+    let db = JSON.parse(localStorage.getItem('zoe_2026_vFinal')) || [];
     let config = { total: 100, coord: 20 };
 
     window.onload = () => {
@@ -185,40 +185,51 @@
 
     function processRegister() {
         const color = document.querySelector('input[name="pick_color"]:checked');
-        const nombre = document.getElementById('u_nombre').value;
-        const tel = document.getElementById('u_tel').value;
-        if(!color || !nombre || !tel) return alert("Completa tus datos y elige un color");
+        const nombreInput = document.getElementById('u_nombre');
+        const telInput = document.getElementById('u_tel');
+        const pagoInput = document.getElementById('u_pago');
+        const obsInput = document.getElementById('u_obs');
+
+        if(!color || !nombreInput.value || !telInput.value) return alert("Por favor completa tus datos");
         
         const entry = {
             id: Date.now(),
-            nombre, tel,
+            nombre: nombreInput.value, 
+            tel: telInput.value,
             talla: document.getElementById('u_talla').value,
             color: color.value,
-            pago: parseFloat(document.getElementById('u_pago').value) || 0,
-            obs: document.getElementById('u_obs').value,
+            pago: parseFloat(pagoInput.value) || 0,
+            obs: obsInput.value,
             verificado: false
         };
 
         db.push(entry);
-        localStorage.setItem('zoe_2026_v3', JSON.stringify(db));
+        localStorage.setItem('zoe_2026_vFinal', JSON.stringify(db));
 
-        // Reporte en pantalla para el usuario
+        // Mostrar reporte en pantalla
         document.getElementById('resumen-pantalla').innerHTML = `
-            <div class="report-line"><b>Nombre:</b> <span>${entry.nombre}</span></div>
-            <div class="report-line"><b>Pedido:</b> <span>${entry.talla} - ${entry.color}</span></div>
+            <div class="report-line"><b>Catequista:</b> <span>${entry.nombre}</span></div>
+            <div class="report-line"><b>Pedido:</b> <span>Polera ${entry.talla} (${entry.color})</span></div>
             <div class="report-line"><b>Adelanto:</b> <span>${entry.pago} Bs.</span></div>
-            <div class="report-line"><b>Estado:</b> <span style="color:orange; font-weight:800">PENDIENTE</span></div>
+            <div class="report-line"><b>Saldo:</b> <span>${config.total - config.coord - entry.pago} Bs.</span></div>
         `;
 
-        const msg = encodeURIComponent(`Hola Michael, registré mi polera (${entry.talla} ${entry.color}). Adjunto comprobante de Bs. ${entry.pago}`);
+        const msg = encodeURIComponent(`Hola Michael, registré mi polera. Nombre: ${entry.nombre}. Envío mi comprobante.`);
         document.getElementById('btnPedirQR').href = `https://wa.me/59177173169?text=${msg}`;
+
+        // LIMPIEZA AUTOMÁTICA DEL FORMULARIO
+        nombreInput.value = "";
+        telInput.value = "";
+        pagoInput.value = "0";
+        obsInput.value = "";
+        document.querySelectorAll('input[name="pick_color"]').forEach(r => r.checked = false);
         
         document.getElementById('view-reg').classList.remove('active');
         document.getElementById('view-wait').classList.add('active');
     }
 
     function openAdmin() {
-        if(prompt("PASSWORD:") === "2026") {
+        if(prompt("PIN:") === "2026") {
             document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
             document.getElementById('view-admin').classList.add('active');
             refreshAdmin();
@@ -236,9 +247,10 @@
             cont.innerHTML += `
                 <div class="list-item">
                     <span class="badge ${item.verificado ? 'ver' : ''}">${item.verificado ? 'CONFIRMADO ✅' : 'PENDIENTE'}</span>
-                    <b>${item.nombre}</b><br><small>${item.talla} | ${item.color} | Pagó: ${item.pago} Bs.</small><br>
-                    <b style="color:red">Falta: ${neto} Bs.</b><br>
-                    ${!item.verificado ? `<button onclick="confirmarPago(${item.id}, ${neto})" class="btn" style="background:var(--accent); color:white; padding:10px; font-size:0.8rem; margin-top:10px">Verificar y Avisar Saldo</button>` : ''}
+                    <b>${item.nombre}</b><br>
+                    <small>${item.talla} | ${item.color} | Adelanto: ${item.pago} Bs.</small><br>
+                    <b style="color:red">Debe: ${neto} Bs.</b><br>
+                    ${!item.verificado ? `<button onclick="confirmarPago(${item.id}, ${neto})" class="btn" style="background:var(--accent); color:white; padding:10px; font-size:0.8rem; margin-top:10px">Verificar y Notificar</button>` : ''}
                 </div>`;
         });
         document.getElementById('label_caja').innerText = caja + " Bs.";
@@ -248,19 +260,16 @@
     function confirmarPago(id, falta) {
         const user = db.find(i => i.id === id);
         user.verificado = true;
-        localStorage.setItem('zoe_2026_v3', JSON.stringify(db));
-        
-        // Notificación automática de saldo por WhatsApp
-        const msg = encodeURIComponent(`¡Hola ${user.nombre}! Tu pago de Bs. ${user.pago} ha sido verificado. ✅ Tu polera ${user.talla} ${user.color} está registrada. Te falta cancelar: ${falta} Bs.`);
+        localStorage.setItem('zoe_2026_vFinal', JSON.stringify(db));
+        const msg = encodeURIComponent(`¡Hola ${user.nombre}! Pago verificado ✅ Te falta cancelar: ${falta} Bs.`);
         window.open(`https://wa.me/591${user.tel.replace(/\D/g,'')}?text=${msg}`);
-        
         refreshAdmin();
     }
 
     function resetSistema() {
-        if(confirm("⚠️ ¿BORRAR TODO? Se perderán todos los registros.")) {
+        if(confirm("⚠️ ¿BORRAR TODO?")) {
             db = [];
-            localStorage.removeItem('zoe_2026_v3');
+            localStorage.removeItem('zoe_2026_vFinal');
             location.reload();
         }
     }
@@ -268,9 +277,9 @@
     function downloadPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.text("REPORTE ZOE 2026", 14, 20);
+        doc.text("REPORTE DE POLERAS ZOE 2026", 14, 20);
         const rows = db.map(i => [i.nombre, i.talla, i.color, i.pago, (config.total - config.coord - i.pago), i.verificado ? 'SÍ' : 'NO']);
-        doc.autoTable({ head:[['NOMBRE', 'TALLA', 'COLOR', 'PAGÓ', 'SALDO', 'VERIF']], body: rows, startY:30 });
+        doc.autoTable({ head:[['NOMBRE', 'TALLA', 'COLOR', 'ADELANTO', 'SALDO', 'VERIF']], body: rows, startY:30 });
         doc.save("Reporte_Zoe_2026.pdf");
     }
 </script>
