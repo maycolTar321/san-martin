@@ -3,119 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA ZOE | Gestión de Uniformes 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Catequistas de Confirmación | Pedidos 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --p: #6366f1; --p-dark: #4338ca; --p-light: #e0e7ff;
-            --s: #0f172a; --acc: #10b981; --warn: #f59e0b;
-            --danger: #ef4444; --text: #1e293b;
-            --glass: rgba(255, 255, 255, 0.9);
-            --border: rgba(255, 255, 255, 0.2);
-            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --primary: #4f46e5;
+            --primary-light: #eef2ff;
+            --secondary: #1e293b;
+            --accent: #10b981;
+            --bg: #f1f5f9;
+            --white: #ffffff;
+            --shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
 
         body {
-            background: var(--s);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
-            min-height: 100vh;
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 2px 2px, #e2e8f0 1px, transparent 0);
+            background-size: 40px 40px;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
             padding: 20px;
-            color: var(--text);
-            overflow-x: hidden;
         }
 
         /* --- CONTENEDOR PRINCIPAL --- */
-        .app-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
+        .main-card {
+            background: var(--white);
             width: 100%;
             max-width: 500px;
-            border-radius: 35px;
-            border: 1px solid var(--border);
+            border-radius: 30px;
             box-shadow: var(--shadow);
-            position: relative;
             overflow: hidden;
-            transition: all 0.5s ease;
+            position: relative;
+            animation: fadeIn 0.6s ease-out;
         }
-
-        /* --- VISTAS --- */
-        .view { display: none; padding: 40px; animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
-        .view.active { display: block; }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(30px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- CABECERA --- */
+        .view { display: none; padding: 40px 30px; }
+        .view.active { display: block; }
+
+        /* --- ENCABEZADO --- */
         .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-size: 2rem; font-weight: 800; letter-spacing: -1px; color: var(--s); margin-bottom: 8px; }
+        .header h1 { color: var(--secondary); font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
         .header p { color: #64748b; font-size: 0.9rem; }
 
         /* --- FORMULARIO --- */
-        .form-group { margin-bottom: 24px; position: relative; }
-        .form-group label { display: block; font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #475569; margin-bottom: 10px; padding-left: 5px; }
-
-        .input-style {
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: 600; font-size: 0.85rem; color: var(--secondary); margin-bottom: 8px; margin-left: 4px; }
+        
+        .input-control {
             width: 100%;
-            padding: 16px 20px;
-            background: white;
+            padding: 15px 20px;
             border: 2px solid #f1f5f9;
-            border-radius: 20px;
+            border-radius: 15px;
             font-size: 1rem;
-            color: var(--s);
             transition: all 0.3s ease;
+            background: #f8fafc;
         }
 
-        .input-style:focus {
+        .input-control:focus {
             outline: none;
-            border-color: var(--p);
-            box-shadow: 0 0 0 5px var(--p-light);
-            transform: translateY(-2px);
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px var(--primary-light);
         }
 
-        /* --- GRID DE COLORES (25 COLORES) --- */
-        .color-selector {
+        /* --- SELECCIÓN DE COLOR RESPONSIVE --- */
+        .color-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             gap: 12px;
-            max-height: 280px;
+            max-height: 320px;
             overflow-y: auto;
             padding: 10px 5px;
-            margin-bottom: 15px;
             border-radius: 15px;
         }
 
-        .color-selector::-webkit-scrollbar { width: 5px; }
-        .color-selector::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        /* Scroll personalizado */
+        .color-grid::-webkit-scrollbar { width: 6px; }
+        .color-grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
 
-        .color-option {
+        .color-item {
             background: white;
             border: 2px solid #f1f5f9;
             padding: 12px;
-            border-radius: 18px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             cursor: pointer;
-            transition: all 0.25s ease;
-            user-select: none;
+            transition: all 0.2s ease;
         }
 
-        .color-circle { width: 26px; height: 26px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.05); flex-shrink: 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .color-name { font-size: 0.85rem; font-weight: 600; color: #475569; }
+        .color-preview {
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
 
-        input[type="radio"]:checked + .color-option {
-            border-color: var(--p);
-            background: var(--p-light);
-            transform: scale(1.03);
+        .color-name { font-size: 0.8rem; font-weight: 600; color: #475569; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        input[type="radio"]:checked + .color-item {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-2px);
         }
 
         input[type="radio"] { display: none; }
@@ -123,274 +123,232 @@
         /* --- BOTONES --- */
         .btn {
             width: 100%;
-            padding: 20px;
+            padding: 18px;
             border: none;
-            border-radius: 22px;
+            border-radius: 16px;
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
+            transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            gap: 10px;
             margin-top: 10px;
         }
 
-        .btn-p { background: var(--p); color: white; box-shadow: 0 15px 30px -10px rgba(99, 102, 241, 0.5); }
-        .btn-p:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.6); }
-        .btn-p:active { transform: scale(0.97); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); }
 
-        .btn-ws { background: #22c55e; color: white; text-decoration: none; margin-top: 15px; }
-        .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: #64748b; margin-top: 15px; }
-
+        .btn-whatsapp { background: #25d366; color: white; text-decoration: none; }
+        
         /* --- ADMIN DASHBOARD --- */
-        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; }
-        .stat-box { background: white; padding: 20px; border-radius: 25px; text-align: center; border: 1px solid #f1f5f9; }
-        .stat-box small { font-size: 0.7rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
-        .stat-box h3 { font-size: 1.5rem; color: var(--p); margin-top: 5px; }
+        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: var(--primary-light); padding: 20px; border-radius: 20px; text-align: center; }
+        .stat-card small { font-size: 0.7rem; color: var(--primary); font-weight: 800; text-transform: uppercase; }
+        .stat-card h3 { font-size: 1.4rem; color: var(--secondary); }
 
-        .table-resizer { width: 100%; overflow-x: auto; border-radius: 20px; background: white; border: 1px solid #f1f5f9; }
-        table { width: 100%; border-collapse: collapse; min-width: 400px; }
-        th { background: #f8fafc; padding: 18px; text-align: left; font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; }
-        td { padding: 18px; border-top: 1px solid #f1f5f9; font-size: 0.85rem; color: var(--s); }
+        .table-wrap { width: 100%; overflow-x: auto; border-radius: 15px; border: 1px solid #eee; }
+        table { width: 100%; border-collapse: collapse; background: white; min-width: 450px; }
+        th { background: #f8fafc; padding: 15px; text-align: left; font-size: 0.75rem; color: #64748b; }
+        td { padding: 15px; border-top: 1px solid #f1f5f9; font-size: 0.85rem; }
 
-        /* --- NOTIFICACIONES TOAST --- */
+        .footer { text-align: center; padding: 20px; color: #cbd5e1; font-size: 0.7rem; cursor: pointer; }
+
+        /* --- TOAST --- */
         #toast {
-            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-            background: var(--s); color: white; padding: 15px 30px; border-radius: 50px;
-            font-size: 0.9rem; font-weight: 600; box-shadow: var(--shadow);
-            transition: all 0.5s ease; z-index: 9999;
+            position: fixed; top: 20px; right: 20px; background: var(--secondary); color: white;
+            padding: 15px 25px; border-radius: 12px; display: none; z-index: 1000;
+            box-shadow: var(--shadow); animation: slideIn 0.3s;
         }
-
-        .footer-logo { text-align: center; padding: 25px; color: #cbd5e1; font-weight: 800; font-size: 0.65rem; letter-spacing: 3px; cursor: pointer; transition: 0.3s; }
-        .footer-logo:hover { color: var(--p); }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 480px) { .view { padding: 25px; } h1 { font-size: 1.6rem; } }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
     </style>
 </head>
 <body>
 
-    <div id="toast">Notificación</div>
+    <div id="toast">Mensaje enviado</div>
 
-    <div class="app-card">
+    <div class="main-card">
         <div id="view-form" class="view active">
             <div class="header">
-                <h1>ZOE UNIFORMES</h1>
-                <p>Colección Exclusiva 2026</p>
+                <h1>Catequistas 2026</h1>
+                <p>Confirma tu talla y color de uniforme</p>
             </div>
 
             <form id="orderForm">
                 <div class="form-group">
-                    <label>Nombre y Apellidos</label>
-                    <input type="text" id="u_name" class="input-style" placeholder="Ej. Michael Vargas" required>
+                    <label>Nombre Completo</label>
+                    <input type="text" id="u_nombre" class="input-control" placeholder="Tu nombre y apellido" required>
                 </div>
 
                 <div class="form-group">
-                    <label>Talla Oficial</label>
-                    <select id="u_size" class="input-style" required>
-                        <option value="">Seleccionar Talla...</option>
-                        <option value="S">Talla S (Pequeña)</option>
-                        <option value="M">Talla M (Mediana)</option>
-                        <option value="L">Talla L (Grande)</option>
-                        <option value="XL">Talla XL (Extra)</option>
+                    <label>Talla</label>
+                    <select id="u_talla" class="input-control" required>
+                        <option value="">Elegir talla...</option>
+                        <option value="S">Small (S)</option>
+                        <option value="M">Medium (M)</option>
+                        <option value="L">Large (L)</option>
+                        <option value="XL">Extra Large (XL)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Color de Polera (25 Opciones)</label>
-                    <div id="colorContainer" class="color-selector"></div>
+                    <label>Selecciona un Color (25 opciones)</label>
+                    <div id="colorContainer" class="color-grid"></div>
                 </div>
 
                 <div class="form-group">
-                    <label>Adelanto Económico (Bolivianos)</label>
-                    <input type="number" id="u_payment" class="input-style" value="0" min="0">
+                    <label>Detalle extra o sugerencia</label>
+                    <input type="text" id="u_extra" class="input-control" placeholder="Ej. Cuello de otro color...">
                 </div>
 
-                <button type="submit" class="btn btn-p">
-                    <span>Guardar Registro</span>
-                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-                </button>
+                <div class="form-group">
+                    <label>Adelanto (Bs.)</label>
+                    <input type="number" id="u_monto" class="input-control" value="0" min="0">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Registrar mi Pedido</button>
             </form>
-            <div class="footer-logo" onclick="accessAdmin()">ZOE PLATFORM v3.1</div>
+            <div class="footer" onclick="checkAdmin()">GESTIÓN INTERNA DE CATEQUISTAS</div>
         </div>
 
-        <div id="view-confirm" class="view">
-            <div class="header">
-                <div style="font-size: 60px;">👕</div>
-                <h1>Pedido Registrado</h1>
-                <p>Por favor, confirma tu pago con los coordinadores.</p>
+        <div id="view-success" class="view">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div style="font-size: 50px; margin-bottom: 10px;">✨</div>
+                <h1>¡Listo para Confirmación!</h1>
+                <div id="resumenBox" style="background: #f8fafc; padding: 20px; border-radius: 20px; text-align: left; margin-top: 20px; border: 1px solid #e2e8f0;"></div>
             </div>
 
-            <div id="summaryCard" style="background: white; border-radius: 25px; padding: 25px; margin-bottom: 30px; border: 1px solid #f1f5f9;">
-                </div>
-
-            <div id="whatsappSection" style="display: none;">
-                <p style="text-align: center; font-size: 0.8rem; font-weight: 700; color: #64748b; margin-bottom: 15px;">SOLICITAR QR DE PAGO A:</p>
-                <a id="linkCoord" href="#" target="_blank" class="btn btn-ws">Coordinador General</a>
-                <a id="linkSub" href="#" target="_blank" class="btn btn-ws" style="background: #075e54;">Subcoordinadora</a>
+            <div id="pagoBox" style="display: none;">
+                <p style="text-align: center; font-weight: 700; margin-bottom: 15px; color: #b45309;">📱 ELIGE UN ENCARGADO PARA EL QR:</p>
+                <a id="linkCoord" href="#" target="_blank" class="btn btn-whatsapp">Coordinador</a>
+                <a id="linkSub" href="#" target="_blank" class="btn btn-whatsapp" style="background: #075e54;">Subcoordinadora</a>
             </div>
 
-            <button onclick="location.reload()" class="btn btn-outline">Volver al Inicio</button>
+            <button onclick="location.reload()" class="btn" style="background: #f1f5f9; color: #475569; margin-top: 15px;">Hacer otro registro</button>
         </div>
 
         <div id="view-admin" class="view">
-            <div class="header">
-                <h1>Panel de Control</h1>
-                <p>Gestión de Inventario y Caja</p>
+            <div class="header"><h1>Reporte General</h1></div>
+            <div class="stats">
+                <div class="stat-card"><small>Pedidos</small><h3 id="statCount">0</h3></div>
+                <div class="stat-card"><small>Recaudado</small><h3 id="statMoney">Bs. 0</h3></div>
             </div>
-
-            <div class="stats-container">
-                <div class="stat-box"><small>Pedidos</small><h3 id="statTotal">0</h3></div>
-                <div class="stat-box"><small>Recaudado</small><h3 id="statMoney">Bs. 0</h3></div>
-            </div>
-
-            <button onclick="broadcastReport()" class="btn btn-ws">📢 Enviar Reporte a WhatsApp</button>
-            
-            <div class="table-resizer" style="margin-top: 20px;">
+            <button onclick="sendGlobalReport()" class="btn btn-whatsapp">📢 Mandar Reporte a WhatsApp</button>
+            <div class="table-wrap" style="margin-top: 20px;">
                 <table id="adminTable">
                     <thead><tr><th>Nombre</th><th>Talla</th><th>Color</th><th>Bs.</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
-
-            <button onclick="location.reload()" class="btn btn-outline">Cerrar Sesión</button>
+            <button onclick="location.reload()" class="btn" style="background: #f1f5f9; color: #475569; margin-top: 20px;">Cerrar Panel</button>
         </div>
     </div>
 
     <script>
-        // --- BASE DE DATOS DE COLORES (25 COLORES PRO) ---
-        const colors = [
-            {n: 'Negro Mate', c: '#121212'}, {n: 'Blanco Nieve', c: '#ffffff'}, 
-            {n: 'Azul Eléctrico', c: '#2563eb'}, {n: 'Rojo Carmín', c: '#e11d48'},
-            {n: 'Verde Esmeralda', c: '#10b981'}, {n: 'Amarillo Neón', c: '#facc15'},
-            {n: 'Vino Profundo', c: '#881337'}, {n: 'Gris Espacial', c: '#475569'},
-            {n: 'Naranja Sunset', c: '#f97316'}, {n: 'Celeste Baby', c: '#bae6fd'},
-            {n: 'Rosa Pastel', c: '#fbcfe8'}, {n: 'Morado Real', c: '#7c3aed'},
-            {n: 'Café Terra', c: '#78350f'}, {n: 'Turquesa', c: '#2dd4bf'},
-            {n: 'Verde Lima', c: '#a3e635'}, {n: 'Azul Cobalto', c: '#1e3a8a'},
-            {n: 'Lila Suave', c: '#e9d5ff'}, {n: 'Oro Viejo', c: '#ca8a04'},
-            {n: 'Coral', c: '#fb7185'}, {n: 'Verde Oliva', c: '#3f6212'},
-            {n: 'Cian', c: '#06b6d4'}, {n: 'Plata', c: '#e2e8f0'},
-            {n: 'Bronce', c: '#a8a29e'}, {n: 'Magenta', c: '#d946ef'},
-            {n: 'Azul Cielo', c: '#38bdf8'}
+        const colores = [
+            {n: 'Negro Classic', c: '#1e293b'}, {n: 'Blanco Puro', c: '#ffffff'}, 
+            {n: 'Azul Marino', c: '#1e3a8a'}, {n: 'Rojo Pasión', c: '#be123c'},
+            {n: 'Verde Bosque', c: '#14532d'}, {n: 'Vino Tinto', c: '#7f1d1d'},
+            {n: 'Gris Melange', c: '#94a3b8'}, {n: 'Celeste Cielo', c: '#7dd3fc'},
+            {n: 'Amarillo Oro', c: '#eab308'}, {n: 'Naranja Vital', c: '#f97316'},
+            {n: 'Lila Pastel', c: '#d8b4fe'}, {n: 'Rosa Fucsia', c: '#db2777'},
+            {n: 'Menta Fresca', c: '#6ee7b7'}, {n: 'Café Chocolate', c: '#451a03'},
+            {n: 'Azul Eléctrico', c: '#2563eb'}, {n: 'Verde Lima', c: '#84cc16'},
+            {n: 'Beige Arena', c: '#f5f5dc'}, {n: 'Turquesa Mar', c: '#06b6d4'},
+            {n: 'Coral Vivo', c: '#fb7185'}, {n: 'Morado Real', c: '#581c87'},
+            {n: 'Verde Oliva', c: '#3f6212'}, {n: 'Gris Carbón', c: '#334155'},
+            {n: 'Crema', c: '#fffdd0'}, {n: 'Palo de Rosa', c: '#e0a9a5'},
+            {n: 'Azul Acero', c: '#4682b4'}
         ];
 
-        // --- INICIALIZACIÓN ---
         const colorContainer = document.getElementById('colorContainer');
-        colors.forEach((color, i) => {
+        colores.forEach((col, i) => {
             colorContainer.innerHTML += `
                 <label>
-                    <input type="radio" name="u_color" value="${color.n}" required>
-                    <div class="color-option">
-                        <div class="color-circle" style="background: ${color.c}"></div>
-                        <span class="color-name">${color.n}</span>
+                    <input type="radio" name="u_color" value="${col.n}" required>
+                    <div class="color-item">
+                        <div class="color-preview" style="background: ${col.c}"></div>
+                        <span class="color-name">${col.n}</span>
                     </div>
                 </label>
             `;
         });
 
-        // --- LÓGICA DE FORMULARIO ---
-        document.getElementById('orderForm').addEventListener('submit', function(e) {
+        document.getElementById('orderForm').onsubmit = function(e) {
             e.preventDefault();
-            
-            const payload = {
-                name: document.getElementById('u_name').value,
-                size: document.getElementById('u_size').value,
-                color: document.querySelector('input[name="u_color"]:checked').value,
-                pay: parseFloat(document.getElementById('u_payment').value) || 0,
-                date: new Date().toLocaleDateString()
+            const data = {
+                n: document.getElementById('u_nombre').value,
+                t: document.getElementById('u_talla').value,
+                c: document.querySelector('input[name="u_color"]:checked').value + (document.getElementById('u_extra').value ? ` (${document.getElementById('u_extra').value})` : ""),
+                m: parseFloat(document.getElementById('u_monto').value) || 0,
+                f: new Date().toLocaleDateString()
             };
 
-            // Guardar en LocalStorage
-            let currentDb = JSON.parse(localStorage.getItem('zoe_db_2026')) || [];
-            currentDb.push(payload);
-            localStorage.setItem('zoe_db_2026', JSON.stringify(currentDb));
+            let db = JSON.parse(localStorage.getItem('confirmacion_2026')) || [];
+            db.push(data);
+            localStorage.setItem('confirmacion_2026', JSON.stringify(db));
 
-            showConfirmView(payload);
-            showToast("✅ ¡Pedido registrado con éxito!");
-        });
-
-        function showConfirmView(data) {
-            document.getElementById('summaryCard').innerHTML = `
-                <p style="margin-bottom:8px"><b>Nombre:</b> ${data.name}</p>
-                <p style="margin-bottom:8px"><b>Talla:</b> ${data.size}</p>
-                <p style="margin-bottom:8px"><b>Color:</b> ${data.color}</p>
-                <p><b>Adelanto:</b> <span style="color:var(--acc)">Bs. ${data.pay}</span></p>
+            document.getElementById('resumenBox').innerHTML = `
+                <b>👤 Catequista:</b> ${data.n}<br>
+                <b>📏 Talla:</b> ${data.t}<br>
+                <b>🎨 Color:</b> ${data.c}<br>
+                <b>💰 Adelanto:</b> Bs. ${data.m}
             `;
 
-            if(data.pay > 0) {
-                document.getElementById('whatsappSection').style.display = 'block';
-                const msg = encodeURIComponent(`¡Hola! Soy ${data.name}. Registré mi pedido en el sistema (Talla ${data.size}, Color ${data.color}) y quiero confirmar mi adelanto de Bs. ${data.pay}.`);
+            if(data.m > 0) {
+                document.getElementById('pagoBox').style.display = 'block';
+                const msg = encodeURIComponent(`Hola! Soy ${data.n}. Registré mi pedido Talla ${data.t} y quiero el QR para mi adelanto de Bs. ${data.m}.`);
                 document.getElementById('linkCoord').href = `https://wa.me/59177173169?text=${msg}`;
                 document.getElementById('linkSub').href = `https://wa.me/59168733199?text=${msg}`;
             }
 
-            switchView('view-confirm');
-        }
+            switchView('view-success');
+            notify("✅ Pedido guardado");
+        };
 
-        // --- ADMINISTRACIÓN ---
-        function accessAdmin() {
-            const pass = prompt("Introduce clave de acceso ZOE:");
-            if(pass === "2026") {
+        function checkAdmin() {
+            const p = prompt("Clave de Acceso:");
+            if(p === "2026") {
                 renderAdmin();
                 switchView('view-admin');
-                showToast("🔓 Acceso concedido");
-            } else if (pass !== null) {
-                showToast("❌ Clave incorrecta");
             }
         }
 
         function renderAdmin() {
-            const db = JSON.parse(localStorage.getItem('zoe_db_2026')) || [];
+            const db = JSON.parse(localStorage.getItem('confirmacion_2026')) || [];
             const tbody = document.querySelector('#adminTable tbody');
-            let totalMoney = 0;
-            tbody.innerHTML = "";
-
-            db.forEach(p => {
-                totalMoney += p.pay;
-                tbody.innerHTML += `
-                    <tr>
-                        <td><b>${p.name.split(' ')[0]}</b></td>
-                        <td>${p.size}</td>
-                        <td>${p.color}</td>
-                        <td style="color:var(--acc); font-weight:bold">${p.pay}</td>
-                    </tr>
-                `;
-            });
-
-            document.getElementById('statTotal').innerText = db.length;
-            document.getElementById('statMoney').innerText = `Bs. ${totalMoney}`;
-        }
-
-        function broadcastReport() {
-            const db = JSON.parse(localStorage.getItem('zoe_db_2026')) || [];
-            if(db.length === 0) return showToast("No hay datos");
-
             let total = 0;
-            let report = "*📊 REPORTE DE UNIFORMES 2026*\n\n";
-            db.forEach((p, i) => {
-                total += p.pay;
-                report += `${i+1}. ${p.name} (${p.size}) - *Bs. ${p.pay}*\n`;
+            tbody.innerHTML = "";
+            db.forEach(p => {
+                total += p.m;
+                tbody.innerHTML += `<tr><td>${p.n}</td><td>${p.t}</td><td>${p.c}</td><td>${p.m}</td></tr>`;
             });
-            report += `\n*RECAUDACIÓN TOTAL: Bs. ${total}*`;
-
-            window.open(`https://wa.me/59168733199?text=${encodeURIComponent(report)}`);
+            document.getElementById('statCount').innerText = db.length;
+            document.getElementById('statMoney').innerText = "Bs. " + total;
         }
 
-        // --- UTILIDADES UI ---
-        function switchView(viewId) {
+        function sendGlobalReport() {
+            const db = JSON.parse(localStorage.getItem('confirmacion_2026')) || [];
+            let total = 0;
+            let msg = "*📊 REPORTE DE CATEQUISTAS 2026*\n\n";
+            db.forEach((p, i) => {
+                total += p.m;
+                msg += `${i+1}. ${p.n} (${p.t}) - Bs. ${p.m}\n`;
+            });
+            msg += `\n*TOTAL RECAUDADO: Bs. ${total}*`;
+            window.open(`https://wa.me/59168733199?text=${encodeURIComponent(msg)}`);
+        }
+
+        function switchView(id) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            window.scrollTo(0,0);
+            document.getElementById(id).classList.add('active');
         }
 
-        function showToast(msg) {
+        function notify(msg) {
             const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.style.top = '30px';
-            setTimeout(() => { t.style.top = '-100px'; }, 3000);
+            t.innerText = msg; t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3000);
         }
     </script>
 </body>
