@@ -3,266 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AquaControl Pro - Sistema de Gestión</title>
+    <title>Agua Santa Clara - Gestión Oficial</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary: #00d2ff;
-            --secondary: #3a7bd5;
-            --bg: #0f172a;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --text: #f8fafc;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-
-        body {
-            background: radial-gradient(circle at top right, #1e293b, #0f172a);
-            color: var(--text);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container { max-width: 1000px; margin: 0 auto; }
-
-        header {
-            text-align: center;
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 30px;
-        }
-
-        /* Dashboard Stats */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
-            text-align: center;
-        }
-
-        .stat-card i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; }
-        .stat-card h3 { font-size: 0.9rem; opacity: 0.7; }
-        .stat-card p { font-size: 1.5rem; font-weight: bold; margin-top: 5px; }
-
-        /* Forms and Sections */
-        .main-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 20px;
-        }
-
-        h2 { margin-bottom: 20px; font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
-
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 0.9rem; opacity: 0.8; }
+        :root { --p: #00d2ff; --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --success: #10b981; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
         
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(0,0,0,0.2);
-            color: white;
-            outline: none;
+        body { background: var(--bg); color: white; min-height: 100vh; padding-bottom: 50px; }
+
+        /* Header Estilo Premium */
+        header {
+            background: linear-gradient(135deg, #075985, #0ea5e9);
+            padding: 20px;
+            text-align: center;
+            border-bottom-left-radius: 25px;
+            border-bottom-right-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: -20px;
+            padding: 0 15px;
+        }
+
+        .tab-btn {
+            background: var(--card);
+            border: 1px solid rgba(255,255,255,0.1);
             color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
             cursor: pointer;
-            font-weight: 600;
-            width: 100%;
+            flex: 1;
+            font-weight: bold;
             transition: 0.3s;
         }
 
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,210,255,0.3); }
+        .tab-btn.active { background: var(--accent); color: var(--bg); box-shadow: 0 0 15px var(--accent); }
 
-        .btn-location { background: #10b981; margin-top: 5px; font-size: 0.8rem; }
+        .container { padding: 20px; max-width: 600px; margin: auto; }
 
-        /* Table */
-        .table-container { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); opacity: 0.7; }
-        td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-
-        .badge {
-            padding: 4px 8px;
-            border-radius: 5px;
-            font-size: 0.75rem;
-            background: rgba(0,210,255,0.2);
-            color: var(--primary);
+        .card {
+            background: var(--card);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
+
+        h3 { margin-bottom: 15px; font-size: 1.1rem; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+
+        .btn-primary { background: var(--accent); color: var(--bg); }
+        .btn-success { background: var(--success); color: white; }
+        .btn-ghost { background: transparent; border: 1px solid #334155; color: #94a3b8; }
+
+        /* Alertas de seguridad */
+        .gps-badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 5px; background: #064e3b; color: #34d399; }
+        .dup-alert { background: #7f1d1d; color: #f87171; }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
+<header>
+    <h1 style="letter-spacing: 2px;">SANTA CLARA</h1>
+    <p style="font-size: 0.8rem; opacity: 0.8;">Sistema de Gestión de Agua y Hielo</p>
+</header>
+
+<div class="nav-tabs">
+    <button class="tab-btn active" onclick="showTab('vendedor')">Vendedor</button>
+    <button class="tab-btn" onclick="showTab('admin')">Dueña</button>
+</div>
+
 <div class="container">
-    <header>
-        <h1>AQUA<span style="color: var(--primary)">CONTROL</span></h1>
-        <p>Gestión de Distribución - Tarija & Provincias</p>
-    </header>
+    
+    <div id="vendedor-section">
+        <div class="card">
+            <h3><i class="fas fa-id-badge"></i> Identificación</h3>
+            <select id="v-repartidor">
+                <option value="Adriana">Adriana</option>
+                <option value="Maycol">Maycol</option>
+                <option value="Distribuidor_Provincia">Distribuidor Provincia</option>
+            </select>
+        </div>
 
-    <div class="stats-grid">
-        <div class="stat-card">
-            <i class="fas fa-wallet"></i>
-            <h3>Inversión Mes</h3>
-            <p id="total-inv">Bs 0.00</p>
-        </div>
-        <div class="stat-card">
-            <i class="fas fa-hand-holding-usd"></i>
-            <h3>Ventas Totales</h3>
-            <p id="total-ventas">Bs 0.00</p>
-        </div>
-        <div class="stat-card" style="background: rgba(16, 185, 129, 0.1);">
-            <i class="fas fa-chart-line" style="color: #10b981;"></i>
-            <h3>Ganancia Neta</h3>
-            <p id="total-ganancia" style="color: #10b981;">Bs 0.00</p>
+        <div class="card">
+            <h3><i class="fas fa-shopping-cart"></i> Registrar Punto de Venta</h3>
+            <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">El sistema capturará tu ubicación GPS automáticamente.</p>
+            
+            <input type="text" id="v-cliente" placeholder="Nombre del Cliente o Negocio">
+            
+            <select id="v-producto">
+                <option value="Botellón 20L">Botellón 20L</option>
+                <option value="Hielo en Cubos">Hielo en Cubos</option>
+                <option value="Botellón 10L">Botellón 10L</option>
+            </select>
+
+            <input type="number" id="v-cantidad" placeholder="Cantidad Entregada">
+            
+            <button class="btn btn-primary" onclick="registrarPunto('VENTA')">
+                <i class="fas fa-check-circle"></i> REGISTRAR VENTA
+            </button>
+            <button class="btn btn-ghost" style="margin-top: 10px;" onclick="registrarPunto('VISITA SIN VENTA')">
+                <i class="fas fa-map-marker-alt"></i> SOLO VISITA (No compró)
+            </button>
         </div>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-        <div class="main-card">
-            <h2><i class="fas fa-user-plus"></i> Registro de Cliente</h2>
-            <div class="form-group">
-                <label>Nombre del Cliente / Negocio</label>
-                <input type="text" id="c-nombre" placeholder="Ej: Tienda Doña María">
+    <div id="admin-section" class="hidden">
+        <div class="card" style="border-left: 5px solid var(--success);">
+            <h3><i class="fas fa-user-tie"></i> Panel de Lidia Velásquez</h3>
+            <div id="resumen-caja" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; text-align: center;">
+                    <small>Ventas Hoy</small><br>
+                    <strong id="total-bs" style="color: var(--success); font-size: 1.2rem;">Bs 0</strong>
+                </div>
+                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; text-align: center;">
+                    <small>Botellones</small><br>
+                    <strong id="total-items" style="font-size: 1.2rem;">0</strong>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Tipo de Producto</label>
-                <select id="c-producto">
-                    <option value="Botellón 20L">Botellón 20L</option>
-                    <option value="Hielo Cubos">Hielo en Cubos</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Ubicación GPS</label>
-                <input type="text" id="c-gps" readonly placeholder="Esperando coordenadas...">
-                <button class="btn btn-location" onclick="getLocation()">
-                    <i class="fas fa-map-marker-alt"></i> Obtener Ubicación Actual
-                </button>
-            </div>
-            <button class="btn" onclick="saveClient()">Guardar Cliente</button>
+            <button class="btn btn-success" style="margin-top: 15px;" onclick="descargarData()">
+                <i class="fas fa-file-excel"></i> DESCARGAR CIERRE (CSV)
+            </button>
         </div>
 
-        <div class="main-card">
-            <h2><i class="fas fa-cart-plus"></i> Nueva Venta / Salida</h2>
-            <div class="form-group">
-                <label>Monto de Venta (Bs)</label>
-                <input type="number" id="v-monto" placeholder="0.00">
+        <div id="log-registros">
             </div>
-            <div class="form-group">
-                <label>Costo de Inversión (Producción/Logística)</label>
-                <input type="number" id="v-costo" placeholder="0.00">
-            </div>
-            <button class="btn" onclick="addSale()">Registrar Transacción</button>
-        </div>
-    </div>
-
-    <div class="main-card">
-        <h2><i class="fas fa-list"></i> Cartera de Clientes Registrados</h2>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Cliente</th>
-                        <th>Producto</th>
-                        <th>Ubicación</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody id="client-list">
-                    </tbody>
-            </table>
-        </div>
     </div>
 </div>
 
 <script>
-    let sales = [];
-    let clients = [];
+    // Configuración Inicial
+    const PRECIO_ESTANDAR = 15; // Precio por defecto para el cálculo de caja
+    let masterData = JSON.parse(localStorage.getItem('santa_clara_data')) || [];
 
-    // Función para obtener GPS
-    function getLocation() {
-        const gpsInput = document.getElementById('c-gps');
-        if (navigator.geolocation) {
-            gpsInput.value = "Localizando...";
-            navigator.geolocation.getCurrentPosition((position) => {
-                gpsInput.value = `${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`;
-            }, () => {
-                alert("Error: No se pudo acceder a la ubicación. Verifica los permisos.");
-                gpsInput.value = "";
-            });
+    function showTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        if(tab === 'vendedor') {
+            document.getElementById('vendedor-section').classList.remove('hidden');
+            document.getElementById('admin-section').classList.add('hidden');
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
         } else {
-            alert("Tu navegador no soporta geolocalización.");
+            document.getElementById('vendedor-section').classList.add('hidden');
+            document.getElementById('admin-section').classList.remove('hidden');
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            renderAdminLog();
         }
     }
 
-    // Guardar Cliente
-    function saveClient() {
-        const name = document.getElementById('c-nombre').value;
-        const prod = document.getElementById('c-producto').value;
-        const gps = document.getElementById('c-gps').value;
+    function registrarPunto(tipoAccion) {
+        const repartidor = document.getElementById('v-repartidor').value;
+        const cliente = document.getElementById('v-cliente').value;
+        const producto = document.getElementById('v-producto').value;
+        const cantidad = document.getElementById('v-cantidad').value;
 
-        if(!name || !gps) return alert("Completa el nombre y la ubicación");
+        if(!cliente) return alert("Por favor, ingresa el nombre del cliente.");
+        if(tipoAccion === 'VENTA' && !cantidad) return alert("Ingresa la cantidad vendida.");
 
-        clients.push({ name, prod, gps });
-        renderClients();
+        // Mostrar cargando
+        const btn = event.currentTarget;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obteniendo GPS...';
+        btn.disabled = true;
+
+        navigator.geolocation.getCurrentPosition((pos) => {
+            const entry = {
+                id: Date.now(),
+                fecha: new Date().toLocaleDateString(),
+                hora: new Date().toLocaleTimeString(),
+                vendedor: repartidor,
+                cliente: cliente,
+                producto: producto,
+                cantidad: parseInt(cantidad) || 0,
+                accion: tipoAccion,
+                gps: `${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`
+            };
+
+            masterData.push(entry);
+            localStorage.setItem('santa_clara_data', JSON.stringify(masterData));
+
+            alert("✅ Registro guardado con éxito.");
+            
+            // Limpiar formulario
+            document.getElementById('v-cliente').value = "";
+            document.getElementById('v-cantidad').value = "";
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }, (err) => {
+            alert("❌ Error: Para evitar engaños, el sistema requiere GPS activo.");
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }, { enableHighAccuracy: true });
+    }
+
+    function renderAdminLog() {
+        const logContainer = document.getElementById('log-registros');
+        const totalBsDisplay = document.getElementById('total-bs');
+        const totalItemsDisplay = document.getElementById('total-items');
         
-        // Limpiar
-        document.getElementById('c-nombre').value = "";
-        document.getElementById('c-gps').value = "";
+        let totalBs = 0;
+        let totalItems = 0;
+
+        logContainer.innerHTML = masterData.map((d, index) => {
+            if(d.accion === 'VENTA') {
+                totalItems += d.cantidad;
+                totalBs += (d.cantidad * PRECIO_ESTANDAR);
+            }
+
+            // Detección de duplicados (Engaños)
+            const esDuplicado = masterData.some((item, i) => item.gps === d.gps && i !== index);
+            const alertClass = esDuplicado ? 'dup-alert' : '';
+
+            return `
+                <div class="card ${alertClass}" style="padding: 12px; font-size: 0.9rem; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong>${d.vendedor}</strong>
+                        <span class="gps-badge">${d.hora}</span>
+                    </div>
+                    <div style="margin: 5px 0;">
+                        <i class="fas fa-store"></i> ${d.cliente} <br>
+                        <i class="fas fa-shopping-basket"></i> ${d.accion}: ${d.cantidad} ${d.producto}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); pt-5;">
+                        <a href="https://www.google.com/maps?q=${d.gps}" target="_blank" style="color: var(--accent); font-size: 0.7rem; text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> Ver Mapa
+                        </a>
+                        ${esDuplicado ? '<span style="color: #f87171; font-size: 0.7rem;">⚠️ GPS DUPLICADO</span>' : ''}
+                    </div>
+                </div>
+            `;
+        }).reverse().join('');
+
+        totalBsDisplay.innerText = `Bs ${totalBs}`;
+        totalItemsDisplay.innerText = totalItems;
     }
 
-    function renderClients() {
-        const list = document.getElementById('client-list');
-        list.innerHTML = clients.map(c => `
-            <tr>
-                <td>${c.name}</td>
-                <td><span class="badge">${c.prod}</span></td>
-                <td><small>${c.gps}</small></td>
-                <td><i class="fas fa-check-circle" style="color: #10b981;"></i> Activo</td>
-            </tr>
-        `).join('');
-    }
-
-    // Agregar Venta
-    function addSale() {
-        const monto = parseFloat(document.getElementById('v-monto').value);
-        const costo = parseFloat(document.getElementById('v-costo').value);
-
-        if(isNaN(monto) || isNaN(costo)) return alert("Ingresa montos válidos");
-
-        sales.push({ monto, costo });
-        updateDashboard();
-
-        // Limpiar
-        document.getElementById('v-monto').value = "";
-        document.getElementById('v-costo').value = "";
-    }
-
-    function updateDashboard() {
-        const totalVentas = sales.reduce((acc, s) => acc + s.monto, 0);
-        const totalCosto = sales.reduce((acc, s) => acc + s.costo, 0);
-        const ganancia = totalVentas - totalCosto;
-
-        document.getElementById('total-ventas').innerText = `Bs ${totalVentas.toFixed(2)}`;
-        document.getElementById('total-inv').innerText = `Bs ${totalCosto.toFixed(2)}`;
-        document.getElementById('total-ganancia').innerText = `Bs ${ganancia.toFixed(2)}`;
+    function descargarData() {
+        let csv = "Fecha,Hora,Vendedor,Cliente,Accion,Producto,Cantidad,GPS\n";
+        masterData.forEach(d => {
+            csv += `${d.fecha},${d.hora},${d.vendedor},${d.cliente},${d.accion},${d.producto},${d.cantidad},"${d.gps}"\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Cierre_Santa_Clara_${new Date().toLocaleDateString()}.csv`;
+        a.click();
     }
 </script>
 
