@@ -3,283 +3,215 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Santa Clara - Sistema de Control Operativo</title>
+    <title>Santa Clara - Control de Distribución</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --p: #00d2ff; --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --success: #10b981; --warning: #facc15; }
+        :root { --p: #0ea5e9; --bg: #0f172a; --card: #1e293b; --success: #10b981; --warning: #facc15; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: var(--bg); color: white; min-height: 100vh; padding-bottom: 80px; }
+        body { background: var(--bg); color: white; padding-bottom: 30px; }
 
-        header {
-            background: linear-gradient(135deg, #075985, #0ea5e9);
-            padding: 25px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
-        }
-
-        .logo-placeholder { font-size: 2.5rem; margin-bottom: 5px; }
-
+        header { background: #075985; padding: 20px; text-align: center; border-radius: 0 0 20px 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
         .container { padding: 15px; max-width: 500px; margin: auto; }
-        .card { background: var(--card); border-radius: 15px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .card { background: var(--card); border-radius: 15px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155; }
         
-        h2, h3 { color: var(--accent); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-
-        input, select, textarea {
-            width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; 
-            border: 1px solid #334155; background: #0f172a; color: white;
-        }
-
-        .btn {
-            width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold;
-            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;
-        }
-        .btn-p { background: var(--accent); color: var(--bg); }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; }
+        .btn { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-p { background: var(--p); color: white; }
         .btn-s { background: var(--success); color: white; }
-        .btn-w { background: var(--warning); color: var(--bg); }
+        .btn-w { background: var(--warning); color: #000; }
 
-        /* Categorías de Clientes */
-        .cat-nuevo { border-left: 5px solid var(--accent); }
-        .cat-recurrente { border-left: 5px solid var(--success); }
-        .cat-baja { border-left: 5px solid var(--warning); }
-
-        .hidden { display: none; }
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; padding: 20px; overflow-y: auto; }
+        .client-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; border-left: 5px solid transparent; }
+        .recurrente { border-left-color: var(--success); }
+        .poca-frecuencia { border-left-color: var(--warning); }
         
-        .client-item { 
-            background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; margin-bottom: 8px; 
-            cursor: pointer; border: 1px solid transparent; transition: 0.2s;
-        }
-        .client-item:hover { border-color: var(--accent); }
+        .hidden { display: none; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; padding: 20px; overflow-y: auto; }
+        .badge { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: #334155; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo-placeholder"><i class="fas fa-tint"></i></div>
-    <h1>SANTA CLARA</h1>
-    <p>Agua Pura & Hielo en Cubos</p>
+    <h1><i class="fas fa-tint"></i> SANTA CLARA</h1>
+    <p>Control de Ventas y Envases</p>
 </header>
 
 <div class="container">
-    <div style="display: flex; gap: 10px; margin-top: -15px; margin-bottom: 20px;">
-        <button class="btn btn-p" onclick="showSection('vendedor')"><i class="fas fa-truck"></i> Vendedor</button>
-        <button class="btn btn-w" onclick="checkAdmin()"><i class="fas fa-lock"></i> Dueña</button>
+    <div id="step-vendedor" class="card">
+        <h3><i class="fas fa-user-circle"></i> Iniciar Turno</h3>
+        <select id="vendedor-activo">
+            <option value="Adriana">Adriana</option>
+            <option value="Maycol">Maycol</option>
+            <option value="Lidia">Lidia (Admin)</option>
+        </select>
+        <button class="btn btn-p" onclick="iniciarSesion()">Empezar Ruta</button>
     </div>
 
-    <div id="sec-vendedor">
+    <div id="step-busqueda" class="hidden">
         <div class="card">
-            <h3><i class="fas fa-search"></i> Seleccionar Cliente</h3>
-            <input type="text" id="search-cli" placeholder="Buscar por nombre o barrio..." onkeyup="filtrarClientes()">
-            <div id="lista-clientes" style="max-height: 200px; overflow-y: auto;">
+            <h3><i class="fas fa-users"></i> Buscar Cliente</h3>
+            <input type="text" id="search-input" placeholder="Nombre o barrio..." onkeyup="filtrar()">
+            <div id="lista-clientes" style="max-height: 250px; overflow-y: auto;">
                 </div>
-            <button class="btn btn-p" style="margin-top: 10px; background: #0369a1;" onclick="openNuevoCliente()">
-                <i class="fas fa-user-plus"></i> + REGISTRAR NUEVO CLIENTE
+            <button class="btn btn-w" style="margin-top: 10px;" onclick="abrirRegistroNuevo()">
+                <i class="fas fa-user-plus"></i> NUEVO CLIENTE (No está en lista)
             </button>
         </div>
-
-        <div id="form-venta" class="card hidden">
-            <h3 id="label-cliente-sel">Venta a: </h3>
-            <select id="sel-producto">
-                </select>
-            <input type="number" id="cant-venta" placeholder="Cantidad de botellones/bolsas">
-            <button class="btn btn-s" onclick="registrarVenta()"><i class="fas fa-cash-register"></i> FINALIZAR VENTA</button>
-        </div>
     </div>
 
-    <div id="sec-admin" class="hidden">
-        <div class="card">
-            <h2>Panel de Lidia Velásquez</h2>
-            <button class="btn btn-s" onclick="exportarBaseDatos()"><i class="fas fa-download"></i> DESCARGAR EXCEL (CSV)</button>
-        </div>
+    <div id="step-venta" class="hidden">
+        <div class="card" style="border: 2px solid var(--success);">
+            <h3 id="cliente-seleccionado-nombre" style="color: var(--success);"></h3>
+            <p id="cliente-seleccionado-info" style="font-size: 0.8rem; margin-bottom: 10px;"></p>
+            
+            <label>Producto:</label>
+            <select id="prod-venta">
+                <option value="15">Botellón 20L - Bs 15</option>
+                <option value="8">Botellón 10L - Bs 8</option>
+                <option value="10">Hielo Cubos (P) - Bs 10</option>
+                <option value="20">Hielo Cubos (G) - Bs 20</option>
+            </select>
 
-        <div class="card">
-            <h3>Añadir Producto Nuevo</h3>
-            <input type="text" id="adm-prod-name" placeholder="Nombre (Ej: Botellón 20L)">
-            <input type="number" id="adm-prod-price" placeholder="Precio de Venta (Bs)">
-            <button class="btn btn-p" onclick="addProductoAdmin()">Guardar Producto</button>
+            <label>Cantidad:</label>
+            <input type="number" id="cant-venta" placeholder="Ej: 5">
+            
+            <button class="btn btn-s" onclick="finalizarVenta()">
+                <i class="fas fa-shopping-cart"></i> CONFIRMAR VENTA
+            </button>
+            <button class="btn" style="background:none; color:gray; font-size: 0.8rem;" onclick="cancelarSeleccion()">
+                Cambiar de Cliente
+            </button>
         </div>
-
-        <h3>Base de Datos Consolidada</h3>
-        <div id="master-log"></div>
     </div>
 </div>
 
-<div id="modal-cliente" class="modal hidden">
-    <h2>Registro de Cliente Nuevo</h2>
-    <p>Complete todos los datos para el control de envases.</p>
-    <input type="text" id="reg-nombre" placeholder="Nombre completo o Negocio">
-    <input type="text" id="reg-whatsapp" placeholder="Número de WhatsApp">
-    <input type="text" id="reg-referencia" placeholder="Referencia (Ej: Casa portón verde)">
-    <input type="text" id="reg-barrio" placeholder="Barrio / Zona">
+<div id="modal-nuevo" class="modal hidden">
+    <h2><i class="fas fa-plus"></i> Registrar Nuevo Cliente</h2>
+    <p style="font-size: 0.8rem; margin-bottom: 15px;">Esto capturará la ubicación GPS actual para el control de envases.</p>
     
-    <div style="background: #1e293b; padding: 15px; border-radius: 10px; margin: 10px 0;">
-        <small>El GPS se capturará al guardar.</small>
-    </div>
+    <input type="text" id="new-nombre" placeholder="Nombre completo o Negocio">
+    <input type="text" id="new-whatsapp" placeholder="WhatsApp (Obligatorio)">
+    <input type="text" id="new-barrio" placeholder="Barrio / Zona">
+    <input type="text" id="new-ref" placeholder="Referencia de casa/portón">
     
-    <button class="btn btn-s" onclick="guardarNuevoCliente()">GUARDAR Y CAPTURAR GPS</button>
-    <button class="btn btn-ghost" onclick="closeNuevoCliente()" style="margin-top:10px;">CANCELAR</button>
+    <button class="btn btn-s" onclick="guardarNuevo()">
+        <i class="fas fa-save"></i> GUARDAR Y SELECCIONAR
+    </button>
+    <button class="btn" style="margin-top:10px; background:#444;" onclick="cerrarRegistroNuevo()">Cerrar</button>
 </div>
 
 <script>
-    // ESTADO DEL SISTEMA
+    // 1. Datos iniciales (Prueba)
     let db = JSON.parse(localStorage.getItem('sc_db')) || {
-        clientes: [],
-        productos: [{name: "Botellón 20L", price: 15}],
+        clientes: [
+            {id: 1, nombre: "Tienda Doña Juana", barrio: "San Roque", ws: "75123456", tipo: "recurrente", ref: "Portón verde", gps: "-21.5, -64.7"},
+            {id: 2, nombre: "Pensión El Tejar", barrio: "El Tejar", ws: "75198765", tipo: "recurrente", ref: "Frente a la plaza", gps: "-21.5, -64.7"},
+            {id: 3, nombre: "Mini Mercado Central", barrio: "Centro", ws: "78945612", tipo: "poca-frecuencia", ref: "Esquina blanca", gps: "-21.5, -64.7"},
+            {id: 4, nombre: "Gimnasio Fitness", barrio: "Senac", ws: "65147852", tipo: "poca-frecuencia", ref: "Puerta de vidrio", gps: "-21.5, -64.7"},
+            {id: 5, nombre: "Hospital Regional", barrio: "San Roque", ws: "60123987", tipo: "recurrente", ref: "Entrada emergencias", gps: "-21.5, -64.7"},
+            {id: 6, nombre: "Comedor Universitario", barrio: "Centro", ws: "77788899", tipo: "poca-frecuencia", ref: "Segunda planta", gps: "-21.5, -64.7"}
+        ],
         ventas: []
     };
 
-    let clienteSeleccionado = null;
+    let vendedor = "";
+    let clienteActivo = null;
 
-    // SEGURIDAD
-    function checkAdmin() {
-        const pass = prompt("Ingrese clave de Administradora:");
-        if(pass === "admin123") {
-            showSection('admin');
-        } else {
-            alert("Clave incorrecta");
-        }
+    // 2. Lógica de Flujo
+    function iniciarSesion() {
+        vendedor = document.getElementById('vendedor-activo').value;
+        document.getElementById('step-vendedor').classList.add('hidden');
+        document.getElementById('step-busqueda').classList.remove('hidden');
+        renderLista();
     }
 
-    function showSection(sec) {
-        document.getElementById('sec-vendedor').classList.toggle('hidden', sec !== 'vendedor');
-        document.getElementById('sec-admin').classList.toggle('hidden', sec !== 'admin');
-        if(sec === 'vendedor') renderClientes();
-        if(sec === 'admin') renderAdmin();
-        renderProductos();
-    }
-
-    // GESTIÓN DE PRODUCTOS
-    function addProductoAdmin() {
-        const name = document.getElementById('adm-prod-name').value;
-        const price = document.getElementById('adm-prod-price').value;
-        if(!name || !price) return alert("Llene los datos del producto");
-        db.productos.push({name, price: parseFloat(price)});
-        saveDB();
-        alert("Producto añadido");
-        document.getElementById('adm-prod-name').value = "";
-        document.getElementById('adm-prod-price').value = "";
-    }
-
-    function renderProductos() {
-        const sel = document.getElementById('sel-producto');
-        sel.innerHTML = db.productos.map(p => `<option value="${p.price}">${p.name} - Bs ${p.price}</option>`).join('');
-    }
-
-    // GESTIÓN DE CLIENTES
-    function openNuevoCliente() { document.getElementById('modal-cliente').classList.remove('hidden'); }
-    function closeNuevoCliente() { document.getElementById('modal-cliente').classList.add('hidden'); }
-
-    function guardarNuevoCliente() {
-        const nombre = document.getElementById('reg-nombre').value;
-        const ws = document.getElementById('reg-whatsapp').value;
-        const ref = document.getElementById('reg-referencia').value;
-        const bar = document.getElementById('reg-barrio').value;
-
-        if(!nombre || !ws) return alert("Nombre y WhatsApp son obligatorios");
-
-        navigator.geolocation.getCurrentPosition((pos) => {
-            const nuevo = {
-                id: Date.now(),
-                nombre, whatsapp: ws, referencia: ref, barrio: bar,
-                gps: `${pos.coords.latitude},${pos.coords.longitude}`,
-                tipo: 'NUEVO', // NUEVO, RECURRENTE, POCA_FRECUENCIA
-                visitas: 0
-            };
-            db.clientes.push(nuevo);
-            saveDB();
-            alert("Cliente registrado con GPS");
-            closeNuevoCliente();
-            renderClientes();
-        });
-    }
-
-    function renderClientes() {
-        const container = document.getElementById('lista-clientes');
-        container.innerHTML = db.clientes.map(c => `
-            <div class="client-item cat-${c.tipo.toLowerCase()}" onclick="seleccionarCliente(${c.id})">
-                <strong>${c.nombre}</strong><br>
-                <small>${c.barrio} | <i class="fab fa-whatsapp"></i> ${c.whatsapp}</small>
+    function renderLista() {
+        const cont = document.getElementById('lista-clientes');
+        cont.innerHTML = db.clientes.map(c => `
+            <div class="client-item ${c.tipo}" onclick="seleccionar(${c.id})">
+                <strong>${c.nombre}</strong> <span class="badge">${c.tipo}</span><br>
+                <small><i class="fas fa-map-marker-alt"></i> ${c.barrio} | <i class="fab fa-whatsapp"></i> ${c.ws}</small>
             </div>
         `).join('');
     }
 
-    function seleccionarCliente(id) {
-        clienteSeleccionado = db.clientes.find(c => c.id === id);
-        document.getElementById('label-cliente-sel').innerText = "Venta a: " + clienteSeleccionado.nombre;
-        document.getElementById('form-venta').classList.remove('hidden');
+    function seleccionar(id) {
+        clienteActivo = db.clientes.find(c => c.id === id);
+        document.getElementById('cliente-seleccionado-nombre').innerText = clienteActivo.nombre;
+        document.getElementById('cliente-seleccionado-info').innerText = `Zona: ${clienteActivo.barrio} | Ref: ${clienteActivo.ref}`;
+        
+        document.getElementById('step-busqueda').classList.add('hidden');
+        document.getElementById('step-venta').classList.remove('hidden');
     }
 
-    // VENTAS
-    function registrarVenta() {
-        const cant = document.getElementById('cant-venta').value;
-        const prodIndex = document.getElementById('sel-producto').selectedIndex;
-        const prodName = db.productos[prodIndex].name;
-        const prodPrice = db.productos[prodIndex].price;
+    function cancelarSeleccion() {
+        clienteActivo = null;
+        document.getElementById('step-venta').classList.add('hidden');
+        document.getElementById('step-busqueda').classList.remove('hidden');
+    }
 
-        if(!cant || cant <= 0) return alert("Ingrese una cantidad válida");
+    // 3. Registro de Nuevo Cliente
+    function abrirRegistroNuevo() { document.getElementById('modal-nuevo').classList.remove('hidden'); }
+    function cerrarRegistroNuevo() { document.getElementById('modal-nuevo').classList.add('hidden'); }
+
+    function guardarNuevo() {
+        const n = document.getElementById('new-nombre').value;
+        const w = document.getElementById('new-whatsapp').value;
+        const b = document.getElementById('new-barrio').value;
+        const r = document.getElementById('new-ref').value;
+
+        if(!n || !w) return alert("Nombre y WhatsApp son obligatorios");
+
+        navigator.geolocation.getCurrentPosition((pos) => {
+            const nuevo = {
+                id: Date.now(),
+                nombre: n,
+                ws: w,
+                barrio: b,
+                ref: r,
+                tipo: "nuevo-registrado",
+                gps: `${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`
+            };
+            db.clientes.push(nuevo);
+            localStorage.setItem('sc_db', JSON.stringify(db));
+            cerrarRegistroNuevo();
+            seleccionar(nuevo.id); // Pasa directo a la venta
+        }, (err) => alert("Error: Debes activar el GPS para registrar clientes nuevos."));
+    }
+
+    // 4. Venta Final
+    function finalizarVenta() {
+        const cant = document.getElementById('cant-venta').value;
+        const p = document.getElementById('prod-venta');
+        const total = cant * p.value;
+
+        if(!cant || cant <= 0) return alert("Ingresa cantidad válida");
 
         const venta = {
             fecha: new Date().toLocaleString(),
-            cliente: clienteSeleccionado.nombre,
-            whatsapp: clienteSeleccionado.whatsapp,
-            producto: prodName,
+            vendedor: vendedor,
+            cliente: clienteActivo.nombre,
+            producto: p.options[p.selectedIndex].text,
             cantidad: cant,
-            total: cant * prodPrice,
-            gps: clienteSeleccionado.gps
+            total: total,
+            gps: clienteActivo.gps
         };
 
         db.ventas.push(venta);
+        localStorage.setItem('sc_db', JSON.stringify(db));
         
-        // Actualizar frecuencia del cliente
-        clienteSeleccionado.visitas++;
-        if(clienteSeleccionado.visitas > 5) clienteSeleccionado.tipo = 'RECURRENTE';
-        else if(clienteSeleccionado.visitas > 0) clienteSeleccionado.tipo = 'POCA_FRECUENCIA';
-
-        saveDB();
-        alert("Venta registrada correctamente");
-        document.getElementById('form-venta').classList.add('hidden');
+        alert(`Venta registrada exitosamente para ${clienteActivo.nombre}.\nTotal: Bs ${total}`);
+        
         document.getElementById('cant-venta').value = "";
+        cancelarSeleccion();
     }
 
-    // ADMINISTRACIÓN Y CIERRE
-    function renderAdmin() {
-        const log = document.getElementById('master-log');
-        log.innerHTML = db.ventas.map(v => `
-            <div class="card" style="font-size: 0.85rem;">
-                <b>${v.fecha}</b><br>
-                ${v.cliente} - ${v.cantidad} ${v.producto}<br>
-                <span style="color: var(--success)">Total: Bs ${v.total}</span>
-            </div>
-        `).reverse().join('');
-    }
-
-    function exportarBaseDatos() {
-        // Generar 3 secciones en el CSV: Nuevos, Recurrentes, Poca Frecuencia
-        let csv = "CATEGORIA,NOMBRE,WHATSAPP,BARRIO,REFERENCIA,GPS,VISITAS\n";
-        
-        const cat = (tipo) => db.clientes.filter(c => c.tipo === tipo);
-        
-        [ 'NUEVO', 'RECURRENTE', 'POCA_FRECUENCIA' ].forEach(tipo => {
-            cat(tipo).forEach(c => {
-                csv += `${tipo},${c.nombre},${c.whatsapp},${c.barrio},${c.referencia},"${c.gps}",${c.visitas}\n`;
-            });
-        });
-
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Santa_Clara_Clientes_${new Date().toLocaleDateString()}.csv`;
-        a.click();
-    }
-
-    function saveDB() { localStorage.setItem('sc_db', JSON.stringify(db)); }
-    function filtrarClientes() {
-        const q = document.getElementById('search-cli').value.toLowerCase();
-        document.querySelectorAll('.client-item').forEach(item => {
-            item.style.display = item.innerText.toLowerCase().includes(q) ? 'block' : 'none';
+    function filtrar() {
+        const q = document.getElementById('search-input').value.toLowerCase();
+        document.querySelectorAll('.client-item').forEach(i => {
+            i.style.display = i.innerText.toLowerCase().includes(q) ? 'block' : 'none';
         });
     }
-
-    showSection('vendedor');
 </script>
 </body>
 </html>
