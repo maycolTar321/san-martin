@@ -3,284 +3,283 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agua Santa Clara - Gestión Oficial</title>
+    <title>Santa Clara - Sistema de Control Operativo</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        :root { --p: #00d2ff; --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --success: #10b981; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, sans-serif; }
-        
-        body { background: var(--bg); color: white; min-height: 100vh; padding-bottom: 50px; }
+        :root { --p: #00d2ff; --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --success: #10b981; --warning: #facc15; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: var(--bg); color: white; min-height: 100vh; padding-bottom: 80px; }
 
-        /* Header Estilo Premium */
         header {
             background: linear-gradient(135deg, #075985, #0ea5e9);
-            padding: 20px;
-            text-align: center;
-            border-bottom-left-radius: 25px;
-            border-bottom-right-radius: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            padding: 25px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
         }
 
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: -20px;
-            padding: 0 15px;
-        }
+        .logo-placeholder { font-size: 2.5rem; margin-bottom: 5px; }
 
-        .tab-btn {
-            background: var(--card);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            flex: 1;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .tab-btn.active { background: var(--accent); color: var(--bg); box-shadow: 0 0 15px var(--accent); }
-
-        .container { padding: 20px; max-width: 600px; margin: auto; }
-
-        .card {
-            background: var(--card);
-            border-radius: 18px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        h3 { margin-bottom: 15px; font-size: 1.1rem; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+        .container { padding: 15px; max-width: 500px; margin: auto; }
+        .card { background: var(--card); border-radius: 15px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        
+        h2, h3 { color: var(--accent); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
 
         input, select, textarea {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 10px;
-            border: 1px solid #334155;
-            background: #0f172a;
-            color: white;
-            font-size: 1rem;
+            width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; 
+            border: 1px solid #334155; background: #0f172a; color: white;
         }
 
         .btn {
-            width: 100%;
-            padding: 15px;
-            border-radius: 10px;
-            border: none;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            transition: 0.2s;
+            width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold;
+            cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;
         }
+        .btn-p { background: var(--accent); color: var(--bg); }
+        .btn-s { background: var(--success); color: white; }
+        .btn-w { background: var(--warning); color: var(--bg); }
 
-        .btn-primary { background: var(--accent); color: var(--bg); }
-        .btn-success { background: var(--success); color: white; }
-        .btn-ghost { background: transparent; border: 1px solid #334155; color: #94a3b8; }
-
-        /* Alertas de seguridad */
-        .gps-badge { font-size: 0.7rem; padding: 3px 8px; border-radius: 5px; background: #064e3b; color: #34d399; }
-        .dup-alert { background: #7f1d1d; color: #f87171; }
+        /* Categorías de Clientes */
+        .cat-nuevo { border-left: 5px solid var(--accent); }
+        .cat-recurrente { border-left: 5px solid var(--success); }
+        .cat-baja { border-left: 5px solid var(--warning); }
 
         .hidden { display: none; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; padding: 20px; overflow-y: auto; }
+        
+        .client-item { 
+            background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; margin-bottom: 8px; 
+            cursor: pointer; border: 1px solid transparent; transition: 0.2s;
+        }
+        .client-item:hover { border-color: var(--accent); }
     </style>
 </head>
 <body>
 
 <header>
-    <h1 style="letter-spacing: 2px;">SANTA CLARA</h1>
-    <p style="font-size: 0.8rem; opacity: 0.8;">Sistema de Gestión de Agua y Hielo</p>
+    <div class="logo-placeholder"><i class="fas fa-tint"></i></div>
+    <h1>SANTA CLARA</h1>
+    <p>Agua Pura & Hielo en Cubos</p>
 </header>
 
-<div class="nav-tabs">
-    <button class="tab-btn active" onclick="showTab('vendedor')">Vendedor</button>
-    <button class="tab-btn" onclick="showTab('admin')">Dueña</button>
+<div class="container">
+    <div style="display: flex; gap: 10px; margin-top: -15px; margin-bottom: 20px;">
+        <button class="btn btn-p" onclick="showSection('vendedor')"><i class="fas fa-truck"></i> Vendedor</button>
+        <button class="btn btn-w" onclick="checkAdmin()"><i class="fas fa-lock"></i> Dueña</button>
+    </div>
+
+    <div id="sec-vendedor">
+        <div class="card">
+            <h3><i class="fas fa-search"></i> Seleccionar Cliente</h3>
+            <input type="text" id="search-cli" placeholder="Buscar por nombre o barrio..." onkeyup="filtrarClientes()">
+            <div id="lista-clientes" style="max-height: 200px; overflow-y: auto;">
+                </div>
+            <button class="btn btn-p" style="margin-top: 10px; background: #0369a1;" onclick="openNuevoCliente()">
+                <i class="fas fa-user-plus"></i> + REGISTRAR NUEVO CLIENTE
+            </button>
+        </div>
+
+        <div id="form-venta" class="card hidden">
+            <h3 id="label-cliente-sel">Venta a: </h3>
+            <select id="sel-producto">
+                </select>
+            <input type="number" id="cant-venta" placeholder="Cantidad de botellones/bolsas">
+            <button class="btn btn-s" onclick="registrarVenta()"><i class="fas fa-cash-register"></i> FINALIZAR VENTA</button>
+        </div>
+    </div>
+
+    <div id="sec-admin" class="hidden">
+        <div class="card">
+            <h2>Panel de Lidia Velásquez</h2>
+            <button class="btn btn-s" onclick="exportarBaseDatos()"><i class="fas fa-download"></i> DESCARGAR EXCEL (CSV)</button>
+        </div>
+
+        <div class="card">
+            <h3>Añadir Producto Nuevo</h3>
+            <input type="text" id="adm-prod-name" placeholder="Nombre (Ej: Botellón 20L)">
+            <input type="number" id="adm-prod-price" placeholder="Precio de Venta (Bs)">
+            <button class="btn btn-p" onclick="addProductoAdmin()">Guardar Producto</button>
+        </div>
+
+        <h3>Base de Datos Consolidada</h3>
+        <div id="master-log"></div>
+    </div>
 </div>
 
-<div class="container">
+<div id="modal-cliente" class="modal hidden">
+    <h2>Registro de Cliente Nuevo</h2>
+    <p>Complete todos los datos para el control de envases.</p>
+    <input type="text" id="reg-nombre" placeholder="Nombre completo o Negocio">
+    <input type="text" id="reg-whatsapp" placeholder="Número de WhatsApp">
+    <input type="text" id="reg-referencia" placeholder="Referencia (Ej: Casa portón verde)">
+    <input type="text" id="reg-barrio" placeholder="Barrio / Zona">
     
-    <div id="vendedor-section">
-        <div class="card">
-            <h3><i class="fas fa-id-badge"></i> Identificación</h3>
-            <select id="v-repartidor">
-                <option value="Adriana">Adriana</option>
-                <option value="Maycol">Maycol</option>
-                <option value="Distribuidor_Provincia">Distribuidor Provincia</option>
-            </select>
-        </div>
-
-        <div class="card">
-            <h3><i class="fas fa-shopping-cart"></i> Registrar Punto de Venta</h3>
-            <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 10px;">El sistema capturará tu ubicación GPS automáticamente.</p>
-            
-            <input type="text" id="v-cliente" placeholder="Nombre del Cliente o Negocio">
-            
-            <select id="v-producto">
-                <option value="Botellón 20L">Botellón 20L</option>
-                <option value="Hielo en Cubos">Hielo en Cubos</option>
-                <option value="Botellón 10L">Botellón 10L</option>
-            </select>
-
-            <input type="number" id="v-cantidad" placeholder="Cantidad Entregada">
-            
-            <button class="btn btn-primary" onclick="registrarPunto('VENTA')">
-                <i class="fas fa-check-circle"></i> REGISTRAR VENTA
-            </button>
-            <button class="btn btn-ghost" style="margin-top: 10px;" onclick="registrarPunto('VISITA SIN VENTA')">
-                <i class="fas fa-map-marker-alt"></i> SOLO VISITA (No compró)
-            </button>
-        </div>
+    <div style="background: #1e293b; padding: 15px; border-radius: 10px; margin: 10px 0;">
+        <small>El GPS se capturará al guardar.</small>
     </div>
-
-    <div id="admin-section" class="hidden">
-        <div class="card" style="border-left: 5px solid var(--success);">
-            <h3><i class="fas fa-user-tie"></i> Panel de Lidia Velásquez</h3>
-            <div id="resumen-caja" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; text-align: center;">
-                    <small>Ventas Hoy</small><br>
-                    <strong id="total-bs" style="color: var(--success); font-size: 1.2rem;">Bs 0</strong>
-                </div>
-                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; text-align: center;">
-                    <small>Botellones</small><br>
-                    <strong id="total-items" style="font-size: 1.2rem;">0</strong>
-                </div>
-            </div>
-            <button class="btn btn-success" style="margin-top: 15px;" onclick="descargarData()">
-                <i class="fas fa-file-excel"></i> DESCARGAR CIERRE (CSV)
-            </button>
-        </div>
-
-        <div id="log-registros">
-            </div>
-    </div>
+    
+    <button class="btn btn-s" onclick="guardarNuevoCliente()">GUARDAR Y CAPTURAR GPS</button>
+    <button class="btn btn-ghost" onclick="closeNuevoCliente()" style="margin-top:10px;">CANCELAR</button>
 </div>
 
 <script>
-    // Configuración Inicial
-    const PRECIO_ESTANDAR = 15; // Precio por defecto para el cálculo de caja
-    let masterData = JSON.parse(localStorage.getItem('santa_clara_data')) || [];
+    // ESTADO DEL SISTEMA
+    let db = JSON.parse(localStorage.getItem('sc_db')) || {
+        clientes: [],
+        productos: [{name: "Botellón 20L", price: 15}],
+        ventas: []
+    };
 
-    function showTab(tab) {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        if(tab === 'vendedor') {
-            document.getElementById('vendedor-section').classList.remove('hidden');
-            document.getElementById('admin-section').classList.add('hidden');
-            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+    let clienteSeleccionado = null;
+
+    // SEGURIDAD
+    function checkAdmin() {
+        const pass = prompt("Ingrese clave de Administradora:");
+        if(pass === "admin123") {
+            showSection('admin');
         } else {
-            document.getElementById('vendedor-section').classList.add('hidden');
-            document.getElementById('admin-section').classList.remove('hidden');
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
-            renderAdminLog();
+            alert("Clave incorrecta");
         }
     }
 
-    function registrarPunto(tipoAccion) {
-        const repartidor = document.getElementById('v-repartidor').value;
-        const cliente = document.getElementById('v-cliente').value;
-        const producto = document.getElementById('v-producto').value;
-        const cantidad = document.getElementById('v-cantidad').value;
+    function showSection(sec) {
+        document.getElementById('sec-vendedor').classList.toggle('hidden', sec !== 'vendedor');
+        document.getElementById('sec-admin').classList.toggle('hidden', sec !== 'admin');
+        if(sec === 'vendedor') renderClientes();
+        if(sec === 'admin') renderAdmin();
+        renderProductos();
+    }
 
-        if(!cliente) return alert("Por favor, ingresa el nombre del cliente.");
-        if(tipoAccion === 'VENTA' && !cantidad) return alert("Ingresa la cantidad vendida.");
+    // GESTIÓN DE PRODUCTOS
+    function addProductoAdmin() {
+        const name = document.getElementById('adm-prod-name').value;
+        const price = document.getElementById('adm-prod-price').value;
+        if(!name || !price) return alert("Llene los datos del producto");
+        db.productos.push({name, price: parseFloat(price)});
+        saveDB();
+        alert("Producto añadido");
+        document.getElementById('adm-prod-name').value = "";
+        document.getElementById('adm-prod-price').value = "";
+    }
 
-        // Mostrar cargando
-        const btn = event.currentTarget;
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Obteniendo GPS...';
-        btn.disabled = true;
+    function renderProductos() {
+        const sel = document.getElementById('sel-producto');
+        sel.innerHTML = db.productos.map(p => `<option value="${p.price}">${p.name} - Bs ${p.price}</option>`).join('');
+    }
+
+    // GESTIÓN DE CLIENTES
+    function openNuevoCliente() { document.getElementById('modal-cliente').classList.remove('hidden'); }
+    function closeNuevoCliente() { document.getElementById('modal-cliente').classList.add('hidden'); }
+
+    function guardarNuevoCliente() {
+        const nombre = document.getElementById('reg-nombre').value;
+        const ws = document.getElementById('reg-whatsapp').value;
+        const ref = document.getElementById('reg-referencia').value;
+        const bar = document.getElementById('reg-barrio').value;
+
+        if(!nombre || !ws) return alert("Nombre y WhatsApp son obligatorios");
 
         navigator.geolocation.getCurrentPosition((pos) => {
-            const entry = {
+            const nuevo = {
                 id: Date.now(),
-                fecha: new Date().toLocaleDateString(),
-                hora: new Date().toLocaleTimeString(),
-                vendedor: repartidor,
-                cliente: cliente,
-                producto: producto,
-                cantidad: parseInt(cantidad) || 0,
-                accion: tipoAccion,
-                gps: `${pos.coords.latitude.toFixed(6)}, ${pos.coords.longitude.toFixed(6)}`
+                nombre, whatsapp: ws, referencia: ref, barrio: bar,
+                gps: `${pos.coords.latitude},${pos.coords.longitude}`,
+                tipo: 'NUEVO', // NUEVO, RECURRENTE, POCA_FRECUENCIA
+                visitas: 0
             };
-
-            masterData.push(entry);
-            localStorage.setItem('santa_clara_data', JSON.stringify(masterData));
-
-            alert("✅ Registro guardado con éxito.");
-            
-            // Limpiar formulario
-            document.getElementById('v-cliente').value = "";
-            document.getElementById('v-cantidad').value = "";
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }, (err) => {
-            alert("❌ Error: Para evitar engaños, el sistema requiere GPS activo.");
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }, { enableHighAccuracy: true });
-    }
-
-    function renderAdminLog() {
-        const logContainer = document.getElementById('log-registros');
-        const totalBsDisplay = document.getElementById('total-bs');
-        const totalItemsDisplay = document.getElementById('total-items');
-        
-        let totalBs = 0;
-        let totalItems = 0;
-
-        logContainer.innerHTML = masterData.map((d, index) => {
-            if(d.accion === 'VENTA') {
-                totalItems += d.cantidad;
-                totalBs += (d.cantidad * PRECIO_ESTANDAR);
-            }
-
-            // Detección de duplicados (Engaños)
-            const esDuplicado = masterData.some((item, i) => item.gps === d.gps && i !== index);
-            const alertClass = esDuplicado ? 'dup-alert' : '';
-
-            return `
-                <div class="card ${alertClass}" style="padding: 12px; font-size: 0.9rem; margin-bottom: 10px;">
-                    <div style="display: flex; justify-content: space-between;">
-                        <strong>${d.vendedor}</strong>
-                        <span class="gps-badge">${d.hora}</span>
-                    </div>
-                    <div style="margin: 5px 0;">
-                        <i class="fas fa-store"></i> ${d.cliente} <br>
-                        <i class="fas fa-shopping-basket"></i> ${d.accion}: ${d.cantidad} ${d.producto}
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); pt-5;">
-                        <a href="https://www.google.com/maps?q=${d.gps}" target="_blank" style="color: var(--accent); font-size: 0.7rem; text-decoration: none;">
-                            <i class="fas fa-external-link-alt"></i> Ver Mapa
-                        </a>
-                        ${esDuplicado ? '<span style="color: #f87171; font-size: 0.7rem;">⚠️ GPS DUPLICADO</span>' : ''}
-                    </div>
-                </div>
-            `;
-        }).reverse().join('');
-
-        totalBsDisplay.innerText = `Bs ${totalBs}`;
-        totalItemsDisplay.innerText = totalItems;
-    }
-
-    function descargarData() {
-        let csv = "Fecha,Hora,Vendedor,Cliente,Accion,Producto,Cantidad,GPS\n";
-        masterData.forEach(d => {
-            csv += `${d.fecha},${d.hora},${d.vendedor},${d.cliente},${d.accion},${d.producto},${d.cantidad},"${d.gps}"\n`;
+            db.clientes.push(nuevo);
+            saveDB();
+            alert("Cliente registrado con GPS");
+            closeNuevoCliente();
+            renderClientes();
         });
+    }
+
+    function renderClientes() {
+        const container = document.getElementById('lista-clientes');
+        container.innerHTML = db.clientes.map(c => `
+            <div class="client-item cat-${c.tipo.toLowerCase()}" onclick="seleccionarCliente(${c.id})">
+                <strong>${c.nombre}</strong><br>
+                <small>${c.barrio} | <i class="fab fa-whatsapp"></i> ${c.whatsapp}</small>
+            </div>
+        `).join('');
+    }
+
+    function seleccionarCliente(id) {
+        clienteSeleccionado = db.clientes.find(c => c.id === id);
+        document.getElementById('label-cliente-sel').innerText = "Venta a: " + clienteSeleccionado.nombre;
+        document.getElementById('form-venta').classList.remove('hidden');
+    }
+
+    // VENTAS
+    function registrarVenta() {
+        const cant = document.getElementById('cant-venta').value;
+        const prodIndex = document.getElementById('sel-producto').selectedIndex;
+        const prodName = db.productos[prodIndex].name;
+        const prodPrice = db.productos[prodIndex].price;
+
+        if(!cant || cant <= 0) return alert("Ingrese una cantidad válida");
+
+        const venta = {
+            fecha: new Date().toLocaleString(),
+            cliente: clienteSeleccionado.nombre,
+            whatsapp: clienteSeleccionado.whatsapp,
+            producto: prodName,
+            cantidad: cant,
+            total: cant * prodPrice,
+            gps: clienteSeleccionado.gps
+        };
+
+        db.ventas.push(venta);
+        
+        // Actualizar frecuencia del cliente
+        clienteSeleccionado.visitas++;
+        if(clienteSeleccionado.visitas > 5) clienteSeleccionado.tipo = 'RECURRENTE';
+        else if(clienteSeleccionado.visitas > 0) clienteSeleccionado.tipo = 'POCA_FRECUENCIA';
+
+        saveDB();
+        alert("Venta registrada correctamente");
+        document.getElementById('form-venta').classList.add('hidden');
+        document.getElementById('cant-venta').value = "";
+    }
+
+    // ADMINISTRACIÓN Y CIERRE
+    function renderAdmin() {
+        const log = document.getElementById('master-log');
+        log.innerHTML = db.ventas.map(v => `
+            <div class="card" style="font-size: 0.85rem;">
+                <b>${v.fecha}</b><br>
+                ${v.cliente} - ${v.cantidad} ${v.producto}<br>
+                <span style="color: var(--success)">Total: Bs ${v.total}</span>
+            </div>
+        `).reverse().join('');
+    }
+
+    function exportarBaseDatos() {
+        // Generar 3 secciones en el CSV: Nuevos, Recurrentes, Poca Frecuencia
+        let csv = "CATEGORIA,NOMBRE,WHATSAPP,BARRIO,REFERENCIA,GPS,VISITAS\n";
+        
+        const cat = (tipo) => db.clientes.filter(c => c.tipo === tipo);
+        
+        [ 'NUEVO', 'RECURRENTE', 'POCA_FRECUENCIA' ].forEach(tipo => {
+            cat(tipo).forEach(c => {
+                csv += `${tipo},${c.nombre},${c.whatsapp},${c.barrio},${c.referencia},"${c.gps}",${c.visitas}\n`;
+            });
+        });
+
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `Cierre_Santa_Clara_${new Date().toLocaleDateString()}.csv`;
+        a.download = `Santa_Clara_Clientes_${new Date().toLocaleDateString()}.csv`;
         a.click();
     }
-</script>
 
+    function saveDB() { localStorage.setItem('sc_db', JSON.stringify(db)); }
+    function filtrarClientes() {
+        const q = document.getElementById('search-cli').value.toLowerCase();
+        document.querySelectorAll('.client-item').forEach(item => {
+            item.style.display = item.innerText.toLowerCase().includes(q) ? 'block' : 'none';
+        });
+    }
+
+    showSection('vendedor');
+</script>
 </body>
 </html>
