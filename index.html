@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA PRO V6 - MAYCOL AVILA</title>
+    <title>SISTEMA MAYCOL V9 - GESTIÓN TOTAL</title>
     
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -17,18 +17,20 @@
             --warning: #f59e0b;
             --danger: #ef4444;
             --water: #0ea5e9;
-            --reg: #f43f5e; /* Color para Registro */
-            --bg: #f8fafc;
+            --reg: #f43f5e;
+            --bg: #f1f5f9;
             --card-bg: #ffffff;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        /* --- ESTILOS GENERALES --- */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
         body { 
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
             background: var(--bg); 
             margin: 0; 
             color: var(--primary);
-            padding-bottom: 80px; 
+            padding-bottom: 90px;
+            overflow-x: hidden;
         }
 
         /* --- NAVEGACIÓN --- */
@@ -36,283 +38,374 @@
             position: fixed;
             bottom: 0;
             width: 100%;
-            height: 65px;
+            height: 70px;
             background: var(--primary);
             display: flex;
             justify-content: space-around;
             align-items: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            z-index: 1000;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+            z-index: 2000;
         }
 
         .nav-item {
             color: #94a3b8;
             text-decoration: none;
-            font-size: 11px;
+            font-size: 12px;
             text-align: center;
             flex: 1;
-            padding: 10px;
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
         }
 
         .nav-item.active { color: white; font-weight: bold; }
-        .nav-item i { display: block; font-size: 20px; margin-bottom: 4px; }
+        .nav-item span { font-size: 22px; }
 
-        /* --- CONTENEDORES --- */
-        .page { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
+        /* --- PÁGINAS --- */
+        .page { display: none; padding: 20px; animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .header { padding: 20px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px; }
-        .header h1 { margin: 0; font-size: 22px; color: var(--primary); }
+        .header-main { padding: 10px 0 20px 0; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; }
+        .header-main h1 { margin: 0; font-size: 24px; letter-spacing: -0.5px; }
 
-        /* --- CARDS & STATS --- */
-        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-card { 
+        /* --- INDICADORES (STATS) --- */
+        .dashboard-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .stat-box { 
             background: var(--card-bg); 
             padding: 15px; 
-            border-radius: 16px; 
+            border-radius: 18px; 
+            border-top: 4px solid var(--accent);
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-            border: 1px solid #f1f5f9;
         }
-        .stat-card small { color: #64748b; font-size: 11px; }
-        .stat-card div { font-size: 16px; font-weight: 800; margin-top: 5px; }
+        .stat-box label { color: #64748b; font-size: 11px; text-transform: uppercase; font-weight: bold; }
+        .stat-box .val { font-size: 18px; font-weight: 800; margin-top: 4px; }
 
+        /* --- TARJETAS --- */
         .card {
             background: var(--card-bg);
-            border-radius: 18px;
-            padding: 18px;
+            border-radius: 20px;
+            padding: 20px;
             margin-bottom: 15px;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
 
-        .section-title { font-size: 14px; font-weight: bold; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .section-title { font-size: 14px; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: #475569; }
 
-        /* --- BUTTONS --- */
+        /* --- BOTONES --- */
         .btn {
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: transform 0.1s, filter 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
 
         .btn-green { background: var(--success); color: white; }
         .btn-water { background: var(--water); color: white; }
         .btn-reg { background: var(--reg); color: white; }
         .btn-net { background: #6366f1; color: white; }
-        .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: var(--primary); }
-        .btn:active { transform: scale(0.97); }
+        .btn-outline { background: white; border: 2.5px solid #e2e8f0; color: var(--primary); }
+        .btn:active { transform: scale(0.96); filter: brightness(0.9); }
 
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 16px; }
+        /* --- MODAL DE EDICIÓN --- */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-content { background: white; border-radius: 20px; width: 100%; max-width: 400px; padding: 25px; }
+        input { width: 100%; padding: 14px; margin: 10px 0; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 16px; }
 
-        /* --- HISTORIAL --- */
-        .history-item {
+        /* --- LISTADO HISTORIAL --- */
+        .history-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px;
             background: white;
-            border-bottom: 1px solid #f1f5f9;
+            border-radius: 15px;
+            margin-bottom: 8px;
+            border: 1px solid #f1f5f9;
         }
-        .history-info b { display: block; font-size: 14px; }
-        .history-info small { color: #64748b; font-size: 11px; }
-        .history-amount { font-weight: 800; margin-right: 10px; }
-        .delete-btn { color: var(--danger); font-weight: bold; padding: 5px 10px; }
+        .hist-info b { display: block; font-size: 15px; color: #1e293b; }
+        .hist-info small { color: #94a3b8; font-size: 11px; }
+        .hist-actions { display: flex; align-items: center; gap: 12px; }
+        .hist-amt { font-weight: 900; color: #1e293b; }
+        .icon-btn { font-size: 18px; padding: 8px; cursor: pointer; }
+        .btn-edit { color: var(--accent); }
+        .btn-del { color: var(--danger); }
 
-        .rep-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #cbd5e1; font-size: 14px; }
+        /* --- PDF PRINT STYLE --- */
+        @media print {
+            .nav-bottom, .btn, #cobros, .section-title { display: none !important; }
+            .page { display: block !important; padding: 0; }
+            #reportes { width: 100%; }
+        }
     </style>
 </head>
 <body>
 
     <div id="cobros" class="page active">
-        <div class="header">
-            <h1>Registro de Pagos</h1>
+        <div class="header-main">
+            <h1>Registro de Operaciones</h1>
+            <small id="currentDateDisplay" style="color: #64748b; font-weight: bold;"></small>
         </div>
 
-        <div class="stats-container">
-            <div class="stat-card" style="border-top: 4px solid var(--success);">
-                <small>Oficina (10bs)</small>
-                <div id="sumOficina">0 Bs</div>
+        <div class="dashboard-stats">
+            <div class="stat-box" style="border-top-color: var(--success);">
+                <label>Recaudación Oficina</label>
+                <div class="val" id="totalOficina">0 Bs</div>
             </div>
-            <div class="stat-card" style="border-top: 4px solid var(--reg);">
-                <small>Internet Reg. (36bs)</small>
-                <div id="sumReg">0 Bs</div>
+            <div class="stat-box" style="border-top-color: var(--reg);">
+                <label>Ingreso Registro</label>
+                <div class="val" id="totalRegistro">0 Bs</div>
             </div>
         </div>
 
         <div class="card">
-            <div class="section-title">🏢 Aportes Semanales (10 Bs)</div>
+            <div class="section-title">🏢 APORTES OFICINA (10 BS)</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <button class="btn btn-green" onclick="registrar('Ximena', 10, 'Oficina')">Ximena</button>
                 <button class="btn btn-green" onclick="registrar('Maycol', 10, 'Oficina')">Maycol</button>
                 <button class="btn btn-green" onclick="registrar('Samuel', 10, 'Oficina')">Samuel</button>
-                <button id="btnNilsa" class="btn btn-green" onclick="registrar(oficialActual, 10, 'Oficina')">Nilsa</button>
+                <button id="btnNilsa" class="btn btn-green" onclick="registrar(oficialName, 10, 'Oficina')">Nilsa</button>
             </div>
         </div>
 
-        <div class="card" style="border-left: 5px solid var(--reg);">
-            <div class="section-title">📄 Registro Civil (Internet)</div>
-            <button class="btn btn-reg" onclick="registrar('Registro Civil (Internet)', 36, 'Internet Registro')">
-                Cobrar Internet Registro (36 Bs)
-            </button>
+        <div class="card" style="border-left: 6px solid var(--reg);">
+            <div class="section-title">📄 REGISTRO CIVIL (36 BS)</div>
+            <button class="btn btn-reg" onclick="registrar('Registro Civil - Internet', 36, 'Ingreso Registro')">Cobrar Internet Registro</button>
         </div>
 
-        <div class="card" style="border-left: 5px solid var(--water);">
-            <div class="section-title">💧 Compra de Agua (36 Bs)</div>
-            <div style="display: grid; gap: 10px;">
-                <button class="btn btn-water" onclick="registrar('Agua: Nilsa y Maycol', 36, 'Agua')">Nilsa y Maycol</button>
-                <button class="btn btn-water" onclick="registrar('Agua: Samuel y Ximena', 36, 'Agua')">Samuel y Ximena</button>
-            </div>
+        <div class="card" style="border-left: 6px solid var(--water);">
+            <div class="section-title">💧 COMPRA DE AGUA (36 BS)</div>
+            <button class="btn btn-water" onclick="registrar('Agua: Nilsa y Maycol', 36, 'Agua')">Pareja: Nilsa y Maycol</button>
+            <button class="btn btn-water" onclick="registrar('Agua: Samuel y Ximena', 36, 'Agua')">Pareja: Samuel y Ximena</button>
         </div>
 
-        <div class="card" style="border-left: 5px solid #6366f1;">
-            <div class="section-title">🌐 Internet General (179 Bs)</div>
-            <button class="btn btn-net" onclick="registrar('Internet Mensual', 179, 'Gasto Internet')">Registrar Pago 179 Bs</button>
+        <div class="card" style="border-left: 6px solid #6366f1;">
+            <div class="section-title">🌐 GASTOS GENERALES (179 BS)</div>
+            <button class="btn btn-net" onclick="registrar('Pago Internet Mensual', 179, 'Gasto Internet')">Pagar Internet Matriz</button>
         </div>
 
         <div class="card">
-            <input type="text" id="nuevoOficial" placeholder="Cambiar nombre de Nilsa...">
-            <button class="btn btn-outline" onclick="cambiarOficial()">Actualizar Oficial</button>
+            <div class="section-title">⚙️ CONFIGURACIÓN</div>
+            <input type="text" id="oficialInput" placeholder="Cambiar nombre de Oficial...">
+            <button class="btn btn-outline" onclick="saveOficialName()">Actualizar Nombre Oficial</button>
         </div>
     </div>
 
     <div id="reportes" class="page">
-        <div class="header">
-            <h1>Reportes y Totales</h1>
+        <div class="header-main">
+            <h1>Reporte Detallado</h1>
         </div>
 
         <div class="card">
-            <h3>Resumen del Mes</h3>
-            <div id="detallesPersona"></div>
-            <hr>
-            <div class="rep-row">
-                <strong>TOTAL RECAUDADO:</strong>
-                <strong id="totalGral" style="color:var(--accent); font-size:18px;">0 Bs</strong>
+            <div class="section-title">📈 RESUMEN POR PERSONA / CONCEPTO</div>
+            <div id="resumenReporte"></div>
+            <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 15px 0;">
+            <div style="display:flex; justify-content:space-between; font-size: 18px;">
+                <strong>CAJA TOTAL:</strong>
+                <strong id="cajaTotal" style="color:var(--accent);">0 Bs</strong>
             </div>
         </div>
 
-        <div class="card">
-            <h3>Historial</h3>
-            <div id="listaHistorial"></div>
+        <div class="card" style="background: transparent; border: none; padding: 0;">
+            <div class="section-title">📜 HISTORIAL CON EDICIÓN</div>
+            <div id="historialList"></div>
         </div>
 
-        <button class="btn btn-reg" style="background:#000;" onclick="exportarCSV()">📥 Descargar Reporte CSV</button>
-        <div style="margin-top:10px;"></div>
-        <button class="btn btn-outline" onclick="borrarMes()">🗑️ Reiniciar Mes</button>
+        <button class="btn btn-net" onclick="exportarCSV()">📥 Descargar Datos (CSV)</button>
+        <button class="btn btn-outline" onclick="window.print()">🖨️ Generar Reporte PDF</button>
+        <button class="btn" style="background:var(--danger); color:white; margin-top: 20px;" onclick="resetDatabase()">⚠️ BORRAR TODO EL MES</button>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h3>Editar Registro</h3>
+            <label>Nombre/Concepto:</label>
+            <input type="text" id="editNombre">
+            <label>Monto (Bs):</label>
+            <input type="number" id="editMonto">
+            <input type="hidden" id="editId">
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-green" onclick="saveEdit()">Guardar Cambios</button>
+            </div>
+        </div>
     </div>
 
     <nav class="nav-bottom">
-        <a href="#" class="nav-item active" onclick="showPage('cobros', this)"><i>📱</i>Cobros</a>
-        <a href="#" class="nav-item" onclick="showPage('reportes', this)"><i>📈</i>Reportes</a>
+        <a href="#" class="nav-item active" onclick="navigate('cobros', this)">
+            <span>📱</span>Cobros
+        </a>
+        <a href="#" class="nav-item" onclick="navigate('reportes', this)">
+            <span>📊</span>Reportes
+        </a>
     </nav>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('maycol_v6')) || [];
-        let oficialActual = localStorage.getItem('oficial_v6') || "Nilsa";
+        // --- BASE DE DATOS Y PERSISTENCIA ---
+        let storage = JSON.parse(localStorage.getItem('MAYCOL_AVILA_OS_V9')) || [];
+        let oficialName = localStorage.getItem('OFICIAL_VAR_V9') || "Nilsa";
 
-        function showPage(id, el) {
+        // --- LÓGICA DE NAVEGACIÓN ---
+        function navigate(pageId, element) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            el.classList.add('active');
-            actualizar();
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            element.classList.add('active');
+            refresh();
         }
 
-        function cambiarOficial() {
-            let val = document.getElementById('nuevoOficial').value;
-            if(!val) return;
-            oficialActual = val;
-            localStorage.setItem('oficial_v6', val);
-            actualizar();
-            alert("Oficial cambiado");
-        }
-
+        // --- LÓGICA DE NEGOCIO ---
         function registrar(user, monto, tipo) {
-            db.push({
+            const now = new Date();
+            const timestamp = now.toLocaleDateString() + " " + now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+            
+            const nuevoRegistro = {
                 id: Date.now(),
-                fecha: new Date().toLocaleDateString(),
+                fecha: timestamp,
                 user: user,
-                monto: monto,
+                monto: parseFloat(monto),
                 tipo: tipo
-            });
-            localStorage.setItem('maycol_v6', JSON.stringify(db));
-            actualizar();
-            alert("Anotado!");
+            };
+
+            storage.push(nuevoRegistro);
+            commit();
+            alert("✅ Registro guardado: " + user);
         }
 
-        function borrarItem(id) {
-            if(confirm("¿Borrar este cobro?")) {
-                db = db.filter(i => i.id !== id);
-                localStorage.setItem('maycol_v6', JSON.stringify(db));
-                actualizar();
-            }
+        function commit() {
+            localStorage.setItem('MAYCOL_AVILA_OS_V9', JSON.stringify(storage));
+            refresh();
         }
 
-        function actualizar() {
-            const historial = document.getElementById('listaHistorial');
-            const detalles = document.getElementById('detallesPersona');
-            let sOfi = 0, sReg = 0, total = 0, porPersona = {};
+        function refresh() {
+            const histCont = document.getElementById('historialList');
+            const resCont = document.getElementById('resumenReporte');
+            const totalOficinaEl = document.getElementById('totalOficina');
+            const totalRegistroEl = document.getElementById('totalRegistro');
+            const totalCajaEl = document.getElementById('cajaTotal');
 
-            historial.innerHTML = '';
-            detalles.innerHTML = '';
+            histCont.innerHTML = '';
+            resCont.innerHTML = '';
+            
+            let ofiSum = 0, regSum = 0, totalGral = 0, summary = {};
 
-            db.slice().reverse().forEach(item => {
-                if(item.tipo === 'Oficina') sOfi += item.monto;
-                if(item.tipo === 'Internet Registro') sReg += item.monto;
-                total += item.monto;
-                
-                porPersona[item.user] = (porPersona[item.user] || 0) + item.monto;
+            // Renderizado de Historial (Más reciente arriba)
+            storage.slice().reverse().forEach(item => {
+                if(item.tipo === 'Oficina') ofiSum += item.monto;
+                if(item.tipo === 'Ingreso Registro') regSum += item.monto;
+                totalGral += item.monto;
 
-                historial.innerHTML += `
-                    <div class="history-item">
-                        <div class="history-info">
+                summary[item.user] = (summary[item.user] || 0) + item.monto;
+
+                histCont.innerHTML += `
+                    <div class="history-row">
+                        <div class="hist-info">
                             <b>${item.user}</b>
                             <small>${item.fecha} • ${item.tipo}</small>
                         </div>
-                        <div style="display:flex; align-items:center;">
-                            <span class="history-amount">${item.monto} Bs</span>
-                            <span class="delete-btn" onclick="borrarItem(${item.id})">✕</span>
+                        <div class="hist-actions">
+                            <span class="hist-amt">${item.monto} Bs</span>
+                            <span class="icon-btn btn-edit" onclick="openModal(${item.id})">✏️</span>
+                            <span class="icon-btn btn-del" onclick="deleteItem(${item.id})">✕</span>
                         </div>
                     </div>
                 `;
             });
 
-            for(let p in porPersona) {
-                detalles.innerHTML += `<div class="rep-row"><span>${p}</span><b>${porPersona[p]} Bs</b></div>`;
+            // Renderizado de Resumen
+            for(let key in summary) {
+                resCont.innerHTML += `
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
+                        <span>${key}</span>
+                        <b>${summary[key]} Bs</b>
+                    </div>
+                `;
             }
 
-            document.getElementById('sumOficina').innerText = sOfi + " Bs";
-            document.getElementById('sumReg').innerText = sReg + " Bs";
-            document.getElementById('totalGral').innerText = total + " Bs";
-            document.getElementById('btnNilsa').innerText = oficialActual;
+            totalOficinaEl.innerText = ofiSum + " Bs";
+            totalRegistroEl.innerText = regSum + " Bs";
+            totalCajaEl.innerText = totalGral + " Bs";
+            document.getElementById('btnNilsa').innerText = oficialName;
+            document.getElementById('currentDateDisplay').innerText = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        // --- EDICIÓN Y ELIMINACIÓN ---
+        function openModal(id) {
+            const item = storage.find(x => x.id === id);
+            document.getElementById('editNombre').value = item.user;
+            document.getElementById('editMonto').value = item.monto;
+            document.getElementById('editId').value = id;
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('editModal').style.display = 'none'; }
+
+        function saveEdit() {
+            const id = parseInt(document.getElementById('editId').value);
+            const item = storage.find(x => x.id === id);
+            item.user = document.getElementById('editNombre').value;
+            item.monto = parseFloat(document.getElementById('editMonto').value);
+            commit();
+            closeModal();
+        }
+
+        function deleteItem(id) {
+            if(confirm("¿Estás seguro de eliminar este registro definitivamente?")) {
+                storage = storage.filter(x => x.id !== id);
+                commit();
+            }
+        }
+
+        function saveOficialName() {
+            const name = document.getElementById('oficialInput').value;
+            if(!name) return;
+            oficialName = name;
+            localStorage.setItem('OFICIAL_VAR_V9', name);
+            refresh();
+            alert("Nombre actualizado");
+        }
+
+        function resetDatabase() {
+            if(confirm("❗ ADVERTENCIA: Se borrarán TODOS los datos acumulados. ¿Continuar?")) {
+                storage = [];
+                commit();
+            }
         }
 
         function exportarCSV() {
-            let csv = "\ufeffFecha,Persona,Monto,Tipo\n";
-            db.forEach(i => csv += `${i.fecha},${i.user},${i.monto},${i.tipo}\n`);
-            let link = document.createElement('a');
-            link.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
-            link.download = "Reporte_Maycol.csv";
-            link.click();
+            let csv = "\ufeffFecha,Responsable,Monto,Categoria\n";
+            storage.forEach(i => csv += `${i.fecha},${i.user},${i.monto},${i.tipo}\n`);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Reporte_Maycol_Avila_${new Date().toLocaleDateString()}.csv`;
+            a.click();
         }
 
-        function borrarMes() {
-            if(confirm("¿Estás seguro de borrar todos los datos del mes?")) {
-                db = [];
-                localStorage.setItem('maycol_v6', JSON.stringify(db));
-                actualizar();
-            }
-        }
-
-        actualizar();
+        // --- INICIALIZACIÓN ---
+        refresh();
     </script>
 </body>
 </html>
