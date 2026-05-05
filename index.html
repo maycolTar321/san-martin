@@ -3,540 +3,823 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA SEGIP TITAN V20 - MAYCOL AVILA</title>
+    <title>SISTEMA SEGIP TITAN V21 - PRO</title>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- ARQUITECTURA DE DISEÑO PREMIUM --- */
+        /* ==========================================================================
+           ESTILOS MAESTROS (ARQUITECTURA VISUAL V21)
+           ========================================================================== 
+        */
         :root {
-            --p: #0f172a; --s: #2563eb; --ac: #38bdf8; --su: #10b981; 
-            --wa: #f59e0b; --er: #e11d48; --bg: #f8fafc; --c: #ffffff; 
-            --t: #1e293b; --tm: #64748b; --br: 28px;
-            --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --primary: #0f172a;        /* Azul Oxford Deep */
+            --accent: #2563eb;         /* Azul Real */
+            --cyan: #06b6d4;           /* Cyan Pro */
+            --success: #10b981;        /* Esmeralda */
+            --warning: #f59e0b;        /* Ámbar */
+            --danger: #e11d48;         /* Rosa Intenso */
+            --bg-body: #f1f5f9;        /* Gris Nube */
+            --card-bg: #ffffff;        /* Blanco Puro */
+            --text-main: #1e293b;      /* Slate 800 */
+            --text-muted: #64748b;     /* Slate 500 */
+            --radius-xl: 32px;
+            --radius-lg: 20px;
+            --shadow-soft: 0 10px 40px rgba(0,0,0,0.04);
+            --glass: rgba(255, 255, 255, 0.7);
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color:transparent; }
-        body { background: var(--bg); color: var(--t); padding-bottom: 120px; overflow-x: hidden; }
+        /* RESET & BASE */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            scrollbar-width: none; /* Firefox */
+        }
+        *::-webkit-scrollbar { display: none; } /* Chrome/Safari */
 
-        /* HEADER CON DISEÑO DE CRISTAL */
+        body { 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.6;
+            padding-bottom: 110px; /* Espacio para el Nav */
+        }
+
+        /* HEADER & PERFIL 
+        */
         header { 
-            background: var(--p); color: white; padding: 60px 24px 80px; 
-            border-radius: 0 0 50px 50px; position: relative; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-        .header-content { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
-        .user-badge { display: flex; align-items: center; gap: 15px; }
-        .avatar { 
-            width: 55px; height: 55px; background: linear-gradient(135deg, var(--s), var(--ac)); 
-            border-radius: 20px; display: flex; align-items: center; justify-content: center; 
-            font-weight: 800; font-size: 22px; border: 2px solid rgba(255,255,255,0.2);
+            background: linear-gradient(160deg, var(--primary) 0%, #1e293b 100%);
+            color: white; 
+            padding: 70px 25px 90px; 
+            border-radius: 0 0 45px 45px; 
+            position: relative;
+            box-shadow: 0 15px 50px rgba(15, 23, 42, 0.3);
+            overflow: hidden;
         }
 
-        .container { max-width: 550px; margin: -50px auto 0; padding: 0 20px; position: relative; z-index: 10; }
+        header::after {
+            content: ''; position: absolute; top: -50px; right: -50px;
+            width: 200px; height: 200px; background: var(--accent);
+            filter: blur(80px); opacity: 0.2;
+        }
 
-        /* TARJETAS Y CONTENEDORES */
+        .header-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 10; }
+        
+        .profile-section { display: flex; align-items: center; gap: 18px; }
+        
+        .profile-avatar { 
+            width: 60px; height: 60px; 
+            background: linear-gradient(135deg, var(--accent), var(--cyan)); 
+            border-radius: 22px; display: flex; align-items: center; 
+            justify-content: center; font-weight: 800; font-size: 24px;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+            border: 2px solid rgba(255,255,255,0.15);
+        }
+
+        .profile-info h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+        .profile-info p { font-size: 11px; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 1px; }
+
+        .header-stats {
+            display: flex; gap: 15px; margin-top: 35px; overflow-x: auto;
+            padding-bottom: 10px; position: relative; z-index: 10;
+        }
+
+        .h-stat-card {
+            background: rgba(255,255,255,0.08); backdrop-filter: blur(10px);
+            padding: 15px 22px; border-radius: 20px; min-width: 140px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .h-stat-card span { display: block; font-size: 10px; font-weight: 700; opacity: 0.6; text-transform: uppercase; }
+        .h-stat-card b { font-size: 18px; font-family: 'JetBrains Mono', monospace; }
+
+        /* CONTENEDOR PRINCIPAL 
+        */
+        .main-wrapper { 
+            max-width: 500px; 
+            margin: -45px auto 0; 
+            padding: 0 20px; 
+            position: relative; 
+            z-index: 20; 
+        }
+
         .card { 
-            background: var(--c); border-radius: var(--br); padding: 25px; 
-            margin-bottom: 22px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02);
+            background: var(--card-bg); 
+            border-radius: var(--radius-lg); 
+            padding: 24px; 
+            margin-bottom: 20px; 
+            box-shadow: var(--shadow-soft); 
+            border: 1px solid rgba(255,255,255,0.8);
+            animation: slideUp 0.5s ease backwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* COMPONENTES DE UI 
+        */
+        .section-header { 
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+        }
+
+        .section-title { 
+            font-size: 12px; font-weight: 800; color: var(--text-muted); 
+            text-transform: uppercase; letter-spacing: 1.5px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .section-title::before { content: ''; width: 4px; height: 16px; background: var(--accent); border-radius: 10px; }
+
+        .action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+        .btn {
+            border: none; border-radius: 18px; padding: 18px 12px;
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 8px; position: relative; overflow: hidden;
+        }
+
+        .btn:active { transform: scale(0.96); }
+
+        .btn-blue { background: #eff6ff; color: var(--accent); }
+        .btn-blue:hover { background: var(--accent); color: white; }
+
+        .btn-cyan { background: #ecfeff; color: #0891b2; }
+        .btn-cyan:hover { background: #0891b2; color: white; }
+
+        .btn-danger-action { background: #fff1f2; color: var(--danger); border: 1px solid #fecaca; }
+
+        .btn-main { background: var(--accent); color: white; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2); }
+
+        /* FORMULARIOS */
+        .input-group { margin-bottom: 18px; }
+        .input-label { display: block; font-size: 11px; font-weight: 800; color: var(--text-main); margin-bottom: 8px; margin-left: 4px; }
+        .input-field {
+            width: 100%; padding: 16px 20px; border-radius: 16px; 
+            border: 2px solid #eef2f6; background: #f8fafc;
+            font-size: 15px; font-weight: 600; color: var(--text-main);
+            transition: all 0.3s; outline: none;
+        }
+        .input-field:focus { border-color: var(--accent); background: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+
+        /* LISTA DE LOGS */
+        .log-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px; border-radius: 18px; margin-bottom: 10px;
+            background: #f8fafc; border: 1px solid transparent;
+            transition: 0.2s; cursor: pointer;
+        }
+        .log-item:hover { border-color: var(--accent); background: white; transform: translateX(5px); }
+        
+        .log-icon { 
+            width: 44px; height: 44px; border-radius: 14px; 
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+
+        .log-info { flex: 1; margin-left: 15px; }
+        .log-info h4 { font-size: 14px; font-weight: 700; color: var(--text-main); }
+        .log-info p { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+
+        .log-amount { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 14px; }
+
+        /* NAVEGACIÓN DOCK */
+        nav.dock {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px);
+            padding: 12px 15px 35px; border-radius: 30px 30px 0 0;
+            display: flex; justify-content: space-around; z-index: 1000;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-btn {
+            background: none; border: none; color: #94a3b8;
+            font-size: 10px; font-weight: 800; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
             transition: 0.3s;
         }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+        .nav-btn i { font-size: 22px; font-style: normal; }
+        .nav-btn.active { color: white; transform: translateY(-5px); }
 
-        .section-tag { 
-            font-size: 11px; font-weight: 800; color: var(--tm); text-transform: uppercase; 
-            letter-spacing: 1.5px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; 
+        /* TOAST NOTIFICATION */
+        #toast {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: var(--primary); color: white; padding: 16px 30px;
+            border-radius: 50px; font-weight: 700; font-size: 13px;
+            z-index: 9999; transition: 0.5s cubic-bezier(0.68, -0.55, 0.26, 1.55);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex; align-items: center; gap: 12px;
         }
-        .section-tag::before { content: ''; width: 4px; height: 16px; background: var(--s); border-radius: 10px; }
-
-        /* BOTONES DE ACCIÓN SENIOR */
-        .grid-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .btn-op { 
-            border: none; border-radius: 22px; font-weight: 700; font-size: 14px; 
-            padding: 22px 15px; cursor: pointer; transition: all 0.3s;
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
-            position: relative; overflow: hidden;
-        }
-        .btn-blue { background: var(--s); color: white; }
-        .btn-cyan { background: var(--ac); color: white; }
-        .btn-danger { background: linear-gradient(135deg, #be123c, #fb7185); color: white; grid-column: span 2; }
-        
-        .btn-op:active { transform: scale(0.95); filter: brightness(0.9); }
-        .btn-op i { font-size: 24px; font-style: normal; }
-
-        /* FORMULARIOS Y INPUTS */
-        .f-group { margin-bottom: 20px; }
-        .f-label { display: block; font-size: 12px; font-weight: 700; color: var(--p); margin-bottom: 8px; margin-left: 5px; }
-        .f-input { 
-            width: 100%; padding: 18px 22px; border-radius: 20px; border: 2px solid #f1f5f9;
-            background: #f8fafc; font-size: 16px; font-weight: 600; outline: none; transition: 0.3s;
-        }
-        .f-input:focus { border-color: var(--s); background: white; box-shadow: 0 10px 20px rgba(37,99,235,0.05); }
-
-        /* HISTORIAL Y LISTAS */
-        .log-row { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 18px 0; border-bottom: 1px solid #f1f5f9; cursor: pointer;
-        }
-        .log-row:last-child { border: none; }
-        .log-meta b { font-size: 15px; color: var(--p); display: block; }
-        .log-meta span { font-size: 11px; color: var(--tm); font-weight: 600; }
-        .log-price { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px; }
-
-        /* NAVEGACIÓN INFERIOR */
-        nav { 
-            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--p);
-            display: flex; padding: 15px 10px 35px; border-radius: 35px 35px 0 0; z-index: 1000;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
-        }
-        .nav-link { 
-            flex: 1; text-align: center; color: #64748b; font-size: 10px; font-weight: 800;
-            text-decoration: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px;
-        }
-        .nav-link.active { color: white; }
-        .nav-link i { font-size: 22px; font-style: normal; }
+        #toast.show { transform: translateX(-50%) translateY(0); }
 
         /* MODALES */
-        .modal-blur { 
-            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); 
-            backdrop-filter: blur(10px); display: none; align-items: center; 
-            justify-content: center; padding: 25px; z-index: 2000; 
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px); display: none; align-items: center;
+            justify-content: center; padding: 20px; z-index: 5000;
         }
-        .modal-body { background: white; width: 100%; max-width: 450px; border-radius: 40px; padding: 35px; position: relative; }
-
-        /* TOAST NOTIFICACIÓN */
-        #toast { 
-            position: fixed; top: 30px; left: 50%; transform: translateX(-50%); 
-            background: var(--p); color: white; padding: 18px 35px; border-radius: 50px;
-            font-weight: 700; font-size: 14px; display: none; z-index: 5000;
-            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        .modal-content {
+            background: white; width: 100%; max-width: 400px;
+            border-radius: 35px; padding: 30px; position: relative;
+            animation: modalPop 0.3s ease;
         }
+        @keyframes modalPop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* GRÁFICOS */
-        .chart-container { height: 250px; margin-top: 15px; }
-
-        .view { display: none; animation: pageIn 0.4s ease; }
+        /* VISTAS */
+        .view { display: none; }
         .view.active { display: block; }
-        @keyframes pageIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        /* RECIBO OCULTO */
-        #printable-receipt { width: 350px; padding: 50px 30px; background: white; color: black; display: none; font-family: 'JetBrains Mono', monospace; }
+        /* ESTILO PARA PDF */
+        #pdf-template {
+            width: 380px; padding: 40px; background: white; color: black;
+            display: none; font-family: 'JetBrains Mono', monospace;
+        }
+
     </style>
 </head>
 <body>
 
-    <div id="toast">MENSAJE DEL SISTEMA</div>
+    <div id="toast">
+        <div id="toast-icon">🚀</div>
+        <div id="toast-msg">SISTEMA INICIADO</div>
+    </div>
 
     <header>
-        <div class="header-content">
-            <div class="user-badge">
-                <div class="avatar">MA</div>
-                <div>
-                    <h2 style="font-size: 22px; letter-spacing: -0.8px;">Maycol Avila</h2>
-                    <p style="font-size: 11px; opacity: 0.6; font-weight: 700; text-transform: uppercase;">Administrador Senior</p>
+        <div class="header-top">
+            <div class="profile-section">
+                <div class="profile-avatar">MA</div>
+                <div class="profile-info">
+                    <h1>Maycol Avila</h1>
+                    <p>Admin / Dev Senior</p>
                 </div>
             </div>
-            <div id="live-clock" style="font-family: 'JetBrains Mono'; font-size: 12px; font-weight: 700; opacity: 0.8;">00:00:00</div>
+            <div id="digital-clock" style="font-family:'JetBrains Mono'; font-weight:700; font-size:13px; color:var(--cyan)">00:00:00</div>
+        </div>
+
+        <div class="header-stats">
+            <div class="h-stat-card">
+                <span>Saldo en Caja</span>
+                <b id="stat-caja">0 Bs</b>
+            </div>
+            <div class="h-stat-card">
+                <span>Meta Internet</span>
+                <b id="stat-porc">0%</b>
+            </div>
+            <div class="h-stat-card">
+                <span>Día</span>
+                <b id="stat-fecha">...</b>
+            </div>
         </div>
     </header>
 
-    <div class="container">
+    <div class="main-wrapper">
         
-        <div id="v-cobros" class="view active">
-            <div class="card" style="margin-top: 10px; border-left: 6px solid var(--er);">
-                <button class="btn-op btn-danger" onclick="app.registrar('Pago Civil', 36, 'Servicio Civil')">
-                    <i>⚖️</i>
-                    <span>REGISTRAR PAGO CIVIL (36 BS)</span>
+        <div id="view-cobros" class="view active">
+            
+            <div class="card" style="border-left: 5px solid var(--danger);">
+                <div class="section-header">
+                    <div class="section-title">Trámite Civil</div>
+                    <span style="font-size: 10px; font-weight: 800; background: #fff1f2; color: var(--danger); padding: 4px 8px; border-radius: 8px;">OFICIAL</span>
+                </div>
+                <button class="btn btn-main" style="width: 100%; background: var(--danger); font-size: 14px;" onclick="app.action('Pago Civil', 36, 'Trámite Civil')">
+                    <i>⚖️</i> REGISTRAR PAGO CIVIL (36 Bs)
                 </button>
             </div>
 
             <div class="card">
-                <div class="section-tag">Aportes Semanales Internet</div>
-                <div class="grid-actions">
-                    <button class="btn-op btn-blue" onclick="app.registrar('Ximena', 10, 'Internet')"><i>👤</i>XIMENA</button>
-                    <button class="btn-op btn-blue" onclick="app.registrar('Maycol', 10, 'Internet')"><i>⚡</i>MAYCOL</button>
-                    <button class="btn-op btn-blue" onclick="app.registrar('Samuel', 10, 'Internet')"><i>🔥</i>SAMUEL</button>
-                    <button class="btn-op btn-blue" onclick="app.registrar('Nilsa', 10, 'Internet', true)"><i>👮</i><span id="label-nilsa">NILSA</span></button>
+                <div class="section-header">
+                    <div class="section-title">Aportes Internet</div>
+                    <span id="label-nilsa" style="font-size: 9px; font-weight: 800; color: var(--accent);">NILSA ACTIVA</span>
+                </div>
+                <div class="action-grid">
+                    <button class="btn btn-blue" onclick="app.action('Ximena', 10, 'Internet')"><i>👤</i> XIMENA</button>
+                    <button class="btn btn-blue" onclick="app.action('Maycol', 10, 'Internet')"><i>⚡</i> MAYCOL</button>
+                    <button class="btn btn-blue" onclick="app.action('Samuel', 10, 'Internet')"><i>🔥</i> SAMUEL</button>
+                    <button class="btn btn-blue" onclick="app.action('Nilsa', 10, 'Internet', true)"><i>👮</i> <span class="nilsa-txt">NILSA</span></button>
                 </div>
             </div>
 
             <div class="card">
-                <div class="section-tag">Módulo de Agua Inteligente</div>
-                <div id="agua-info" style="padding: 15px; background: #eff6ff; border-radius: 20px; margin-bottom: 15px; color: var(--s); font-weight: 800; font-size: 13px; text-align: center;">
-                    Siguiente: Cargando...
+                <div class="section-header">
+                    <div class="section-title">Servicios: Agua</div>
                 </div>
-                <div class="grid-actions">
-                    <button class="btn-op btn-cyan" onclick="app.registrar('Nilsa / Maycol', 36, 'Agua')">NILSA / MAYCOL</button>
-                    <button class="btn-op btn-cyan" onclick="app.registrar('Samuel / Ximena', 36, 'Agua')">SAMUEL / XIMENA</button>
+                <div id="turno-agua-box" style="padding: 12px; background: #f0fdf4; border-radius: 15px; margin-bottom: 15px; text-align: center; border: 1px dashed #22c55e;">
+                    <span style="font-size: 10px; font-weight: 800; color: #166534; text-transform: uppercase;">Próximo Turno sugerido</span>
+                    <h3 id="txt-sugerido-agua" style="font-size: 14px; color: #166534;">Cargando...</h3>
+                </div>
+                <div class="action-grid">
+                    <button class="btn btn-cyan" onclick="app.action('Nilsa / Maycol', 36, 'Agua')">NILSA / MAYCOL</button>
+                    <button class="btn btn-cyan" onclick="app.action('Samuel / Ximena', 36, 'Agua')">SAMUEL / XIMENA</button>
                 </div>
             </div>
+
         </div>
 
-        <div id="v-historial" class="view">
-            <div class="card">
-                <div class="section-tag">Insertar Registro Retroactivo</div>
-                <div class="f-group">
-                    <label class="f-label">Persona / Concepto</label>
-                    <input type="text" id="h-nom" class="f-input" placeholder="Nombre completo">
-                </div>
-                <div class="f-group" style="display: flex; gap: 10px;">
-                    <div style="flex: 1;">
-                        <label class="f-label">Monto (Bs)</label>
-                        <input type="number" id="h-mon" class="f-input" placeholder="0.00">
-                    </div>
-                    <div style="flex: 1;">
-                        <label class="f-label">Fecha Real</label>
-                        <input type="date" id="h-fec" class="f-input">
-                    </div>
-                </div>
-                <button class="btn-op btn-blue" style="width: 100%; flex-direction: row; gap: 12px;" onclick="app.insertarManual()">
-                    <i>💾</i> GUARDAR EN HISTORIAL ANTERIOR
-                </button>
-            </div>
-
-            <div class="card">
-                <div class="section-tag">Historial de Transacciones</div>
-                <div id="main-log-list"></div>
-                <button class="btn-op" style="background: var(--p); color: white; width: 100%; margin-top: 25px;" onclick="app.cierreCaja()">
-                    <i>🏦</i> LIQUIDAR CAJA (REINICIAR)
-                </button>
-            </div>
-        </div>
-
-        <div id="v-reportes" class="view">
-            <div class="card" style="background: linear-gradient(135deg, var(--p), #1e293b); color: white;">
-                <p style="font-size: 11px; opacity: 0.6; text-transform: uppercase;">Efectivo Total Acumulado</p>
-                <h1 style="font-size: 42px; margin: 10px 0;" id="box-total-val">0 Bs</h1>
-                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
-                    <span>PROGRESO INTERNET (179 BS)</span>
-                    <span id="progreso-txt">0%</span>
-                </div>
-                <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 10px; overflow: hidden;">
-                    <div id="progreso-bar" style="width: 0%; height: 100%; background: var(--su); transition: 1s;"></div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="section-tag">Distribución de Pagos</div>
-                <div class="chart-container">
-                    <canvas id="myChart"></canvas>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="section-tag">Generar Recibo Oficial</div>
-                <select id="sel-pago-recibo" class="f-input" style="margin-bottom: 15px;"></select>
-                <button class="btn-op btn-blue" style="width: 100%; flex-direction: row;" onclick="app.imprimirPDF()">
-                    <i>📄</i> DESCARGAR RECIBO PDF
-                </button>
-            </div>
-        </div>
-
-        <div id="v-personal" class="view">
-            <div class="card">
-                <div class="section-tag">Gestión de Personal Rotativo</div>
-                <p style="font-size: 13px; color: var(--tm); margin-bottom: 20px;">Cambia el nombre de los oficiales cuando roten para mantener los recibos actualizados.</p>
-                <div class="f-group">
-                    <label class="f-label">Oficial de Turno (Reemplaza a Nilsa)</label>
-                    <input type="text" id="config-nilsa" class="f-input" value="Nilsa">
-                </div>
-                <button class="btn-op btn-blue" style="width: 100%;" onclick="app.actualizarPersonal()">GUARDAR CONFIGURACIÓN</button>
-            </div>
+        <div id="view-historial" class="view">
             
             <div class="card">
-                <div class="section-tag">Info del Desarrollador</div>
-                <div style="text-align: center; padding: 10px;">
-                    <h3 style="font-size: 18px;">Maycol Avila</h3>
-                    <p style="font-size: 12px; color: var(--tm);">Senior System Developer</p>
-                    <div style="margin-top: 15px; font-family: 'JetBrains Mono'; font-size: 10px;">Build: 2026.05.05 - V20.0-PRO</div>
+                <div class="section-title" style="margin-bottom: 15px;">Añadir Manual</div>
+                <div class="input-group">
+                    <label class="input-label">Nombre o Concepto</label>
+                    <select id="man-nombre" class="input-field">
+                        <option value="Ximena">Ximena</option>
+                        <option value="Maycol">Maycol Avila</option>
+                        <option value="Samuel">Samuel</option>
+                        <option value="Nilsa">Nilsa (Oficial)</option>
+                        <option value="Pago Civil">Pago Civil</option>
+                        <option value="Otro">Otro / Varios</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label class="input-label">Monto</label>
+                        <input type="number" id="man-monto" class="input-field" placeholder="0.00">
+                    </div>
+                    <div style="flex: 1;">
+                        <label class="input-label">Fecha</label>
+                        <input type="date" id="man-fecha" class="input-field">
+                    </div>
+                </div>
+                <button class="btn btn-main" style="width: 100%; margin-top: 15px;" onclick="app.insertarManual()">GUARDAR EN HISTORIAL</button>
+            </div>
+
+            <div class="card">
+                <div class="section-header">
+                    <div class="section-title">Transacciones</div>
+                    <span id="log-count" style="font-size: 10px; font-weight: 800; color: var(--text-muted);">0 REGISTROS</span>
+                </div>
+                <div id="log-container">
+                    </div>
+            </div>
+
+        </div>
+
+        <div id="view-caja" class="view">
+            
+            <div class="card" style="background: var(--primary); color: white;">
+                <div class="section-title" style="color: rgba(255,255,255,0.5);">Balance General</div>
+                <h1 style="font-size: 48px; font-family: 'JetBrains Mono'; margin: 10px 0;" id="box-total">0.00 Bs</h1>
+                
+                <div style="margin-top: 25px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; margin-bottom: 8px;">
+                        <span>RECOLECTADO PARA INTERNET</span>
+                        <span id="progress-val">0%</span>
+                    </div>
+                    <div style="height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden;">
+                        <div id="progress-bar" style="width: 0%; height: 100%; background: var(--success); box-shadow: 0 0 15px var(--success); transition: 1s ease;"></div>
+                    </div>
+                    <p style="font-size: 10px; margin-top: 10px; opacity: 0.6;">* El saldo sobrante se acumula para el siguiente periodo.</p>
                 </div>
             </div>
+
+            <div class="card">
+                <div class="section-title" style="margin-bottom: 20px;">Acciones de Cierre</div>
+                <button class="btn btn-main" style="width: 100%; flex-direction: row; gap: 15px; padding: 22px; background: var(--success);" onclick="app.pagarInternet()">
+                    <i>🌐</i> PAGAR MENSUALIDAD INTERNET (179 Bs)
+                </button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                    <button class="btn btn-blue" style="background: #f1f5f9; color: #475569;" onclick="app.downloadBackup()"><i>💾</i> BACKUP</button>
+                    <button class="btn btn-blue" style="background: #f1f5f9; color: #475569;" onclick="app.imprimirPDF()"><i>📄</i> RECIBO PDF</button>
+                </div>
+            </div>
+
+            <div class="card" style="height: 320px;">
+                <div class="section-title">Análisis de Aportes</div>
+                <canvas id="cajaChart"></canvas>
+            </div>
+
+        </div>
+
+        <div id="view-perfil" class="view">
+            
+            <div class="card">
+                <div class="section-title">Ajustes del Sistema</div>
+                <div class="input-group" style="margin-top: 20px;">
+                    <label class="input-label">Nombre del Oficial (Nilsa)</label>
+                    <input type="text" id="cfg-nilsa" class="input-field" placeholder="Ej: Nilsa V.">
+                </div>
+                <button class="btn btn-main" style="width: 100%;" onclick="app.saveConfig()">GUARDAR PREFERENCIAS</button>
+            </div>
+
+            <div class="card" style="border: 2px solid #fee2e2;">
+                <div class="section-title" style="color: var(--danger);">Administración Crítica</div>
+                <p style="font-size: 12px; margin: 15px 0; color: var(--text-muted);">
+                    Si el sistema presenta errores o deseas iniciar un nuevo año contable, puedes restablecer la base de datos local.
+                </p>
+                <button class="btn btn-danger-action" style="width: 100%;" onclick="app.wipeDB()">
+                    <i>⚠️</i> BORRAR TODA LA BASE DE DATOS
+                </button>
+            </div>
+
+            <div style="text-align: center; padding: 20px;">
+                <p style="font-size: 10px; font-weight: 800; color: var(--text-muted); opacity: 0.5;">
+                    SISTEMA SEGIP TITAN V21.0.4 PRO<br>
+                    MAYCOL AVILA • 2026
+                </p>
+            </div>
+
         </div>
 
     </div>
 
-    <nav>
-        <div class="nav-link active" onclick="app.nav('v-cobros', this)"><i>💰</i>PAGOS</div>
-        <div class="nav-link" onclick="app.nav('v-historial', this)"><i>📜</i>HISTORIAL</div>
-        <div class="nav-link" onclick="app.nav('v-reportes', this)"><i>📊</i>REPORTES</div>
-        <div class="nav-link" onclick="app.nav('v-personal', this)"><i>👤</i>PERSONAL</div>
+    <nav class="dock">
+        <button class="nav-btn active" onclick="app.nav('view-cobros', this)"><i>💰</i>PAGOS</button>
+        <button class="nav-btn" onclick="app.nav('view-historial', this)"><i>📜</i>LOGS</button>
+        <button class="nav-btn" onclick="app.nav('view-caja', this)"><i>📊</i>CAJA</button>
+        <button class="nav-btn" onclick="app.nav('view-perfil', this)"><i>👤</i>PERFIL</button>
     </nav>
 
-    <div id="mod-edit" class="modal-blur">
-        <div class="modal-body">
-            <div class="section-tag">Editar Transacción</div>
+    <div id="modal-edit" class="modal-overlay">
+        <div class="modal-content">
+            <div class="section-title">Editar Transacción</div>
             <input type="hidden" id="edit-id">
-            <div class="f-group"><label class="f-label">NOMBRE</label><input type="text" id="edit-n" class="f-input"></div>
-            <div class="f-group"><label class="f-label">MONTO (BS)</label><input type="number" id="edit-a" class="f-input"></div>
-            <div class="f-group"><label class="f-label">FECHA</label><input type="date" id="edit-d" class="f-input"></div>
-            <div style="display: flex; gap: 15px;">
-                <button class="btn-op btn-blue" style="flex: 2" onclick="app.saveEdit()">GUARDAR</button>
-                <button class="btn-op" style="flex: 1; background: #eee" onclick="app.closeEdit()">SALIR</button>
+            
+            <div class="input-group" style="margin-top: 20px;">
+                <label class="input-label">Nombre</label>
+                <input type="text" id="edit-n" class="input-field">
             </div>
-            <button class="btn-op" style="width: 100%; background: #fff1f2; color: var(--er); margin-top: 15px; border: 1px solid #fecaca;" onclick="app.eliminarRegistro()">ELIMINAR REGISTRO</button>
+            <div class="input-group">
+                <label class="input-label">Monto (Bs)</label>
+                <input type="number" id="edit-a" class="input-field">
+            </div>
+            <div class="input-group">
+                <label class="input-label">Fecha</label>
+                <input type="date" id="edit-d" class="input-field">
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 25px;">
+                <button class="btn btn-main" style="flex: 2;" onclick="app.saveEdit()">GUARDAR</button>
+                <button class="btn" style="flex: 1; background: #eee;" onclick="app.closeEdit()">SALIR</button>
+            </div>
+            <button class="btn btn-danger-action" style="width: 100%; margin-top: 10px; border: none;" onclick="app.deleteEntry()">ELIMINAR REGISTRO</button>
         </div>
     </div>
 
-    <div id="printable-receipt">
-        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 25px; margin-bottom: 25px;">
-            <h1 style="font-size: 26px; margin: 0;">RECIBO DE CAJA</h1>
-            <p style="font-size: 12px; margin-top: 5px;">SISTEMA SEGIP - MAYCOL AVILA ADMIN</p>
+    <div id="pdf-template">
+        <div style="text-align: center; border-bottom: 3px solid #000; padding-bottom: 20px; margin-bottom: 20px;">
+            <h2 style="margin: 0;">COMPROBANTE DE CAJA</h2>
+            <p style="font-size: 12px;">SISTEMA TITAN V21 - ADMIN: MAYCOL AVILA</p>
         </div>
-        <div style="font-size: 15px; line-height: 2.2;">
-            FECHA DE PAGO: <span id="pdf-date"></span><br>
-            NOMBRE CLIENTE: <span id="pdf-name"></span><br>
-            CONCEPTO: <span id="pdf-desc"></span><br>
-            ID TRANSACCIÓN: <span id="pdf-id"></span><br><br>
-            <div style="font-size: 24px; border: 3px solid #000; padding: 15px; text-align: center; font-weight: bold;">
-                TOTAL PAGADO: <span id="pdf-amount"></span> BS
-            </div>
+        <table style="width: 100%; font-size: 14px; border-collapse: collapse;">
+            <tr><td style="padding: 10px 0;"><b>FECHA:</b></td><td id="pdf-f"></td></tr>
+            <tr><td style="padding: 10px 0;"><b>NOMBRE:</b></td><td id="pdf-n"></td></tr>
+            <tr><td style="padding: 10px 0;"><b>DETALLE:</b></td><td id="pdf-t"></td></tr>
+            <tr><td style="padding: 10px 0;"><b>ID REF:</b></td><td id="pdf-i" style="font-size: 10px;"></td></tr>
+        </table>
+        <div style="margin-top: 30px; border: 2px solid #000; padding: 20px; text-align: center;">
+            <span style="font-size: 12px;">MONTO CANCELADO</span><br>
+            <b style="font-size: 32px;" id="pdf-a">0.00 Bs</b>
         </div>
-        <div style="margin-top: 50px; text-align: center; font-size: 11px;">
-            <p>Este documento certifica la recepción del monto indicado.</p>
-            <p style="margin-top: 10px; font-weight: bold;">ESTADO: CANCELADO</p>
+        <div style="margin-top: 50px; text-align: center; font-size: 10px; opacity: 0.5;">
+            Documento firmado digitalmente. Validez para control interno.
         </div>
     </div>
 
     <script>
         /**
-         * SEGIP MANAGEMENT SYSTEM V20 - ARCHITEC: MAYCOL AVILA
-         * Logic: 1000+ lines implementation
+         * SEGIP TITAN V21 - LÓGICA MAESTRA
+         * Desarrollado por Maycol Avila
          */
+
         const app = {
-            db: JSON.parse(localStorage.getItem('segip_v20_db')) || [],
-            conf: JSON.parse(localStorage.getItem('segip_v20_conf')) || { nilsa: 'Nilsa' },
+            // BASE DE DATOS LOCAL
+            db: JSON.parse(localStorage.getItem('segip_v21_db')) || [],
+            config: JSON.parse(localStorage.getItem('segip_v21_cfg')) || { nilsa: 'Nilsa' },
             chart: null,
 
+            // INICIALIZACIÓN
             init() {
                 this.updateClock();
                 setInterval(() => this.updateClock(), 1000);
-                document.getElementById('h-fec').valueAsDate = new Date();
-                document.getElementById('config-nilsa').value = this.conf.nilsa;
-                document.getElementById('label-nilsa').innerText = this.conf.nilsa.toUpperCase();
-                this.render();
+                
+                // Setear fecha actual en inputs
+                document.getElementById('man-fecha').valueAsDate = new Date();
+                
+                // Cargar config
+                document.getElementById('cfg-nilsa').value = this.config.nilsa;
+                
+                this.refreshUI();
+                this.showToast("⚡ SISTEMA V21 LISTO", "🚀");
             },
 
+            // RELOJ DIGITAL
             updateClock() {
                 const now = new Date();
-                document.getElementById('live-clock').innerText = now.toLocaleTimeString();
+                document.getElementById('digital-clock').innerText = now.toLocaleTimeString();
+                document.getElementById('stat-fecha').innerText = now.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric' });
             },
 
-            nav(id, el) {
+            // NAVEGACIÓN ENTRE VISTAS
+            nav(viewId, btn) {
                 document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                el.classList.add('active');
-                if(id === 'v-reportes') this.renderChart();
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                
+                document.getElementById(viewId).classList.add('active');
+                btn.classList.add('active');
+                
+                if(viewId === 'view-caja') this.renderChart();
+                window.scrollTo(0,0);
             },
 
-                // REGISTRO DE DATOS BLINDADO
-            registrar(nombre, monto, tipo, esNilsa = false) {
-                let finalName = nombre;
-                if(esNilsa) finalName = this.conf.nilsa;
+            // NOTIFICACIONES
+            showToast(msg, icon = "✅") {
+                const t = document.getElementById('toast');
+                document.getElementById('toast-msg').innerText = msg;
+                document.getElementById('toast-icon').innerText = icon;
+                t.classList.add('show');
+                setTimeout(() => t.classList.remove('show'), 3000);
+            },
 
+            // REGISTRO DE ACCIONES RÁPIDAS
+            action(nombre, monto, tipo, esNilsa = false) {
+                const finalName = esNilsa ? this.config.nilsa : nombre;
+                
                 const entry = {
-                    id: Math.floor(Math.random() * 1000000),
+                    id: 'TX-' + Date.now(),
                     n: finalName,
                     a: parseFloat(monto),
-                    d: new Date().toISOString().split('T')[0],
                     t: tipo,
+                    d: new Date().toISOString().split('T')[0],
                     ts: Date.now()
                 };
 
                 this.db.push(entry);
                 this.sync();
-                this.toast(`PAGO REGISTRADO: ${finalName}`);
+                this.showToast(`${finalName}: +${monto} Bs`);
             },
 
+            // INSERTAR MANUAL (LOGS)
             insertarManual() {
-                const n = document.getElementById('h-nom').value;
-                const a = parseFloat(document.getElementById('h-mon').value);
-                const d = document.getElementById('h-fec').value;
+                const n = document.getElementById('man-nombre').value;
+                const a = parseFloat(document.getElementById('man-monto').value);
+                const d = document.getElementById('man-fecha').value;
 
-                if(!n || !a || !d) return this.toast("ERROR: DATOS INCOMPLETOS");
+                if(!n || isNaN(a) || a === 0 || !d) {
+                    return this.showToast("⚠️ DATOS INCOMPLETOS", "❌");
+                }
 
                 this.db.push({
-                    id: Math.floor(Math.random() * 1000000),
-                    n: n, a: a, d: d, t: 'Pago Anterior', ts: new Date(d).getTime()
+                    id: 'MAN-' + Date.now(),
+                    n: n, a: a, d: d, t: 'Manual', ts: new Date(d).getTime()
                 });
 
-                document.getElementById('h-nom').value = '';
-                document.getElementById('h-mon').value = '';
                 this.sync();
-                this.toast("HISTORIAL ACTUALIZADO");
+                document.getElementById('man-monto').value = '';
+                this.showToast("REGISTRO GUARDADO");
             },
 
-            actualizarPersonal() {
-                this.conf.nilsa = document.getElementById('config-nilsa').value;
-                localStorage.setItem('segip_v20_conf', JSON.stringify(this.conf));
-                document.getElementById('label-nilsa').innerText = this.conf.nilsa.toUpperCase();
-                this.toast("PERSONAL ROTADO CON ÉXITO");
-                this.render();
-            },
+            // LÓGICA DE PAGO INTERNET
+            pagarInternet() {
+                const totalActual = this.db.reduce((acc, i) => acc + i.a, 0);
+                
+                if(totalActual < 179) {
+                    return this.showToast("SALDO INSUFICIENTE (179 Bs Requeridos)", "❌");
+                }
 
-            sync() {
-                localStorage.setItem('segip_v20_db', JSON.stringify(this.db));
-                this.render();
-            },
-
-            render() {
-                const list = document.getElementById('main-log-list');
-                const box = document.getElementById('box-total-val');
-                const pBar = document.getElementById('progreso-bar');
-                const pTxt = document.getElementById('progreso-txt');
-                const sel = document.getElementById('sel-pago-recibo');
-                const agua = document.getElementById('agua-info');
-
-                let total = 0;
-                list.innerHTML = '';
-                sel.innerHTML = '<option value="">Seleccionar pago...</option>';
-
-                // Ordenación Senior: Por fecha real, luego por timestamp de creación
-                const dataSorted = [...this.db].sort((a, b) => {
-                    if(b.d !== a.d) return new Date(b.d) - new Date(a.d);
-                    return b.ts - a.ts;
-                });
-
-                dataSorted.forEach(item => {
-                    total += item.a;
-                    list.innerHTML += `
-                        <div class="log-row" onclick="app.openEdit(${item.id})">
-                            <div class="log-meta">
-                                <b>${item.n}</b>
-                                <span>${item.d} • ${item.t}</span>
-                            </div>
-                            <div class="log-price" style="color:${item.t.includes('Agua') ? 'var(--ac)' : 'var(--s)'}">
-                                ${item.a} Bs
-                            </div>
-                        </div>`;
-                    
-                    sel.innerHTML += `<option value="${item.id}">${item.d} - ${item.n} (${item.a}Bs)</option>`;
-                });
-
-                // UI Stats
-                box.innerText = total + " Bs";
-                const perc = Math.min((total / 179) * 100, 100).toFixed(0);
-                pBar.style.width = perc + "%";
-                pTxt.innerText = perc + "%";
-
-                // Lógica de Agua
-                const ultAgua = [...this.db].reverse().find(x => x.t === 'Agua');
-                if(ultAgua && (ultAgua.n.toLowerCase().includes('nilsa') || ultAgua.n.toLowerCase().includes(this.conf.nilsa.toLowerCase()))) {
-                    agua.innerHTML = "🔔 TURNO ACTUAL: <br><b>SAMUEL / XIMENA</b>";
-                } else {
-                    agua.innerHTML = "🔔 TURNO ACTUAL: <br><b>NILSA / MAYCOL</b>";
+                if(confirm(`¿Confirmas el pago de 179 Bs para el servicio de Internet? El saldo restante (${(totalActual - 179).toFixed(2)} Bs) se mantendrá en caja.`)) {
+                    this.db.push({
+                        id: 'OUT-' + Date.now(),
+                        n: 'SISTEMA: PAGO INTERNET',
+                        a: -179,
+                        t: 'Egreso Servicio',
+                        d: new Date().toISOString().split('T')[0],
+                        ts: Date.now()
+                    });
+                    this.sync();
+                    this.showToast("INTERNET PAGADO", "🌐");
                 }
             },
 
-            // SISTEMA DE EDICIÓN Y AUDITORÍA
-            openEdit(id) {
+            // SINCRONIZACIÓN Y PERSISTENCIA
+            sync() {
+                localStorage.setItem('segip_v21_db', JSON.stringify(this.db));
+                this.refreshUI();
+            },
+
+            // REFRESCAR TODA LA INTERFAZ
+            refreshUI() {
+                const total = this.db.reduce((acc, i) => acc + i.a, 0);
+                
+                // Actualizar Stats Header
+                document.getElementById('stat-caja').innerText = total.toFixed(2) + " Bs";
+                document.getElementById('box-total').innerText = total.toFixed(2) + " Bs";
+                
+                // Actualizar Progreso Internet
+                const porc = Math.min((total / 179) * 100, 100);
+                document.getElementById('stat-porc').innerText = Math.floor(porc) + "%";
+                document.getElementById('progress-val').innerText = Math.floor(porc) + "%";
+                document.getElementById('progress-bar').style.width = porc + "%";
+
+                // Actualizar Nombres Dinámicos
+                const nilsaElements = document.querySelectorAll('.nilsa-txt');
+                nilsaElements.forEach(el => el.innerText = this.config.nilsa.toUpperCase());
+                document.getElementById('label-nilsa').innerText = `${this.config.nilsa.toUpperCase()} ACTIVA`;
+
+                // Renderizar Logs
+                this.renderLogs();
+                
+                // Lógica de sugerencia de Agua
+                const ultAgua = this.db.filter(i => i.t === 'Agua').sort((a,b) => b.ts - a.ts)[0];
+                const sugerido = (!ultAgua || ultAgua.n.includes('Samuel')) ? "NILSA / MAYCOL" : "SAMUEL / XIMENA";
+                document.getElementById('txt-sugerido-agua').innerText = sugerido;
+
+                // Actualizar Selector PDF
+                this.updatePdfSelector();
+            },
+
+            // RENDERIZAR LISTADO DE TRANSACCIONES
+            renderLogs() {
+                const container = document.getElementById('log-container');
+                const counter = document.getElementById('log-count');
+                container.innerHTML = '';
+                
+                const sorted = [...this.db].sort((a,b) => b.ts - a.ts);
+                counter.innerText = `${sorted.length} REGISTROS`;
+
+                sorted.forEach(item => {
+                    const isPos = item.a >= 0;
+                    const html = `
+                        <div class="log-item" onclick="app.editEntry('${item.id}')">
+                            <div class="log-icon" style="background: ${isPos ? '#f0fdf4' : '#fff1f2'}; color: ${isPos ? varSuccess : varDanger}">
+                                ${this.getIcon(item.t)}
+                            </div>
+                            <div class="log-info">
+                                <h4>${item.n}</h4>
+                                <p>${item.d} • ${item.t}</p>
+                            </div>
+                            <div class="log-amount" style="color: ${isPos ? '#10b981' : '#e11d48'}">
+                                ${isPos ? '+' : ''}${item.a} Bs
+                            </div>
+                        </div>
+                    `;
+                    container.innerHTML += html;
+                });
+            },
+
+            getIcon(tipo) {
+                if(tipo.includes('Internet')) return '🌐';
+                if(tipo.includes('Agua')) return '💧';
+                if(tipo.includes('Civil')) return '⚖️';
+                if(tipo.includes('Egreso')) return '📉';
+                return '📝';
+            },
+
+            // SISTEMA DE EDICIÓN
+            editEntry(id) {
                 const item = this.db.find(x => x.id === id);
+                if(!item) return;
+
                 document.getElementById('edit-id').value = item.id;
                 document.getElementById('edit-n').value = item.n;
                 document.getElementById('edit-a').value = item.a;
                 document.getElementById('edit-d').value = item.d;
-                document.getElementById('mod-edit').style.display = 'flex';
+                
+                document.getElementById('modal-edit').style.display = 'flex';
             },
 
+            closeEdit() { document.getElementById('modal-edit').style.display = 'none'; },
+
             saveEdit() {
-                const id = parseInt(document.getElementById('edit-id').value);
+                const id = document.getElementById('edit-id').value;
                 const idx = this.db.findIndex(x => x.id === id);
+                
                 this.db[idx].n = document.getElementById('edit-n').value;
                 this.db[idx].a = parseFloat(document.getElementById('edit-a').value);
                 this.db[idx].d = document.getElementById('edit-d').value;
-                this.closeEdit();
+                this.db[idx].ts = new Date(this.db[idx].d).getTime();
+
                 this.sync();
-                this.toast("REGISTRO EDITADO CORRECTAMENTE");
+                this.closeEdit();
+                this.showToast("CAMBIOS GUARDADOS");
             },
 
-            eliminarRegistro() {
-                if(confirm("¿Deseas eliminar permanentemente este registro?")) {
-                    const id = parseInt(document.getElementById('edit-id').value);
+            deleteEntry() {
+                const id = document.getElementById('edit-id').value;
+                if(confirm("¿Seguro que quieres borrar este registro permanentemente?")) {
                     this.db = this.db.filter(x => x.id !== id);
-                    this.closeEdit();
                     this.sync();
-                    this.toast("REGISTRO ELIMINADO");
+                    this.closeEdit();
+                    this.showToast("REGISTRO ELIMINADO", "🗑️");
                 }
             },
 
-            closeEdit() { document.getElementById('mod-edit').style.display = 'none'; },
-
-            // GENERACIÓN DE REPORTES PDF SENIOR
-            imprimirPDF() {
-                const id = document.getElementById('sel-pago-recibo').value;
-                if(!id) return this.toast("ERROR: ELIJA UN REGISTRO");
-                
-                const item = this.db.find(x => x.id == id);
-                document.getElementById('pdf-date').innerText = item.d;
-                document.getElementById('pdf-name').innerText = item.n.toUpperCase();
-                document.getElementById('pdf-desc').innerText = "APORTE " + item.t.toUpperCase();
-                document.getElementById('pdf-amount').innerText = item.a;
-                document.getElementById('pdf-id').innerText = "TRX-" + item.id;
-
-                const element = document.getElementById('printable-receipt');
-                element.style.display = 'block';
-                
-                const opt = { 
-                    margin: 0.5, 
-                    filename: `Recibo_${item.n}_${item.d}.pdf`,
-                    image: { type: 'jpeg', quality: 1 },
-                    html2canvas: { scale: 3 },
-                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-                };
-
-                html2pdf().from(element).set(opt).save().then(() => {
-                    element.style.display = 'none';
-                    this.toast("RECIBO GENERADO CON ÉXITO");
-                });
+            // CONFIGURACIÓN PERSONAL
+            saveConfig() {
+                this.config.nilsa = document.getElementById('cfg-nilsa').value || 'Nilsa';
+                localStorage.setItem('segip_v21_cfg', JSON.stringify(this.config));
+                this.refreshUI();
+                this.showToast("PERFIL ACTUALIZADO");
             },
 
-            // MÓDULO DE ANALÍTICA (CHART.JS)
+            // ANALÍTICA (CHART.JS)
             renderChart() {
-                const ctx = document.getElementById('myChart').getContext('2d');
+                const ctx = document.getElementById('cajaChart').getContext('2d');
+                
+                // Procesar datos para el gráfico (Suma por persona)
+                const resumen = {};
+                this.db.filter(i => i.a > 0).forEach(i => {
+                    resumen[i.n] = (resumen[i.n] || 0) + i.a;
+                });
+
+                const labels = Object.keys(resumen);
+                const values = Object.values(resumen);
+
                 if(this.chart) this.chart.destroy();
 
-                const counts = {};
-                this.db.forEach(i => counts[i.n] = (counts[i.n] || 0) + i.a);
-
                 this.chart = new Chart(ctx, {
-                    type: 'bar',
+                    type: 'doughnut',
                     data: {
-                        labels: Object.keys(counts),
+                        labels: labels,
                         datasets: [{
-                            label: 'Total Pagado (Bs)',
-                            data: Object.values(counts),
-                            backgroundColor: ['#2563eb', '#38bdf8', '#10b981', '#f59e0b', '#e11d48'],
-                            borderRadius: 10
+                            data: values,
+                            backgroundColor: ['#2563eb', '#06b6d4', '#10b981', '#f59e0b', '#e11d48', '#64748b'],
+                            borderWidth: 0,
+                            hoverOffset: 20
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } }
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { family: 'Plus Jakarta Sans', weight: '700', size: 10 } } }
+                        },
+                        cutout: '70%'
                     }
                 });
             },
 
-            toast(msg) {
-                const t = document.getElementById('toast');
-                t.innerText = msg; t.style.display = 'block';
-                setTimeout(() => t.style.display = 'none', 3000);
+            // EXPORTACIÓN Y BACKUP
+            updatePdfSelector() {
+                const sel = document.getElementById('sel-pago-recibo');
+                sel.innerHTML = '';
+                [...this.db].reverse().forEach(i => {
+                    const opt = document.createElement('option');
+                    opt.value = i.id;
+                    opt.text = `${i.d} - ${i.n} (${i.a} Bs)`;
+                    sel.add(opt);
+                });
             },
 
-            cierreCaja() {
-                if(confirm("¿Estás seguro de liquidar la caja? Se borrará todo el historial para iniciar un nuevo periodo.")) {
+            imprimirPDF() {
+                const id = document.getElementById('sel-pago-recibo').value;
+                if(!id) return this.showToast("NO HAY DATOS", "⚠️");
+                
+                const item = this.db.find(x => x.id === id);
+                
+                document.getElementById('pdf-f').innerText = item.d;
+                document.getElementById('pdf-n').innerText = item.n;
+                document.getElementById('pdf-t').innerText = item.t;
+                document.getElementById('pdf-i').innerText = item.id;
+                document.getElementById('pdf-a').innerText = item.a + " Bs";
+                
+                const element = document.getElementById('pdf-template');
+                element.style.display = 'block';
+                
+                const opt = {
+                    margin: 10,
+                    filename: `Recibo_${item.n}_${item.d}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().from(element).set(opt).save().then(() => {
+                    element.style.display = 'none';
+                });
+            },
+
+            downloadBackup() {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.db));
+                const downloadAnchorNode = document.createElement('a');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", "segip_backup_" + new Date().toISOString().split('T')[0] + ".json");
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+                this.showToast("BACKUP DESCARGADO");
+            },
+
+            wipeDB() {
+                if(confirm("¡ATENCIÓN! Esto borrará todos los registros de caja. ¿Deseas continuar?")) {
+                    localStorage.removeItem('segip_v21_db');
                     this.db = [];
                     this.sync();
-                    this.toast("CAJA LIQUIDADA - NUEVO MES INICIADO");
+                    this.showToast("BASE DE DATOS LIMPIA", "🗑️");
                 }
             }
         };
 
-        // ARRANQUE DEL SISTEMA
+        // CONSTANTES AUXILIARES PARA COLORES (PARA ACCESO RÁPIDO EN RENDER)
+        const varSuccess = '#10b981';
+        const varDanger = '#e11d48';
+
+        // INICIO GLOBAL
         window.onload = () => app.init();
+
     </script>
-</body>
+    
+    </body>
 </html>
