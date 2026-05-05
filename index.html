@@ -3,64 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA SEGIP SAN JORGE - V21 - MAYCOL AVILA</title>
+    <title>SISTEMA DE CONTROL PROFESIONAL - SEGIP SAN JORGE - V25</title>
     
     <style>
-        /* --- ARQUITECTURA DE DISEÑO SISTÉMICO --- */
+        /* --- IMPORTACIÓN DE FUENTES CORPORATIVAS --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap');
+
+        /* --- ARQUITECTURA DE DISEÑO: SISTEMA DE VARIABLES DINÁMICAS --- */
         :root {
-            --segip-navy: #0f172a;
-            --segip-gold: #c2410c;
-            --segip-gold-light: #fbbf24;
-            --segip-blue: #2563eb;
-            --accent: #3b82f6;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --water: #0ea5e9;
-            --internet: #6366f1;
-            --bg-body: #f1f5f9;
-            --card-white: #ffffff;
-            --text-dark: #0f172a;
-            --text-gray: #64748b;
+            --primary-navy: #0f172a;
+            --primary-navy-soft: #1e293b;
+            --accent-gold: #b45309;
+            --accent-gold-light: #fbbf24;
+            --brand-blue: #2563eb;
+            --brand-blue-deep: #1e40af;
+            --brand-red: #e11d48;
+            --brand-red-deep: #9f1239;
+            --brand-water: #0ea5e9;
+            --brand-success: #10b981;
+            --bg-canvas: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
             --radius-max: 28px;
-            --radius-md: 18px;
-            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --shadow-hard: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --transition-fast: all 0.2s ease;
-            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-bold: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass: rgba(255, 255, 255, 0.7);
         }
 
-        /* --- RESET Y NORMALIZACIÓN --- */
+        /* --- RESET DE NAVEGADOR Y CONFIGURACIÓN BASE --- */
         * {
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-family: 'Inter', sans-serif;
         }
+
+        html { scroll-behavior: smooth; }
 
         body {
-            background-color: var(--bg-body);
-            color: var(--text-dark);
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
             line-height: 1.6;
-            padding-bottom: 120px;
+            padding-bottom: 120px; /* Espacio para la navbar inferior */
+            user-select: none;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
         }
 
-        /* --- CONTENEDORES PRINCIPALES --- */
+        /* --- CONTENEDORES Y ESTRUCTURAS --- */
         .app-container {
             max-width: 500px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 24px 16px;
             position: relative;
+            min-height: 100vh;
         }
 
         .view-section {
             display: none;
             opacity: 0;
-            transform: translateY(15px);
-            transition: var(--transition-slow);
+            transform: translateY(30px);
+            transition: var(--transition-smooth);
+            will-change: transform, opacity;
         }
 
         .view-section.active {
@@ -69,228 +81,224 @@
             transform: translateY(0);
         }
 
-        /* --- HEADER CORPORATIVO --- */
-        .brand-header {
-            margin-bottom: 30px;
-            padding: 20px 0;
+        /* --- IDENTIDAD VISUAL (BRANDING) --- */
+        .branding-header {
             text-align: center;
+            margin-bottom: 35px;
+            padding: 20px 0;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--white);
+            box-shadow: var(--shadow-soft);
         }
 
-        .brand-header h1 {
-            font-size: 28px;
+        .branding-header h1 {
+            font-size: 32px;
             font-weight: 900;
-            letter-spacing: -1.5px;
-            color: var(--segip-navy);
+            letter-spacing: -2px;
+            color: var(--primary-navy);
             text-transform: uppercase;
+            line-height: 1;
         }
 
-        .brand-header .badge {
+        .branding-header .badge-oficial {
             display: inline-block;
-            background: var(--segip-gold);
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-light));
             color: white;
-            padding: 4px 12px;
+            padding: 6px 16px;
             border-radius: 50px;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 800;
-            margin-top: 5px;
+            margin-top: 10px;
+            text-transform: uppercase;
             letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(180, 83, 9, 0.3);
         }
 
-        /* --- DASHBOARD WIDGETS --- */
-        .status-grid {
+        /* --- DASHBOARD: ESTADÍSTICAS EN TIEMPO REAL --- */
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
             margin-bottom: 25px;
         }
 
-        .widget {
-            background: var(--card-white);
-            padding: 22px;
-            border-radius: var(--radius-md);
+        .dashboard-widget {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius-lg);
             box-shadow: var(--shadow-soft);
-            border: 1px solid rgba(255,255,255,0.8);
+            border-bottom: 6px solid var(--brand-blue);
+            transition: var(--transition-smooth);
             position: relative;
             overflow: hidden;
         }
 
-        .widget-internet { border-top: 5px solid var(--internet); }
-        .widget-water { border-top: 5px solid var(--water); }
+        .dashboard-widget:active { transform: scale(0.98); }
 
-        .widget-title {
+        .dashboard-widget.water-theme { border-color: var(--brand-water); }
+
+        .widget-label {
+            display: block;
             font-size: 10px;
             font-weight: 800;
-            color: var(--text-gray);
+            color: var(--text-muted);
             text-transform: uppercase;
             margin-bottom: 8px;
-            display: block;
+            letter-spacing: 0.8px;
         }
 
         .widget-value {
             font-size: 24px;
             font-weight: 900;
-            color: var(--text-dark);
+            color: var(--primary-navy);
         }
 
-        .progress-track {
-            width: 100%;
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 10px;
-            margin-top: 12px;
-            overflow: hidden;
+        /* --- SISTEMA DE TARJETAS (CARDS) --- */
+        .system-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-max);
+            padding: 28px;
+            margin-bottom: 22px;
+            box-shadow: var(--shadow-bold);
+            border: 1px solid var(--border-color);
+            position: relative;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--internet), var(--accent));
-            width: 0%;
-            transition: width 1.5s cubic-bezier(0.65, 0, 0.35, 1);
-        }
-
-        /* --- TARJETAS DE ACCIÓN --- */
-        .card {
-            background: var(--card-white);
-            border-radius: var(--radius-md);
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow-hard);
-            border: 1px solid #e2e8f0;
+        .system-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 6px;
+            background: var(--border-color);
+            border-radius: var(--radius-max) var(--radius-max) 0 0;
         }
 
         .card-header {
-            font-size: 13px;
-            font-weight: 900;
-            color: var(--segip-navy);
-            margin-bottom: 18px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f8fafc;
+            padding-bottom: 15px;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--primary-navy);
             text-transform: uppercase;
-            border-left: 4px solid var(--segip-gold);
-            padding-left: 10px;
+            letter-spacing: 0.5px;
         }
 
         /* --- COMPONENTES DE FORMULARIO --- */
-        .form-group {
-            margin-bottom: 15px;
-        }
+        .field-group { margin-bottom: 18px; }
 
-        .form-group label {
+        .field-group label {
             display: block;
             font-size: 11px;
-            font-weight: 700;
-            color: var(--text-gray);
-            margin-bottom: 6px;
-            padding-left: 4px;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            padding-left: 5px;
+            text-transform: uppercase;
         }
 
         input, select {
             width: 100%;
-            padding: 15px;
-            border-radius: 14px;
+            padding: 16px 20px;
+            border-radius: 16px;
             border: 2px solid #f1f5f9;
             background: #f8fafc;
-            font-size: 15px;
+            font-size: 16px;
             font-weight: 600;
-            color: var(--text-dark);
+            color: var(--primary-navy);
+            transition: var(--transition-smooth);
             outline: none;
-            transition: var(--transition-fast);
+            -webkit-appearance: none;
         }
 
-        input:focus, select:focus {
-            border-color: var(--accent);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        input:focus {
+            border-color: var(--brand-blue);
+            background: #fff;
+            box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.1);
         }
 
-        /* --- SISTEMA DE BOTONES --- */
-        .grid-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
+        /* --- MOTOR DE BOTONES --- */
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        .btn {
+        .btn-core {
             width: 100%;
-            padding: 16px;
+            padding: 18px 24px;
             border: none;
-            border-radius: 16px;
-            font-weight: 800;
+            border-radius: 18px;
+            font-weight: 900;
             font-size: 13px;
             cursor: pointer;
+            color: #fff;
+            text-transform: uppercase;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            transition: var(--transition-fast);
-            color: white;
-            text-transform: uppercase;
+            gap: 12px;
+            transition: var(--transition-smooth);
+            letter-spacing: 0.5px;
         }
 
-        .btn:active { transform: scale(0.96); }
+        .btn-core:active { transform: scale(0.94); opacity: 0.8; }
 
-        .btn-blue { background: var(--segip-blue); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
-        .btn-gold { background: var(--segip-gold); box-shadow: 0 4px 12px rgba(194, 65, 12, 0.2); }
-        .btn-water { background: var(--water); box-shadow: 0 4px 12px rgba(14, 165, 233, 0.2); }
-        .btn-dark { background: var(--segip-navy); }
-        .btn-success { background: var(--success); }
+        .btn-primary { background: linear-gradient(135deg, var(--brand-blue), var(--brand-blue-deep)); box-shadow: 0 8px 15px rgba(37, 99, 235, 0.2); }
+        .btn-danger { background: linear-gradient(135deg, var(--brand-red), var(--brand-red-deep)); box-shadow: 0 8px 15px rgba(225, 29, 72, 0.2); }
+        .btn-gold { background: linear-gradient(135deg, var(--accent-gold), #92400e); box-shadow: 0 8px 15px rgba(180, 83, 9, 0.2); }
+        .btn-cyan { background: linear-gradient(135deg, var(--brand-water), #0369a1); box-shadow: 0 8px 15px rgba(14, 165, 233, 0.2); }
+        .btn-dark { background: var(--primary-navy); }
 
-        /* --- TABLAS DE REPORTES --- */
-        .report-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
+        /* --- REPORTES Y LISTADOS --- */
+        .log-list { margin-top: 15px; }
+
+        .log-entry {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: var(--radius-md);
+            margin-bottom: 10px;
+            border: 1px solid #e2e8f0;
         }
 
-        .report-table th {
-            text-align: left;
-            padding: 12px 8px;
-            font-size: 11px;
-            color: var(--text-gray);
-            border-bottom: 2px solid #f1f5f9;
-            text-transform: uppercase;
-        }
+        .log-info h4 { font-size: 14px; font-weight: 800; color: var(--primary-navy); }
+        .log-info span { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+        .log-amount { font-size: 16px; font-weight: 900; color: var(--brand-blue); }
 
-        .report-table td {
-            padding: 14px 8px;
-            font-size: 14px;
-            font-weight: 600;
-            border-bottom: 1px solid #f8fafc;
-        }
-
-        .row-val { text-align: right; font-weight: 800; color: var(--accent); }
-
-        /* --- TURNOS AGUA --- */
-        .turn-box {
-            padding: 20px;
-            border-radius: 18px;
-            text-align: center;
-            font-weight: 900;
-            margin-bottom: 15px;
-            border: 2px dashed transparent;
-        }
-
-        .turn-next { background: #ecfdf5; color: #065f46; border-color: #10b981; }
-        .turn-wait { background: #fff1f2; color: #9f1239; border-color: #fb7185; }
-
-        /* --- NAVEGACIÓN INFERIOR --- */
-        .navbar {
+        /* --- NAVEGACIÓN PRINCIPAL (NAVBAR) --- */
+        .main-navigation {
             position: fixed;
             bottom: 0;
             left: 0;
-            right: 0;
-            height: 85px;
-            background: var(--segip-navy);
+            width: 100%;
+            height: 90px;
+            background: var(--primary-navy);
             display: flex;
             align-items: center;
             justify-content: space-around;
             z-index: 5000;
-            border-top: 3px solid var(--segip-gold);
-            box-shadow: 0 -10px 25px rgba(0,0,0,0.2);
+            border-top: 5px solid var(--accent-gold);
+            box-shadow: 0 -15px 35px rgba(0,0,0,0.3);
         }
 
-        .nav-item {
+        .nav-anchor {
             flex: 1;
             display: flex;
             flex-direction: column;
@@ -299,443 +307,372 @@
             color: #94a3b8;
             text-decoration: none;
             font-size: 10px;
-            font-weight: 800;
-            gap: 4px;
-            transition: var(--transition-fast);
+            font-weight: 900;
+            gap: 8px;
+            transition: var(--transition-smooth);
+            height: 100%;
         }
 
-        .nav-item.active {
-            color: white;
+        .nav-anchor i { font-size: 24px; font-style: normal; }
+
+        .nav-anchor.active {
+            color: #fff;
             background: rgba(255,255,255,0.05);
         }
 
-        .nav-item i { font-size: 22px; }
+        .nav-anchor.active i { transform: translateY(-5px); }
 
-        /* --- MODO REPORTE (CAPTURAS) --- */
-        #reportCapture {
-            display: none;
+        /* --- SISTEMA DE NOTIFICACIONES (TOAST) --- */
+        #system-toast {
+            visibility: hidden;
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #ffffff;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-navy);
+            color: #fff;
+            padding: 18px 35px;
+            border-radius: 100px;
+            font-weight: 900;
+            border: 2px solid var(--accent-gold);
             z-index: 9999;
-            padding: 40px 25px;
-            overflow-y: auto;
-        }
-
-        .cap-header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 4px solid var(--segip-navy);
-            padding-bottom: 15px;
-        }
-
-        .cap-section {
-            background: #f8fafc;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .cap-section h3 {
-            font-size: 14px;
-            color: var(--segip-gold);
-            margin-bottom: 10px;
+            box-shadow: var(--shadow-bold);
+            font-size: 13px;
+            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
-        /* --- NOTIFICACIONES --- */
-        .toast {
-            visibility: hidden;
-            min-width: 280px;
-            background: var(--segip-navy);
-            color: white;
-            text-align: center;
-            border-radius: 50px;
-            padding: 18px;
-            position: fixed;
-            z-index: 10000;
-            left: 50%;
-            bottom: 100px;
-            transform: translateX(-50%);
-            font-weight: 800;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border: 2px solid var(--segip-gold);
-        }
+        #system-toast.visible { visibility: visible; animation: toastIn 0.4s ease forwards, toastOut 0.4s 2.5s ease forwards; }
 
-        .toast.show {
-            visibility: visible;
-            animation: toastIn 0.5s ease, toastOut 0.5s 2.5s forwards;
-        }
-
-        @keyframes toastIn { from { bottom: 0; opacity: 0; } to { bottom: 100px; opacity: 1; } }
-        @keyframes toastOut { from { bottom: 100px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+        @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 50px); } to { opacity: 1; transform: translate(-50%, 0); } }
+        @keyframes toastOut { from { opacity: 1; transform: translate(-50%, 0); } to { opacity: 0; transform: translate(-50%, -20px); } }
 
     </style>
 </head>
 <body>
 
-    <div id="mainToast" class="toast">REGISTRO COMPLETADO</div>
-
-    <div id="reportCapture">
-        <div class="cap-header">
-            <h2 style="font-weight: 900; color: var(--segip-navy);">SEGIP SAN JORGE</h2>
-            <p id="capDate" style="font-weight: 700; color: var(--text-gray);"></p>
-        </div>
-        
-        <div id="capInternet" class="cap-section">
-            </div>
-
-        <div id="capWater" class="cap-section" style="background: #e0f2fe;">
-            </div>
-
-        <div style="text-align: center; padding: 20px;">
-            <p style="font-size: 10px; color: #94a3b8; font-weight: 700;">DOCUMENTO DE CONTROL INTERNO - GENERADO POR MAYCOL AVILA</p>
-            <button class="btn btn-dark" style="margin-top: 30px;" onclick="document.getElementById('reportCapture').style.display='none'">SALIR DEL REPORTE</button>
-        </div>
-    </div>
+    <div id="system-toast">OPERACIÓN REGISTRADA</div>
 
     <div class="app-container">
 
-        <section id="viewCobros" class="view-section active">
-            <div class="brand-header">
+        <section id="pane-cobros" class="view-section active">
+            <div class="branding-header">
                 <h1>SEGIP SAN JORGE</h1>
-                <div class="badge">SISTEMA DE CONTROL V21</div>
+                <div id="label-oficial-titular" class="badge-oficial">ESTADO: INICIALIZANDO...</div>
             </div>
 
-            <div class="status-grid">
-                <div class="widget widget-internet">
-                    <span class="widget-title">Bolsa Internet</span>
-                    <span class="widget-value" id="dashTotalInternet">0 Bs</span>
-                    <div class="progress-track">
-                        <div id="dashProgressInternet" class="progress-fill"></div>
-                    </div>
+            <div class="dashboard-grid">
+                <div class="dashboard-widget">
+                    <span class="widget-label">Bolsa Internet</span>
+                    <div id="display-stat-internet" class="widget-value">0 Bs</div>
                 </div>
-                <div class="widget widget-water">
-                    <span class="widget-title">Agua Turno</span>
-                    <span id="dashWaterStatus" style="font-size: 11px; font-weight: 800; color: var(--water);">CARGANDO...</span>
+                <div class="dashboard-widget water-theme">
+                    <span class="widget-label">Próximo Agua</span>
+                    <div id="display-stat-agua" class="widget-value" style="font-size: 14px; color: var(--brand-water);">--</div>
                 </div>
             </div>
 
-            <div class="card" style="border-left: 6px solid var(--warning);">
-                <div class="card-header">📅 REGISTRO RETROACTIVO</div>
-                <div class="form-group">
-                    <label>Fecha del Pago Anterior</label>
-                    <input type="date" id="retroFecha">
+            <div class="system-card" style="border-left: 8px solid var(--brand-red);">
+                <div class="card-header">
+                    <div class="header-icon" style="background: #fff1f2; color: var(--brand-red);">📄</div>
+                    <h3 class="card-title">REGISTRO CIVIL (INTERNET)</h3>
                 </div>
-                <div class="grid-buttons" style="margin-bottom: 10px;">
-                    <div class="form-group">
-                        <label>Persona</label>
-                        <select id="retroUser">
-                            <option value="Ximena">Ximena</option>
-                            <option value="Maycol">Maycol</option>
-                            <option value="Samuel">Samuel</option>
-                            <option value="Nilsa">Nilsa</option>
-                            <option value="Segip San Jorge">Segip San Jorge</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Monto Bs</label>
-                        <input type="number" id="retroMonto" placeholder="0.00">
-                    </div>
-                </div>
-                <button class="btn btn-gold" onclick="apiRegistrarRetro()">GUARDAR REGISTRO ANTIGUO</button>
-            </div>
-
-            <div class="card">
-                <div class="card-header">🏢 APORTES DE LA SEMANA (10 BS)</div>
-                <div class="grid-buttons">
-                    <button class="btn btn-blue" onclick="apiRegistrarRapido('Ximena', 10, 'Internet')">XIMENA</button>
-                    <button class="btn btn-blue" onclick="apiRegistrarRapido('Maycol', 10, 'Internet')">MAYCOL</button>
-                    <button class="btn btn-blue" onclick="apiRegistrarRapido('Samuel', 10, 'Internet')">SAMUEL</button>
-                    <button class="btn btn-blue" onclick="apiRegistrarRapido('Nilsa', 10, 'Internet')">NILSA</button>
-                </div>
-                <button class="btn btn-dark" style="margin-top: 15px;" onclick="apiRegistrarRapido('Segip San Jorge', 36, 'Internet')">
-                    PAGO SEGIP SAN JORGE (36 BS)
+                <button class="btn-core btn-danger" onclick="ctrlAction('Registro Civil', 36, 'Internet')">
+                    REGISTRAR PAGO CIVIL (36 BS)
                 </button>
             </div>
 
-            <div class="card">
-                <div class="card-header">💧 COMPRA DE AGUA (36 BS)</div>
-                <div class="grid-buttons">
-                    <button class="btn btn-water" onclick="apiRegistrarRapido('Nilsa y Maycol', 36, 'Agua')">NILSA Y MAYCOL</button>
-                    <button class="btn btn-water" onclick="apiRegistrarRapido('Samuel y Ximena', 36, 'Samuel y Ximena')">SAMUEL Y XIMENA</button>
+            <div class="system-card">
+                <div class="card-header">
+                    <div class="header-icon" style="background: #eff6ff; color: var(--brand-blue);">🏢</div>
+                    <h3 class="card-title">APORTES SEMANALES (10 BS)</h3>
+                </div>
+                <div class="action-grid">
+                    <button class="btn-core btn-primary" onclick="ctrlAction('Ximena', 10, 'Internet')">XIMENA</button>
+                    <button class="btn-core btn-primary" onclick="ctrlAction('Maycol', 10, 'Internet')">MAYCOL</button>
+                    <button class="btn-core btn-primary" onclick="ctrlAction('Samuel', 10, 'Internet')">SAMUEL</button>
+                    <button class="btn-core btn-primary" onclick="ctrlAction('Nilsa', 10, 'Internet')">NILSA</button>
+                </div>
+            </div>
+
+            <div class="system-card">
+                <div class="card-header">
+                    <div class="header-icon" style="background: #e0f2fe; color: var(--brand-water);">💧</div>
+                    <h3 class="card-title">GESTIÓN DE AGUA (36 BS)</h3>
+                </div>
+                <div class="action-grid">
+                    <button class="btn-core btn-cyan" onclick="ctrlAction('Nilsa y Maycol', 36, 'Agua')">NILSA / MAYCOL</button>
+                    <button class="btn-core btn-cyan" onclick="ctrlAction('Samuel y Ximena', 36, 'Agua')">SAMUEL / XIMENA</button>
                 </div>
             </div>
         </section>
 
-        <section id="viewReportes" class="view-section">
-            <div class="brand-header">
-                <h1>INFORMES</h1>
+        <section id="pane-reportes" class="view-section">
+            <div class="branding-header">
+                <h1>REPORTES</h1>
             </div>
 
-            <div class="card">
-                <div class="card-header">🌐 RESUMEN DE INTERNET</div>
-                <table class="report-table">
-                    <thead>
-                        <tr><th>NOMBRE</th><th style="text-align:right">APORTE</th></tr>
-                    </thead>
-                    <tbody id="tableInternetBody">
-                        </tbody>
-                </table>
-                <div style="margin-top: 20px; text-align: right;">
-                    <span id="labelFaltante" style="font-weight: 900; font-size: 18px; color: var(--segip-gold);">FALTAN: -- Bs</span>
+            <div class="system-card">
+                <div class="card-header">
+                    <div class="header-icon">📈</div>
+                    <h3 class="card-title">DESGLOSE DE INTERNET</h3>
+                </div>
+                <div id="render-resumen-personas" class="log-list">
+                    </div>
+                <div style="text-align: right; margin-top: 25px; border-top: 2px solid #f1f5f9; padding-top: 15px;">
+                    <span style="font-weight: 800; color: var(--text-muted); font-size: 11px; text-transform: uppercase;">BOLSA ACUMULADA:</span>
+                    <div id="render-total-bolsa" style="font-size: 32px; font-weight: 900; color: var(--brand-blue);">0 Bs</div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">💧 TURNOS DE AGUA</div>
-                <div id="uiTurnoAgua" class="turn-box">CARGANDO...</div>
-                <div id="uiListaAgua" style="font-size: 11px; color: var(--text-gray); max-height: 150px; overflow-y: auto;"></div>
+            <div class="system-card">
+                <div class="card-header">
+                    <div class="header-icon">📜</div>
+                    <h3 class="card-title">HISTORIAL COMPLETO</h3>
+                </div>
+                <div id="render-historial-log" style="max-height: 350px; overflow-y: auto; padding-right: 5px;">
+                    </div>
             </div>
 
-            <button class="btn btn-dark" style="margin-bottom: 15px;" onclick="apiGenerarCaptura()">GENERAR REPORTE PARA WHATSAPP</button>
-            
-            <button class="btn btn-gold" style="opacity: 0.6; font-size: 11px;" onclick="apiResetInternet()">PAGAR RECIBO Y REINICIAR INTERNET</button>
+            <button class="btn-core btn-dark" style="margin-bottom: 20px;" onclick="ctrlResetInternet()">
+                CERRAR MES Y REINICIAR BOLSA
+            </button>
+        </section>
 
-            <div class="card" style="margin-top: 25px;">
-                <div class="card-header">📜 HISTORIAL TOTAL</div>
-                <div id="uiHistorialTotal" style="font-size: 11px; max-height: 200px; overflow-y: auto;"></div>
+        <section id="pane-config" class="view-section">
+            <div class="branding-header">
+                <h1>CONFIGURACIÓN</h1>
+            </div>
+
+            <div class="system-card">
+                <div class="card-header">
+                    <div class="header-icon">⚙️</div>
+                    <h3 class="card-title">IDENTIDAD DEL SISTEMA</h3>
+                </div>
+                <div class="field-group">
+                    <label>Nombre del Oficial Actual</label>
+                    <input type="text" id="input-oficial-name" placeholder="Escriba el nombre del oficial...">
+                </div>
+                <button class="btn-core btn-primary" onclick="ctrlSaveConfig()">ACTUALIZAR TITULAR</button>
+                
+                <div style="margin-top: 25px; padding: 15px; background: #fffbeb; border-radius: 12px; border: 1px solid #fef3c7;">
+                    <p style="font-size: 11px; color: #92400e; line-height: 1.4;">
+                        <b>NOTA DE SEGURIDAD:</b> El nombre configurado aquí se utilizará para todos los encabezados y etiquetas de control del sistema. Cambiarlo no borrará sus datos anteriores.
+                    </p>
+                </div>
+            </div>
+
+            <div class="system-card">
+                <div class="card-header">
+                    <div class="header-icon">💾</div>
+                    <h3 class="card-title">MANTENIMIENTO</h3>
+                </div>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Borrar todos los datos permanentemente del dispositivo.</p>
+                <button class="btn-core btn-danger" style="opacity: 0.5;" onclick="ctrlWipeData()">BORRADO DE FÁBRICA</button>
             </div>
         </section>
 
     </div>
 
-    <nav class="navbar">
-        <a href="#" class="nav-item active" onclick="apiNavigate('viewCobros', this)">
+    <nav class="main-navigation">
+        <a href="#" class="nav-anchor active" onclick="ctrlNavigate('pane-cobros', this)">
             <i>📱</i><span>COBROS</span>
         </a>
-        <a href="#" class="nav-item" onclick="apiNavigate('viewReportes', this)">
+        <a href="#" class="nav-anchor" onclick="ctrlNavigate('pane-reportes', this)">
             <i>📊</i><span>REPORTES</span>
+        </a>
+        <a href="#" class="nav-anchor" onclick="ctrlNavigate('pane-config', this)">
+            <i>⚙️</i><span>AJUSTES</span>
         </a>
     </nav>
 
     <script>
-        /* --- CORE ENGINE - SEGIP SAN JORGE V21 --- */
-        
-        const KEY_STORE = 'SEGIP_SAN_JORGE_OFFICIAL_V21';
-        let db = [];
+        /* --- CONSTANTES DE ALMACENAMIENTO --- */
+        const STORAGE_DATA_KEY = 'SEGIP_SJ_DATA_OFFICIAL_V25';
+        const STORAGE_CONF_KEY = 'SEGIP_SJ_CONF_OFFICIAL_V25';
 
-        /* --- MÓDULO DE MIGRACIÓN Y ARRANQUE --- */
-        function bootSystem() {
-            // Intentar recuperar datos de todas las versiones anteriores posibles
-            const oldKeys = ['MAYCOL_SYSTEM_DATA_V19', 'MAYCOL_V18', 'MAYCOL_V16', 'SEGIP_SJ_V20', KEY_STORE];
-            let mergedData = [];
-            
-            oldKeys.forEach(key => {
-                const stored = localStorage.getItem(key);
-                if(stored) {
-                    try {
-                        const parsed = JSON.parse(stored);
-                        if(Array.isArray(parsed)) mergedData = [...mergedData, ...parsed];
-                    } catch(e) { console.error("Error migrando: " + key); }
-                }
-            });
+        /* --- ESTADO GLOBAL DE LA APLICACIÓN --- */
+        let state = {
+            db: JSON.parse(localStorage.getItem(STORAGE_DATA_KEY)) || [],
+            config: JSON.parse(localStorage.getItem(STORAGE_CONF_KEY)) || { oficial: 'Maycol Avila' },
+            view: 'pane-cobros'
+        };
 
-            // Limpieza de duplicados por Timestamp/ID
-            const seen = new Set();
-            db = mergedData.filter(item => {
-                const id = item.id || item.uid;
-                const duplicate = seen.has(id);
-                seen.add(id);
-                return !duplicate;
-            });
+        /**
+         * Inicialización automática al cargar el DOM.
+         */
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log("%c SEGIP SAN JORGE V25 - SISTEMA INICIADO ", "background: #0f172a; color: #fff; font-weight: 900; padding: 5px;");
+            syncUI();
+        });
 
-            // Inicializar Fecha
-            const hoy = new Date().toISOString().split('T')[0];
-            document.getElementById('retroFecha').value = hoy;
+        /**
+         * Navegación entre paneles.
+         */
+        function ctrlNavigate(targetId, el) {
+            // Desactivar paneles
+            document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.nav-anchor').forEach(nav => nav.classList.remove('active'));
 
-            renderAll();
-        }
-
-        /* --- MÓDULO DE NAVEGACIÓN --- */
-        function apiNavigate(target, el) {
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            
-            document.getElementById(target).classList.add('active');
+            // Activar objetivo
+            document.getElementById(targetId).classList.add('active');
             el.classList.add('active');
-            renderAll();
+            
+            state.view = targetId;
+            syncUI();
         }
 
-        /* --- MÓDULO DE REGISTRO --- */
-        function apiRegistrarRapido(user, monto, tipo) {
-            const fecha = new Date().toISOString().split('T')[0];
-            ejecutarPersistencia(user, monto, tipo, fecha);
-        }
-
-        function apiRegistrarRetro() {
-            const user = document.getElementById('retroUser').value;
-            const monto = document.getElementById('retroMonto').value;
-            const fecha = document.getElementById('retroFecha').value;
-
-            if(!monto || monto <= 0) {
-                alert("Por favor ingrese un monto válido.");
-                return;
-            }
-
-            ejecutarPersistencia(user, monto, 'Internet', fecha);
-            document.getElementById('retroMonto').value = ""; 
-        }
-
-        function ejecutarPersistencia(user, monto, tipo, fecha) {
-            // Cambio de nombre oficial en la persistencia
-            let finalUser = user;
-            if(user === "Registro Civil") finalUser = "Segip San Jorge";
-
-            const payload = {
-                id: Date.now(),
-                user: finalUser,
+        /**
+           * Registro de transacciones (Core Engine).
+         */
+        function ctrlAction(user, monto, tipo) {
+            const entry = {
+                uid: 'entry_' + Date.now(),
+                user: user,
                 monto: parseFloat(monto),
                 tipo: tipo,
-                fecha: fecha,
-                timestamp: new Date().toLocaleString()
+                fecha: new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }),
+                hora: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                timestamp: Date.now()
             };
 
-            db.push(payload);
-            localStorage.setItem(KEY_STORE, JSON.stringify(db));
-            
-            const toast = document.getElementById('mainToast');
-            toast.className = "toast show";
-            setTimeout(() => toast.className = "toast", 3000);
-            
-            renderAll();
+            state.db.push(entry);
+            saveData();
+            triggerToast(`REGISTRADO: ${user} (${monto} Bs)`);
         }
 
-        /* --- MOTOR DE RENDERIZADO --- */
-        function renderAll() {
-            const tableBody = document.getElementById('tableInternetBody');
-            const historyBody = document.getElementById('uiHistorialTotal');
-            const waterList = document.getElementById('uiListaAgua');
-            const waterBox = document.getElementById('uiTurnoAgua');
-            
-            tableBody.innerHTML = '';
-            historyBody.innerHTML = '';
-            waterList.innerHTML = '';
+        /**
+         * Persistencia y Sincronización.
+         */
+        function saveData() {
+            localStorage.setItem(STORAGE_DATA_KEY, JSON.stringify(state.db));
+            syncUI();
+        }
 
-            let sumI = 0;
-            let userTotals = { "Ximena": 0, "Maycol": 0, "Samuel": 0, "Nilsa": 0, "Segip San Jorge": 0 };
-            let lastWater = null;
+        /**
+         * Guardar configuración del oficial.
+         */
+        function ctrlSaveConfig() {
+            const name = document.getElementById('input-oficial-name').value.trim();
+            if (!name) return alert("Ingrese un nombre válido");
 
-            // Procesar DB
-            db.forEach(item => {
-                let name = item.user || item.usuario;
-                if(name === "Registro Civil") name = "Segip San Jorge";
+            state.config.oficial = name;
+            localStorage.setItem(STORAGE_CONF_KEY, JSON.stringify(state.config));
+            triggerToast("TITULAR ACTUALIZADO");
+            syncUI();
+        }
 
-                if(item.tipo.toLowerCase().includes('internet')) {
-                    sumI += item.monto;
-                    if(userTotals.hasOwnProperty(name)) userTotals[name] += item.monto;
+        /**
+         * Motor de Renderizado Dinámico (SyncUI).
+         */
+        function syncUI() {
+            // Sincronizar Identidad
+            document.getElementById('label-oficial-titular').innerText = `OFICIAL: ${state.config.oficial}`;
+            document.getElementById('input-oficial-name').value = state.config.oficial;
+
+            // Elementos de Render
+            const resumenEl = document.getElementById('render-resumen-personas');
+            const historialEl = document.getElementById('render-historial-log');
+            resumenEl.innerHTML = '';
+            historialEl.innerHTML = '';
+
+            let sumInternet = 0;
+            let lastWaterUser = "";
+            let peopleTotals = {
+                "Ximena": 0,
+                "Maycol": 0,
+                "Samuel": 0,
+                "Nilsa": 0,
+                "Registro Civil": 0
+            };
+
+            // Procesamiento de Datos (Auditoría)
+            state.db.sort((a, b) => b.timestamp - a.timestamp).forEach(item => {
+                if (item.tipo === 'Internet') {
+                    sumInternet += item.monto;
+                    if (peopleTotals.hasOwnProperty(item.user)) {
+                        peopleTotals[item.user] += item.monto;
+                    } else {
+                        peopleTotals[item.user] = item.monto;
+                    }
+                }
+                
+                if (item.tipo === 'Agua') {
+                    if (!lastWaterUser) lastWaterUser = item.user;
                 }
 
-                if(item.tipo.toLowerCase().includes('agua')) {
-                    lastWater = { name: name, fecha: item.fecha };
-                    waterList.innerHTML += `<div style="padding:8px 0; border-bottom:1px solid #f1f5f9;">💧 <b>${name}</b> - ${item.fecha}</div>`;
-                }
-
-                historyBody.innerHTML += `
-                    <div style="padding:8px; border-bottom:1px solid #f1f5f9; display:flex; justify-content:space-between;">
-                        <span>${item.fecha} | ${name}</span>
-                        <span style="font-weight:800;">${item.monto} Bs</span>
+                // Render Historial
+                const row = `
+                    <div class="log-entry">
+                        <div class="log-info">
+                            <h4>${item.user}</h4>
+                            <span>${item.fecha} • ${item.hora} • ${item.tipo}</span>
+                        </div>
+                        <div class="log-amount" style="color: ${item.tipo === 'Agua' ? 'var(--brand-water)' : 'var(--brand-blue)'}">
+                            ${item.monto} Bs
+                        </div>
                     </div>
                 `;
+                historialEl.innerHTML += row;
             });
 
             // Dashboards
-            document.getElementById('dashTotalInternet').innerText = sumI + " Bs";
-            const porc = (sumI / 179) * 100;
-            document.getElementById('dashProgressInternet').style.width = Math.min(porc, 100) + "%";
-            document.getElementById('labelFaltante').innerText = "FALTAN: " + Math.max(0, 179 - sumI) + " Bs";
+            document.getElementById('display-stat-internet').innerText = `${sumInternet} Bs`;
+            document.getElementById('render-total-bolsa').innerText = `${sumInternet} Bs`;
 
-            // Render Tabla
-            for(let u in userTotals) {
-                tableBody.innerHTML += `
-                    <tr>
-                        <td><b>${u}</b></td>
-                        <td class="row-val">${userTotals[u]} Bs</td>
-                    </tr>
-                `;
-            }
-
-            // Lógica de Agua
-            if(lastWater) {
-                document.getElementById('dashWaterStatus').innerText = "ÚLTIMO: " + lastWater.name;
-                if(lastWater.name === "Nilsa y Maycol") {
-                    waterBox.innerText = "PRÓXIMO TURNO: SAMUEL Y XIMENA";
-                    waterBox.className = "turn-box turn-wait";
-                } else {
-                    waterBox.innerText = "PRÓXIMO TURNO: NILSA Y MAYCOL";
-                    waterBox.className = "turn-box turn-next";
-                }
+            // Lógica de Siguiente Turno de Agua
+            const aguaEl = document.getElementById('display-stat-agua');
+            if (lastWaterUser === "Nilsa y Maycol") {
+                aguaEl.innerText = "Samuel y Ximena";
             } else {
-                waterBox.innerText = "SIN REGISTROS DE AGUA";
-                waterBox.className = "turn-box turn-next";
+                aguaEl.innerText = "Nilsa y Maycol";
+            }
+
+            // Render Resumen por Persona
+            for (const p in peopleTotals) {
+                const pRow = `
+                    <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #f1f5f9;">
+                        <span style="font-weight:700; color:var(--text-muted)">${p}</span>
+                        <b style="color:var(--primary-navy)">${peopleTotals[p]} Bs</b>
+                    </div>
+                `;
+                resumenEl.innerHTML += pRow;
             }
         }
 
-        /* --- MÓDULO DE REPORTE PARA CAPTURA --- */
-        function apiGenerarCaptura() {
-            const overlay = document.getElementById('reportCapture');
-            const capInt = document.getElementById('capInternet');
-            const capWat = document.getElementById('capWater');
-            const capDate = document.getElementById('capDate');
-
-            const hoy = new Date();
-            capDate.innerText = hoy.toLocaleDateString('es-ES', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-
-            let sumI = 0;
-            let uI = { "Ximena": 0, "Maycol": 0, "Samuel": 0, "Nilsa": 0, "Segip San Jorge": 0 };
-            let ultA = "Sin registros";
-
-            db.forEach(i => {
-                let name = i.user || i.usuario;
-                if(name === "Registro Civil") name = "Segip San Jorge";
-                if(i.tipo.toLowerCase().includes('internet')) { sumI += i.monto; uI[name] += i.monto; }
-                if(i.tipo.toLowerCase().includes('agua')) ultA = name;
-            });
-
-            // Reporte Internet
-            let htmlInt = `<h3>🌐 APORTES INTERNET (BOLSA 179)</h3><table class="report-table">`;
-            for(let u in uI) {
-                htmlInt += `<tr><td>${u}</td><td style="text-align:right"><b>${uI[u]} Bs</b></td></tr>`;
-            }
-            htmlInt += `</table><h2 style="text-align:right; margin-top:15px; color:var(--segip-navy);">TOTAL: ${sumI} Bs</h2>`;
-            capInt.innerHTML = htmlInt;
-
-            // Reporte Agua
-            let prox = (ultA === "Nilsa y Maycol") ? "SAMUEL Y XIMENA" : "NILSA Y MAYCOL";
-            capWat.innerHTML = `
-                <h3>💧 CONTROL DE TURNOS AGUA</h3>
-                <p style="font-size:12px; margin-bottom:10px;">Último pago realizado por: <b>${ultA}</b></p>
-                <div style="background:white; padding:15px; border-radius:12px; text-align:center; font-weight:900; color:var(--water); border:2px solid var(--water);">
-                    PRÓXIMO TURNO:<br><span style="font-size:20px;">${prox}</span>
-                </div>
-            `;
-
-            overlay.style.display = 'block';
-        }
-
-        /* --- MÓDULO DE LIMPIEZA --- */
-        function apiResetInternet() {
-            if(confirm("¿Confirmas que ya pagaste el recibo de Internet? Se borrarán los aportes de la bolsa para iniciar un nuevo mes.")) {
-                db = db.filter(item => !item.tipo.toLowerCase().includes('internet'));
-                localStorage.setItem(KEY_STORE, JSON.stringify(db));
-                renderAll();
+        /**
+         * Reset de Bolsa (Cierre de Mes).
+         */
+        function ctrlResetInternet() {
+            if (confirm("ATENCIÓN: ¿Desea cerrar el mes de Internet? Los aportes acumulados se borrarán de la bolsa actual.")) {
+                state.db = state.db.filter(i => i.tipo !== 'Internet');
+                saveData();
+                triggerToast("BOLSA REINICIADA");
             }
         }
 
-        // Ejecutar arranque
-        bootSystem();
-
-        /* --- ESPACIO TÉCNICO DE EXPANSIÓN ---
-           Este bloque asegura la integridad del script y añade volumen 
-           lógico para el procesamiento de grandes conjuntos de datos.
-        */
-        function _internalValidation() {
-            const signature = "SEGIP_SAN_JORGE_V21_MAYCOL_AVILA";
-            const audit = db.length;
-            console.log("System Status: Operational. Records in memory: " + audit);
+        /**
+         * Wipe Total de Datos.
+         */
+        function ctrlWipeData() {
+            if (confirm("PELIGRO: Se borrarán todos los registros de Internet y Agua permanentemente. ¿Continuar?")) {
+                state.db = [];
+                saveData();
+                triggerToast("SISTEMA FORMATEADO");
+            }
         }
-        _internalValidation();
 
+        /**
+         * Notificaciones (Toast Engine).
+         */
+        function triggerToast(msg) {
+            const toast = document.getElementById('system-toast');
+            toast.innerText = msg;
+            toast.classList.add('visible');
+            setTimeout(() => toast.classList.remove('visible'), 3000);
+        }
+
+        /* --- FIN DEL ARCHIVO TÉCNICO V25 --- */
     </script>
 </body>
 </html>
