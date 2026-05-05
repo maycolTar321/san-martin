@@ -3,145 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Reportes Pagos V4</title>
+    <title>SISTEMA PRO - MAYCOL AVILA</title>
+    
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135706.png">
+
     <style>
-        :root { --primary: #2c3e50; --office: #27ae60; --extern: #2980b9; --bg: #f4f7f6; --police: #8e44ad; --accent: #e67e22; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 10px; }
-        .container { max-width: 450px; margin: auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-card { background: var(--primary); color: white; padding: 10px; border-radius: 10px; text-align: center; }
-        .stat-card div { font-size: 18px; font-weight: bold; }
-        .panel-carga { background: #fff3e0; padding: 12px; border-radius: 10px; border: 1px solid #ffe0b2; margin-bottom: 15px; }
-        .card { border: 1px solid #ddd; padding: 10px; border-radius: 10px; margin-bottom: 8px; border-left: 5px solid var(--office); position: relative; }
-        .card.externo { border-left-color: var(--extern); background: #f0f7ff; }
-        .card.policia { border-left-color: var(--police); }
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; margin-top: 5px; font-size: 14px; }
-        .btn-office { background: var(--office); }
-        .btn-extern { background: var(--extern); }
-        input, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-        .table-wrap { overflow-x: auto; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        th, td { border-bottom: 1px solid #eee; padding: 8px; text-align: left; }
-        .delete-btn { color: #e74c3c; font-weight: bold; cursor: pointer; }
-        .reporte-individual { margin-top: 20px; background: #f9f9f9; padding: 10px; border-radius: 10px; border: 1px solid #ddd; }
+        :root {
+            --primary: #1e293b;
+            --accent: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --water: #0ea5e9;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            background: var(--bg); 
+            margin: 0; 
+            color: var(--primary);
+            padding-bottom: 80px; 
+        }
+
+        /* --- NAVEGACIÓN --- */
+        .nav-bottom {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 65px;
+            background: var(--primary);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-item {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 11px;
+            text-align: center;
+            flex: 1;
+            padding: 10px;
+        }
+
+        .nav-item.active { color: white; font-weight: bold; }
+        .nav-item i { display: block; font-size: 20px; margin-bottom: 4px; }
+
+        /* --- CONTENEDORES --- */
+        .page { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .header { padding: 20px 0; border-bottom: 1px solid #e2e8f0; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 22px; color: var(--primary); }
+
+        /* --- CARDS & STATS --- */
+        .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .stat-card { 
+            background: var(--card-bg); 
+            padding: 15px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
+        }
+        .stat-card small { color: #64748b; font-size: 12px; }
+        .stat-card div { font-size: 18px; font-weight: 800; margin-top: 5px; }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            padding: 18px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        /* --- INPUTS & BUTTONS --- */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-blue { background: var(--accent); color: white; }
+        .btn-green { background: var(--success); color: white; }
+        .btn-water { background: var(--water); color: white; }
+        .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: var(--primary); }
+        .btn:active { transform: scale(0.97); }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input:focus { border-color: var(--accent); }
+
+        /* --- TABLA DE REGISTROS --- */
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .history-item:last-child { border: none; }
+        .history-info b { display: block; font-size: 15px; }
+        .history-info small { color: #64748b; }
+        .history-amount { font-weight: 800; color: var(--primary); }
+        .delete-icon { color: var(--danger); font-size: 20px; padding: 10px; }
+
+        /* --- REPORTES --- */
+        .rep-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #cbd5e1; }
     </style>
 </head>
 <body>
-<div class="container">
-    <h3 style="text-align:center; margin: 0 0 15px 0;">📊 Reporte de Pagos</h3>
-    
-    <div class="report-grid">
-        <div class="stat-card">Recaudado Ofic.<div id="totalOficina">0 bs</div></div>
-        <div class="stat-card" style="background:var(--extern)">Recaudado Reg.<div id="totalRegistro">0 bs</div></div>
-    </div>
 
-    <div class="panel-carga">
-        <strong>📥 Cargar Pago Anterior</strong>
-        <select id="histUsuario">
-            <option value="Ximena">1. Ximena</option>
-            <option value="Maycol">2. Maycol</option>
-            <option value="Samuel">3. Samuel</option>
-            <option value="Oficial" id="optPolicial">4. Oficial (Nilsa)</option>
-            <option value="Registro Civil">Registro Civil</option>
-        </select>
-        <div style="display:flex; gap:5px;">
-            <input type="date" id="histFecha">
-            <input type="number" id="histMonto" placeholder="Bs">
+    <div id="cobros" class="page active">
+        <div class="header">
+            <h1>📥 Registro de Pagos</h1>
         </div>
-        <button class="btn" style="background: var(--accent);" onclick="cargarHistorico()">Añadir al Reporte</button>
+
+        <div class="stats-container">
+            <div class="stat-card" style="border-top: 4px solid var(--success);">
+                <small>Oficina (Recaudado)</small>
+                <div id="sumOficina">0 Bs</div>
+            </div>
+            <div class="stat-card" style="border-top: 4px solid var(--water);">
+                <small>Servicios (Total)</small>
+                <div id="sumServicios">0 Bs</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h4 style="margin:0 0 10px 0;">🏢 Aportes Semanales (10 Bs)</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button class="btn btn-green" onclick="registrar('Ximena', 10, 'Oficina')">Ximena</button>
+                <button class="btn btn-green" onclick="registrar('Maycol', 10, 'Oficina')">Maycol</button>
+                <button class="btn btn-green" onclick="registrar('Samuel', 10, 'Oficina')">Samuel</button>
+                <button id="btnNilsa" class="btn btn-green" onclick="registrar(oficialActual, 10, 'Oficina')">Nilsa</button>
+            </div>
+        </div>
+
+        <div class="card" style="border-left: 5px solid var(--water);">
+            <h4 style="margin:0 0 10px 0;">💧 Compra de Agua (36 Bs)</h4>
+            <button class="btn btn-water" onclick="registrar('Pareja: Nilsa y Maycol', 36, 'Agua')">Nilsa y Maycol</button>
+            <div style="margin-top:8px;"></div>
+            <button class="btn btn-water" onclick="registrar('Pareja: Samuel y Ximena', 36, 'Agua')">Samuel y Ximena</button>
+        </div>
+
+        <div class="card" style="border-left: 5px solid var(--warning);">
+            <h4 style="margin:0 0 10px 0;">🌐 Internet Mensual (179 Bs)</h4>
+            <button class="btn" style="background:#6366f1; color:white;" onclick="registrar('Internet Mensual', 179, 'Internet')">Pagar Internet</button>
+        </div>
+
+        <div class="card">
+            <h4 style="margin:0 0 5px 0;">⚙️ Configuración Oficial</h4>
+            <input type="text" id="nombreOficial" placeholder="Nuevo nombre de oficial...">
+            <button class="btn btn-outline" onclick="actualizarOficial()">Actualizar Nombre</button>
+        </div>
     </div>
 
-    <div class="card"><strong>1. Ximena</strong><button class="btn btn-office" onclick="registrar('Ximena', 10, 'Oficina')">Cobrar 10 bs</button></div>
-    <div class="card"><strong>2. Maycol</strong><button class="btn btn-office" onclick="registrar('Maycol', 10, 'Oficina')">Cobrar 10 bs</button></div>
-    <div class="card"><strong>3. Samuel</strong><button class="btn btn-office" onclick="registrar('Samuel', 10, 'Oficina')">Cobrar 10 bs</button></div>
-    <div class="card policia">
-        <strong id="nombrePolicial">4. Oficial: Nilsa</strong>
-        <input type="text" id="editPolicial" placeholder="Cambiar nombre oficial..." style="height:30px;">
-        <button class="btn" style="background:var(--police); padding:5px; font-size:11px;" onclick="cambiarOficial()">ACTUALIZAR NOMBRE</button>
-        <button class="btn btn-office" onclick="registrar('Oficial ('+document.getElementById('editPolicial').placeholder+')', 10, 'Oficina')">Cobrar 10 bs</button>
+    <div id="reportes" class="page">
+        <div class="header">
+            <h1>📊 Reportes y Auditoría</h1>
+        </div>
+
+        <div class="card">
+            <h3>Resumen Consolidado</h3>
+            <div id="reporteDetallado"></div>
+            <hr>
+            <div class="rep-row"><strong>TOTAL GENERAL:</strong><strong id="totalGral" style="font-size:20px; color:var(--accent);">0 Bs</strong></div>
+        </div>
+
+        <div class="card">
+            <h3>Historial de Transacciones</h3>
+            <div id="listaHistorial"></div>
+        </div>
+
+        <button class="btn btn-blue" onclick="exportarExcel()">📥 Descargar Reporte CSV</button>
+        <div style="margin-top:10px;"></div>
+        <button class="btn btn-outline" onclick="window.print()">🖨️ Generar Vista PDF</button>
+        <div style="margin-top:10px;"></div>
+        <button class="btn" style="background:var(--danger); color:white;" onclick="borrarTodo()">⚠️ Borrar Todo el Mes</button>
     </div>
-    <div class="card externo"><strong>Reg. Civil</strong><button class="btn btn-extern" onclick="registrar('Registro Civil', 36, 'Registro Civil')">Cobrar 36 bs</button></div>
 
-    <div class="reporte-individual">
-        <strong style="font-size:14px;">📈 Total por Persona:</strong>
-        <div id="listaIndividual" style="font-size:13px; margin-top:5px; color:#555;"></div>
-    </div>
+    <nav class="nav-bottom">
+        <a href="#" class="nav-item active" onclick="showPage('cobros', this)">
+            <i>📱</i> Cobros
+        </a>
+        <a href="#" class="nav-item" onclick="showPage('reportes', this)">
+            <i>📈</i> Reportes
+        </a>
+    </nav>
 
-    <h4>Historial de Pagos</h4>
-    <div class="table-wrap">
-        <table id="tablaPagos">
-            <thead><tr><th>Fecha</th><th>Nombre</th><th>Bs</th><th></th></tr></thead>
-            <tbody></tbody>
-        </table>
-    </div>
+    <script>
+        let registros = JSON.parse(localStorage.getItem('maycol_db_v5')) || [];
+        let oficialActual = localStorage.getItem('oficial_nombre') || "Nilsa";
 
-    <button class="btn" style="background: #27ae60; margin-top:20px;" onclick="exportarExcel()">📥 Descargar Excel Completo</button>
-</div>
-
-<script>
-    let registros = JSON.parse(localStorage.getItem('pagos_v4_final')) || [];
-    let nombreOficialActual = "Nilsa";
-
-    function registrar(user, monto, tipo, fechaManual = null) {
-        let f = fechaManual ? new Date(fechaManual + 'T12:00:00').toLocaleDateString() : new Date().toLocaleDateString();
-        registros.push({ id: Date.now() + Math.random(), fecha: f, user: user, monto: parseFloat(monto), tipo: tipo });
-        actualizar();
-    }
-
-    function cargarHistorico() {
-        const u = document.getElementById('histUsuario').value, f = document.getElementById('histFecha').value, m = document.getElementById('histMonto').value;
-        if(!f || !m) return alert('Datos incompletos');
-        registrar(u, m, (u === 'Registro Civil' ? 'Registro Civil' : 'Oficina'), f);
-    }
-
-    function cambiarOficial() {
-        const n = document.getElementById('editPolicial').value;
-        if(!n) return;
-        nombreOficialActual = n;
-        document.getElementById('nombrePolicial').innerText = "4. Oficial: " + n;
-        document.getElementById('editPolicial').placeholder = n;
-        document.getElementById('optPolicial').innerText = "4. Oficial (" + n + ")";
-        alert('Oficial actualizado');
-    }
-
-    function borrar(id) { if(confirm('¿Borrar?')) { registros = registros.filter(r => r.id !== id); actualizar(); } }
-
-    function actualizar() {
-        registros.sort((a, b) => new Date(b.fecha.split('/').reverse().join('-')) - new Date(a.fecha.split('/').reverse().join('-')));
-        localStorage.setItem('pagos_v4_final', JSON.stringify(registros));
-        
-        const tbody = document.querySelector('#tablaPagos tbody');
-        const listaInd = document.getElementById('listaIndividual');
-        tbody.innerHTML = '';
-        listaInd.innerHTML = '';
-        
-        let tO = 0, tR = 0, sumas = {};
-
-        registros.forEach(r => {
-            if(r.tipo === 'Oficina') tO += r.monto; else tR += r.monto;
-            sumas[r.user] = (sumas[r.user] || 0) + r.monto;
-            tbody.innerHTML += `<tr><td>${r.fecha}</td><td>${r.user}</td><td>${r.monto}</td><td class="delete-btn" onclick="borrar(${r.id})">✕</td></tr>`;
-        });
-
-        for(let persona in sumas) {
-            listaInd.innerHTML += `<div>• ${persona}: <b>${sumas[persona]} bs</b></div>`;
+        function showPage(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
+            actualizar();
         }
 
-        document.getElementById('totalOficina').innerText = tO + ' bs';
-        document.getElementById('totalRegistro').innerText = tR + ' bs';
-    }
+        function actualizarOficial() {
+            let n = document.getElementById('nombreOficial').value;
+            if(!n) return alert("Escribe un nombre");
+            oficialActual = n;
+            localStorage.setItem('oficial_nombre', n);
+            document.getElementById('btnNilsa').innerText = n;
+            alert("Oficial actualizado a: " + n);
+        }
 
-    function exportarExcel() {
-        let csv = "\\ufeffFecha,Nombre,Monto,Tipo\\n";
-        registros.forEach(r => { csv += `${r.fecha},${r.user},${r.monto},${r.tipo}\\n`; });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
-        a.download = 'Reporte_Pagos.csv';
-        a.click();
-    }
-    actualizar();
-</script>
-</body>
-</html>
+        function registrar(user, monto, tipo) {
+            const data = {
+                id: Date.now(),
+                fecha: new Date().toLocaleDateString(),
+                user: user,
+                monto: parseFloat(monto),
+                tipo: tipo
+            };
+            registros.push(data);
+            guardar();
+            alert("Registrado correctamente");
+        }
+
+        function borrarRegistro(id) {
+            if(confirm("¿Seguro que deseas eliminar este registro?")) {
+                registros = registros.filter(r => r.id !== id);
+                guardar();
+            }
+        }
+
+        function guardar() {
+            localStorage.setItem('maycol_db_v5', JSON.stringify(registros));
+            actualizar();
+        }
+
+        function actualizar() {
+            // Totales
+            let sOficina = 0, sServ = 0, resumen = {};
+            const historialDiv = document.getElementById('listaHistorial');
+            const reporteDiv = document.getElementById('reporteDetallado');
+            
+            historialDiv.innerHTML = '';
+            reporteDiv.innerHTML = '';
+
+            // Procesar datos
+            registros.slice().reverse().forEach(r => {
+                if(r.tipo === 'Oficina') sOficina += r.monto;
+                else sServ += r.monto;
+
+                resumen[r.user] = (resumen[r.user] || 0) + r.monto;
+
+                historialDiv.innerHTML += `
+                    <div class="history-item">
+                        <div class="history-info">
+                            <b>${r.user}</b>
+                            <small>${r.fecha} • ${r.tipo}</small>
+                        </div>
+                        <div style="display:flex; align-items:center;">
+                            <span class="history-amount">${r.monto} Bs</span>
+                            <span class="delete-icon" onclick="borrarRegistro(${r.id})">✕</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Llenar Reporte Detallado
+            for (let persona in resumen) {
+                reporteDiv.innerHTML += `
+                    <div class="rep-row">
+                        <span>${persona}</span>
+                        <b>${resumen[persona]} Bs</b>
+                    </div>
+                `;
+            }
+
+            document.getElementById('sumOficina').innerText = sOficina + " Bs";
+            document.getElementById('sumServicios').innerText = sServ + " Bs";
+            document.getElementById('totalGral').innerText = (sOficina + sServ) + " Bs";
+            document.getElementById('btnNilsa').innerText = oficialActual;
+        }
+
+        function exportarExcel() {
+            if(registros.length === 0) return alert("No hay datos");
+            let csv = "\ufeffFecha,Responsable,Monto,Tipo\n";
+            registros.forEach(r => {
+                csv += `${r.fecha},${r.user},${r.monto},${r.tipo}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link
+        
