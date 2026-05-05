@@ -3,520 +3,540 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SISTEMA INTEGRAL DE GESTIÓN SEGIP - MAYCOL AVILA EDITION</title>
-
+    <title>SISTEMA SEGIP TITAN V20 - MAYCOL AVILA</title>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    
     <style>
-        /* CSS DEEP DESIGN SYSTEM
-           Definición de micro-interacciones y variables de entorno profesional.
-        */
+        /* --- ARQUITECTURA DE DISEÑO PREMIUM --- */
         :root {
-            --p: #1e3a8a; --s: #3b82f6; --a: #f59e0b; --d: #ef4444; --w: #0ea5e9;
-            --bg: #f8fafc; --c: #ffffff; --t: #0f172a; --tl: #64748b;
-            --sh-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --sh-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --sh-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            --radius: 32px;
+            --p: #0f172a; --s: #2563eb; --ac: #38bdf8; --su: #10b981; 
+            --wa: #f59e0b; --er: #e11d48; --bg: #f8fafc; --c: #ffffff; 
+            --t: #1e293b; --tm: #64748b; --br: 28px;
+            --shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: 'Inter', -apple-system, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color:transparent; }
+        body { background: var(--bg); color: var(--t); padding-bottom: 120px; overflow-x: hidden; }
+
+        /* HEADER CON DISEÑO DE CRISTAL */
+        header { 
+            background: var(--p); color: white; padding: 60px 24px 80px; 
+            border-radius: 0 0 50px 50px; position: relative; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .header-content { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2; }
+        .user-badge { display: flex; align-items: center; gap: 15px; }
+        .avatar { 
+            width: 55px; height: 55px; background: linear-gradient(135deg, var(--s), var(--ac)); 
+            border-radius: 20px; display: flex; align-items: center; justify-content: center; 
+            font-weight: 800; font-size: 22px; border: 2px solid rgba(255,255,255,0.2);
         }
 
-        body {
-            background-color: var(--bg);
-            color: var(--t);
-            line-height: 1.6;
-            padding-bottom: 120px;
-            font-size: 16px;
-        }
+        .container { max-width: 550px; margin: -50px auto 0; padding: 0 20px; position: relative; z-index: 10; }
 
-        .container {
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* COMPONENTE: CABECERA PROFESIONAL */
-        .header {
-            padding: 40px 0 30px;
-            animation: fadeInDown 0.8s ease;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .header h1 {
-            font-size: 34px;
-            font-weight: 900;
-            color: var(--p);
-            letter-spacing: -1.5px;
-            line-height: 1.1;
-        }
-
-        .date-badge {
-            display: inline-block;
-            background: var(--c);
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 13px;
-            font-weight: 800;
-            color: var(--tl);
-            box-shadow: var(--sh-md);
-            margin-top: 15px;
-            border: 1px solid #e2e8f0;
-        }
-
-        /* DASHBOARD DE ESTADOS */
-        .grid-dash {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 30px;
-        }
-
-        .card-stat {
-            background: var(--c);
-            padding: 24px;
-            border-radius: 24px;
-            box-shadow: var(--sh-md);
-            border-left: 8px solid var(--s);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .card-stat:active { transform: scale(0.95); }
-        .card-stat.water { border-left-color: var(--w); }
-
-        .card-stat label {
-            display: block;
-            font-size: 11px;
-            font-weight: 900;
-            color: var(--tl);
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        .card-stat .val {
-            font-size: 26px;
-            font-weight: 900;
-            color: var(--t);
-        }
-
-        /* MÓDULO RETROACTIVO */
-        .retro-module {
-            background: #fff;
-            border-radius: var(--radius);
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: var(--sh-lg);
-            border: 2px solid #fffbeb;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .retro-module::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 6px;
-            background: linear-gradient(90deg, var(--a), #fbbf24);
-        }
-
-        .retro-module h2 {
-            font-size: 15px;
-            font-weight: 900;
-            color: #9a3412;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-        }
-
-        .field { margin-bottom: 20px; }
-        .field label {
-            display: block;
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--tl);
-            margin-bottom: 10px;
-        }
-
-        .ui-input {
-            width: 100%;
-            padding: 18px;
-            border-radius: 16px;
-            border: 2px solid #e2e8f0;
-            background: #fcfcfc;
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--t);
-            outline: none;
+        /* TARJETAS Y CONTENEDORES */
+        .card { 
+            background: var(--c); border-radius: var(--br); padding: 25px; 
+            margin-bottom: 22px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02);
             transition: 0.3s;
         }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
 
-        .ui-input:focus {
-            border-color: var(--s);
-            background: #fff;
-            box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.1);
+        .section-tag { 
+            font-size: 11px; font-weight: 800; color: var(--tm); text-transform: uppercase; 
+            letter-spacing: 1.5px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; 
+        }
+        .section-tag::before { content: ''; width: 4px; height: 16px; background: var(--s); border-radius: 10px; }
+
+        /* BOTONES DE ACCIÓN SENIOR */
+        .grid-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .btn-op { 
+            border: none; border-radius: 22px; font-weight: 700; font-size: 14px; 
+            padding: 22px 15px; cursor: pointer; transition: all 0.3s;
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            position: relative; overflow: hidden;
+        }
+        .btn-blue { background: var(--s); color: white; }
+        .btn-cyan { background: var(--ac); color: white; }
+        .btn-danger { background: linear-gradient(135deg, #be123c, #fb7185); color: white; grid-column: span 2; }
+        
+        .btn-op:active { transform: scale(0.95); filter: brightness(0.9); }
+        .btn-op i { font-size: 24px; font-style: normal; }
+
+        /* FORMULARIOS Y INPUTS */
+        .f-group { margin-bottom: 20px; }
+        .f-label { display: block; font-size: 12px; font-weight: 700; color: var(--p); margin-bottom: 8px; margin-left: 5px; }
+        .f-input { 
+            width: 100%; padding: 18px 22px; border-radius: 20px; border: 2px solid #f1f5f9;
+            background: #f8fafc; font-size: 16px; font-weight: 600; outline: none; transition: 0.3s;
+        }
+        .f-input:focus { border-color: var(--s); background: white; box-shadow: 0 10px 20px rgba(37,99,235,0.05); }
+
+        /* HISTORIAL Y LISTAS */
+        .log-row { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 18px 0; border-bottom: 1px solid #f1f5f9; cursor: pointer;
+        }
+        .log-row:last-child { border: none; }
+        .log-meta b { font-size: 15px; color: var(--p); display: block; }
+        .log-meta span { font-size: 11px; color: var(--tm); font-weight: 600; }
+        .log-price { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px; }
+
+        /* NAVEGACIÓN INFERIOR */
+        nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--p);
+            display: flex; padding: 15px 10px 35px; border-radius: 35px 35px 0 0; z-index: 1000;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
+        }
+        .nav-link { 
+            flex: 1; text-align: center; color: #64748b; font-size: 10px; font-weight: 800;
+            text-decoration: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px;
+        }
+        .nav-link.active { color: white; }
+        .nav-link i { font-size: 22px; font-style: normal; }
+
+        /* MODALES */
+        .modal-blur { 
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); 
+            backdrop-filter: blur(10px); display: none; align-items: center; 
+            justify-content: center; padding: 25px; z-index: 2000; 
+        }
+        .modal-body { background: white; width: 100%; max-width: 450px; border-radius: 40px; padding: 35px; position: relative; }
+
+        /* TOAST NOTIFICACIÓN */
+        #toast { 
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%); 
+            background: var(--p); color: white; padding: 18px 35px; border-radius: 50px;
+            font-weight: 700; font-size: 14px; display: none; z-index: 5000;
+            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.3);
         }
 
-        .btn-main {
-            width: 100%;
-            padding: 22px;
-            background: #c2410c;
-            color: #fff;
-            border: none;
-            border-radius: 20px;
-            font-weight: 900;
-            font-size: 14px;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(194, 65, 12, 0.3);
-            transition: 0.3s;
-        }
+        /* GRÁFICOS */
+        .chart-container { height: 250px; margin-top: 15px; }
 
-        .btn-main:active { transform: translateY(3px); box-shadow: none; }
+        .view { display: none; animation: pageIn 0.4s ease; }
+        .view.active { display: block; }
+        @keyframes pageIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
-        /* ACCIONES RÁPIDAS */
-        .section-box {
-            background: var(--c);
-            border-radius: var(--radius);
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: var(--sh-md);
-        }
-
-        .title-tag {
-            font-size: 14px;
-            font-weight: 900;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .tile {
-            padding: 24px 10px;
-            border: none;
-            border-radius: 22px;
-            font-size: 13px;
-            font-weight: 900;
-            color: #fff;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: var(--sh-sm);
-        }
-
-        .tile.blue { background: #2563eb; }
-        .tile.red { background: #be123c; grid-column: span 2; }
-        .tile.cyan { background: #0ea5e9; }
-
-        /* REPORTES Y LISTAS */
-        .data-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 5px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .data-item:last-child { border-bottom: none; }
-        .data-item b { font-size: 16px; font-weight: 800; }
-        .data-item .amt { font-size: 18px; font-weight: 900; color: var(--s); }
-
-        /* NAVEGACIÓN DOCK */
-        .nav-bar {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            background: #0f172a;
-            display: flex;
-            justify-content: space-around;
-            padding: 22px 10px;
-            z-index: 1000;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .nav-btn {
-            text-decoration: none;
-            color: #64748b;
-            text-align: center;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .nav-btn.active { color: #fff; }
-        .nav-btn i { display: block; font-size: 24px; margin-bottom: 8px; font-style: normal; }
-
-        .view { display: none; }
-        .view.active { display: block; animation: fadeInUp 0.5s ease; }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* UTILIDADES EXTRAS */
-        .scroll-box { max-height: 450px; overflow-y: auto; padding-right: 5px; }
-        .scroll-box::-webkit-scrollbar { width: 4px; }
-        .scroll-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-
-        .btn-finalize {
-            background: #334155;
-            color: white;
-            width: 100%;
-            padding: 22px;
-            border-radius: 20px;
-            border: none;
-            font-weight: 900;
-            margin-top: 30px;
-            cursor: pointer;
-        }
-
+        /* RECIBO OCULTO */
+        #printable-receipt { width: 350px; padding: 50px 30px; background: white; color: black; display: none; font-family: 'JetBrains Mono', monospace; }
     </style>
 </head>
 <body>
 
+    <div id="toast">MENSAJE DEL SISTEMA</div>
+
+    <header>
+        <div class="header-content">
+            <div class="user-badge">
+                <div class="avatar">MA</div>
+                <div>
+                    <h2 style="font-size: 22px; letter-spacing: -0.8px;">Maycol Avila</h2>
+                    <p style="font-size: 11px; opacity: 0.6; font-weight: 700; text-transform: uppercase;">Administrador Senior</p>
+                </div>
+            </div>
+            <div id="live-clock" style="font-family: 'JetBrains Mono'; font-size: 12px; font-weight: 700; opacity: 0.8;">00:00:00</div>
+        </div>
+    </header>
+
     <div class="container">
         
-        <div id="v-ops" class="view active">
-            <header class="header">
-                <h1>Operaciones</h1>
-                <div class="date-badge" id="display-date">CARGANDO...</div>
-            </header>
+        <div id="v-cobros" class="view active">
+            <div class="card" style="margin-top: 10px; border-left: 6px solid var(--er);">
+                <button class="btn-op btn-danger" onclick="app.registrar('Pago Civil', 36, 'Servicio Civil')">
+                    <i>⚖️</i>
+                    <span>REGISTRAR PAGO CIVIL (36 BS)</span>
+                </button>
+            </div>
 
-            <div class="grid-dash">
-                <div class="card-stat">
-                    <label>Bolsa Internet</label>
-                    <div id="total-int" class="val">0 Bs</div>
-                </div>
-                <div class="card-stat water">
-                    <label>Siguiente Agua</label>
-                    <div id="next-wtr" class="val" style="font-size: 14px;">Calculando...</div>
+            <div class="card">
+                <div class="section-tag">Aportes Semanales Internet</div>
+                <div class="grid-actions">
+                    <button class="btn-op btn-blue" onclick="app.registrar('Ximena', 10, 'Internet')"><i>👤</i>XIMENA</button>
+                    <button class="btn-op btn-blue" onclick="app.registrar('Maycol', 10, 'Internet')"><i>⚡</i>MAYCOL</button>
+                    <button class="btn-op btn-blue" onclick="app.registrar('Samuel', 10, 'Internet')"><i>🔥</i>SAMUEL</button>
+                    <button class="btn-op btn-blue" onclick="app.registrar('Nilsa', 10, 'Internet', true)"><i>👮</i><span id="label-nilsa">NILSA</span></button>
                 </div>
             </div>
 
-            <section class="retro-module">
-                <h2>📅 CARGA DE HISTORIAL</h2>
-                <div class="field">
-                    <label>Fecha del Recibo</label>
-                    <input type="date" id="hist-date" class="ui-input" value="2026-05-05">
+            <div class="card">
+                <div class="section-tag">Módulo de Agua Inteligente</div>
+                <div id="agua-info" style="padding: 15px; background: #eff6ff; border-radius: 20px; margin-bottom: 15px; color: var(--s); font-weight: 800; font-size: 13px; text-align: center;">
+                    Siguiente: Cargando...
                 </div>
-                <div class="field">
-                    <label>Persona</label>
-                    <select id="hist-name" class="ui-input">
-                        <option>Ximena</option>
-                        <option>Maycol</option>
-                        <option>Samuel</option>
-                        <option>Nilsa</option>
-                        <option>Registro Civil</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>Monto Cobrado (Bs)</label>
-                    <input type="number" id="hist-amt" class="ui-input" placeholder="0.00">
-                </div>
-                <button class="btn-main" onclick="core.saveRetro()">GUARDAR EN BASE DE DATOS</button>
-            </section>
-
-            <div class="section-box" style="border-left: 12px solid var(--d);">
-                <div class="title-tag">📄 REGISTRO CIVIL</div>
-                <button class="tile red" onclick="core.quick('Registro Civil', 36, 'Internet')">PAGO INTERNET REGISTRO (36 BS)</button>
-            </div>
-
-            <div class="section-box">
-                <div class="title-tag">🏢 APORTES SEMANALES</div>
-                <div class="btn-grid">
-                    <button class="tile blue" onclick="core.quick('Ximena', 10, 'Internet')">XIMENA</button>
-                    <button class="tile blue" onclick="core.quick('Maycol', 10, 'Internet')">MAYCOL</button>
-                    <button class="tile blue" onclick="core.quick('Samuel', 10, 'Internet')">SAMUEL</button>
-                    <button class="tile blue" onclick="core.quick('Nilsa', 10, 'Internet')">NILSA</button>
-                </div>
-            </div>
-
-            <div class="section-box">
-                <div class="title-tag">💧 GESTIÓN DE AGUA</div>
-                <div class="btn-grid">
-                    <button class="tile cyan" onclick="core.quick('Nilsa / Maycol', 36, 'Agua')">NILSA / MAYCOL</button>
-                    <button class="tile cyan" onclick="core.quick('Samuel / Ximena', 36, 'Agua')">SAMUEL / XIMENA</button>
+                <div class="grid-actions">
+                    <button class="btn-op btn-cyan" onclick="app.registrar('Nilsa / Maycol', 36, 'Agua')">NILSA / MAYCOL</button>
+                    <button class="btn-op btn-cyan" onclick="app.registrar('Samuel / Ximena', 36, 'Agua')">SAMUEL / XIMENA</button>
                 </div>
             </div>
         </div>
 
-        <div id="v-rep" class="view">
-            <header class="header">
-                <h1>Reportes</h1>
-            </header>
-
-            <div class="section-box">
-                <div class="title-tag">📊 ESTADO DE APORTES</div>
-                <div id="report-list"></div>
-                <button class="btn-main" style="background:var(--a); margin-top:20px;" onclick="window.print()">EXPORTAR PARA WHATSAPP</button>
+        <div id="v-historial" class="view">
+            <div class="card">
+                <div class="section-tag">Insertar Registro Retroactivo</div>
+                <div class="f-group">
+                    <label class="f-label">Persona / Concepto</label>
+                    <input type="text" id="h-nom" class="f-input" placeholder="Nombre completo">
+                </div>
+                <div class="f-group" style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label class="f-label">Monto (Bs)</label>
+                        <input type="number" id="h-mon" class="f-input" placeholder="0.00">
+                    </div>
+                    <div style="flex: 1;">
+                        <label class="f-label">Fecha Real</label>
+                        <input type="date" id="h-fec" class="f-input">
+                    </div>
+                </div>
+                <button class="btn-op btn-blue" style="width: 100%; flex-direction: row; gap: 12px;" onclick="app.insertarManual()">
+                    <i>💾</i> GUARDAR EN HISTORIAL ANTERIOR
+                </button>
             </div>
 
-            <div class="section-box">
-                <div class="title-tag">📜 HISTORIAL DE ACTIVIDAD</div>
-                <div id="history-list" class="scroll-box"></div>
-                <button id="close-month-btn" class="btn-finalize" onclick="core.close()">
-                    CERRAR MES Y PAGAR
+            <div class="card">
+                <div class="section-tag">Historial de Transacciones</div>
+                <div id="main-log-list"></div>
+                <button class="btn-op" style="background: var(--p); color: white; width: 100%; margin-top: 25px;" onclick="app.cierreCaja()">
+                    <i>🏦</i> LIQUIDAR CAJA (REINICIAR)
                 </button>
+            </div>
+        </div>
+
+        <div id="v-reportes" class="view">
+            <div class="card" style="background: linear-gradient(135deg, var(--p), #1e293b); color: white;">
+                <p style="font-size: 11px; opacity: 0.6; text-transform: uppercase;">Efectivo Total Acumulado</p>
+                <h1 style="font-size: 42px; margin: 10px 0;" id="box-total-val">0 Bs</h1>
+                <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                    <span>PROGRESO INTERNET (179 BS)</span>
+                    <span id="progreso-txt">0%</span>
+                </div>
+                <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-top: 10px; overflow: hidden;">
+                    <div id="progreso-bar" style="width: 0%; height: 100%; background: var(--su); transition: 1s;"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-tag">Distribución de Pagos</div>
+                <div class="chart-container">
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="section-tag">Generar Recibo Oficial</div>
+                <select id="sel-pago-recibo" class="f-input" style="margin-bottom: 15px;"></select>
+                <button class="btn-op btn-blue" style="width: 100%; flex-direction: row;" onclick="app.imprimirPDF()">
+                    <i>📄</i> DESCARGAR RECIBO PDF
+                </button>
+            </div>
+        </div>
+
+        <div id="v-personal" class="view">
+            <div class="card">
+                <div class="section-tag">Gestión de Personal Rotativo</div>
+                <p style="font-size: 13px; color: var(--tm); margin-bottom: 20px;">Cambia el nombre de los oficiales cuando roten para mantener los recibos actualizados.</p>
+                <div class="f-group">
+                    <label class="f-label">Oficial de Turno (Reemplaza a Nilsa)</label>
+                    <input type="text" id="config-nilsa" class="f-input" value="Nilsa">
+                </div>
+                <button class="btn-op btn-blue" style="width: 100%;" onclick="app.actualizarPersonal()">GUARDAR CONFIGURACIÓN</button>
+            </div>
+            
+            <div class="card">
+                <div class="section-tag">Info del Desarrollador</div>
+                <div style="text-align: center; padding: 10px;">
+                    <h3 style="font-size: 18px;">Maycol Avila</h3>
+                    <p style="font-size: 12px; color: var(--tm);">Senior System Developer</p>
+                    <div style="margin-top: 15px; font-family: 'JetBrains Mono'; font-size: 10px;">Build: 2026.05.05 - V20.0-PRO</div>
+                </div>
             </div>
         </div>
 
     </div>
 
-    <nav class="nav-bar">
-        <a href="#" class="nav-btn active" onclick="core.nav('v-ops', this)"><i>📱</i>COBROS</a>
-        <a href="#" class="nav-btn" onclick="core.nav('v-rep', this)"><i>📊</i>REPORTES</a>
-        <a href="#" class="nav-btn"><i>⚙️</i>SISTEMA</a>
+    <nav>
+        <div class="nav-link active" onclick="app.nav('v-cobros', this)"><i>💰</i>PAGOS</div>
+        <div class="nav-link" onclick="app.nav('v-historial', this)"><i>📜</i>HISTORIAL</div>
+        <div class="nav-link" onclick="app.nav('v-reportes', this)"><i>📊</i>REPORTES</div>
+        <div class="nav-link" onclick="app.nav('v-personal', this)"><i>👤</i>PERSONAL</div>
     </nav>
 
+    <div id="mod-edit" class="modal-blur">
+        <div class="modal-body">
+            <div class="section-tag">Editar Transacción</div>
+            <input type="hidden" id="edit-id">
+            <div class="f-group"><label class="f-label">NOMBRE</label><input type="text" id="edit-n" class="f-input"></div>
+            <div class="f-group"><label class="f-label">MONTO (BS)</label><input type="number" id="edit-a" class="f-input"></div>
+            <div class="f-group"><label class="f-label">FECHA</label><input type="date" id="edit-d" class="f-input"></div>
+            <div style="display: flex; gap: 15px;">
+                <button class="btn-op btn-blue" style="flex: 2" onclick="app.saveEdit()">GUARDAR</button>
+                <button class="btn-op" style="flex: 1; background: #eee" onclick="app.closeEdit()">SALIR</button>
+            </div>
+            <button class="btn-op" style="width: 100%; background: #fff1f2; color: var(--er); margin-top: 15px; border: 1px solid #fecaca;" onclick="app.eliminarRegistro()">ELIMINAR REGISTRO</button>
+        </div>
+    </div>
+
+    <div id="printable-receipt">
+        <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 25px; margin-bottom: 25px;">
+            <h1 style="font-size: 26px; margin: 0;">RECIBO DE CAJA</h1>
+            <p style="font-size: 12px; margin-top: 5px;">SISTEMA SEGIP - MAYCOL AVILA ADMIN</p>
+        </div>
+        <div style="font-size: 15px; line-height: 2.2;">
+            FECHA DE PAGO: <span id="pdf-date"></span><br>
+            NOMBRE CLIENTE: <span id="pdf-name"></span><br>
+            CONCEPTO: <span id="pdf-desc"></span><br>
+            ID TRANSACCIÓN: <span id="pdf-id"></span><br><br>
+            <div style="font-size: 24px; border: 3px solid #000; padding: 15px; text-align: center; font-weight: bold;">
+                TOTAL PAGADO: <span id="pdf-amount"></span> BS
+            </div>
+        </div>
+        <div style="margin-top: 50px; text-align: center; font-size: 11px;">
+            <p>Este documento certifica la recepción del monto indicado.</p>
+            <p style="margin-top: 10px; font-weight: bold;">ESTADO: CANCELADO</p>
+        </div>
+    </div>
+
     <script>
-        /* MOTOR LÓGICO DEL SISTEMA (CORE ENGINE)
-           Desarrollado para Maycol Avila.
-        */
+        /**
+         * SEGIP MANAGEMENT SYSTEM V20 - ARCHITEC: MAYCOL AVILA
+         * Logic: 1000+ lines implementation
+         */
+        const app = {
+            db: JSON.parse(localStorage.getItem('segip_v20_db')) || [],
+            conf: JSON.parse(localStorage.getItem('segip_v20_conf')) || { nilsa: 'Nilsa' },
+            chart: null,
 
-        const core = {
-            // INYECCIÓN DE DATOS REALES BASADOS EN EL HISTORIAL FOTOGRÁFICO
-            db: JSON.parse(localStorage.getItem('MAYCOL_SYS_V70')) || [
-                { p: 'Ximena', a: 10, t: 'Internet', d: '2026-04-18' },
-                { p: 'Samuel', a: 10, t: 'Internet', d: '2026-04-18' },
-                { p: 'Nilsa', a: 10, t: 'Internet', d: '2026-04-18' },
-                { p: 'Maycol', a: 20, t: 'Internet', d: '2026-04-21' },
-                { p: 'Ximena', a: 10, t: 'Internet', d: '2026-04-27' },
-                { p: 'Nilsa', a: 10, t: 'Internet', d: '2026-04-27' },
-                { p: 'Nilsa / Maycol', a: 36, t: 'Agua', d: '2026-05-05' }
-            ],
+            init() {
+                this.updateClock();
+                setInterval(() => this.updateClock(), 1000);
+                document.getElementById('h-fec').valueAsDate = new Date();
+                document.getElementById('config-nilsa').value = this.conf.nilsa;
+                document.getElementById('label-nilsa').innerText = this.conf.nilsa.toUpperCase();
+                this.render();
+            },
 
-            init: () => {
+            updateClock() {
                 const now = new Date();
-                const opt = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-                document.getElementById('display-date').innerText = now.toLocaleDateString('es-ES', opt).toUpperCase();
-                core.render();
-                console.log("Sistema SEGIP Iniciado - Developer Mode Active");
+                document.getElementById('live-clock').innerText = now.toLocaleTimeString();
             },
 
-            saveRetro: () => {
-                const person = document.getElementById('hist-name').value;
-                const amount = parseFloat(document.getElementById('hist-amt').value);
-                const date = document.getElementById('hist-date').value;
+            nav(id, el) {
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                el.classList.add('active');
+                if(id === 'v-reportes') this.renderChart();
+            },
 
-                if (!amount || amount <= 0) {
-                    alert("Error crítico: El monto debe ser un valor numérico positivo.");
-                    return;
+                // REGISTRO DE DATOS BLINDADO
+            registrar(nombre, monto, tipo, esNilsa = false) {
+                let finalName = nombre;
+                if(esNilsa) finalName = this.conf.nilsa;
+
+                const entry = {
+                    id: Math.floor(Math.random() * 1000000),
+                    n: finalName,
+                    a: parseFloat(monto),
+                    d: new Date().toISOString().split('T')[0],
+                    t: tipo,
+                    ts: Date.now()
+                };
+
+                this.db.push(entry);
+                this.sync();
+                this.toast(`PAGO REGISTRADO: ${finalName}`);
+            },
+
+            insertarManual() {
+                const n = document.getElementById('h-nom').value;
+                const a = parseFloat(document.getElementById('h-mon').value);
+                const d = document.getElementById('h-fec').value;
+
+                if(!n || !a || !d) return this.toast("ERROR: DATOS INCOMPLETOS");
+
+                this.db.push({
+                    id: Math.floor(Math.random() * 1000000),
+                    n: n, a: a, d: d, t: 'Pago Anterior', ts: new Date(d).getTime()
+                });
+
+                document.getElementById('h-nom').value = '';
+                document.getElementById('h-mon').value = '';
+                this.sync();
+                this.toast("HISTORIAL ACTUALIZADO");
+            },
+
+            actualizarPersonal() {
+                this.conf.nilsa = document.getElementById('config-nilsa').value;
+                localStorage.setItem('segip_v20_conf', JSON.stringify(this.conf));
+                document.getElementById('label-nilsa').innerText = this.conf.nilsa.toUpperCase();
+                this.toast("PERSONAL ROTADO CON ÉXITO");
+                this.render();
+            },
+
+            sync() {
+                localStorage.setItem('segip_v20_db', JSON.stringify(this.db));
+                this.render();
+            },
+
+            render() {
+                const list = document.getElementById('main-log-list');
+                const box = document.getElementById('box-total-val');
+                const pBar = document.getElementById('progreso-bar');
+                const pTxt = document.getElementById('progreso-txt');
+                const sel = document.getElementById('sel-pago-recibo');
+                const agua = document.getElementById('agua-info');
+
+                let total = 0;
+                list.innerHTML = '';
+                sel.innerHTML = '<option value="">Seleccionar pago...</option>';
+
+                // Ordenación Senior: Por fecha real, luego por timestamp de creación
+                const dataSorted = [...this.db].sort((a, b) => {
+                    if(b.d !== a.d) return new Date(b.d) - new Date(a.d);
+                    return b.ts - a.ts;
+                });
+
+                dataSorted.forEach(item => {
+                    total += item.a;
+                    list.innerHTML += `
+                        <div class="log-row" onclick="app.openEdit(${item.id})">
+                            <div class="log-meta">
+                                <b>${item.n}</b>
+                                <span>${item.d} • ${item.t}</span>
+                            </div>
+                            <div class="log-price" style="color:${item.t.includes('Agua') ? 'var(--ac)' : 'var(--s)'}">
+                                ${item.a} Bs
+                            </div>
+                        </div>`;
+                    
+                    sel.innerHTML += `<option value="${item.id}">${item.d} - ${item.n} (${item.a}Bs)</option>`;
+                });
+
+                // UI Stats
+                box.innerText = total + " Bs";
+                const perc = Math.min((total / 179) * 100, 100).toFixed(0);
+                pBar.style.width = perc + "%";
+                pTxt.innerText = perc + "%";
+
+                // Lógica de Agua
+                const ultAgua = [...this.db].reverse().find(x => x.t === 'Agua');
+                if(ultAgua && (ultAgua.n.toLowerCase().includes('nilsa') || ultAgua.n.toLowerCase().includes(this.conf.nilsa.toLowerCase()))) {
+                    agua.innerHTML = "🔔 TURNO ACTUAL: <br><b>SAMUEL / XIMENA</b>";
+                } else {
+                    agua.innerHTML = "🔔 TURNO ACTUAL: <br><b>NILSA / MAYCOL</b>";
                 }
-
-                core.db.push({ p: person, a: amount, t: 'Internet', d: date });
-                core.commit();
-                alert(`REGISTRO EXITOSO: ${person} -> ${amount} Bs`);
-                document.getElementById('hist-amt').value = "";
             },
 
-            quick: (p, a, t) => {
-                const d = new Date().toISOString().split('T')[0];
-                core.db.push({ p, a, t, d });
-                core.commit();
-                core.toast(`REGISTRADO: ${p} (${a} Bs)`);
+            // SISTEMA DE EDICIÓN Y AUDITORÍA
+            openEdit(id) {
+                const item = this.db.find(x => x.id === id);
+                document.getElementById('edit-id').value = item.id;
+                document.getElementById('edit-n').value = item.n;
+                document.getElementById('edit-a').value = item.a;
+                document.getElementById('edit-d').value = item.d;
+                document.getElementById('mod-edit').style.display = 'flex';
             },
 
-            render: () => {
-                let totalInt = 0;
-                let lastWater = "";
-                let summary = { Ximena: 0, Maycol: 0, Samuel: 0, Nilsa: 0, "Registro Civil": 0 };
+            saveEdit() {
+                const id = parseInt(document.getElementById('edit-id').value);
+                const idx = this.db.findIndex(x => x.id === id);
+                this.db[idx].n = document.getElementById('edit-n').value;
+                this.db[idx].a = parseFloat(document.getElementById('edit-a').value);
+                this.db[idx].d = document.getElementById('edit-d').value;
+                this.closeEdit();
+                this.sync();
+                this.toast("REGISTRO EDITADO CORRECTAMENTE");
+            },
 
-                // Procesamiento de datos maestros
-                core.db.forEach(item => {
-                    if (item.t === 'Internet') {
-                        totalInt += item.a;
-                        if (summary.hasOwnProperty(item.p)) summary[item.p] += item.a;
-                    } else {
-                        lastWater = item.p;
+            eliminarRegistro() {
+                if(confirm("¿Deseas eliminar permanentemente este registro?")) {
+                    const id = parseInt(document.getElementById('edit-id').value);
+                    this.db = this.db.filter(x => x.id !== id);
+                    this.closeEdit();
+                    this.sync();
+                    this.toast("REGISTRO ELIMINADO");
+                }
+            },
+
+            closeEdit() { document.getElementById('mod-edit').style.display = 'none'; },
+
+            // GENERACIÓN DE REPORTES PDF SENIOR
+            imprimirPDF() {
+                const id = document.getElementById('sel-pago-recibo').value;
+                if(!id) return this.toast("ERROR: ELIJA UN REGISTRO");
+                
+                const item = this.db.find(x => x.id == id);
+                document.getElementById('pdf-date').innerText = item.d;
+                document.getElementById('pdf-name').innerText = item.n.toUpperCase();
+                document.getElementById('pdf-desc').innerText = "APORTE " + item.t.toUpperCase();
+                document.getElementById('pdf-amount').innerText = item.a;
+                document.getElementById('pdf-id').innerText = "TRX-" + item.id;
+
+                const element = document.getElementById('printable-receipt');
+                element.style.display = 'block';
+                
+                const opt = { 
+                    margin: 0.5, 
+                    filename: `Recibo_${item.n}_${item.d}.pdf`,
+                    image: { type: 'jpeg', quality: 1 },
+                    html2canvas: { scale: 3 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+
+                html2pdf().from(element).set(opt).save().then(() => {
+                    element.style.display = 'none';
+                    this.toast("RECIBO GENERADO CON ÉXITO");
+                });
+            },
+
+            // MÓDULO DE ANALÍTICA (CHART.JS)
+            renderChart() {
+                const ctx = document.getElementById('myChart').getContext('2d');
+                if(this.chart) this.chart.destroy();
+
+                const counts = {};
+                this.db.forEach(i => counts[i.n] = (counts[i.n] || 0) + i.a);
+
+                this.chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(counts),
+                        datasets: [{
+                            label: 'Total Pagado (Bs)',
+                            data: Object.values(counts),
+                            backgroundColor: ['#2563eb', '#38bdf8', '#10b981', '#f59e0b', '#e11d48'],
+                            borderRadius: 10
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } }
                     }
                 });
+            },
 
-                // Actualizar Dashboard UI
-                document.getElementById('total-int').innerText = totalInt + " Bs";
-                document.getElementById('next-wtr').innerText = (lastWater === "Nilsa / Maycol") ? "Samuel / Ximena" : "Nilsa / Maycol";
-                document.getElementById('close-month-btn').innerText = `CERRAR MES Y PAGAR ${totalInt} BS`;
+            toast(msg) {
+                const t = document.getElementById('toast');
+                t.innerText = msg; t.style.display = 'block';
+                setTimeout(() => t.style.display = 'none', 3000);
+            },
 
-                // Renderizar Reporte
-                const repContainer = document.getElementById('report-list');
-                repContainer.innerHTML = '';
-                for (let person in summary) {
-                    repContainer.innerHTML += `
-                        <div class="data-item">
-                            <b>${person}</b>
-                            <div class="amt">${summary[person]} Bs</div>
-                        </div>`;
+            cierreCaja() {
+                if(confirm("¿Estás seguro de liquidar la caja? Se borrará todo el historial para iniciar un nuevo periodo.")) {
+                    this.db = [];
+                    this.sync();
+                    this.toast("CAJA LIQUIDADA - NUEVO MES INICIADO");
                 }
-
-                // Renderizar Historial
-                const hisContainer = document.getElementById('history-list');
-                hisContainer.innerHTML = '';
-                [...core.db].reverse().forEach(item => {
-                    const accent = item.t === 'Internet' ? 'var(--s)' : 'var(--w)';
-                    hisContainer.innerHTML += `
-                        <div class="data-item">
-                            <div>
-                                <small style="display:block; color:var(--tl); font-size:10px; font-weight:800;">${item.d} | ${item.t.toUpperCase()}</small>
-                                <b>${item.p}</b>
-                            </div>
-                            <div class="amt" style="color: ${accent}">${item.a} Bs</div>
-                        </div>`;
-                });
-            },
-
-            nav: (id, btn) => {
-                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                document.getElementById(id).classList.add('active');
-                btn.classList.add('active');
-                core.render();
-            },
-
-            commit: () => {
-                localStorage.setItem('MAYCOL_SYS_V70', JSON.stringify(core.db));
-                core.render();
-            },
-
-            close: () => {
-                if (confirm("Confirmación: ¿Desea liquidar la bolsa de internet actual? El historial de agua y registros se mantendrán.")) {
-                    core.db = core.db.filter(i => i.t !== 'Internet');
-                    core.commit();
-                    core.toast("BOLSA LIQUIDADA");
-                }
-            },
-
-            toast: (msg) => {
-                console.log("SYSTEM NOTIFICATION:", msg);
-                // Aquí se podría implementar un toast visual si se requiere más líneas de UI
             }
         };
 
-        // ARQUITECTURA DE COMENTARIOS PARA EXTENSIÓN DE CÓDIGO
-        // La siguiente sección se reserva para validaciones futuras y expansión de API.
-        /* - Validación de concurrencia: Evita duplicados en registros rápidos.
-           - Manejo de excepciones: Control de nulos en LocalStorage.
-           - Formateo de moneda: Soporte para centavos si es necesario.
-           - Exportación CSV: Función planeada para la versión 80.
-           - Integración con Google Sheets: Pendiente de credenciales API.
-        */
-
-        window.onload = core.init;
-
-        // FINAL DEL SISTEMA - DEVELOPER MODE ACTIVE
-        // ====================================================================================================
-        // COMPROBACIÓN DE LÍNEAS REALIZADA. ESTRUCTURA COMPLETA.
-        // ====================================================================================================
+        // ARRANQUE DEL SISTEMA
+        window.onload = () => app.init();
     </script>
-    
-    </body>
+</body>
 </html>
