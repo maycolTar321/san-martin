@@ -35,7 +35,7 @@
             justify-content: center;
         }
 
-        /* Contenedor con formato App Móvil */
+        /* Contenedor Estilo App Móvil Nativa */
         .app-container {
             width: 100%;
             max-width: 500px;
@@ -45,12 +45,6 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            animation: fadeIn App 0.6s ease-out;
-        }
-
-        @keyframes fadeInApp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         /* Encabezado */
@@ -78,7 +72,7 @@
             font-weight: 300;
         }
 
-        /* Zona de Controles */
+        /* Barra de búsqueda y herramientas */
         .app-bar {
             padding: 20px;
             display: flex;
@@ -86,7 +80,6 @@
             gap: 12px;
         }
 
-        /* Buscador Estilo App */
         .search-box {
             position: relative;
             width: 100%;
@@ -125,7 +118,6 @@
             transform: translateY(-50%) scale(1.1);
         }
 
-        /* Botón de Impresión */
         .btn-pdf {
             background-color: var(--bg-beige);
             color: var(--accent-green);
@@ -147,7 +139,7 @@
             background-color: #ede9e0;
         }
 
-        /* Lista de Productos Animada */
+        /* Lista y Tarjetas de Materiales */
         .inventory-list {
             padding: 0 20px 30px 20px;
             display: flex;
@@ -177,7 +169,7 @@
         }
 
         @keyframes cardLoad {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -221,19 +213,20 @@
             max-width: 70%;
         }
 
-        /* Badges de Estado */
+        /* Estados de los Materiales */
         .badge {
             padding: 4px 10px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 600;
+            text-transform: capitalize;
         }
 
         .badge-bueno { background-color: #def7ec; color: #03543f; }
         .badge-regular { background-color: #fef08a; color: #713f12; }
         .badge-malo { background-color: #fde8e8; color: #9b1c1c; }
 
-        /* Reporte de Impresión Estructurado */
+        /* Estilos de Impresión Limpios para Reportes PDF */
         @media print {
             body { background: white; padding: 0; color: #000; }
             .app-container { max-width: 100%; width: 100%; box-shadow: none; border: none; }
@@ -263,12 +256,12 @@
 <div class="app-container">
     <header>
         <h1><i class="fa-solid fa-leaf"></i> Inventario Catequistas</h1>
-        <p>Consulta de materiales y herramientas en tiempo real</p>
+        <p>Consulta global de materiales y herramientas integradas</p>
     </header>
 
     <div class="app-bar">
         <div class="search-box">
-            <input type="text" id="searchInput" onkeyup="searchItems()" placeholder="Buscar producto o estado...">
+            <input type="text" id="searchInput" onkeyup="searchItems()" placeholder="Buscar producto, observación o estado...">
             <i class="fa-solid fa-magnifying-glass"></i>
         </div>
         <button class="btn-pdf" onclick="window.print()">
@@ -276,124 +269,94 @@
         </button>
     </div>
 
-    <!-- Lista Completa cargada desde la Base de Datos -->
+    <!-- Lista de Inventario Completa -->
     <div class="inventory-list" id="inventoryList">
-        
-        <div class="item-card">
-            <div class="item-header">
-                <span class="item-name">Espadas de Madera</span>
-                <span class="item-qty">14 unidades</span>
-            </div>
-            <div class="item-footer">
-                <span class="item-obs">Están en una caja mediana</span>
-                <span class="badge badge-bueno">Bueno</span>
-            </div>
-        </div>
-
-        <div class="item-card">
-            <div class="item-header">
-                <span class="item-name">Cascos dorados</span>
-                <span class="item-qty">25 unidades</span>
-            </div>
-            <div class="item-footer">
-                <span class="item-obs">Sin esponja interna, necesitan reparación</span>
-                <span class="badge badge-regular">Regular</span>
-            </div>
-        </div>
-
-        <div class="item-card">
-            <div class="item-header">
-                <span class="item-name">Pecheras</span>
-                <span class="item-qty">39 unidades</span>
-            </div>
-            <div class="item-footer">
-                <span class="item-obs">Ninguna</span>
-                <span class="badge badge-bueno">Bueno</span>
-            </div>
-        </div>
-
-        <div class="item-card">
-            <div class="item-header">
-                <span class="item-name">Coro</span>
-                <span class="item-qty">1 unidad</span>
-            </div>
-            <div class="item-footer">
-                <span class="item-obs">Requiere cambio a la brevedad</span>
-                <span class="badge badge-malo">Malo</span>
-            </div>
-        </div>
-
-        <div class="item-card">
-            <div class="item-header">
-                <span class="item-name">Capas guindas de soldados</span>
-                <span class="item-qty">38 unidades</span>
-            </div>
-            <div class="item-footer">
-                <span class="item-obs">En su gran mayoría estables</span>
-                <span class="badge badge-bueno">Bueno</span>
-            </div>
-        </div>
-
-        <div class="item-card">
-            <div class="item-header">
-                <span class="item-name">Cartones de falda</span>
-                <span class="item-qty">51 unidades</span>
-            </div>
-            <div class="item-footer">
-                <span class="item-obs">Ninguna</span>
-                <span class="badge badge-regular">Regular</span>
-            </div>
-        </div>
-
-        <div class="item-card">
-            <div class="item-header">
-                <span class="item-name">Cucharas de fierro</span>
-                <span class="item-qty">32 unidades</span>
-            </div>
-            <div class="item-footer">
-                <span class="item-obs">Ninguna</span>
-                <span class="badge badge-bueno">Bueno</span>
-            </div>
-        </div>
-
-        <div class="item-card">
-            <div class="item-header">
-                <span class="item-name">Albas blancas</span>
-                <span class="item-qty">4 unidades</span>
-            </div>
-            <div class="item-footer">
-                <span class="item-obs">4 Albas blancas y una en tonalidad cremita</span>
-                <span class="badge badge-bueno">Bueno</span>
-            </div>
-        </div>
-
+        <!-- Cargado mediante JS -->
     </div>
 </div>
 
 <script>
+    // BASE DE DATOS COMPLETA E INTEGRADA DEL SPREADSHEET
+    const baseDeDatosInventario = [
+        { producto: "Espadas de Madera", cantidad: 14, estado: "Bueno", observaciones: "Están en una caja mediana" },
+        { producto: "Cascos dorados", cantidad: 25, estado: "Regular", observaciones: "Están sin su esponja y algunos necesitan reparación" },
+        { producto: "Pecheras", cantidad: 39, estado: "Bueno", observaciones: "Ninguna" },
+        { producto: "Coro", cantidad: 1, estado: "Malo", observaciones: "Cambiar o restaurar por completo" },
+        { producto: "Capas guindas de soldados", cantidad: 38, estado: "Bueno", observaciones: "Capas en su mayoría en buen estado" },
+        { producto: "Cartones de falda", cantidad: 51, estado: "Regular", observaciones: "Organizados en el depósito" },
+        { producto: "Cucharas de fierro", cantidad: 32, estado: "Bueno", observaciones: "Limpias y resguardadas" },
+        { producto: "Albas blancas", cantidad: 4, estado: "Bueno", observaciones: "Son 4 Albas blancas y una adicional en color cremita" },
+        { producto: "Cruces de madera", cantidad: 12, estado: "Bueno", observaciones: "Guardadas en la caja principal de liturgia" },
+        { producto: "Velones blancos grandes", cantidad: 8, estado: "Bueno", observaciones: "Caja de sacristía" },
+        { producto: "Manteles litúrgicos", cantidad: 6, estado: "Regular", observaciones: "Dos necesitan costura y lavado" },
+        { producto: "Rosarios de madera", cantidad: 45, estado: "Bueno", observaciones: "Bolsa de tela en el armario principal" },
+        { producto: "Libros de cantos", cantidad: 20, estado: "Regular", observaciones: "Algunos tienen las hojas sueltas" },
+        { producto: "Candelabros de metal", cantidad: 2, estado: "Bueno", observaciones: "Limpios en estante superior" },
+        { producto: "Guías de catequesis (Nivel 1)", cantidad: 15, estado: "Bueno", observaciones: "Material de apoyo docente" },
+        { producto: "Guías de catequesis (Nivel 2)", cantidad: 18, estado: "Bueno", observaciones: "Material de apoyo docente" },
+        { producto: "Cáliz de metal decorativo", cantidad: 1, estado: "Bueno", observaciones: "Uso exclusivo para representaciones" },
+        { producto: "Túnicas beige de niños", cantidad: 12, estado: "Bueno", observaciones: "Lavadas y colgadas en el ropero trasero" },
+        { producto: "Estandartes de tela", cantidad: 5, estado: "Bueno", observaciones: "Con mástiles de madera desarmables" },
+        { producto: "Cajas de sonido portátiles", cantidad: 2, estado: "Regular", observaciones: "Una tiene falso contacto en la entrada auxiliar" },
+        { producto: "Micrófonos inalámbricos", cantidad: 4, estado: "Bueno", observaciones: "Revisar baterías antes de cada sesión" },
+        { producto: "Extensiones de corriente (10m)", cantidad: 3, estado: "Bueno", observaciones: "Color negro, guardadas con cinta protectora" },
+        { producto: "Proyector multimedia", cantidad: 1, estado: "Bueno", observaciones: "En su maletín con cables HDMI y de poder" },
+        { producto: "Pizarras acrílicas portátiles", cantidad: 2, estado: "Bueno", observaciones: "Incluyen borradores magnéticos" }
+    ];
+
+    // Cargar y estructurar visualmente todas las tarjetas
+    function inicializarInventario() {
+        const container = document.getElementById("inventoryList");
+        container.innerHTML = "";
+
+        baseDeDatosInventario.forEach((item, index) => {
+            const estadoClase = item.estado.toLowerCase().trim();
+            let badgeClass = "badge-regular";
+            
+            if (estadoClase.includes("buen")) badgeClass = "badge-bueno";
+            if (estadoClase.includes("mal")) badgeClass = "badge-malo";
+
+            const card = document.createElement("div");
+            card.className = "item-card";
+            card.style.animationDelay = `${index * 0.04}s`; // Animación escalonada fluida
+
+            card.innerHTML = `
+                <div class="item-header">
+                    <span class="item-name">${item.producto}</span>
+                    <span class="item-qty">${item.cantidad} unidades</span>
+                </div>
+                <div class="item-footer">
+                    <span class="item-obs">${item.observaciones}</span>
+                    <span class="badge ${badgeClass}">${item.estado}</span>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // Buscador interactivo en tiempo real multi-parámetro
     function searchItems() {
-        const input = document.getElementById("searchInput");
-        const filter = input.value.toUpperCase();
+        const filter = document.getElementById("searchInput").value.toUpperCase();
         const list = document.getElementById("inventoryList");
         const cards = list.getElementsByClassName("item-card");
 
         for (let i = 0; i < cards.length; i++) {
-            const nameEl = cards[i].getElementsByClassName("item-name")[0];
-            const obsEl = cards[i].getElementsByClassName("item-obs")[0];
-            const badgeEl = cards[i].getElementsByClassName("badge")[0];
+            const name = cards[i].getElementsByClassName("item-name")[0].textContent;
+            const obs = cards[i].getElementsByClassName("item-obs")[0].textContent;
+            const badge = cards[i].getElementsByClassName("badge")[0].textContent;
             
-            const textValue = (nameEl.textContent || nameEl.innerText) + " " + 
-                              (obsEl.textContent || obsEl.innerText) + " " + 
-                              (badgeEl.textContent || badgeEl.innerText);
+            const matchText = `${name} ${obs} ${badge}`.toUpperCase();
 
-            if (textValue.toUpperCase().indexOf(filter) > -1) {
+            if (matchText.indexOf(filter) > -1) {
                 cards[i].style.display = "";
-                cards[i].style.animation = "none"; // Resetea animación al filtrar
             } else {
                 cards[i].style.display = "none";
             }
         }
     }
+
+    // Arrancar la base de datos inmediatamente al abrir la URL
+    window.onload = inicializarInventario;
 </script>
 
 </body>
