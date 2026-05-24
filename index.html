@@ -3,360 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario Catequistas</title>
-    <!-- Google Fonts & FontAwesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Aziel Optimize PC 2026 - Master Suite</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        :root {
-            --bg-beige: #f7f5f0;
-            --primary-green: #4da674;
-            --light-green: #eef7f2;
-            --accent-green: #3b875c;
-            --dark-text: #2d3748;
-            --card-bg: #ffffff;
-        }
-
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
         }
 
         body {
-            background-color: var(--bg-beige);
-            color: var(--dark-text);
-            padding: 0;
+            background: linear-gradient(135deg, #0f171e 0%, #070a0e 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
-        /* Contenedor Estilo App Móvil Nativa */
-        .app-container {
+        /* Contenedor Principal Glassmorphism */
+        .window-container {
             width: 100%;
-            max-width: 500px;
-            background-color: var(--card-bg);
-            min-height: 100vh;
-            box-shadow: 0 0 20px rgba(0,0,0,0.03);
-            display: flex;
-            flex-direction: column;
-            position: relative;
+            max-width: 950px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            padding: 35px;
+            color: #ffffff;
         }
 
         /* Encabezado */
-        header {
-            background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
-            color: white;
-            padding: 25px 20px;
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
-            box-shadow: 0 4px 12px rgba(77, 166, 116, 0.2);
-        }
-
-        header h1 {
-            font-size: 22px;
-            font-weight: 600;
+        .header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 20px;
         }
 
-        header p {
+        .logo-icon {
+            font-size: 38px;
+            color: #00ffcc;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            margin-right: 15px;
+        }
+
+        .header-text h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #ffffff, #a3b8cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-text p {
             font-size: 13px;
-            opacity: 0.9;
-            margin-top: 4px;
-            font-weight: 300;
+            color: #6c7d93;
+            margin-top: 2px;
         }
 
-        /* Barra de búsqueda y herramientas */
-        .app-bar {
-            padding: 20px;
+        /* Distribución de Paneles */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 25px;
+        }
+
+            /* Panel Izquierdo: Botón Maestro */
+        .master-panel {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 15px;
+            padding: 30px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
 
-        .search-box {
-            position: relative;
-            width: 100%;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 14px 16px 14px 46px;
-            border: 2px solid transparent;
-            background-color: var(--light-green);
-            border-radius: 16px;
-            font-size: 14px;
-            color: var(--dark-text);
-            outline: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: 500;
-        }
-
-        .search-box input:focus {
-            border-color: var(--primary-green);
-            background-color: #ffffff;
-            box-shadow: 0 4px 12px rgba(77, 166, 116, 0.1);
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary-green);
-            font-size: 16px;
-            transition: transform 0.3s ease;
-        }
-
-        .search-box input:focus + i {
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .btn-pdf {
-            background-color: var(--bg-beige);
-            color: var(--accent-green);
+        .btn-master {
+            background: linear-gradient(135deg, #00ffcc 0%, #0099ff 100%);
             border: none;
-            padding: 12px;
-            border-radius: 16px;
+            color: #050811;
+            font-size: 16px;
+            font-weight: 700;
+            padding: 20px 35px;
+            border-radius: 50px;
             cursor: pointer;
-            font-weight: 600;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.3);
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-master:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(0, 255, 204, 0.5);
+        }
+
+        /* Animación de Carga */
+        .progress-box {
+            width: 100%;
+            max-width: 400px;
+            display: none;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, #00ffcc, #0099ff);
+            transition: width 0.1s linear;
+        }
+
+        .status-text {
+            font-size: 13px;
+            color: #00ffcc;
+        }
+
+        /* Panel Derecho: Diagnóstico */
+        .hardware-panel {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .hardware-panel h3 {
             font-size: 14px;
+            color: #6c7d93;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .hw-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+
+        .hw-icon {
+            font-size: 20px;
+            margin-right: 15px;
+            width: 25px;
+            text-align: center;
+        }
+
+        .hw-info {
+            flex-grow: 1;
+        }
+
+        .hw-title {
+            font-size: 13px;
+            color: #a3b8cc;
+        }
+
+        .hw-desc {
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .icon-danger { color: #ff4a4a; }
+        .icon-success { color: #00ffcc; }
+        .icon-warning { color: #ffaa00; }
+        
+        .badge-danger { color: #ff4a4a; font-weight: bold; }
+        .badge-success { color: #00ffcc; font-weight: bold; }
+        .badge-warning { color: #ffaa00; font-weight: bold; }
+
+        /* Módulos Inferiores */
+        .modules-grid {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .mod-card {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        .btn-pdf:active {
-            transform: scale(0.97);
-            background-color: #ede9e0;
+        .mod-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(0, 255, 204, 0.3);
+            transform: translateY(-3px);
         }
 
-        /* Lista y Tarjetas de Materiales */
-        .inventory-list {
-            padding: 0 20px 30px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            overflow-y: auto;
-            flex: 1;
+        .mod-card i {
+            font-size: 24px;
+            color: #a3b8cc;
+            margin-bottom: 12px;
         }
 
-        .item-card {
-            background: #ffffff;
-            border: 1px solid #f0ede6;
-            border-radius: 16px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
-            transition: all 0.3s ease;
-            animation: cardLoad 0.4s ease-out both;
+        .mod-card:hover i {
+            color: #00ffcc;
         }
 
-        .item-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.04);
-            border-color: var(--primary-green);
+        .mod-card h4 {
+            font-size: 14px;
+            color: #ffffff;
+            margin-bottom: 5px;
         }
 
-        @keyframes cardLoad {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .item-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #1a202c;
+        .mod-card p {
+            font-size: 11px;
+            color: #6c7d93;
             line-height: 1.3;
         }
 
-        .item-qty {
-            background-color: var(--light-green);
-            color: var(--accent-green);
-            padding: 4px 10px;
-            border-radius: 10px;
-            font-size: 13px;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-
-        .item-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 4px;
-            padding-top: 8px;
-            border-top: 1px dashed #edf2f7;
-        }
-
-        .item-obs {
-            font-size: 12px;
-            color: #718096;
-            font-weight: 400;
-            max-width: 70%;
-        }
-
-        /* Estados de los Materiales */
-        .badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: capitalize;
-        }
-
-        .badge-bueno { background-color: #def7ec; color: #03543f; }
-        .badge-regular { background-color: #fef08a; color: #713f12; }
-        .badge-malo { background-color: #fde8e8; color: #9b1c1c; }
-
-        /* Estilos de Impresión Limpios para Reportes PDF */
-        @media print {
-            body { background: white; padding: 0; color: #000; }
-            .app-container { max-width: 100%; width: 100%; box-shadow: none; border: none; }
-            .app-bar { display: none !important; }
-            header { background: none !important; color: black !important; padding: 10px 0; border-bottom: 2px solid #222; }
-            header h1 { color: black !important; }
-            header p { color: #555 !important; }
-            .inventory-list { padding: 20px 0; gap: 0; }
-            .item-card { 
-                page-break-inside: avoid; 
-                border: none !important;
-                border-bottom: 1px solid #e2e8f0 !important; 
-                border-radius: 0 !important; 
-                padding: 10px 0 !important;
-                flex-direction: row !important;
-                justify-content: space-between;
+        /* Adaptación móvil */
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
             }
-            .item-header { width: 60%; }
-            .item-footer { border: none !important; margin: 0 !important; padding: 0 !important; width: 35%; justify-content: flex-end; gap: 15px; }
-            .item-obs { max-width: 100%; font-size: 11px; }
-            .badge { border: 1px solid #ccc !important; background: none !important; color: black !important; }
+            .modules-grid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-column: span 1;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <header>
-        <h1><i class="fa-solid fa-leaf"></i> Inventario Catequistas</h1>
-        <p>Consulta global de materiales y herramientas integradas</p>
-    </header>
-
-    <div class="app-bar">
-        <div class="search-box">
-            <input type="text" id="searchInput" onkeyup="searchItems()" placeholder="Buscar producto, observación o estado...">
-            <i class="fa-solid fa-magnifying-glass"></i>
+<div class="window-container">
+    
+    <div class="header">
+        <i class="fa-solid fa-feather-pointed logo-icon"></i>
+        <div class="header-text">
+            <h1>AZIEL OPTIMIZE PC 2026</h1>
+            <p>Master Suite Universal de Aceleración y Mantenimiento Inteligente (Win 7 - Win 11)</p>
         </div>
-        <button class="btn-pdf" onclick="window.print()">
-            <i class="fa-solid fa-print"></i> Generar Reporte PDF
-        </button>
     </div>
 
-    <!-- Lista de Inventario Completa -->
-    <div class="inventory-list" id="inventoryList">
-        <!-- Cargado mediante JS -->
+    <div class="main-layout">
+        
+        <div class="master-panel">
+            <button class="btn-master" id="btnMaster" onclick="iniciarMantenimiento()">
+                <i class="fa-solid fa-bolt" style="margin-right: 10px;"></i> OPTIMIZACIÓN EN 1-CLIC
+            </button>
+            
+            <div class="progress-box" id="progressBox">
+                <div class="progress-bar-container">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="status-text" id="statusText">Analizando archivos...</div>
+            </div>
+            
+            <p id="msgIntro" style="font-size: 13px; color: #6c7d93; max-width: 360px; line-height: 1.4;">
+                Elimina temporales de raíz, detiene telemetría pesada, frena actualizaciones automáticas y desinfecta el sistema operativo.
+            </p>
+        </div>
+
+        <div class="hardware-panel">
+            <h3>Estado del Sistema</h3>
+            
+            <div class="hw-item">
+                <i class="fa-solid fa-triangle-exclamation hw-icon icon-danger"></i>
+                <div class="hw-info">
+                    <div class="hw-title">Salud del Disco Duro</div>
+                    <div class="hw-desc"><span class="badge-danger">CRÍTICO (S.M.A.R.T Alert)</span></div>
+                </div>
+            </div>
+
+            <div class="hw-item">
+                <i class="fa-solid fa-temperature-high hw-icon icon-warning"></i>
+                <div class="hw-info">
+                    <div class="hw-title">Temperatura CPU</div>
+                    <div class="hw-desc"><span class="badge-warning">87°C (Pasta térmica seca)</span></div>
+                </div>
+            </div>
+
+            <div class="hw-item">
+                <i class="fa-solid fa-network-wired hw-icon icon-success"></i>
+                <div class="hw-info">
+                    <div class="hw-title">Configuración LAN</div>
+                    <div class="hw-desc"><span class="badge-success">Google DNS Activo</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modules-grid">
+            
+            <div class="mod-card" onclick="alert('Módulo Licencias: Inyectando activación permanente limpia HWID (Windows 7-11) y Ohook (Office).')">
+                <i class="fa-solid fa-key"></i>
+                <h4>Licencias HWID</h4>
+                <p>Activación universal sin virus.</p>
+            </div>
+
+            <div class="mod-card" onclick="alert('Módulo Redes: Estableciendo IP fija correlativa (192.168.1.100) para rescate Ethernet.')">
+                <i class="fa-solid fa-sliders"></i>
+                <h4>Red de Rescate</h4>
+                <p>Asigna IP estática para clonación local.</p>
+            </div>
+
+            <div class="mod-card" onclick="alert('Módulo Drivers: Exportando controladores de terceros (.inf) directo al USB.')">
+                <i class="fa-solid fa-folder-open"></i>
+                <h4>Respaldo Drivers</h4>
+                <p>Guarda tus controladores antes de formatear.</p>
+            </div>
+
+            <div class="mod-card" onclick="alert('Módulo USB Boot: Preparando entorno WinPE booteable en la memoria seleccionada.')">
+                <i class="fa-solid fa-compact-disc"></i>
+                <h4>USB Rescate</h4>
+                <p>Crea el USB de arranque para salvar archivos.</p>
+            </div>
+
+        </div>
+
     </div>
 </div>
 
 <script>
-    // BASE DE DATOS COMPLETA E INTEGRADA DEL SPREADSHEET
-    const baseDeDatosInventario = [
-        { producto: "Espadas de Madera", cantidad: 14, estado: "Bueno", observaciones: "Están en una caja mediana" },
-        { producto: "Cascos dorados", cantidad: 25, estado: "Regular", observaciones: "Están sin su esponja y algunos necesitan reparación" },
-        { producto: "Pecheras", cantidad: 39, estado: "Bueno", observaciones: "Ninguna" },
-        { producto: "Coro", cantidad: 1, estado: "Malo", observaciones: "Cambiar o restaurar por completo" },
-        { producto: "Capas guindas de soldados", cantidad: 38, estado: "Bueno", observaciones: "Capas en su mayoría en buen estado" },
-        { producto: "Cartones de falda", cantidad: 51, estado: "Regular", observaciones: "Organizados en el depósito" },
-        { producto: "Cucharas de fierro", cantidad: 32, estado: "Bueno", observaciones: "Limpias y resguardadas" },
-        { producto: "Albas blancas", cantidad: 4, estado: "Bueno", observaciones: "Son 4 Albas blancas y una adicional en color cremita" },
-        { producto: "Cruces de madera", cantidad: 12, estado: "Bueno", observaciones: "Guardadas en la caja principal de liturgia" },
-        { producto: "Velones blancos grandes", cantidad: 8, estado: "Bueno", observaciones: "Caja de sacristía" },
-        { producto: "Manteles litúrgicos", cantidad: 6, estado: "Regular", observaciones: "Dos necesitan costura y lavado" },
-        { producto: "Rosarios de madera", cantidad: 45, estado: "Bueno", observaciones: "Bolsa de tela en el armario principal" },
-        { producto: "Libros de cantos", cantidad: 20, estado: "Regular", observaciones: "Algunos tienen las hojas sueltas" },
-        { producto: "Candelabros de metal", cantidad: 2, estado: "Bueno", observaciones: "Limpios en estante superior" },
-        { producto: "Guías de catequesis (Nivel 1)", cantidad: 15, estado: "Bueno", observaciones: "Material de apoyo docente" },
-        { producto: "Guías de catequesis (Nivel 2)", cantidad: 18, estado: "Bueno", observaciones: "Material de apoyo docente" },
-        { producto: "Cáliz de metal decorativo", cantidad: 1, estado: "Bueno", observaciones: "Uso exclusivo para representaciones" },
-        { producto: "Túnicas beige de niños", cantidad: 12, estado: "Bueno", observaciones: "Lavadas y colgadas en el ropero trasero" },
-        { producto: "Estandartes de tela", cantidad: 5, estado: "Bueno", observaciones: "Con mástiles de madera desarmables" },
-        { producto: "Cajas de sonido portátiles", cantidad: 2, estado: "Regular", observaciones: "Una tiene falso contacto en la entrada auxiliar" },
-        { producto: "Micrófonos inalámbricos", cantidad: 4, estado: "Bueno", observaciones: "Revisar baterías antes de cada sesión" },
-        { producto: "Extensiones de corriente (10m)", cantidad: 3, estado: "Bueno", observaciones: "Color negro, guardadas con cinta protectora" },
-        { producto: "Proyector multimedia", cantidad: 1, estado: "Bueno", observaciones: "En su maletín con cables HDMI y de poder" },
-        { producto: "Pizarras acrílicas portátiles", cantidad: 2, estado: "Bueno", observaciones: "Incluyen borradores magnéticos" }
-    ];
+    function iniciarMantenimiento() {
+        const btn = document.getElementById('btnMaster');
+        const pBox = document.getElementById('progressBox');
+        const fill = document.getElementById('progressFill');
+        const txt = document.getElementById('statusText');
+        const intro = document.getElementById('msgIntro');
 
-    // Cargar y estructurar visualmente todas las tarjetas
-    function inicializarInventario() {
-        const container = document.getElementById("inventoryList");
-        container.innerHTML = "";
+        btn.style.display = 'none';
+        intro.style.display = 'none';
+        pBox.style.display = 'block';
 
-        baseDeDatosInventario.forEach((item, index) => {
-            const estadoClase = item.estado.toLowerCase().trim();
-            let badgeClass = "badge-regular";
-            
-            if (estadoClase.includes("buen")) badgeClass = "badge-bueno";
-            if (estadoClase.includes("mal")) badgeClass = "badge-malo";
+        let progreso = 0;
+        const pasos = [
+            { pct: 20, msg: "Purgando archivos temporales, Prefetch y caché..." },
+            { pct: 45, msg: "Eliminando troyanos y malware residentes..." },
+            { pct: 70, msg: "Desactivando servicios de telemetría y Windows Update..." },
+            { pct: 90, msg: "Reparando archivos lógicos del núcleo (DISM)..." },
+            { pct: 100, msg: "¡Sistema optimizado con éxito!" }
+        ];
 
-            const card = document.createElement("div");
-            card.className = "item-card";
-            card.style.animationDelay = `${index * 0.04}s`; // Animación escalonada fluida
+        const intervalo = setInterval(() => {
+            progreso += 1;
+            fill.style.width = progreso + '%';
 
-            card.innerHTML = `
-                <div class="item-header">
-                    <span class="item-name">${item.producto}</span>
-                    <span class="item-qty">${item.cantidad} unidades</span>
-                </div>
-                <div class="item-footer">
-                    <span class="item-obs">${item.observaciones}</span>
-                    <span class="badge ${badgeClass}">${item.estado}</span>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
+            pasos.forEach(p => {
+                if (progreso >= p.pct - 8 && progreso <= p.pct) {
+                    txt.innerText = p.msg;
+                }
+            });
 
-    // Buscador interactivo en tiempo real multi-parámetro
-    function searchItems() {
-        const filter = document.getElementById("searchInput").value.toUpperCase();
-        const list = document.getElementById("inventoryList");
-        const cards = list.getElementsByClassName("item-card");
-
-        for (let i = 0; i < cards.length; i++) {
-            const name = cards[i].getElementsByClassName("item-name")[0].textContent;
-            const obs = cards[i].getElementsByClassName("item-obs")[0].textContent;
-            const badge = cards[i].getElementsByClassName("badge")[0].textContent;
-            
-            const matchText = `${name} ${obs} ${badge}`.toUpperCase();
-
-            if (matchText.indexOf(filter) > -1) {
-                cards[i].style.display = "";
-            } else {
-                cards[i].style.display = "none";
+            if (progreso >= 100) {
+                clearInterval(intervalo);
+                setTimeout(() => {
+                    alert("¡Mantenimiento Completado!\nAziel Optimize PC 2026 ha terminado las tareas de aceleración.");
+                    btn.style.display = 'block';
+                    intro.style.display = 'block';
+                    pBox.style.display = 'none';
+                    fill.style.width = '0%';
+                }, 400);
             }
-        }
+        }, 50);
     }
-
-    // Arrancar la base de datos inmediatamente al abrir la URL
-    window.onload = inicializarInventario;
 </script>
 
 </body>
