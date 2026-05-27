@@ -1,377 +1,570 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Plataforma de Diagnóstico de Marca Avanzado y generación de Brief Creativo en PDF.">
-    <meta name="theme-color" content="#1c1f22">
-    <title>Plataforma de Brief Creativo Profesional</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    
-    <style>
-        :root {
-            --bg-gradient-start: #1c1f22;
-            --bg-gradient-end: #0b0c0d;
-            --accent-green: #4ade80;
-        }
-        
-        body {
-            background: radial-gradient(circle at 50% 0%, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 80%);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        .glass-container {
-            background: rgba(33, 37, 41, 0.45);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
-        }
+<title>Brief Creativo Profesional</title>
 
-        .input-professional {
-            background: rgba(18, 20, 22, 0.6);
-            border: 2px solid rgba(74, 222, 128, 0.12);
-            color: #ffffff;
-            font-size: 0.95rem;
-            width: 100%;
-            padding: 0.9rem 1.2rem;
-            border-radius: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        .input-professional:focus {
-            background: rgba(24, 28, 26, 0.85);
-            border-color: var(--accent-green);
-            box-shadow: 0 0 22px rgba(74, 222, 128, 0.15);
-            outline: none;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-        .input-professional::placeholder {
-            color: rgba(255, 255, 255, 0.25);
-            font-style: italic;
-            font-size: 0.88rem;
-        }
+<script src="https://cdn.tailwindcss.com"></script>
 
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-gradient-end); }
-        ::-webkit-scrollbar-thumb { background: #2c3136; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
-    </style>
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:#0b0c0d;
+    color:white;
+    font-family:'Plus Jakarta Sans',sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+.bg-light{
+    position:fixed;
+    width:500px;
+    height:500px;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:.15;
+    z-index:0;
+}
+
+.bg1{
+    background:#22c55e;
+    top:-150px;
+    left:-150px;
+}
+
+.bg2{
+    background:#334155;
+    bottom:-150px;
+    right:-150px;
+}
+
+.glass{
+    background:rgba(20,20,20,.7);
+    border:1px solid rgba(255,255,255,.05);
+    backdrop-filter:blur(20px);
+}
+
+.input{
+    width:100%;
+    background:#111315;
+    border:1px solid #1f2937;
+    padding:15px;
+    border-radius:14px;
+    color:white;
+    outline:none;
+    transition:.3s;
+    font-size:14px;
+}
+
+.input:focus{
+    border-color:#22c55e;
+    box-shadow:0 0 0 3px rgba(34,197,94,.15);
+}
+
+.label{
+    display:block;
+    margin-bottom:8px;
+    font-size:11px;
+    text-transform:uppercase;
+    color:#94a3b8;
+    font-weight:700;
+    letter-spacing:1px;
+}
+
+.section-title{
+    font-size:15px;
+    font-weight:700;
+    margin-bottom:15px;
+    color:white;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.section-title::before{
+    content:'';
+    width:5px;
+    height:18px;
+    background:#22c55e;
+    border-radius:20px;
+}
+
+.report-card{
+    background:#111315;
+    border:1px solid #1f2937;
+    border-radius:16px;
+    padding:18px;
+}
+
+.report-title{
+    color:#22c55e;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:10px;
+    text-transform:uppercase;
+}
+
+.btn-green{
+    background:#22c55e;
+    color:black;
+    font-weight:700;
+}
+
+.btn-dark{
+    background:#1e293b;
+    color:white;
+}
+
+button{
+    border:none;
+    padding:15px;
+    border-radius:14px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+::-webkit-scrollbar{
+    width:5px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#22c55e;
+    border-radius:20px;
+}
+
+</style>
 </head>
-<body class="text-slate-300 min-h-screen p-3 sm:p-6 md:p-12 flex flex-col items-center overflow-x-hidden">
 
-    <div aria-hidden="true" class="fixed top-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-green-500/4 rounded-full blur-[130px] pointer-events-none"></div>
-    <div aria-hidden="true" class="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-slate-500/4 rounded-full blur-[130px] pointer-events-none"></div>
+<body>
 
-    <main class="max-w-4xl w-full space-y-6 z-10">
-        
-        <header class="glass-container rounded-2xl p-5 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-2xl">
-            <div class="text-center sm:text-left w-full sm:w-auto">
-                <div class="flex items-center justify-center sm:justify-start gap-2">
-                    <span class="flex h-2 w-2 relative" aria-hidden="true">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                    </span>
-                    <h1 class="text-xl font-black text-white tracking-tight uppercase">Diagnóstico de Marca Avanzado</h1>
-                </div>
-                <p class="text-xs text-slate-400 mt-1">Matriz interactiva para la estructuración corporativa.</p>
+<div class="bg-light bg1"></div>
+<div class="bg-light bg2"></div>
+
+<div class="relative z-10 max-w-5xl mx-auto p-4 md:p-8">
+
+    <div class="glass rounded-3xl p-6 md:p-8 mb-6">
+
+        <div class="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+
+            <div>
+                <p class="text-green-400 text-xs uppercase tracking-[3px] font-bold">
+                    Plataforma Profesional
+                </p>
+
+                <h1 class="text-3xl font-black mt-2">
+                    Brief Creativo
+                </h1>
             </div>
-            
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-                <button id="btn-reset" class="flex-1 sm:flex-none px-4 py-3.5 rounded-xl border border-slate-700/60 hover:bg-slate-800/40 text-slate-300 font-semibold text-xs md:text-sm transition-all active:scale-95 cursor-pointer" title="Limpiar borrador local">
-                    Restablecer
-                </button>
-                <button id="btn-compilar" class="flex-[2] sm:flex-none bg-green-500 hover:bg-green-400 text-slate-950 font-bold px-7 py-3.5 rounded-xl flex items-center justify-center gap-2.5 text-xs md:text-sm transition-all transform active:scale-95 shadow-lg shadow-green-500/10 cursor-pointer">
-                    <span id="text-btn">Generar PDF y Enviar</span>
-                </button>
-            </div>
-        </header>
 
-        <div id="save-status" aria-live="polite" class="text-center sm:text-right text-[10px] font-mono text-slate-500 px-2 transition-opacity duration-300 opacity-60">
-            ✓ Estado: Listo para ingresar datos.
+            <button
+                id="generateBtn"
+                class="btn-green px-8">
+                Generar Reporte
+            </button>
+
         </div>
 
-        <form id="brief-form" class="glass-container rounded-3xl p-5 sm:p-8 md:p-12 shadow-2xl space-y-8" onsubmit="event.preventDefault();">
-            
-            <div class="border-b border-slate-800 pb-5 flex flex-col sm:flex-row justify-between items-start gap-3">
+    </div>
+
+    <form id="briefForm" class="glass rounded-3xl p-6 md:p-10 space-y-10">
+
+        <section>
+
+            <h2 class="section-title">
+                Identidad Visual
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-5">
+
                 <div>
-                    <span class="text-[10px] font-bold text-green-400 uppercase tracking-widest block mb-1">Documentación Estratégica</span>
-                    <h2 class="text-xl md:text-2xl font-black text-white tracking-tight">BRIEF DE IDENTIDAD Y DESARROLLO CREATIVO</h2>
+                    <label class="label">
+                        Nombre Comercial
+                    </label>
+
+                    <input
+                        type="text"
+                        class="input"
+                        id="name"
+                        placeholder="Ej: MADA Studio">
                 </div>
-                <div class="px-3 py-1 bg-slate-900/60 border border-slate-800 rounded-lg text-[10px] font-mono text-slate-400 self-stretch sm:self-auto text-center">
-                    STATUS: PROTEGIDO_RESPALDO
+
+                <div>
+                    <label class="label">
+                        Logotipo
+                    </label>
+
+                    <input
+                        type="text"
+                        class="input"
+                        id="logo"
+                        placeholder="Describe el logo">
                 </div>
+
+                <div class="md:col-span-2">
+                    <label class="label">
+                        Colores Corporativos
+                    </label>
+
+                    <input
+                        type="text"
+                        class="input"
+                        id="colors"
+                        placeholder="#000000, #22c55e">
+                </div>
+
             </div>
 
-            <section class="space-y-4">
-                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
-                    <span class="w-1 h-4 bg-green-500 rounded-full" aria-hidden="true"></span> 1. Identificación Básica e Identidad Visual
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="input-name" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nombre Comercial Registrado</label>
-                        <input type="text" id="input-name" name="name" class="input-professional" placeholder="Ej: TomyStyle">
-                    </div>
-                    <div>
-                        <label for="input-logo" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Arquitectura del Logotipo / Isotipo</label>
-                        <input type="text" id="input-logo" name="logo" class="input-professional" placeholder="Ej: Imagotipo con composición geométrica en proporciones áureas">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label for="input-colors" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Cromática Corporativa (Códigos Hexadecimales)</label>
-                        <input type="text" id="input-colors" name="colors" class="input-professional" placeholder="Ej: #0B0F19 (Fondo oscuro), #4ADE80 (Verde clarito), #64748B (Plomo)">
-                    </div>
-                </div>
-            </section>
+        </section>
 
-            <section class="space-y-4">
-                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
-                    <span class="w-1 h-4 bg-green-500 rounded-full" aria-hidden="true"></span> 2. Storytelling, Génesis y ADN Emocional
-                </h3>
+        <section>
+
+            <h2 class="section-title">
+                Historia y ADN
+            </h2>
+
+            <div class="space-y-5">
+
                 <div>
-                    <label for="input-history" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Génesis del Proyecto (Origen de la marca)</label>
-                    <textarea id="input-history" name="history" rows="4" class="input-professional resize-none" placeholder="Describa la necesidad estructural del mercado que inspiró el nacimiento de la marca..."></textarea>
+                    <label class="label">
+                        Historia
+                    </label>
+
+                    <textarea
+                        class="input min-h-[130px]"
+                        id="history"
+                        placeholder="Describe la historia de la marca"></textarea>
                 </div>
+
                 <div>
-                    <label for="input-emotions" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Territorio de Conectividad Emocional y Tono de Voz</label>
-                    <textarea id="input-emotions" name="emotions" rows="3" class="input-professional resize-none" placeholder="Defina los sentimientos que la marca debe despertar en el usuario..."></textarea>
-                </div>
-            </section>
+                    <label class="label">
+                        Emociones
+                    </label>
 
-            <section class="space-y-4">
-                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
-                    <span class="w-1 h-4 bg-green-500 rounded-full" aria-hidden="true"></span> 3. Ingeniería de Producto y Atributos Técnicos
-                </h3>
+                    <textarea
+                        class="input min-h-[120px]"
+                        id="emotions"
+                        placeholder="¿Qué emociones transmite?"></textarea>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section>
+
+            <h2 class="section-title">
+                Producto
+            </h2>
+
+            <div class="space-y-5">
+
                 <div>
-                    <label for="input-product" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tipología y Línea de Productos en Elaboración</label>
-                    <textarea id="input-product" name="product" rows="3" class="input-professional resize-none" placeholder="Desglose la tipología exacta de productos que se están fabricando..."></textarea>
+                    <label class="label">
+                        Productos
+                    </label>
+
+                    <textarea
+                        class="input min-h-[120px]"
+                        id="product"
+                        placeholder="Describe los productos"></textarea>
                 </div>
+
                 <div>
-                    <label for="input-attributes" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Diferenciadores de Manufactura y Texturas</label>
-                    <textarea id="input-attributes" name="attributes" rows="3" class="input-professional resize-none" placeholder="Especifique las materias primas exclusivas, terminaciones o técnicas aplicadas."></textarea>
-                </div>
-            </section>
+                    <label class="label">
+                        Diferenciadores
+                    </label>
 
-            <section class="space-y-4">
-                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
-                    <span class="w-1 h-4 bg-green-500 rounded-full" aria-hidden="true"></span> 4. Segmentación Avanzada y Perfil del Buyer Persona
-                </h3>
+                    <textarea
+                        class="input min-h-[120px]"
+                        id="attributes"
+                        placeholder="¿Qué hace único al producto?"></textarea>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section>
+
+            <h2 class="section-title">
+                Cliente Ideal
+            </h2>
+
+            <div class="space-y-5">
+
                 <div>
-                    <label for="input-niche" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nicho de Mercado y Demografía Objetivo</label>
-                    <textarea id="input-niche" name="niche" rows="3" class="input-professional resize-none" placeholder="Defina el micro-nicho al que apunta la marca..."></textarea>
+                    <label class="label">
+                        Nicho
+                    </label>
+
+                    <textarea
+                        class="input min-h-[100px]"
+                        id="niche"
+                        placeholder="¿Cuál es el nicho?"></textarea>
                 </div>
+
                 <div>
-                    <label for="input-buyer" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Matriz del Cliente Ideal (Intereses y Puntos de Dolor)</label>
-                    <textarea id="input-buyer" name="buyer" rows="4" class="input-professional resize-none" placeholder="Detalle los dolores del cliente y sus intereses diarios."></textarea>
-                </div>
-            </section>
+                    <label class="label">
+                        Buyer Persona
+                    </label>
 
-            <section class="space-y-4">
-                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
-                    <span class="w-1 h-4 bg-green-500 rounded-full" aria-hidden="true"></span> 5. Propuesta Única de Valor (UVP)
-                </h3>
+                    <textarea
+                        class="input min-h-[120px]"
+                        id="buyer"
+                        placeholder="Describe al cliente ideal"></textarea>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section>
+
+            <h2 class="section-title">
+                Marketing
+            </h2>
+
+            <div class="space-y-5">
+
                 <div>
-                    <label for="input-value" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Declaración Central de Posicionamiento</label>
-                    <textarea id="input-value" name="value" rows="3" class="input-professional resize-none" placeholder="Estructura sugerida: Ofrecemos [Solución] para [Nicho] mediante [Diferenciador]..."></textarea>
+                    <label class="label">
+                        Propuesta de Valor
+                    </label>
+
+                    <textarea
+                        class="input min-h-[100px]"
+                        id="value"
+                        placeholder="¿Qué ofrece la marca?"></textarea>
                 </div>
-            </section>
 
-            <section class="space-y-4">
-                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
-                    <span class="w-1 h-4 bg-green-500 rounded-full" aria-hidden="true"></span> 6. Arquitectura Publicitaria y Ecosistema Digital
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="input-media" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Canales y Medios Digitales de Enfoque</label>
-                        <input type="text" id="input-media" name="media" class="input-professional" placeholder="Ej: Instagram (Catálogo), TikTok (Detrás de cámaras)">
-                    </div>
-                    <div>
-                        <label for="input-url" class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Enlaces de Redes Sociales Activas</label>
-                        <input type="url" id="input-url" name="url" class="input-professional" placeholder="Ej: https://instagram.com/nombre_marca">
-                    </div>
+                <div>
+                    <label class="label">
+                        Redes Sociales
+                    </label>
+
+                    <input
+                        type="text"
+                        class="input"
+                        id="url"
+                        placeholder="https://instagram.com/...">
                 </div>
-            </section>
 
-            <footer class="border-t border-slate-800 pt-5 text-center text-[10px] text-slate-500 font-mono tracking-widest">
-                MATRIZ DE PROPIEDAD ESTRATÉGICA • COCHABAMBA - TARIJA, BOLIVIA
-            </footer>
-        </form>
-    </main>
+            </div>
 
-    <script>
-        (() => {
-            const FORM_FIELDS = ['name', 'logo', 'colors', 'history', 'emotions', 'product', 'attributes', 'niche', 'buyer', 'value', 'media', 'url'];
-            const STORAGE_PREFIX = 'brief_v9_';
-            const PHONE_NUMBER = "59177173169"; 
-            
-            const statusEl = document.getElementById('save-status');
-            const btnCompilar = document.getElementById('btn-compilar');
-            const btnReset = document.getElementById('btn-reset');
-            const textBtn = document.getElementById('text-btn');
-            const form = document.getElementById('brief-form');
+        </section>
 
-            const escapeHTML = (str) => {
-                return str.replace(/[&<>'"]/g, 
-                    tag => ({
-                        '&': '&amp;',
-                        '<': '&lt;',
-                        '>': '&gt;',
-                        "'": '&#39;',
-                        '"': '&quot;'
-                    }[tag])
-                );
-            };
+    </form>
 
-            const debounce = (func, wait) => {
-                let timeout;
-                return function executedFunction(...args) {
-                    const later = () => {
-                        clearTimeout(timeout);
-                        func(...args);
-                    };
-                    clearTimeout(timeout);
-                    timeout = setTimeout(later, wait);
-                };
-            };
+</div>
 
-            const loadSavedData = () => {
-                FORM_FIELDS.forEach(field => {
-                    const storedValue = localStorage.getItem(`${STORAGE_PREFIX}${field}`);
-                    if (storedValue) {
-                        const input = document.getElementById(`input-${field}`);
-                        if (input) input.value = storedValue;
-                    }
-                });
-            };
+<div
+    id="reportModal"
+    class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4">
 
-            const saveToLocal = debounce(() => {
-                FORM_FIELDS.forEach(field => {
-                    const currentVal = document.getElementById(`input-${field}`).value;
-                    localStorage.setItem(`${STORAGE_PREFIX}${field}`, currentVal);
-                });
-                
-                statusEl.textContent = "✓ Estado: Respaldo local sincronizado.";
-                statusEl.classList.replace('text-green-400', 'text-slate-500');
-                statusEl.classList.replace('opacity-100', 'opacity-60');
-            }, 1000);
+    <div
+        class="bg-[#111315] border border-slate-800 w-full max-w-4xl rounded-3xl overflow-hidden">
 
-            form.addEventListener('input', () => {
-                statusEl.textContent = "● Respaldando entrada...";
-                statusEl.classList.replace('text-slate-500', 'text-green-400');
-                statusEl.classList.replace('opacity-60', 'opacity-100');
-                saveToLocal();
-            });
+        <div class="p-5 border-b border-slate-800 flex justify-between items-center">
 
-            btnReset.addEventListener('click', () => {
-                if (confirm("¿Desea restablecer la plantilla? Se perderán los datos no enviados.")) {
-                    form.reset();
-                    FORM_FIELDS.forEach(field => localStorage.removeItem(`${STORAGE_PREFIX}${field}`));
-                    statusEl.textContent = "✓ Estado: Plantilla restablecida.";
-                }
-            });
+            <div>
 
-            btnCompilar.addEventListener('click', () => {
-                if (btnCompilar.disabled) return;
+                <h2 class="text-2xl font-black">
+                    Reporte Estratégico
+                </h2>
 
-                const data = {};
-                FORM_FIELDS.forEach(field => {
-                    const rawValue = document.getElementById(`input-${field}`).value.trim();
-                    data[field] = rawValue ? escapeHTML(rawValue) : 'No especificado';
-                });
-                
-                const nombreDocumento = data.name !== 'No especificado' ? data.name : 'Nueva_Marca';
+                <p class="text-slate-400 text-sm mt-1">
+                    Vista previa lista para enviar
+                </p>
 
-                btnCompilar.disabled = true;
-                btnCompilar.classList.add('opacity-50', 'cursor-not-allowed');
-                textBtn.textContent = "Compilando...";
+            </div>
 
-                 // SOLUCIÓN DEFINITIVA: Inyectamos el HTML como una cadena de texto puro (String).
-                // Esto evita cualquier problema de renderizado del navegador móvil.
-                const htmlString = `
-                    <div style="width: 100%; padding: 30px; background: #ffffff; color: #000000; font-family: Arial, sans-serif; font-size: 11px; line-height: 1.4;">
-                        <div style="border-bottom: 2px solid #22c55e; padding-bottom: 10px; margin-bottom: 15px;">
-                            <p style="font-size: 9px; font-weight: bold; color: #22c55e; text-transform: uppercase; margin: 0;">Dossier Estratégico</p>
-                            <h1 style="font-size: 18px; font-weight: bold; color: #000; margin: 5px 0;">BRIEF DE IDENTIDAD CORPORATIVA</h1>
-                            <p style="font-size: 8px; color: #666; margin: 0;">EMISIÓN: ${new Date().toLocaleDateString('es-ES')}</p>
-                        </div>
+            <button
+                id="closeModal"
+                class="btn-dark px-5">
+                Cerrar
+            </button>
 
-                        <div style="display: flex; flex-direction: column; gap: 12px;">
-                            <div>
-                                <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">1. Identificación</h3>
-                                <p style="margin: 2px 0;"><strong>Marca:</strong> ${data.name}</p>
-                                <p style="margin: 2px 0;"><strong>Isologo:</strong> ${data.logo}</p>
-                                <p style="margin: 2px 0;"><strong>Cromática:</strong> ${data.colors}</p>
-                            </div>
-                            <div>
-                                <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">2. ADN Emocional</h3>
-                                <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Génesis:</strong> ${data.history}</p>
-                                <p style="margin: 0; text-align: justify;"><strong>Voz:</strong> ${data.emotions}</p>
-                            </div>
-                            <div>
-                                <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">3. Producto</h3>
-                                <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Líneas:</strong> ${data.product}</p>
-                                <p style="margin: 0; text-align: justify;"><strong>Diferenciadores:</strong> ${data.attributes}</p>
-                            </div>
-                            <div>
-                                <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">4. Mercado</h3>
-                                <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Nicho:</strong> ${data.niche}</p>
-                                <p style="margin: 0; text-align: justify;"><strong>Cliente:</strong> ${data.buyer}</p>
-                            </div>
-                            <div style="background: #f0fdf4; padding: 8px; border-left: 3px solid #22c55e;">
-                                <h3 style="font-size: 10px; font-weight: bold; color: #000; margin: 0 0 2px 0;">5. PROPUESTA DE VALOR (UVP)</h3>
-                                <p style="margin: 0; font-style: italic; color: #333; text-align: justify;">"${data.value}"</p>
-                            </div>
-                            <div>
-                                <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">6. Ecosistema Digital</h3>
-                                <p style="margin: 2px 0;"><strong>Canales:</strong> ${data.media}</p>
-                                <p style="margin: 2px 0;"><strong>URL:</strong> ${data.url}</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
+        </div>
 
-                const opcionesConfig = {
-                    margin:       [0.5, 0.5],
-                    filename:     `Brief_${nombreDocumento.replace(/\s+/g, '_')}.pdf`,
-                    image:        { type: 'jpeg', quality: 0.90 },
-                    html2canvas:  { scale: 2, useCORS: true, logging: false },
-                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-                };
+        <div
+            id="reportContent"
+            class="p-6 max-h-[75vh] overflow-y-auto space-y-5">
+        </div>
 
-                html2pdf().set(opcionesConfig).from(htmlString).save().then(() => {
-                    form.reset();
-                    FORM_FIELDS.forEach(field => localStorage.removeItem(`${STORAGE_PREFIX}${field}`));
-                    
-                    const textoMensaje = `🚀 *¡Nueva Matriz de Diagnóstico Generada!*\n\n• *Marca:* ${nombreDocumento}\n• *Ecosistema Visual:* ${data.logo.substring(0, 50)}...\n• *Estatus:* El Dossier PDF estratégico fue compilado de forma segura y está guardado en descargas localmente.`;
-                    
-                    window.open(`https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodeURIComponent(textoMensaje)}`, '_blank');
-                    
-                    btnCompilar.disabled = false;
-                    btnCompilar.classList.remove('opacity-50', 'cursor-not-allowed');
-                    textBtn.textContent = "Generar PDF y Enviar";
-                    statusEl.textContent = "✓ Estado: Documento procesado exitosamente.";
+        <div class="p-5 border-t border-slate-800">
 
-                }).catch(error => {
-                    // Si vuelve a fallar, este mensaje te mostrará el error TÉCNICO real de tu celular
-                    const detalleError = error.message ? error.message : JSON.stringify(error);
-                    alert("Error técnico: " + detalleError + "\nPor favor intenta desde otro navegador.");
-                    console.error(error);
-                    
-                    btnCompilar.disabled = false;
-                    btnCompilar.classList.remove('opacity-50', 'cursor-not-allowed');
-                    textBtn.textContent = "Generar PDF y Enviar";
-                });
-            });
+            <button
+                id="sendWhatsapp"
+                class="btn-green w-full">
+                Enviar por WhatsApp
+            </button>
 
-            document.addEventListener('DOMContentLoaded', loadSavedData);
-            
-        })();
-    </script>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const PHONE_NUMBER = "59177173169";
+
+const generateBtn = document.getElementById("generateBtn");
+const reportModal = document.getElementById("reportModal");
+const reportContent = document.getElementById("reportContent");
+const closeModal = document.getElementById("closeModal");
+const sendWhatsapp = document.getElementById("sendWhatsapp");
+
+function getData(){
+
+    return {
+
+        name: document.getElementById("name").value || "No especificado",
+
+        logo: document.getElementById("logo").value || "No especificado",
+
+        colors: document.getElementById("colors").value || "No especificado",
+
+        history: document.getElementById("history").value || "No especificado",
+
+        emotions: document.getElementById("emotions").value || "No especificado",
+
+        product: document.getElementById("product").value || "No especificado",
+
+        attributes: document.getElementById("attributes").value || "No especificado",
+
+        niche: document.getElementById("niche").value || "No especificado",
+
+        buyer: document.getElementById("buyer").value || "No especificado",
+
+        value: document.getElementById("value").value || "No especificado",
+
+        url: document.getElementById("url").value || "No especificado"
+
+    };
+
+}
+
+function createCard(title, text){
+
+    return `
+
+    <div class="report-card">
+
+        <h3 class="report-title">
+            ${title}
+        </h3>
+
+        <p class="text-slate-300 leading-7 whitespace-pre-wrap">
+            ${text}
+        </p>
+
+    </div>
+
+    `;
+
+}
+
+generateBtn.addEventListener("click", () => {
+
+    const data = getData();
+
+    reportContent.innerHTML = `
+
+        ${createCard("Nombre Comercial", data.name)}
+
+        ${createCard("Logotipo", data.logo)}
+
+        ${createCard("Colores", data.colors)}
+
+        ${createCard("Historia", data.history)}
+
+        ${createCard("Emociones", data.emotions)}
+
+        ${createCard("Productos", data.product)}
+
+        ${createCard("Diferenciadores", data.attributes)}
+
+        ${createCard("Nicho", data.niche)}
+
+        ${createCard("Buyer Persona", data.buyer)}
+
+        ${createCard("Propuesta de Valor", data.value)}
+
+        ${createCard("Redes Sociales", data.url)}
+
+    `;
+
+    reportModal.classList.remove("hidden");
+
+    reportModal.classList.add("flex");
+
+});
+
+closeModal.addEventListener("click", () => {
+
+    reportModal.classList.remove("flex");
+
+    reportModal.classList.add("hidden");
+
+});
+
+sendWhatsapp.addEventListener("click", () => {
+
+    const data = getData();
+
+    const message = `
+
+*BRIEF CREATIVO*
+
+*Marca:* ${data.name}
+
+*Logotipo:* ${data.logo}
+
+*Colores:* ${data.colors}
+
+*Historia:* ${data.history}
+
+*Emociones:* ${data.emotions}
+
+*Productos:* ${data.product}
+
+*Diferenciadores:* ${data.attributes}
+
+*Nicho:* ${data.niche}
+
+*Buyer Persona:* ${data.buyer}
+
+*Propuesta de Valor:* ${data.value}
+
+*Redes:* ${data.url}
+
+`;
+
+    const url = `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
+
+    window.open(url, "_blank");
+
+});
+
+</script>
+
 </body>
 </html>
