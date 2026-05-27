@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma de Diagnóstico de Marca & Brief Creativo</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
-        /* CSS Corporativo Puro - Cero dependencias externas para evitar bloqueos en móviles */
+        /* CSS Estricto de Producción - Sin dependencias externas */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -17,11 +18,11 @@
             background: linear-gradient(135deg, #0b0f19, #131130);
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #f1f5f9;
-            padding: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-h: 100vh;
+            min-height: 100vh;
         }
         .wrapper {
             width: 100%;
@@ -32,16 +33,15 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 24px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
         }
         .header-panel {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            align-items: flex-start;
         }
         @media (min-width: 768px) {
             .header-panel {
@@ -51,31 +51,34 @@
             }
         }
         .main-title {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 900;
             color: #ffffff;
             text-transform: uppercase;
-            letter-spacing: -0.5px;
         }
         .subtitle {
             font-size: 0.8rem;
             color: #94a3b8;
-            margin-top: 4px;
+            margin-top: 2px;
         }
-        /* Botón de Acción Nativo con Soporte Táctil Optimizado */
+        
+        /* Botón Táctil Premium Optimizado para Teléfonos */
         .btn-trigger {
             background: #4f46e5;
             color: #ffffff;
             font-weight: 700;
-            padding: 16px 32px;
-            border-radius: 16px;
+            padding: 16px 28px;
+            border-radius: 14px;
             border: none;
             cursor: pointer;
             width: 100%;
             font-size: 1rem;
-            transition: all 0.2s ease;
-            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
-            -webkit-tap-highlight-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.2s ease, transform 0.1s ease;
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+            display: block;
+            text-align: center;
         }
         .btn-trigger:active {
             background: #4338ca;
@@ -86,62 +89,55 @@
                 width: auto;
             }
         }
+        
         .canvas-container {
             background: rgba(255, 255, 255, 0.02);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 32px;
-            padding: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
         .canvas-header {
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 20px;
-            margin-bottom: 35px;
+            border-b: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
         }
         .canvas-header h2 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 900;
             color: #ffffff;
-            letter-spacing: -0.5px;
+            margin-top: 4px;
         }
         .section-box {
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
         .section-title {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: #ffffff;
             border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding-bottom: 8px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .section-title span {
-            width: 4px;
-            height: 18px;
-            background: #6366f1;
-            border-radius: 10px;
-            display: inline-block;
+            padding-bottom: 6px;
+            margin-bottom: 15px;
         }
         .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
         @media (min-width: 768px) {
             .grid-2 {
+                display: grid;
                 grid-template-columns: 1fr 1fr;
+                gap: 20px;
             }
             .span-2 {
                 grid-column: span 2;
             }
         }
         .field-group {
-            margin-bottom: 15px;
+            width: 100%;
         }
         .field-group label {
             display: block;
@@ -149,65 +145,55 @@
             font-weight: 700;
             color: #94a3b8;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
-        /* Inputs elegantes e interactivos */
         .input-professional {
             width: 100%;
             background: rgba(255, 255, 255, 0.04);
             border: 2px solid rgba(99, 102, 241, 0.25);
             border-radius: 12px;
-            padding: 14px 18px;
+            padding: 12px 16px;
             color: #ffffff;
             font-size: 0.95rem;
             font-family: inherit;
-            transition: all 0.3s ease;
-            -webkit-appearance: none;
+            transition: all 0.2s ease;
         }
         .input-professional:focus {
             outline: none;
             border-color: #818cf8;
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 15px rgba(129, 140, 248, 0.2);
-        }
-        .input-professional::placeholder {
-            color: rgba(255, 255, 255, 0.3);
-            font-style: italic;
-            font-size: 0.85rem;
+            background: rgba(255, 255, 255, 0.07);
         }
         textarea.input-professional {
             resize: vertical;
-            min-height: 90px;
+            min-height: 100px;
         }
         .footer-stamp {
+            margin-top: 35px;
+            padding-top: 15px;
             border-top: 1px solid rgba(255,255,255,0.08);
-            padding-top: 20px;
-            margin-top: 40px;
             text-align: center;
             font-size: 0.7rem;
             color: #64748b;
             font-family: monospace;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
 
-        /* ESTILOS EXCLUSIVOS PARA EL RENDERIZADO DEL PDF IMPRESO (FONDO BLANCO Y EXPANSIVO) */
+        /* DISEÑO EXCLUSIVO PARA EL PDF DESCARGADO */
         .print-pdf-layout {
             background: #ffffff !important;
             color: #0f172a !important;
-            padding: 45px !important;
+            padding: 40px !important;
         }
         .print-value-box {
             background: #f8fafc !important;
             border-left: 4px solid #4f46e5 !important;
-            padding: 12px 16px !important;
+            padding: 12px !important;
             color: #1e293b !important;
             font-size: 0.95rem !important;
-            line-height: 1.5 !important;
             white-space: pre-wrap !important;
             word-wrap: break-word !important;
-            margin-top: 6px !important;
-            border-radius: 0px 8px 8px 0px;
+            margin-top: 4px !important;
+            border-radius: 0 6px 6px 0;
         }
     </style>
 </head>
@@ -217,146 +203,145 @@
         
         <div class="glass-container header-panel">
             <div>
-                <h1 class="main-title">Ecosistema de Diagnóstico de Marca</h1>
-                <p class="subtitle">Matriz de auditoría corporativa profunda, análisis de mercado e ingeniería de producto.</p>
+                <h1 class="main-title">Ecosistema de Briefing</h1>
+                <p class="subtitle">Auditoría corporativa profunda, análisis de mercado e ingeniería de producto.</p>
             </div>
-            <button type="button" onclick="procesarMatrizCorporativa()" class="btn-trigger">
-                Finalizar y Guardar PDF
+            <button type="button" onclick="procesarMatrizCorporativa()" ontouchstart="procesarMatrizCorporativa()" class="btn-trigger">
+                Finalizar y Generar PDF
             </button>
         </div>
 
         <div id="brief-master-canvas" class="canvas-container">
             
             <div class="canvas-header">
-                <span style="font-size: 0.75rem; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 4px;">Auditoría de Alta Dirección</span>
+                <span style="font-size: 0.75rem; font-weight: 700; color: #6366f1; text-transform: uppercase; tracking-spacing: 1px;">Auditoría de Alta Dirección</span>
                 <h2>BRIEF MAESTRO DE IDENTIDAD, PRODUCTO Y MERCADO</h2>
-                <div style="margin-top: 10px; font-size: 0.7rem; font-family: monospace; color: #6366f1; background: rgba(99, 102, 241, 0.1); display: inline-block; padding: 4px 10px; border-radius: 6px;">CÓDIGO: AUD-BRF-2026</div>
             </div>
 
             <div class="section-box">
-                <h3 class="section-title"><span></span> 1. Identificación Básica y Estructura Visual</h3>
+                <h3 class="section-title">1. Identificación Básica y Estructura Visual</h3>
                 <div class="grid-2">
                     <div class="field-group">
                         <label>Nombre Comercial de la Marca</label>
-                        <input type="text" id="input-name" class="input-professional" placeholder="Ej: TomyStyle (Especifique la nomenclatura exacta)">
+                        <input type="text" id="input-name" class="input-professional" placeholder="Ej: TomyStyle">
                     </div>
                     <div class="field-group">
                         <label>Arquitectura de Logotipo / Isotipo</label>
-                        <input type="text" id="input-logo" class="input-professional" placeholder="Ej: Imagotipo geométrico, emblema minimalista...">
+                        <input type="text" id="input-logo" class="input-professional" placeholder="Ej: Imagotipo geométrico minimalista">
                     </div>
                     <div class="field-group span-2">
                         <label>Paleta de Colores Corporativos (Códigos Hexadecimales)</label>
-                        <input type="text" id="input-colors" class="input-professional" placeholder="Ej: #0B0F19 (Fondo), #6366F1 (Acento), #FFFFFF (Contraste)">
+                        <input type="text" id="input-colors" class="input-professional" placeholder="Ej: #0B0F19, #6366F1, #FFFFFF">
                     </div>
                 </div>
             </div>
 
             <div class="section-box">
-                <h3 class="section-title"><span></span> 2. Génesis, Trayectoria y ADN de Marca</h3>
-                <div class="field-group" style="margin-bottom: 20px;">
+                <h3 class="section-title">2. Génesis, Trayectoria y ADN de Marca</h3>
+                <div class="field-group" style="margin-bottom: 15px;">
                     <label>Historia de Origen y Motivación Central</label>
-                    <textarea id="input-history" class="input-professional" placeholder="¿Qué necesidad crítica del mercado inspiró la creación de este proyecto? Describa los retos iniciales superados."></textarea>
+                    <textarea id="input-history" class="input-professional" placeholder="¿Qué necesidad crítica del mercado inspiró la creación de este proyecto?"></textarea>
                 </div>
                 <div class="field-group">
                     <label>Misión Filosófica y Visión de Expansión Futura</label>
-                    <textarea id="input-vision" class="input-professional" placeholder="¿Cuál es el propósito definitivo de la marca? ¿Dónde se proyecta el posicionamiento de la empresa en los próximos 3 a 5 años?"></textarea>
+                    <textarea id="input-vision" class="input-professional" placeholder="¿Cuál es el propósito definitivo y dónde se proyecta en los próximos 3 a 5 años?"></textarea>
                 </div>
             </div>
 
             <div class="section-box">
-                <h3 class="section-title"><span></span> 3. Territorio Emocional y Personalidad Corporativa</h3>
-                <div class="field-group" style="margin-bottom: 20px;">
+                <h3 class="section-title">3. Territorio Emocional y Personalidad Corporativa</h3>
+                <div class="field-group" style="margin-bottom: 15px;">
                     <label>Estilo de Comunicación y Tono de Voz</label>
-                    <textarea id="input-voice" class="input-professional" placeholder="Ej: Educativo, sofisticado, tecnológico, disruptivo, amigable pero corporativo. ¿Cómo le habla la marca a su comunidad?"></textarea>
+                    <textarea id="input-voice" class="input-professional" placeholder="Ej: Sofisticado, disruptivo, tecnológico, amigable pero corporativo."></textarea>
                 </div>
                 <div class="field-group">
                     <label>Valores Fundamentales y Conectividad Psicológica</label>
-                    <textarea id="input-values" class="input-professional" placeholder="Defina los 3 o 4 valores innegociables (Ej: Transparencia algorítmica, exclusividad en manufactura, diseño limpio)."></textarea>
+                    <textarea id="input-values" class="input-professional" placeholder="Defina los valores innegociables de la empresa."></textarea>
                 </div>
             </div>
 
             <div class="section-box">
-                <h3 class="section-title"><span></span> 4. Ingeniería de Producto, Servicios y Oferta Comercial</h3>
-                <div class="field-group" style="margin-bottom: 20px;">
+                <h3 class="section-title">4. Ingeniería de Producto, Servicios y Oferta Comercial</h3>
+                <div class="field-group" style="margin-bottom: 15px;">
                     <label>Desglose de Líneas de Producto / Catálogo Actual</label>
-                    <textarea id="input-catalog" class="input-professional" placeholder="Especifique con precisión qué vende o fabrica la marca (Ej: Indumentaria streetwear oversized, plataformas SaaS con UI glassmorphic, etc.)"></textarea>
+                    <textarea id="input-catalog" class="input-professional" placeholder="Especifique con precisión matemática qué vende o fabrica la marca de forma exacta."></textarea>
                 </div>
                 <div class="field-group">
                     <label>Atributos Técnicos, Composición y Control de Calidad</label>
-                    <textarea id="input-specs" class="input-professional" placeholder="Describa materiales de fabricación, tecnologías empleadas, herrajes, tipografías tipológicas redondeadas de autor, acabados..."></textarea>
+                    <textarea id="input-specs" class="input-professional" placeholder="Materiales de fabricación, tecnologías empleadas, tipografías tipológicas, acabados..."></textarea>
                 </div>
             </div>
 
             <div class="section-box">
-                <h3 class="section-title"><span></span> 5. Segmentación Avanzada y Radiografía del Comprador</h3>
-                <div class="field-group" style="margin-bottom: 20px;">
+                <h3 class="section-title">5. Segmentación Avanzada y Radiografía del Comprador</h3>
+                <div class="field-group" style="margin-bottom: 15px;">
                     <label>Micro-Nicho de Mercado y Perfil Demográfico Objetivo</label>
-                    <textarea id="input-demographics" class="input-professional" placeholder="Rango de edad exacto, ubicación geográfica, nivel cultural, profesión y hábitos comerciales."></textarea>
+                    <textarea id="input-demographics" class="input-professional" placeholder="Rango de edad, ubicación, nivel cultural, profesión y hábitos comerciales."></textarea>
                 </div>
                 <div class="field-group">
                     <label>Puntos de Dolor, Frustraciones e Intereses Conductuales</label>
-                    <textarea id="input-pains" class="input-professional" placeholder="¿Qué le quita el sueño al cliente ideal? ¿Qué le frustra del mercado actual? (Ej: Telas delgadas que se deforman, interfaces saturadas)."></textarea>
+                    <textarea id="input-pains" class="input-professional" placeholder="¿Qué le frustra al cliente ideal del mercado actual?"></textarea>
                 </div>
             </div>
 
             <div class="section-box">
-                <h3 class="section-title"><span></span> 6. Arquitectura Competitiva y Ecosistema de Mercado</h3>
-                <div class="field-group" style="margin-bottom: 20px;">
+                <h3 class="section-title">6. Arquitectura Competitiva y Ecosistema de Mercado</h3>
+                <div class="field-group" style="margin-bottom: 15px;">
                     <label>Competidores Directos e Indirectos (Análisis de Referencias)</label>
-                    <textarea id="input-competitors" class="input-professional" placeholder="Mencione al menos 2 marcas competidoras. ¿Qué están haciendo bien y en qué carecen de propuesta estratégica?"></textarea>
+                    <textarea id="input-competitors" class="input-professional" placeholder="Mencione al menos 2 marcas competidoras y sus carencias o aciertos."></textarea>
                 </div>
                 <div class="field-group">
                     <label>Ventaja Competitiva Injusta (Moat Comercial)</label>
-                    <textarea id="input-moat" class="input-professional" placeholder="¿Cuál es ese factor que es ridículamente difícil de copiar por la competencia? (Ej: Sistema integrado de tracking automatizado)."></textarea>
+                    <textarea id="input-moat" class="input-professional" placeholder="¿Cuál es ese factor que es ridículamente difícil de copiar por otros?"></textarea>
                 </div>
             </div>
 
             <div class="section-box">
-                <h3 class="section-title"><span></span> 7. Propuesta Única de Valor (UVP) y Posicionamiento</h3>
+                <h3 class="section-title">7. Propuesta Única de Valor (UVP) y Posicionamiento</h3>
                 <div class="field-group">
                     <label>Declaración Central de Posicionamiento Estratégico</label>
-                    <textarea id="input-uvp" class="input-professional" placeholder="Estructura sugerida: Ayudamos a [Nicho] a conseguir [Resultado deseado] mediante [Diferenciador propio], eliminando por completo [Dolor principal]."></textarea>
+                    <textarea id="input-uvp" class="input-professional" placeholder="Ayudamos a [Nicho] a conseguir [Resultado] mediante [Diferenciador], eliminando [Dolor]."></textarea>
                 </div>
             </div>
 
             <div class="section-box">
-                <h3 class="section-title"><span></span> 8. Ecosistema Digital, Infraestructura y Canales</h3>
+                <h3 class="section-title">8. Ecosistema Digital, Infraestructura y Canales</h3>
                 <div class="grid-2">
                     <div class="field-group">
                         <label>Canales Digitales Prioritarios</label>
-                        <input type="text" id="input-channels" class="input-professional" placeholder="Ej: Instagram Comercial, Plataforma Web Autónoma, WhatsApp CRM">
+                        <input type="text" id="input-channels" class="input-professional" placeholder="Ej: Instagram, Plataforma Web, WhatsApp CRM">
                     </div>
                     <div class="field-group">
                         <label>Enlaces / Redes Sociales Activas Actuales</label>
-                        <input type="url" id="input-links" class="input-professional" placeholder="Ej: https://instagram.com/tu_marca_oficial">
+                        <input type="url" id="input-links" class="input-professional" placeholder="Ej: https://instagram.com/tu_marca">
                     </div>
                 </div>
             </div>
 
             <div class="section-box">
-                <h3 class="section-title"><span></span> 9. Objetivos de Negocio y Requerimientos de Diseño</h3>
+                <h3 class="section-title">9. Objetivos de Negocio y Requerimientos de Diseño</h3>
                 <div class="field-group">
                     <label>Metas de Identidad Corporativa y Desarrollo Requerido</label>
-                    <textarea id="input-goals" class="input-professional" placeholder="¿Qué piezas de diseño o sistemas de software se pretenden desarrollar con esta información?"></textarea>
+                    <textarea id="input-goals" class="input-professional" placeholder="¿Qué piezas de diseño o plataformas web se pretenden estructurar?"></textarea>
                 </div>
             </div>
 
             <div class="section-box">
-                <h3 class="section-title"><span></span> 10. Presupuesto Asignado y Cronograma Estimado</h3>
+                <h3 class="section-title">10. Presupuesto Asignado y Cronograma Estimado</h3>
                 <div class="grid-2">
                     <div class="field-group">
                         <label>Rango Presupuestario Proyectado</label>
-                        <input type="text" id="input-budget" class="input-professional" placeholder="Ej: Inversión Fase 1 (Estructuración Visual)">
+                        <input type="text" id="input-budget" class="input-professional" placeholder="Ej: Inversión Desarrollo Fase 1">
                     </div>
                     <div class="field-group">
                         <label>Fecha Límite Ideal de Entrega (Deadline)</label>
-                        <input type="text" id="input-deadline" class="input-professional" placeholder="Ej: Plazo máximo de 45 días hábiles">
+                        <input type="text" id="input-deadline" class="input-professional" placeholder="Ej: 45 días hábiles">
                     </div>
                 </div>
             </div>
 
             <div class="footer-stamp">
-                SISTEMA MATRIZ DE SEGURIDAD ESTRATÉGICA • COCHABAMBA - TARIJA, BOLIVIA
+                SISTEMA MATRIZ DE SEGURIDAD ESTRATÉGICA • BOLIVIA
             </div>
 
         </div>
@@ -364,43 +349,47 @@
 
     <script>
         function procesarMatrizCorporativa() {
-            const nombreMarca = document.getElementById('input-name').value.trim() || 'Nueva_Marca';
+            // Capturar el nombre de la marca de forma segura
+            const elementNombre = document.getElementById('input-name');
+            const nombreMarca = (elementNombre && elementNombre.value.trim()) ? elementNombre.value.trim() : 'Nueva_Marca';
             
-            // 1. RECOLECCIÓN COMPLETA DE VALORES (Garantía de respaldo de datos en texto plano)
+            // 1. RECOLECCIÓN DE DATOS EN OBJETO PLANO
             const datosBrief = {
                 nombre: nombreMarca,
-                logo: document.getElementById('input-logo').value.trim(),
-                colores: document.getElementById('input-colors').value.trim(),
-                historia: document.getElementById('input-history').value.trim(),
-                vision: document.getElementById('input-vision').value.trim(),
-                voz: document.getElementById('input-voice').value.trim(),
-                valores: document.getElementById('input-values').value.trim(),
-                catalogo: document.getElementById('input-catalog').value.trim(),
-                specs: document.getElementById('input-specs').value.trim(),
-                demografia: document.getElementById('input-demographics').value.trim(),
-                dolores: document.getElementById('input-pains').value.trim(),
-                competidores: document.getElementById('input-competitors').value.trim(),
-                moat: document.getElementById('input-moat').value.trim(),
-                uvp: document.getElementById('input-uvp').value.trim(),
-                canales: document.getElementById('input-channels').value.trim(),
-                links: document.getElementById('input-links').value.trim(),
-                metas: document.getElementById('input-goals').value.trim(),
-                presupuesto: document.getElementById('input-budget').value.trim(),
-                plazo: document.getElementById('input-deadline').value.trim()
+                logo: document.getElementById('input-logo').value,
+                colores: document.getElementById('input-colors').value,
+                historia: document.getElementById('input-history').value,
+                vision: document.getElementById('input-vision').value,
+                voz: document.getElementById('input-voice').value,
+                valores: document.getElementById('input-values').value,
+                catalogo: document.getElementById('input-catalog').value,
+                specs: document.getElementById('input-specs').value,
+                demografia: document.getElementById('input-demographics').value,
+                dolores: document.getElementById('input-pains').value,
+                competidores: document.getElementById('input-competitors').value,
+                moat: document.getElementById('input-moat').value,
+                uvp: document.getElementById('input-uvp').value,
+                canales: document.getElementById('input-channels').value,
+                links: document.getElementById('input-links').value,
+                metas: document.getElementById('input-goals').value,
+                presupuesto: document.getElementById('input-budget').value,
+                plazo: document.getElementById('input-deadline').value
             };
 
-            // 2. DUPLICACIÓN Y RECONSTRUCCIÓN ESTRUCTURAL DEL CANVAS PARA EL MOTOR PDF
+            // 2. DUPLICACIÓN LIMPIA DEL CONTENEDOR PARA EL RENDERIZADO DEL PDF
             const canvasOriginal = document.getElementById('brief-master-canvas');
-            const clonPDF = canvasOriginal.cloneNode(true);
+            if (!canvasOriginal) return;
             
+            const clonPDF = canvasOriginal.cloneNode(true);
             clonPDF.classList.add('print-pdf-layout');
             clonPDF.style.width = '100%';
             
-            // Reemplazar inputs por cajas div expansivas que evitan cortes de texto en impresión
+            // Convertir inputs/textareas en divs planos autoelementos para evitar que se corte el texto
             const inputsClonados = clonPDF.querySelectorAll('input, textarea');
-            inputsClonados.forEach(item => {
+            inputsClonados.forEach(function(item) {
                 const idOriginal = item.getAttribute('id');
-                const valorIngresado = document.getElementById(idOriginal).value.trim() || '_No especificado por el cliente_';
+                const elementoOriginal = document.getElementById(idOriginal);
+                const valorIngresado = (elementoOriginal && elementoOriginal.value.trim()) ? elementoOriginal.value.trim() : '_No especificado_';
                 
                 const contenedorTexto = document.createElement('div');
                 contenedorTexto.classList.add('print-value-box');
@@ -409,10 +398,55 @@
                 item.parentNode.replaceChild(contenedorTexto, item);
             });
 
-            // Ajustar el esquema de colores del clon a alto contraste estricto (Negro/Blanco)
-            clonPDF.querySelectorAll('h2, h3').forEach(el => el.style.color = '#0f172a');
-            clonPDF.querySelectorAll('label').forEach(el => el.style.color = '#334155');
-            clonPDF.querySelectorAll('.section-title span').forEach(el => el.style.backgroundColor = '#4f46e5');
-            clonPDF.querySelectorAll('.footer-stamp').forEach(el => {
-                el.style.color = '#94a3b8';
-                el.style.bor
+            // Forzar estilos de impresión en blanco y negro corporativo de alto contraste
+            clonPDF.querySelectorAll('h2, h3').forEach(function(el) { el.style.color = '#0f172a'; });
+            clonPDF.querySelectorAll('label').forEach(function(el) { el.style.color = '#334155'; });
+            clonPDF.querySelectorAll('.footer-stamp').forEach(function(el) { el.style.color = '#94a3b8'; });
+
+            // Posicionar clon fuera del área visible para renderizar las dimensiones correctas
+            clonPDF.style.position = 'absolute';
+            clonPDF.style.left = '-9999px';
+            clonPDF.style.top = '0px';
+            document.body.appendChild(clonPDF);
+
+            // 3. CONFIGURACIÓN COMPLETA DE IMPRESIÓN INFINITA MULTIPÁGINA
+            const opcionesConfig = {
+                margin:       [0.5, 0.5, 0.5, 0.5],
+                filename:     `Brief_Estrategico_${nombreMarca}.pdf`,
+                image:        { type: 'jpeg', quality: 1.0 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false, letterRendering: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+            };
+
+            // Lanzar motor de renderizado y abrir canal de mensajería inmediatamente después
+            html2pdf().set(opcionesConfig).from(clonPDF).save().then(function() {
+                document.body.removeChild(clonPDF);
+
+                // Reenvío de contingencia directo a tu WhatsApp Corporativo de Bolivia
+                const numeroDestino = "59177173169";
+                
+                let textoMensaje = `🚀 *¡NUEVO BRIEF DE MARCA DEPOSITADO!*\n\n`;
+                textoMensaje += `📌 *1. IDENTIFICACIÓN:* \n• *Marca:* ${datosBrief.nombre}\n• *Logotipo:* ${datosBrief.logo}\n• *Colores:* ${datosBrief.colores}\n\n`;
+                textoMensaje += `📜 *2. ADN & HISTORIA:* \n• *Génesis:* ${datosBrief.historia}\n• *Visión:* ${datosBrief.vision}\n\n`;
+                textoMensaje += `🗣️ *3. PERSONALIDAD:* \n• *Tono:* ${datosBrief.voice}\n• *Valores:* ${datosBrief.valores}\n\n`;
+                textoMensaje += `🛠️ *4. INGENIERÍA:* \n• *Catálogo:* ${datosBrief.catalogo}\n• *Especificaciones:* ${datosBrief.specs}\n\n`;
+                textoMensaje += `🎯 *5. SEGMENTACIÓN:* \n• *Demografía:* ${datosBrief.demografia}\n• *Dolores:* ${datosBrief.dolores}\n\n`;
+                textoMensaje += `📊 *6. COMPETENCIA:* \n• *Marcas:* ${datosBrief.competidores}\n• *Ventaja:* ${datosBrief.moat}\n\n`;
+                textoMensaje += `💎 *7. PROPUESTA DE VALOR:* \n• ${datosBrief.uvp}\n\n`;
+                textoMensaje += `🌐 *8. ECOSISTEMA DIGITAL:* \n• *Canales:* ${datosBrief.canales}\n• *Links:* ${datosBrief.links}\n\n`;
+                textoMensaje += `🏁 *9 & 10. METAS & LOGÍSTICA:* \n• *Objetivos:* ${datosBrief.metas}\n• *Presupuesto:* ${datosBrief.presupuesto}\n• *Plazo:* ${datosBrief.plazo}\n\n`;
+                textoMensaje += `⚠️ _Nota: Archivo PDF completo descargado localmente en el dispositivo del cliente._`;
+
+                const whatsappLink = `https://api.whatsapp.com/send?phone=${numeroDestino}&text=${encodeURIComponent(textoMensaje)}`;
+                window.open(whatsappLink, '_blank');
+            }).catch(function(error) {
+                console.error("Error en PDF:", error);
+                if (document.body.contains(clonPDF)) {
+                    document.body.removeChild(clonPDF);
+                }
+                alert("Ocurrió un problema al compilar el PDF corporativo. Intente de nuevo.");
+            });
+        }
+    </script>
+              
