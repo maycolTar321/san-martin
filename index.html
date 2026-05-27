@@ -1,93 +1,159 @@
-name: Sistema Brief - Enviar a WhatsApp
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Brief de Marca</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a, #1e1b4b);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="text-slate-200 min-h-screen p-4 md:p-8 flex flex-col items-center">
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+    <div class="max-w-4xl w-full">
+        <div class="glass-card rounded-3xl p-6 mb-8 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xl">
+            <div>
+                <h1 class="text-2xl font-bold tracking-tight text-white">Generador Inteligente de Brief</h1>
+                <p class="text-sm text-slate-400">Verifica el ejemplo, genera tu PDF y envíalo al instante.</p>
+            </div>
+            <button onclick="enviarAWhatsApp()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-6 py-3 rounded-2xl flex items-center gap-2 transition-all transform hover:scale-105 shadow-lg shadow-emerald-500/20 cursor-pointer">
+                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.4.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.328 1.977 13.864 1.05 11.997 1.05c-5.444 0-9.866 4.372-9.87 9.802 0 1.514.404 2.99 1.17 4.305l-.994 3.629 3.734-.972zm11.233-5.334c-.267-.134-1.58-.779-1.825-.869-.244-.089-.423-.134-.599.134-.177.267-.684.869-.838 1.047-.154.177-.308.2-.575.066-.267-.134-1.127-.415-2.147-1.326-.792-.707-1.328-1.58-1.483-1.847-.154-.267-.017-.411.117-.544.121-.119.267-.311.4-.467.134-.156.178-.267.267-.445.089-.178.044-.334-.022-.467-.067-.134-.599-1.444-.821-1.978-.217-.522-.455-.451-.624-.46l-.532-.01c-.183 0-.481.069-.733.344-.252.276-.962.94-9.62 2.294 0 1.354.982 2.66 1.119 2.844.137.183 1.93 2.945 4.677 4.129.654.282 1.164.45 1.562.577.657.21 1.256.18 1.729.11.527-.078 1.58-.646 1.802-1.24.223-.593.223-1.101.156-1.21-.067-.107-.244-.176-.511-.311z"/></svg>
+                Enviar a WhatsApp
+            </button>
+        </div>
 
-jobs:
-  build-and-share:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Configurar Repositorio
-      uses: actions/checkout@v4
-
-    - name: Configurar Entorno Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-
-    - name: Instalar Generador md-to-pdf
-      run: npm install -g md-to-pdf
-
-    - name: Crear Estructura del Brief
-      run: |
-        cat << 'EOF' > brief.md
-        # 📋 BRIEF COMPLETO DE MARCA
-
-        ---
-
-        ## 1. Identificación Básica y Estética
-        * **Nombre de la Marca:** [Inserta el nombre de la marca aquí]
-        * **Logotipo:** ![Logo](ruta/al/logo.png)
-        * **Paleta de Colores:**
-          - **Color 1:** `#HEX`
-          - **Color 2:** `#HEX`
-
-        ---
-
-        ## 2. Historia, Esencia y Emociones
-        * **¿Cómo nació la marca?:** [Historia del origen]
-        * **Emociones que transmite:** [Tono emocional de la marca]
-
-        ---
-
-        ## 3. Propuesta de Producto
-        * **Tipo de Producto en Elaboración:** [Descripción de lo que se fabrica]
-        * **Atributos y Diferenciadores:** [¿Qué lo hace único?]
-
-        ---
-
-        ## 4. Segmentación y Público Objetivo
-        * **Nicho de Mercado:** [Sector al que apunta]
-        * **Perfil del Cliente (Buyer Persona):**
-          - **Demografía:** [Edad, género, ubicación]
-          - **Intereses:** [Qué consume o valora]
-          - **Necesidad:** [¿Qué problema le soluciona?]
-
-        ---
-
-        ## 5. Propuesta de Valor
-        * **El Factor Diferencial:** [¿Por qué elegirlos sobre la competencia?]
-
-        ---
-
-        ## 6. Estrategia Publicitaria y Presencia Digital
-        * **Ecosistema Digital Planificado:** [Instagram, TikTok, Web...]
-        * **Enlaces de Redes Activas:**
-          - 🔗 [Enlace a Red Social 1](https://...)
-          - 🔗 [Enlace a Red Social 2](https://...)
-        EOF
-
-    - name: Convertir Markdown a PDF
-      run: md-to-pdf brief.md --output brief_marca.pdf
-
-    - name: Generar Botón de Envío para WhatsApp
-      run: |
-        # Subir el PDF a un servidor temporal para generar la URL de descarga directa
-        DOWNLOAD_URL=$(curl --upload-file brief_marca.pdf https://transfer.sh/brief_marca.pdf)
-        
-        # Configurar mensaje y codificarlo para URL
-        TEXT_MESSAGE="🚀 *¡Tu Brief de Marca está listo!* Descarga el PDF aquí: $DOWNLOAD_URL"
-        ENCODED_MESSAGE=$(node -e "console.log(encodeURIComponent(process.argv[1]))" "$TEXT_MESSAGE")
-        
-        # Crear enlace de WhatsApp directo a tu número establecido
-        WA_URL="https://api.whatsapp.com/send?phone=59177173169&text=$ENCODED_MESSAGE"
-        
-        # Crear el botón visual en el panel de control de GitHub Actions
-        echo "### ✨ ¡Proceso Terminado con Éxito!" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "[<img src='https://img.shields.io/badge/Enviar_a_WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white' width='200' />]($WA_URL)" >> $GITHUB_STEP_SUMMARY
+        <div id="brief-document" class="bg-white text-slate-800 rounded-3xl p-8 md:p-12 shadow-2xl tracking-wide leading-relaxed">
             
+            <div class="border-b-2 border-slate-100 pb-6 mb-8 flex justify-between items-start">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-indigo-600 block mb-1">Documento Corporativo</span>
+                    <h2 class="text-3xl font-black text-slate-900 tracking-tight">BRIEF DE MARCA COMPLETO</h2>
+                </div>
+                <div class="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-600/20">
+                    TM
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-indigo-600 rounded-full"></span> 1. Identificación Básica y Estética
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl">
+                        <p><strong>Nombre de la Marca:</strong> TomyStyle</p>
+                        <p><strong>Logotipo:</strong> <span class="text-sm text-indigo-600 font-semibold">[Isotipo Minimalista Circular]</span></p>
+                        <div class="md:col-span-2 flex items-center gap-4 mt-1">
+                            <strong>Paleta de Colores:</strong>
+                            <div class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-[#0F172A]"></div> <span>#0F172A (Oscuro Sofisticado)</span></div>
+                            <div class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-[#25D366]"></div> <span>#25D366 (Verde Activo)</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-indigo-600 rounded-full"></span> 2. Historia, Esencia y Emociones
+                    </h3>
+                    <div class="bg-slate-50 p-4 rounded-2xl space-y-2">
+                        <p><strong>¿Cómo nació?:</strong> Nació bajo la necesidad de crear prendas con acabados premium y layouts limpios dirigidos a desarrolladores y entusiastas tecnológicos locales que no encontraban ropa que representara su estilo minimalista y startup.</p>
+                        <p><strong>Emociones que transmite:</strong> Confianza técnica, disrupción y elegancia moderna a través del estilo *glassmorphism* y cortes limpios.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-indigo-600 rounded-full"></span> 3. Propuesta de Producto
+                    </h3>
+                    <div class="bg-slate-50 p-4 rounded-2xl space-y-2">
+                        <p><strong>Tipo de Producto en Elaboración:</strong> Ropa y complementos de estilo urbano de alta gama, con tipografías redondeadas exclusivas y detalles bordados en alta densidad.</p>
+                        <p><strong>Atributos Clave:</strong> Textiles 100% algodón premium, etiquetas minimalistas de ecocuero y empaques compostables mate.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-indigo-600 rounded-full"></span> 4. Segmentación y Público Objetivo
+                    </h3>
+                    <div class="bg-slate-50 p-4 rounded-2xl space-y-3">
+                        <p><strong>Nicho de Mercado:</strong> Moda urbana e identitaria para creadores digitales, jóvenes profesionales independientes y programadores.</p>
+                        <div class="border-t border-slate-200/60 pt-2">
+                            <p class="font-bold text-sm text-slate-500 uppercase tracking-wider mb-1">Buyer Persona (Perfil Ideal)</p>
+                            <ul class="list-disc list-inside space-y-1 text-slate-700">
+                                <li><strong>Demografía:</strong> Jóvenes de 20 a 35 años residiendo en áreas urbanas en crecimiento.</li>
+                                <li><strong>Intereses:</strong> Desarrollo web, diseño UI/UX, gadgets modernos y minimalismo productivo.</li>
+                                <li><strong>Necesidad:</strong> Vestir ropa cómoda y de excelente calidad que demuestre su pasión tech sin lucir informal.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-indigo-600 rounded-full"></span> 5. Propuesta de Valor
+                    </h3>
+                    <div class="bg-indigo-600 text-white p-5 rounded-2xl shadow-md">
+                        <p class="italic font-medium">"No creamos ropa común; fusionamos la estética del desarrollo de software premium y los layouts de vanguardia en textiles físicos de la más alta calidad para la comunidad que programa el futuro."</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2">
+                        <span class="w-2 h-6 bg-indigo-600 rounded-full"></span> 6. Estrategia Publicitaria y Presencia Digital
+                    </h3>
+                    <div class="bg-slate-50 p-4 rounded-2xl space-y-2">
+                        <p><strong>Ecosistema Digital:</strong> Enfoque centralizado en plataformas dinámicas visuales como Instagram para branding de catálogo y TikTok para contenido detrás de escena (fábrica y diseño).</p>
+                        <p><strong>Enlaces de Redes Activas para Revisión:</strong></p>
+                        <div class="flex flex-col sm:flex-row gap-4 mt-1 text-sm">
+                            <a href="https://instagram.com" target="_blank" class="text-indigo-600 font-semibold flex items-center gap-1 hover:underline">🔗 Instagram Oficial</a>
+                            <a href="https://tiktok.com" target="_blank" class="text-indigo-600 font-semibold flex items-center gap-1 hover:underline">🔗 TikTok Oficial</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="border-t border-slate-100 pt-6 mt-12 text-center text-xs text-slate-400">
+                Documento de propiedad confidencial y estratégica. Generado automáticamente en 2026.
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function enviarAWhatsApp() {
+            const element = document.getElementById('brief-document');
+            
+            // Configuración estética del PDF
+            const opt = {
+                margin:       0.5,
+                filename:     'Brief_Completo_Marca.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            // Generar PDF y simular el envío a tu WhatsApp de Bolivia
+            html2pdf().set(opt).from(element).save().then(() => {
+                const telefono = "59175141014";
+                const mensaje = encodeURIComponent("🚀 *¡Hola! He generado el PDF del Brief Completo de la Marca con éxito desde la plataforma. Ya se descargó en mi dispositivo para revisión.*");
+                const whatsappUrl = `https://api.whatsapp.com/send?phone=${telefono}&text=${mensaje}`;
+                
+                // Abre WhatsApp automáticamente
+                window.open(whatsappUrl, '_blank');
+            });
+        }
+    </script>
+</body>
+</html>
