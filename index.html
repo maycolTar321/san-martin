@@ -3,450 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma de Diagnóstico de Marca & Brief Creativo</title>
+    <title>Plataforma de Brief Creativo Profesional</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
-        /* CSS Estricto de Producción - Sin dependencias externas */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
         body {
-            background: linear-gradient(135deg, #0b0f19, #131130);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #f1f5f9;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background: radial-gradient(circle at 50% 0%, #1e2321 0%, #0d0f10 80%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
-        .wrapper {
-            width: 100%;
-            max-width: 850px;
+        .glass-card {
+            background: rgba(30, 32, 35, 0.45);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
         }
-        .glass-container {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        .input-premium {
+            background: rgba(20, 22, 24, 0.6) !important;
+            border: 2px solid rgba(74, 222, 128, 0.15) !important;
+            color: #ffffff !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .header-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        @media (min-width: 768px) {
-            .header-panel {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-        }
-        .main-title {
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: #ffffff;
-            text-transform: uppercase;
-        }
-        .subtitle {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin-top: 2px;
-        }
-        
-        /* Botón Táctil Premium Optimizado para Teléfonos */
-        .btn-trigger {
-            background: #4f46e5;
-            color: #ffffff;
-            font-weight: 700;
-            padding: 16px 28px;
-            border-radius: 14px;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            transition: background 0.2s ease, transform 0.1s ease;
-            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
-            display: block;
-            text-align: center;
-        }
-        .btn-trigger:active {
-            background: #4338ca;
-            transform: scale(0.98);
-        }
-        @media (min-width: 768px) {
-            .btn-trigger {
-                width: auto;
-            }
-        }
-        
-        .canvas-container {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 24px;
-            padding: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        .canvas-header {
-            border-b: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 15px;
-            margin-bottom: 30px;
-        }
-        .canvas-header h2 {
-            font-size: 1.6rem;
-            font-weight: 900;
-            color: #ffffff;
-            margin-top: 4px;
-        }
-        .section-box {
-            margin-bottom: 30px;
-        }
-        .section-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #ffffff;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            padding-bottom: 6px;
-            margin-bottom: 15px;
-        }
-        .grid-2 {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        @media (min-width: 768px) {
-            .grid-2 {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
-            }
-            .span-2 {
-                grid-column: span 2;
-            }
-        }
-        .field-group {
-            width: 100%;
-        }
-        .field-group label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #94a3b8;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-        .input-professional {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.04);
-            border: 2px solid rgba(99, 102, 241, 0.25);
-            border-radius: 12px;
-            padding: 12px 16px;
-            color: #ffffff;
-            font-size: 0.95rem;
-            font-family: inherit;
-            transition: all 0.2s ease;
-        }
-        .input-professional:focus {
+        .input-premium:focus {
+            background: rgba(30, 35, 32, 0.8) !important;
+            border-color: #4ade80 !important;
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.15);
             outline: none;
-            border-color: #818cf8;
-            background: rgba(255, 255, 255, 0.07);
         }
-        textarea.input-professional {
-            resize: vertical;
-            min-height: 100px;
+        .input-premium::placeholder {
+            color: rgba(255, 255, 255, 0.25) !important;
+            font-style: italic;
         }
-        .footer-stamp {
-            margin-top: 35px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            text-align: center;
-            font-size: 0.7rem;
-            color: #64748b;
-            font-family: monospace;
-            letter-spacing: 1px;
-        }
-
-        /* DISEÑO EXCLUSIVO PARA EL PDF DESCARGADO */
-        .print-pdf-layout {
+        /* Estilos optimizados para una renderización limpia y premium del PDF */
+        .pdf-render-mode {
             background: #ffffff !important;
             color: #0f172a !important;
-            padding: 40px !important;
+            padding: 45px !important;
         }
-        .print-value-box {
-            background: #f8fafc !important;
-            border-left: 4px solid #4f46e5 !important;
-            padding: 12px !important;
-            color: #1e293b !important;
-            font-size: 0.95rem !important;
-            white-space: pre-wrap !important;
-            word-wrap: break-word !important;
-            margin-top: 4px !important;
-            border-radius: 0 6px 6px 0;
+        /* Ajuste de scrollbar para diseño brutal */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0f10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2e3338;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4ade80;
         }
     </style>
 </head>
-<body>
+<body class="text-slate-300 min-h-screen p-3 sm:p-6 md:p-12 flex flex-col items-center">
 
-    <div class="wrapper">
+    <div class="fixed top-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-green-500/5 rounded-full blur-[140px] pointer-events-none"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-slate-500/5 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <div class="max-w-4xl w-full z-10 space-y-6">
         
-        <div class="glass-container header-panel">
-            <div>
-                <h1 class="main-title">Ecosistema de Briefing</h1>
-                <p class="subtitle">Auditoría corporativa profunda, análisis de mercado e ingeniería de producto.</p>
+        <div class="glass-card rounded-2xl p-5 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xl">
+            <div class="text-center sm:text-left w-full sm:w-auto">
+                <div class="flex items-center justify-center sm:justify-start gap-2">
+                    <span class="flex h-2 w-2 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    <h1 class="text-lg md:text-xl font-extrabold text-white tracking-tight uppercase">Diagnóstico de Marca Avanzado</h1>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-1">Estructuración inteligente y compilación ejecutiva de ecosistemas corporativos.</p>
             </div>
-            <button type="button" onclick="procesarMatrizCorporativa()" ontouchstart="procesarMatrizCorporativa()" class="btn-trigger">
-                Finalizar y Generar PDF
-            </button>
+            
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <button onclick="limpiarFormulario()" class="flex-1 sm:flex-none px-4 py-3.5 rounded-xl border border-slate-700/60 hover:bg-slate-800/40 text-slate-300 font-semibold text-xs md:text-sm transition-all active:scale-95 cursor-pointer" title="Limpiar borrador local">
+                    Restablecer
+                </button>
+                <button id="btn-compilar" onclick="procesarMatrizCorporativa()" class="flex-[2] sm:flex-none bg-green-500 hover:bg-green-400 text-slate-950 font-bold px-6 py-3.5 rounded-xl flex items-center justify-center gap-2 text-xs md:text-sm transition-all transform active:scale-95 shadow-lg shadow-green-500/10 cursor-pointer">
+                    <svg id="icon-btn" class="w-4 h-4 md:w-5 md:h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span id="text-btn">Generar Dossier y Enviar</span>
+                </button>
+            </div>
         </div>
 
-        <div id="brief-master-canvas" class="canvas-container">
+        <div id="save-status" class="text-center sm:text-right text-[10px] font-mono text-slate-500 px-2 transition-opacity duration-300 opacity-60">
+            ✓ Estado: Respaldo local sincronizado y protegido en el dispositivo móvil.
+        </div>
+
+        <div id="brief-master-canvas" class="glass-card rounded-3xl p-5 sm:p-8 md:p-12 shadow-2xl space-y-8">
             
-            <div class="canvas-header">
-                <span style="font-size: 0.75rem; font-weight: 700; color: #6366f1; text-transform: uppercase; tracking-spacing: 1px;">Auditoría de Alta Dirección</span>
-                <h2>BRIEF MAESTRO DE IDENTIDAD, PRODUCTO Y MERCADO</h2>
+            <div class="border-b border-slate-800 pb-5 flex flex-col sm:flex-row justify-between items-start gap-3">
+                <div>
+                    <span class="text-[10px] font-bold text-green-400 uppercase tracking-widest block mb-1">Capa ESTRATÉGICA</span>
+                    <h2 class="text-xl md:text-2xl font-black text-white tracking-tight">BRIEFING DE IDENTIDAD Y ADN CREATIVO</h2>
+                </div>
+                <div class="px-3 py-1 bg-slate-900/60 border border-slate-800 rounded-lg text-[10px] font-mono text-slate-400 self-stretch sm:self-auto text-center">
+                    ENGINE_VER: v4.2.0_STABLE
+                </div>
             </div>
 
-            <div class="section-box">
-                <h3 class="section-title">1. Identificación Básica y Estructura Visual</h3>
-                <div class="grid-2">
-                    <div class="field-group">
-                        <label>Nombre Comercial de la Marca</label>
-                        <input type="text" id="input-name" class="input-professional" placeholder="Ej: TomyStyle">
+            <div class="space-y-4">
+                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
+                    <span class="w-1 h-4 bg-green-500 rounded-full"></span> 1. Identificación Núcleo e Identidad Visual
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nombre Comercial</label>
+                        <input type="text" id="input-name" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full" placeholder="Ej: TomyStyle">
                     </div>
-                    <div class="field-group">
-                        <label>Arquitectura de Logotipo / Isotipo</label>
-                        <input type="text" id="input-logo" class="input-professional" placeholder="Ej: Imagotipo geométrico minimalista">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Arquitectura de Isologo / Logotipo</label>
+                        <input type="text" id="input-logo" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full" placeholder="Ej: Imagotipo geométrico basado en proporciones áureas">
                     </div>
-                    <div class="field-group span-2">
-                        <label>Paleta de Colores Corporativos (Códigos Hexadecimales)</label>
-                        <input type="text" id="input-colors" class="input-professional" placeholder="Ej: #0B0F19, #6366F1, #FFFFFF">
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-box">
-                <h3 class="section-title">2. Génesis, Trayectoria y ADN de Marca</h3>
-                <div class="field-group" style="margin-bottom: 15px;">
-                    <label>Historia de Origen y Motivación Central</label>
-                    <textarea id="input-history" class="input-professional" placeholder="¿Qué necesidad crítica del mercado inspiró la creación de este proyecto?"></textarea>
-                </div>
-                <div class="field-group">
-                    <label>Misión Filosófica y Visión de Expansión Futura</label>
-                    <textarea id="input-vision" class="input-professional" placeholder="¿Cuál es el propósito definitivo y dónde se proyecta en los próximos 3 a 5 años?"></textarea>
-                </div>
-            </div>
-
-            <div class="section-box">
-                <h3 class="section-title">3. Territorio Emocional y Personalidad Corporativa</h3>
-                <div class="field-group" style="margin-bottom: 15px;">
-                    <label>Estilo de Comunicación y Tono de Voz</label>
-                    <textarea id="input-voice" class="input-professional" placeholder="Ej: Sofisticado, disruptivo, tecnológico, amigable pero corporativo."></textarea>
-                </div>
-                <div class="field-group">
-                    <label>Valores Fundamentales y Conectividad Psicológica</label>
-                    <textarea id="input-values" class="input-professional" placeholder="Defina los valores innegociables de la empresa."></textarea>
-                </div>
-            </div>
-
-            <div class="section-box">
-                <h3 class="section-title">4. Ingeniería de Producto, Servicios y Oferta Comercial</h3>
-                <div class="field-group" style="margin-bottom: 15px;">
-                    <label>Desglose de Líneas de Producto / Catálogo Actual</label>
-                    <textarea id="input-catalog" class="input-professional" placeholder="Especifique con precisión matemática qué vende o fabrica la marca de forma exacta."></textarea>
-                </div>
-                <div class="field-group">
-                    <label>Atributos Técnicos, Composición y Control de Calidad</label>
-                    <textarea id="input-specs" class="input-professional" placeholder="Materiales de fabricación, tecnologías empleadas, tipografías tipológicas, acabados..."></textarea>
-                </div>
-            </div>
-
-            <div class="section-box">
-                <h3 class="section-title">5. Segmentación Avanzada y Radiografía del Comprador</h3>
-                <div class="field-group" style="margin-bottom: 15px;">
-                    <label>Micro-Nicho de Mercado y Perfil Demográfico Objetivo</label>
-                    <textarea id="input-demographics" class="input-professional" placeholder="Rango de edad, ubicación, nivel cultural, profesión y hábitos comerciales."></textarea>
-                </div>
-                <div class="field-group">
-                    <label>Puntos de Dolor, Frustraciones e Intereses Conductuales</label>
-                    <textarea id="input-pains" class="input-professional" placeholder="¿Qué le frustra al cliente ideal del mercado actual?"></textarea>
-                </div>
-            </div>
-
-            <div class="section-box">
-                <h3 class="section-title">6. Arquitectura Competitiva y Ecosistema de Mercado</h3>
-                <div class="field-group" style="margin-bottom: 15px;">
-                    <label>Competidores Directos e Indirectos (Análisis de Referencias)</label>
-                    <textarea id="input-competitors" class="input-professional" placeholder="Mencione al menos 2 marcas competidoras y sus carencias o aciertos."></textarea>
-                </div>
-                <div class="field-group">
-                    <label>Ventaja Competitiva Injusta (Moat Comercial)</label>
-                    <textarea id="input-moat" class="input-professional" placeholder="¿Cuál es ese factor que es ridículamente difícil de copiar por otros?"></textarea>
-                </div>
-            </div>
-
-            <div class="section-box">
-                <h3 class="section-title">7. Propuesta Única de Valor (UVP) y Posicionamiento</h3>
-                <div class="field-group">
-                    <label>Declaración Central de Posicionamiento Estratégico</label>
-                    <textarea id="input-uvp" class="input-professional" placeholder="Ayudamos a [Nicho] a conseguir [Resultado] mediante [Diferenciador], eliminando [Dolor]."></textarea>
-                </div>
-            </div>
-
-            <div class="section-box">
-                <h3 class="section-title">8. Ecosistema Digital, Infraestructura y Canales</h3>
-                <div class="grid-2">
-                    <div class="field-group">
-                        <label>Canales Digitales Prioritarios</label>
-                        <input type="text" id="input-channels" class="input-professional" placeholder="Ej: Instagram, Plataforma Web, WhatsApp CRM">
-                    </div>
-                    <div class="field-group">
-                        <label>Enlaces / Redes Sociales Activas Actuales</label>
-                        <input type="url" id="input-links" class="input-professional" placeholder="Ej: https://instagram.com/tu_marca">
+                    <div class="md:col-span-2">
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Cromática Corporativa (HEX Múltiples)</label>
+                        <input type="text" id="input-colors" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full" placeholder="Ej: #0B0F19 (Fondo), #4ADE80 (Verde Clarito), #64748B (Plomo)">
                     </div>
                 </div>
             </div>
 
-            <div class="section-box">
-                <h3 class="section-title">9. Objetivos de Negocio y Requerimientos de Diseño</h3>
-                <div class="field-group">
-                    <label>Metas de Identidad Corporativa y Desarrollo Requerido</label>
-                    <textarea id="input-goals" class="input-professional" placeholder="¿Qué piezas de diseño o plataformas web se pretenden estructurar?"></textarea>
+            <div class="space-y-4">
+                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
+                    <span class="w-1 h-4 bg-green-500 rounded-full"></span> 2. Storytelling, Orígenes y ADN Colectivo
+                </h3>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Génesis y Evolución Conceptual</label>
+                    <textarea id="input-history" rows="4" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full resize-none" placeholder="Describa la necesidad estructural de la industria que inspiró el nacimiento del proyecto..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Territorio Emocional y Tono de Comunicación</label>
+                    <textarea id="input-emotions" rows="3" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full resize-none" placeholder="Defina los sentimientos que el producto despierta de forma inmediata e indique el lenguaje del ecosistema."></textarea>
                 </div>
             </div>
 
-            <div class="section-box">
-                <h3 class="section-title">10. Presupuesto Asignado y Cronograma Estimado</h3>
-                <div class="grid-2">
-                    <div class="field-group">
-                        <label>Rango Presupuestario Proyectado</label>
-                        <input type="text" id="input-budget" class="input-professional" placeholder="Ej: Inversión Desarrollo Fase 1">
+            <div class="space-y-4">
+                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
+                    <span class="w-1 h-4 bg-green-500 rounded-full"></span> 3. Ingeniería de Catálogo y Atributos Técnicos
+                </h3>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tipología y Líneas de Producto Actuales</label>
+                    <textarea id="input-product" rows="3" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full resize-none" placeholder="Desglose la tipología exacta de los productos bandera o servicios principales..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Diferenciadores Físicos, Materiales y Acabados</label>
+                    <textarea id="input-attributes" rows="3" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full resize-none" placeholder="Especifique materias primas, acabados de autor, herrajes o detalles constructivos de alta calidad."></textarea>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
+                    <span class="w-1 h-4 bg-green-500 rounded-full"></span> 4. Segmentación Crítica y Buyer Persona Estructural
+                </h3>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nicho de Mercado y Datos Demográficos Objetivo</label>
+                    <textarea id="input-niche" rows="3" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full resize-none" placeholder="Ej: Creativos y profesionales independientes de 20 a 35 años enfocados en exclusividad y estética minimalista."></textarea>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Matriz del Cliente Ideal (Puntos de Dolor y Deseos)</label>
+                    <textarea id="input-buyer" rows="4" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full resize-none" placeholder="Especifique las frustraciones actuales de su audiencia y cuáles son sus aspiraciones o pasiones cotidianas."></textarea>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
+                    <span class="w-1 h-4 bg-green-500 rounded-full"></span> 5. Propuesta Única de Valor (UVP)
+                </h3>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Declaración Central de Posicionamiento</label>
+                    <textarea id="input-value" rows="3" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full resize-none" placeholder="Fórmula: Proveemos [Propuesta/Estilo] para [Nicho Objetivo] mediante [Atributo Diferenciador Único]..."></textarea>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-sm md:text-base font-bold text-white flex items-center gap-2 border-b border-slate-800/60 pb-2">
+                    <span class="w-1 h-4 bg-green-500 rounded-full"></span> 6. Distribución de Ecosistema Digital
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Canales Digitales de Tracción</label>
+                        <input type="text" id="input-media" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full" placeholder="Ej: Instagram (Catálogo de Marca), TikTok">
                     </div>
-                    <div class="field-group">
-                        <label>Fecha Límite Ideal de Entrega (Deadline)</label>
-                        <input type="text" id="input-deadline" class="input-professional" placeholder="Ej: 45 días hábiles">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Ecosistema Web / URL Activa</label>
+                        <input type="url" id="input-url" class="input-premium px-4 py-3 rounded-xl text-xs md:text-sm w-full" placeholder="Ej: https://tu-sitio.com">
                     </div>
                 </div>
             </div>
 
-            <div class="footer-stamp">
-                SISTEMA MATRIZ DE SEGURIDAD ESTRATÉGICA • BOLIVIA
+            <div class="border-t border-slate-800 pt-5 text-center text-[10px] text-slate-500 font-mono tracking-widest">
+                SISTEMA ENFOCADO EN PROPIEDAD INTELECTUAL Y DIRECCIÓN CREATIVA • BOLIVIA
             </div>
 
         </div>
     </div>
 
     <script>
-        function procesarMatrizCorporativa() {
-            // Capturar el nombre de la marca de forma segura
-            const elementNombre = document.getElementById('input-name');
-            const nombreMarca = (elementNombre && elementNombre.value.trim()) ? elementNombre.value.trim() : 'Nueva_Marca';
-            
-            // 1. RECOLECCIÓN DE DATOS EN OBJETO PLANO
-            const datosBrief = {
-                nombre: nombreMarca,
-                logo: document.getElementById('input-logo').value,
-                colores: document.getElementById('input-colors').value,
-                historia: document.getElementById('input-history').value,
-                vision: document.getElementById('input-vision').value,
-                voz: document.getElementById('input-voice').value,
-                valores: document.getElementById('input-values').value,
-                catalogo: document.getElementById('input-catalog').value,
-                specs: document.getElementById('input-specs').value,
-                demografia: document.getElementById('input-demographics').value,
-                dolores: document.getElementById('input-pains').value,
-                competidores: document.getElementById('input-competitors').value,
-                moat: document.getElementById('input-moat').value,
-                uvp: document.getElementById('input-uvp').value,
-                canales: document.getElementById('input-channels').value,
-                links: document.getElementById('input-links').value,
-                metas: document.getElementById('input-goals').value,
-                presupuesto: document.getElementById('input-budget').value,
-                plazo: document.getElementById('input-deadline').value
-            };
+        const FORM_FIELDS = [
+            'name', 'logo', 'colors', 'history', 'emotions', 
+            'product', 'attributes', 'niche', 'buyer', 'value', 'media', 'url'
+        ];
 
-            // 2. DUPLICACIÓN LIMPIA DEL CONTENEDOR PARA EL RENDERIZADO DEL PDF
-            const canvasOriginal = document.getElementById('brief-master-canvas');
-            if (!canvasOriginal) return;
-            
-            const clonPDF = canvasOriginal.cloneNode(true);
-            clonPDF.classList.add('print-pdf-layout');
-            clonPDF.style.width = '100%';
-            
-            // Convertir inputs/textareas en divs planos autoelementos para evitar que se corte el texto
-            const inputsClonados = clonPDF.querySelectorAll('input, textarea');
-            inputsClonados.forEach(function(item) {
-                const idOriginal = item.getAttribute('id');
-                const elementoOriginal = document.getElementById(idOriginal);
-                const valorIngresado = (elementoOriginal && elementoOriginal.value.trim()) ? elementoOriginal.value.trim() : '_No especificado_';
-                
-                const contenedorTexto = document.createElement('div');
-                contenedorTexto.classList.add('print-value-box');
-                contenedorTexto.innerText = valorIngresado;
-                
-                item.parentNode.replaceChild(contenedorTexto, item);
+        // ENGINE 1: Guardado Automático en Tiempo Real (Especial para Navegadores Móviles)
+        document.addEventListener('DOMContentLoaded', () => {
+            FORM_FIELDS.forEach(field => {
+                const storedValue = localStorage.getItem(`brief_v5_${field}`);
+                if (storedValue) {
+                    document.getElementById(`input-${field}`).value = storedValue;
+                }
             });
+            
+            document.getElementById('brief-master-canvas').addEventListener('input', () => {
+                FORM_FIELDS.forEach(field => {
+                    const currentVal = document.getElementById(`input-${field}`).value;
+                    localStorage.setItem(`brief_v5_${field}`, currentVal);
+                });
+                
+                const statusEl = document.getElementById('save-status');
+                statusEl.textContent = "● Guardando progreso de forma segura...";
+                statusEl.classList.remove('opacity-60', 'text-slate-500');
+                statusEl.classList.add('text-green-400', 'opacity-100');
+                
+                clearTimeout(window.saveTimer);
+                window.saveTimer = setTimeout(() => {
+                    statusEl.textContent = "✓ Estado: Respaldo local sincronizado y protegido en el dispositivo móvil.";
+                    statusEl.classList.remove('text-green-400', 'opacity-100');
+                    statusEl.classList.add('opacity-60', 'text-slate-500');
+                }, 900);
+            });
+        });
 
-            // Forzar estilos de impresión en blanco y negro corporativo de alto contraste
-            clonPDF.querySelectorAll('h2, h3').forEach(function(el) { el.style.color = '#0f172a'; });
-            clonPDF.querySelectorAll('label').forEach(function(el) { el.style.color = '#334155'; });
-            clonPDF.querySelectorAll('.footer-stamp').forEach(function(el) { el.style.color = '#94a3b8'; });
+        // ENGINE 2: Limpieza de Caché del Formulario Local
+        function limpiarFormulario() {
+            if (confirm("¿Está seguro de que desea restablecer la matriz? Se borrarán todos los datos actuales.")) {
+                FORM_FIELDS.forEach(field => {
+                    document.getElementById(`input-${field}`).value = '';
+                    localStorage.removeItem(`brief_v5_${field}`);
+                });
+                window.location.reload();
+            }
+        }
 
-            // Posicionar clon fuera del área visible para renderizar las dimensiones correctas
-            clonPDF.style.position = 'absolute';
-            clonPDF.style.left = '-9999px';
-            clonPDF.style.top = '0px';
-            document.body.appendChild(clonPDF);
+        // ENGINE 3: Compilador Avanzado de Documentación Ejecutiva (PDF) e Integración con WhatsApp
+        function procesarMatrizCorporativa() {
+            const btn = document.getElementById('btn-compilar');
+            const icon = document.getElementById('icon-btn');
+            const text = document.getElementById('text-btn');
+            
+            const data = {};
+            FORM_FIELDS.forEach(field => {
+                data[field] = document.getElementById(`input-${field}`).value.trim() || 'No especificado';
+            });
+            
+            const nombreDocumento = data.name !== 'No especificado' ? data.name : 'Nueva_Marca';
 
-            // 3. CONFIGURACIÓN COMPLETA DE IMPRESIÓN INFINITA MULTIPÁGINA
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            icon.classList.add('animate-spin');
+            text.textContent = "Compilando Archivos...";
+
+            // Creación del lienzo limpio en blanco para el render vectorial del PDF
+            const pdfCanvas = document.createElement('div');
+            pdfCanvas.style.padding = '45px';
+            pdfCanvas.style.background = '#ffffff';
+            pdfCanvas.style.color = '#0f172a';
+            pdfCanvas.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+            pdfCanvas.style.fontSize = '12px';
+            pdfCanvas.style.lineHeight = '1.6';
+
+            let swatchesHTML = '';
+            if(data.colors !== 'No especificado') {
+                const hexCodes = data.colors.match(/#[0-9A-Fa-f]{6}/g) || [];
+                hexCodes.forEach(hex => {
+                    swatchesHTML += `
+                        <div style="display: inline-flex; align-items: center; margin-right: 15px; margin-top: 5px; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 6px; background: #f8fafc;">
+                            <span style="width: 12px; height: 12px; background-color: ${hex}; border-radius: 3px; display: inline-block; margin-right: 5px; box-shadow: inset 0 0 2px rgba(0,0,0,0.15);"></span>
+                            <span style="font-family: monospace; font-size: 11px; font-weight: bold; color: #475569;">${hex.toUpperCase()}</span>
+                        </div>`;
+                });
+            }
+pdfCanvas.innerHTML = `
+                <div style="border-bottom: 3px solid #22c55e; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <p style="font-size: 9px; font-weight: 800; color: #22c55e; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 3px 0;">Dossier de Inteligencia Estratégica</p>
+                        <h1 style="font-size: 24px; font-weight: 800; color: #0f172a; margin: 0; letter-spacing: -0.5px;">BRIEF DE IDENTIDAD CORPORATIVA</h1>
+                    </div>
+                    <div style="text-align: right; font-family: monospace; font-size: 9px; color: #64748b;">
+                        FECHA: ${new Date().toLocaleDateString('es-ES')}<br>
+                        STATUS: VALIDADO_EJECUTIVO
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div>
+                        <h3 style="font-size: 12px; font-weight: 800; color: #1e293b; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin: 0 0 8px 0; color: #22c55e;">1. Identificación Núcleo e Identidad Visual</h3>
+                        <p style="margin: 3px 0;"><strong>Nombre de Marca:</strong> ${data.name}</p>
+                        <p style="margin: 3px 0;"><strong>Arquitectura de Isologo:</strong> ${data.logo}</p>
+                        <p style="margin: 3px 0; display: flex; align-items: center; flex-wrap: wrap;"><strong>Muestras Cromáticas:</strong> ${swatchesHTML || data.colors}</p>
+                    </div>
+
+                    <div>
+                        <h3 style="font-size: 12px; font-weight: 800; color: #1e293b; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin: 0 0 8px 0; color: #22c55e;">2. Storytelling y ADN Emocional</h3>
+                        <p style="margin: 0 0 6px 0; text-align: justify;"><strong>Génesis y Evolución:</strong> ${data.history}</p>
+                        <p style="margin: 0; text-align: justify;"><strong>Territorio Emocional y Voz:</strong> ${data.emotions}</p>
+                    </div>
+
+                    <div>
+                        <h3 style="font-size: 12px; font-weight: 800; color: #1e293b; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin: 0 0 8px 0; color: #22c55e;">3. Ingeniería de Catálogo y Atributos Técnicos</h3>
+                        <p style="margin: 0 0 6px 0; text-align: justify;"><strong>Líneas de Producto:</strong> ${data.product}</p>
+                        <p style="margin: 0; text-align: justify;"><strong>Diferenciadores y Manufactura:</strong> ${data.attributes}</p>
+                    </div>
+
+                    <div>
+                        <h3 style="font-size: 12px; font-weight: 800; color: #1e293b; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin: 0 0 8px 0; color: #22c55e;">4. Segmentación Avanzada del Mercado</h3>
+                        <p style="margin: 0 0 6px 0; text-align: justify;"><strong>Nicho Objetivo:</strong> ${data.niche}</p>
+                        <p style="margin: 0; text-align: justify;"><strong>Matriz de Cliente Ideal:</strong> ${data.buyer}</p>
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 12px; border-left: 4px solid #22c55e; border-radius: 4px;">
+                        <h3 style="font-size: 11px; font-weight: 800; color: #0f172a; text-transform: uppercase; margin: 0 0 4px 0;">5. Propuesta Única de Valor (UVP)</h3>
+                        <p style="margin: 0; font-style: italic; font-size: 12px; color: #334155; text-align: justify;">"${data.value}"</p>
+                    </div>
+
+                    <div>
+                        <h3 style="font-size: 12px; font-weight: 800; color: #1e293b; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin: 0 0 8px 0; color: #22c55e;">6. Canales e Infraestructura Digital</h3>
+                        <p style="margin: 3px 0;"><strong>Ecosistema de Tracción:</strong> ${data.media}</p>
+                        <p style="margin: 3px 0;"><strong>URL Destino de Auditoría:</strong> <span style="color: #2563eb; font-family: monospace;">${data.url}</span></p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 50px; border-top: 1px solid #e2e8f0; padding-top: 8px; text-align: center; font-size: 9px; color: #94a3b8; font-family: monospace;">
+                    PROPIEDAD INDUSTRIAL CONFIDENCIAL • PLATAFORMA DE DIAGNÓSTICO DE MARCA
+                </div>
+            `;
+
             const opcionesConfig = {
-                margin:       [0.5, 0.5, 0.5, 0.5],
-                filename:     `Brief_Estrategico_${nombreMarca}.pdf`,
-                image:        { type: 'jpeg', quality: 1.0 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false, letterRendering: true },
+                margin:       [0.5, 0.5],
+                filename:     `Brief_Estratégico_${nombreDocumento}_Corp.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2.5, useCORS: true, logging: false, letterRendering: true },
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
-                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+                pagebreak:    { mode: ['avoid-all', 'css'] }
             };
 
-            // Lanzar motor de renderizado y abrir canal de mensajería inmediatamente después
-            html2pdf().set(opcionesConfig).from(clonPDF).save().then(function() {
-                document.body.removeChild(clonPDF);
+            html2pdf().set(opcionesConfig).from(pdfCanvas).save().then(() => {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                icon.classList.remove('animate-spin');
+                text.textContent = "Generar Dossier y Enviar";
 
-                // Reenvío de contingencia directo a tu WhatsApp Corporativo de Bolivia
+                // Vacía los campos temporales del almacenamiento local tras generar el archivo exitosamente
+                FORM_FIELDS.forEach(field => localStorage.removeItem(`brief_v5_${field}`));
+
                 const numeroDestino = "59177173169";
-                
-                let textoMensaje = `🚀 *¡NUEVO BRIEF DE MARCA DEPOSITADO!*\n\n`;
-                textoMensaje += `📌 *1. IDENTIFICACIÓN:* \n• *Marca:* ${datosBrief.nombre}\n• *Logotipo:* ${datosBrief.logo}\n• *Colores:* ${datosBrief.colores}\n\n`;
-                textoMensaje += `📜 *2. ADN & HISTORIA:* \n• *Génesis:* ${datosBrief.historia}\n• *Visión:* ${datosBrief.vision}\n\n`;
-                textoMensaje += `🗣️ *3. PERSONALIDAD:* \n• *Tono:* ${datosBrief.voice}\n• *Valores:* ${datosBrief.valores}\n\n`;
-                textoMensaje += `🛠️ *4. INGENIERÍA:* \n• *Catálogo:* ${datosBrief.catalogo}\n• *Especificaciones:* ${datosBrief.specs}\n\n`;
-                textoMensaje += `🎯 *5. SEGMENTACIÓN:* \n• *Demografía:* ${datosBrief.demografia}\n• *Dolores:* ${datosBrief.dolores}\n\n`;
-                textoMensaje += `📊 *6. COMPETENCIA:* \n• *Marcas:* ${datosBrief.competidores}\n• *Ventaja:* ${datosBrief.moat}\n\n`;
-                textoMensaje += `💎 *7. PROPUESTA DE VALOR:* \n• ${datosBrief.uvp}\n\n`;
-                textoMensaje += `🌐 *8. ECOSISTEMA DIGITAL:* \n• *Canales:* ${datosBrief.canales}\n• *Links:* ${datosBrief.links}\n\n`;
-                textoMensaje += `🏁 *9 & 10. METAS & LOGÍSTICA:* \n• *Objetivos:* ${datosBrief.metas}\n• *Presupuesto:* ${datosBrief.presupuesto}\n• *Plazo:* ${datosBrief.plazo}\n\n`;
-                textoMensaje += `⚠️ _Nota: Archivo PDF completo descargado localmente en el dispositivo del cliente._`;
+                const textoMensaje = `🚀 *¡Nueva Matriz de Diagnóstico Generada!*\n\n• *Marca:* ${nombreDocumento}\n• *Ecosistema Visual:* ${data.logo.substring(0, 50)}...\n• *Estatus:* Dossier PDF corporativo de alta calidad guardado localmente y listo para revisión analítica comercial.`;
 
                 const whatsappLink = `https://api.whatsapp.com/send?phone=${numeroDestino}&text=${encodeURIComponent(textoMensaje)}`;
                 window.open(whatsappLink, '_blank');
-            }).catch(function(error) {
-                console.error("Error en PDF:", error);
-                if (document.body.contains(clonPDF)) {
-                    document.body.removeChild(clonPDF);
-                }
-                alert("Ocurrió un problema al compilar el PDF corporativo. Intente de nuevo.");
+                
+            }).catch(error => {
+                console.error("Falla en el motor de renderizado PDF:", error);
+                alert("Error al generar el PDF.");
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                icon.classList.remove('animate-spin');
+                text.textContent = "Generar Dossier y Enviar";
             });
         }
     </script>
-              
+</body>
+</html>
+            
