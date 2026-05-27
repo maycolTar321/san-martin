@@ -65,7 +65,7 @@
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-green); }
     </style>
 </head>
-<body class="text-slate-300 min-h-screen p-3 sm:p-6 md:p-12 flex flex-col items-center">
+<body class="text-slate-300 min-h-screen p-3 sm:p-6 md:p-12 flex flex-col items-center overflow-x-hidden">
 
     <div aria-hidden="true" class="fixed top-[-10%] left-[-10%] w-[60vw] h-[60vw] bg-green-500/4 rounded-full blur-[130px] pointer-events-none"></div>
     <div aria-hidden="true" class="fixed bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-slate-500/4 rounded-full blur-[130px] pointer-events-none"></div>
@@ -276,7 +276,7 @@
                 }
             });
 
-            btnCompilar.addEventListener('click', async () => {
+            btnCompilar.addEventListener('click', () => {
                 if (btnCompilar.disabled) return;
 
                 const data = {};
@@ -291,8 +291,21 @@
                 btnCompilar.classList.add('opacity-50', 'cursor-not-allowed');
                 textBtn.textContent = "Compilando...";
 
+                // SOLUCIÓN MÓVIL: Creamos el contenedor y lo anclamos de forma invisible
                 const pdfCanvas = document.createElement('div');
-                pdfCanvas.style.cssText = "width: 100%; padding: 30px; background: #ffffff; color: #000000; font-family: Arial, sans-serif; font-size: 11px; line-height: 1.4;";
+                pdfCanvas.style.position = 'absolute';
+                pdfCanvas.style.left = '-9999px'; // Fuera de la vista
+                pdfCanvas.style.top = '0';
+                pdfCanvas.style.width = '800px'; // Ancho fijo para evitar deformaciones en celular
+                pdfCanvas.style.padding = '30px';
+                pdfCanvas.style.background = '#ffffff';
+                pdfCanvas.style.color = '#000000';
+                pdfCanvas.style.fontFamily = 'Arial, sans-serif';
+                pdfCanvas.style.fontSize = '11px';
+                pdfCanvas.style.lineHeight = '1.4';
+                
+                // Lo agregamos al cuerpo de la página para que el navegador lo detecte
+                document.body.appendChild(pdfCanvas);
 
                 pdfCanvas.innerHTML = `
                     <div style="border-bottom: 2px solid #22c55e; padding-bottom: 10px; margin-bottom: 15px;">
@@ -343,8 +356,10 @@
                     jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
                 };
 
-                try {
-                    await html2pdf().set(opcionesConfig).from(pdfCanvas).save();
+                // SOLUCIÓN MÓVIL: Usamos .then() en lugar de await para mantener el contexto del clic
+                html2pdf().set(opcionesConfig).from(pdfCanvas).save().then(() => {
+                    // Limpiamos el DOM oculto una vez generado
+                    document.body.removeChild(pdfCanvas);
                     
                     form.reset();
                     FORM_FIELDS.forEach(field => localStorage.removeItem(`${STORAGE_PREFIX}${field}`));
@@ -353,15 +368,21 @@
                     
                     window.open(`https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodeURIComponent(textoMensaje)}`, '_blank');
                     
-                } catch (error) {
-                    console.error("Falla al compilar PDF:", error);
-                    alert("Error al compilar el PDF. Verifique permisos o intente de nuevo.");
-                } finally {
                     btnCompilar.disabled = false;
                     btnCompilar.classList.remove('opacity-50', 'cursor-not-allowed');
                     textBtn.textContent = "Generar PDF y Enviar";
                     statusEl.textContent = "✓ Estado: Documento procesado.";
-                }
+
+                }).catch(error => {
+                    console.error("Falla al compilar PDF:", error);
+                    // Importante: también limpiar el DOM oculto si hay error
+                    document.body.removeChild(pdfCanvas);
+                    alert("Por favor, permite las descargas en tu navegador (Chrome) para guardar el PDF.");
+                    
+                    btnCompilar.disabled = false;
+                    btnCompilar.classList.remove('opacity-50', 'cursor-not-allowed');
+                    textBtn.textContent = "Generar PDF y Enviar";
+                });
             });
 
             document.addEventListener('DOMContentLoaded', loadSavedData);
