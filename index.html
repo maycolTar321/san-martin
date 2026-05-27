@@ -86,9 +86,6 @@
                     Restablecer
                 </button>
                 <button id="btn-compilar" onclick="procesarMatrizCorporativa()" class="flex-[2] sm:flex-none bg-green-500 hover:bg-green-400 text-slate-950 font-bold px-7 py-3.5 rounded-xl flex items-center justify-center gap-2.5 text-xs md:text-sm transition-all transform active:scale-95 shadow-lg shadow-green-500/10 cursor-pointer">
-                    <svg id="icon-btn" class="w-4 h-4 md:w-5 md:h-5 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                    </svg>
                     <span id="text-btn">Generar PDF y Enviar</span>
                 </button>
             </div>
@@ -214,7 +211,7 @@
         // ENGINE 1: Sistema Anti-Pérdida en Tiempo Real (Resistente a recargas o cierres accidentales)
         document.addEventListener('DOMContentLoaded', () => {
             FORM_FIELDS.forEach(field => {
-                const storedValue = localStorage.getItem(`brief_v6_${field}`);
+                const storedValue = localStorage.getItem(`brief_v7_${field}`);
                 if (storedValue) {
                     document.getElementById(`input-${field}`).value = storedValue;
                 }
@@ -223,7 +220,7 @@
             document.getElementById('brief-master-canvas').addEventListener('input', () => {
                 FORM_FIELDS.forEach(field => {
                     const currentVal = document.getElementById(`input-${field}`).value;
-                    localStorage.setItem(`brief_v6_${field}`, currentVal);
+                    localStorage.setItem(`brief_v7_${field}`, currentVal);
                 });
                 
                 const statusEl = document.getElementById('save-status');
@@ -245,16 +242,15 @@
             if (confirm("¿Está seguro de que desea restablecer la plantilla? Se borrarán todos los textos actuales.")) {
                 FORM_FIELDS.forEach(field => {
                     document.getElementById(`input-${field}`).value = '';
-                    localStorage.removeItem(`brief_v6_${field}`);
+                    localStorage.removeItem(`brief_v7_${field}`);
                 });
                 window.location.reload();
             }
         }
 
-        // ENGINE 3: Generador de PDF en Aislamiento Virtual (Blindado contra cuelgues de memoria en celulares)
+        // ENGINE 3: Generador de PDF en Aislamiento Virtual Puro (Totalmente plano y ligero para móviles)
         function procesarMatrizCorporativa() {
             const btn = document.getElementById('btn-compilar');
-            const icon = document.getElementById('icon-btn');
             const text = document.getElementById('text-btn');
             
             const data = {};
@@ -266,103 +262,84 @@
 
             btn.disabled = true;
             btn.classList.add('opacity-50', 'cursor-not-allowed');
-            icon.classList.add('animate-spin');
             text.textContent = "Compilando...";
 
-            // SOLUCIÓN AL ERROR MÓVIL: Se genera una estructura de impresión completamente limpia y plana en memoria de forma aislada.
+            // NÚCLEO DE LA CORRECCIÓN: Contenedor HTML completamente plano en memoria sin estilos CSS heredados complejos ni filtros borrosos.
             const pdfCanvas = document.createElement('div');
-            pdfCanvas.style.padding = '40px';
+            pdfCanvas.style.width = '100%';
+            pdfCanvas.style.padding = '35px';
             pdfCanvas.style.background = '#ffffff';
-            pdfCanvas.style.color = '#0f172a';
-            pdfCanvas.style.fontFamily = "'Plus Jakarta Sans', sans-serif";
+            pdfCanvas.style.color = '#1e293b';
+            pdfCanvas.style.fontFamily = 'sans-serif';
             pdfCanvas.style.fontSize = '12px';
-            pdfCanvas.style.lineHeight = '1.6';
-
-            let swatchesHTML = '';
-            if(data.colors !== 'No especificado') {
-                const hexCodes = data.colors.match(/#[0-9A-Fa-f]{6}/g) || [];
-                hexCodes.forEach(hex => {
-                    swatchesHTML += `
-                        <div style="display: inline-flex; align-items: center; margin-right: 15px; margin-top: 5px; border: 1px solid #cbd5e1; padding: 4px 8px; border-radius: 6px; background: #f8fafc;">
-                            <span style="width: 12px; height: 12px; background-color: ${hex}; border-radius: 3px; display: inline-block; margin-right: 5px; box-shadow: inset 0 0 2px rgba(0,0,0,0.15);"></span>
-                            <span style="font-family: monospace; font-size: 11px; font-weight: bold; color: #475569;">${hex.toUpperCase()}</span>
-                        </div>`;
-                });
-            }
+            pdfCanvas.style.lineHeight = '1.5';
 
             pdfCanvas.innerHTML = `
-                <div style="border-bottom: 3px solid #22c55e; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-end;">
-                    <div>
-                        <p style="font-size: 9px; font-weight: 800; color: #22c55e; text-transform: uppercase; letter-spacing: 2px; margin: 0 0 3px 0;">Dossier de Inteligencia Estratégica</p>
-                        <h1 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0; letter-spacing: -0.5px;">BRIEF DE IDENTIDAD CORPORATIVA</h1>
-                    </div>
-                    <div style="text-align: right; font-family: monospace; font-size: 9px; color: #64748b;">
-                        FECHA: ${new Date().toLocaleDateString('es-ES')}<br>
-                        STATUS: VALIDADO_MÓVIL
-                    </div>
+                <div style="border-bottom: 3px solid #22c55e; padding-bottom: 12px; margin-bottom: 20px;">
+                    <p style="font-size: 9px; font-weight: bold; color: #22c55e; text-transform: uppercase; margin: 0 0 2px 0; tracking: 1px;">Dossier de Inteligencia Estratégica</p>
+                    <h1 style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0;">BRIEF DE IDENTIDAD CORPORATIVA</h1>
+                    <p style="font-size: 9px; color: #64748b; margin: 4px 0 0 0; font-family: monospace;">EMISIÓN: ${new Date().toLocaleDateString('es-ES')} | STATUS: VALIDADO_MÓVIL</p>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 20px;">
+                <div style="display: flex; flex-direction: column; gap: 16px;">
                     <div>
-                        <h3 style="font-size: 12px; font-weight: 800; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin: 0 0 8px 0; color: #22c55e;">1. Identificación Básica e Identidad Visual</h3>
+                        <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin: 0 0 6px 0; color: #22c55e;">1. Identificación Básica e Identidad Visual</h3>
                         <p style="margin: 3px 0;"><strong>Nombre de Marca:</strong> ${data.name}</p>
                         <p style="margin: 3px 0;"><strong>Arquitectura de Isologo:</strong> ${data.logo}</p>
-                        <p style="margin: 3px 0; display: flex; align-items: center; flex-wrap: wrap;"><strong>Muestras Cromáticas:</strong> ${swatchesHTML || data.colors}</p>
+                        <p style="margin: 3px 0;"><strong>Cromática Colectiva:</strong> ${data.colors}</p>
                     </div>
 
                     <div>
-                        <h3 style="font-size: 12px; font-weight: 800; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin: 0 0 8px 0; color: #22c55e;">2. Storytelling y ADN Emocional</h3>
-                        <p style="margin: 0 0 6px 0; text-align: justify;"><strong>Génesis y Evolución:</strong> ${data.history}</p>
+                        <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin: 0 0 6px 0; color: #22c55e;">2. Storytelling y ADN Emocional</h3>
+                        <p style="margin: 0 0 4px 0; text-align: justify;"><strong>Génesis y Evolución:</strong> ${data.history}</p>
                         <p style="margin: 0; text-align: justify;"><strong>Territorio Emocional y Voz:</strong> ${data.emotions}</p>
                     </div>
 
                     <div>
-                        <h3 style="font-size: 12px; font-weight: 800; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin: 0 0 8px 0; color: #22c55e;">3. Ingeniería de Producto y Atributos Técnicos</h3>
-                        <p style="margin: 0 0 6px 0; text-align: justify;"><strong>Líneas de Producto:</strong> ${data.product}</p>
+                        <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin: 0 0 6px 0; color: #22c55e;">3. Ingeniería de Producto y Atributos Técnicos</h3>
+                        <p style="margin: 0 0 4px 0; text-align: justify;"><strong>Líneas de Producto:</strong> ${data.product}</p>
                         <p style="margin: 0; text-align: justify;"><strong>Diferenciadores y Manufactura:</strong> ${data.attributes}</p>
                     </div>
 
                     <div>
-                        <h3 style="font-size: 12px; font-weight: 800; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin: 0 0 8px 0; color: #22c55e;">4. Segmentación Avanzada del Mercado</h3>
-                        <p style="margin: 0 0 6px 0; text-align: justify;"><strong>Nicho Objetivo:</strong> ${data.niche}</p>
+                        <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin: 0 0 6px 0; color: #22c55e;">4. Segmentación Avanzada del Mercado</h3>
+                        <p style="margin: 0 0 4px 0; text-align: justify;"><strong>Nicho Objetivo:</strong> ${data.niche}</p>
                         <p style="margin: 0; text-align: justify;"><strong>Matriz de Cliente Ideal:</strong> ${data.buyer}</p>
                     </div>
 
-                    <div style="background: #f8fafc; padding: 12px; border-left: 4px solid #22c55e; border-radius: 4px;">
-                        <h3 style="font-size: 11px; font-weight: 800; color: #0f172a; text-transform: uppercase; margin: 0 0 4px 0;">5. Propuesta Única de Valor (UVP)</h3>
-                        <p style="margin: 0; font-style: italic; font-size: 12px; color: #334155; text-align: justify;">"${data.value}"</p>
+                    <div style="background: #f8fafc; padding: 10px; border-left: 3px solid #22c55e;">
+                        <h3 style="font-size: 10px; font-weight: bold; color: #0f172a; text-transform: uppercase; margin: 0 0 2px 0;">5. Propuesta Única de Valor (UVP)</h3>
+                        <p style="margin: 0; font-style: italic; color: #334155; text-align: justify;">"${data.value}"</p>
                     </div>
 
                     <div>
-                        <h3 style="font-size: 12px; font-weight: 800; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; margin: 0 0 8px 0; color: #22c55e;">6. Arquitectura Publicitaria y Ecosistema Digital</h3>
+                        <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin: 0 0 6px 0; color: #22c55e;">6. Arquitectura Publicitaria y Ecosistema Digital</h3>
                         <p style="margin: 3px 0;"><strong>Ecosistema de Tracción:</strong> ${data.media}</p>
-                        <p style="margin: 3px 0;"><strong>URL Destino de Auditoría:</strong> <span style="color: #2563eb; font-family: monospace;">${data.url}</span></p>
+                        <p style="margin: 3px 0;"><strong>URL Destino de Auditoría:</strong> ${data.url}</p>
                     </div>
                 </div>
 
-                <div style="margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 8px; text-align: center; font-size: 9px; color: #94a3b8; font-family: monospace;">
+                <div style="margin-top: 35px; border-top: 1px solid #e2e8f0; padding-top: 6px; text-align: center; font-size: 8px; color: #94a3b8; font-family: monospace;">
                     PROPIEDAD INDUSTRIAL CONFIDENCIAL • PLATAFORMA DE DIAGNÓSTICO DE MARCA
                 </div>
             `;
 
-            // Configuración balanceada (Scale 2.0 ideal para evitar el desbordamiento de memoria RAM en móviles)
+            // Configuración ultra-optimizada con escala fija controlada para evitar desbordes de memoria RAM en celulares
             const opcionesConfig = {
-                margin:       [0.5, 0.5],
+                margin:       [0.4, 0.4],
                 filename:     `Brief_Creativo_Profesional_${nombreDocumento}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2.0, useCORS: true, logging: false, letterRendering: true },
+                image:        { type: 'jpeg', quality: 0.95 },
+                html2canvas:  { scale: 1.5, useCORS: true, logging: false, letterRendering: true },
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
-                pagebreak:    { mode: ['avoid-all', 'css'] }
+                pagebreak:    { mode: ['avoid-all'] }
             };
 
             html2pdf().set(opcionesConfig).from(pdfCanvas).save().then(() => {
                 btn.disabled = false;
                 btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                icon.classList.remove('animate-spin');
                 text.textContent = "Generar PDF y Enviar";
 
-                // Opcional: Se vacía la memoria caché local tras compilar exitosamente
-                FORM_FIELDS.forEach(field => localStorage.removeItem(`brief_v6_${field}`));
+                FORM_FIELDS.forEach(field => localStorage.removeItem(`brief_v7_${field}`));
 
                 const numeroDestino = "59177173169";
                 const textoMensaje = `🚀 *¡Nueva Matriz de Diagnóstico Generada!*\n\n• *Marca:* ${nombreDocumento}\n• *Ecosistema Visual:* ${data.logo.substring(0, 50)}...\n• *Estatus:* El Dossier PDF estratégico fue compilado de forma segura desde el dispositivo móvil y está guardado en descargas localmente.`;
@@ -375,7 +352,6 @@
                 alert("Error de compatibilidad al compilar el PDF. Intente de nuevo.");
                 btn.disabled = false;
                 btn.classList.remove('opacity-50', 'cursor-not-allowed');
-                icon.classList.remove('animate-spin');
                 text.textContent = "Generar PDF y Enviar";
             });
         }
