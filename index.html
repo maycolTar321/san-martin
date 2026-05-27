@@ -59,7 +59,6 @@
             font-size: 0.88rem;
         }
 
-        /* Scrollbar personalizado */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-gradient-end); }
         ::-webkit-scrollbar-thumb { background: #2c3136; border-radius: 10px; }
@@ -206,20 +205,17 @@
     </main>
 
     <script>
-        // IIFE para encapsular la lógica y no contaminar el scope global
         (() => {
             const FORM_FIELDS = ['name', 'logo', 'colors', 'history', 'emotions', 'product', 'attributes', 'niche', 'buyer', 'value', 'media', 'url'];
             const STORAGE_PREFIX = 'brief_v8_';
-            const PHONE_NUMBER = "59177173169"; // Extraído a una constante de configuración
+            const PHONE_NUMBER = "59177173169"; 
             
-            // Elementos del DOM cacheados
             const statusEl = document.getElementById('save-status');
             const btnCompilar = document.getElementById('btn-compilar');
             const btnReset = document.getElementById('btn-reset');
             const textBtn = document.getElementById('text-btn');
             const form = document.getElementById('brief-form');
 
-            // Seguridad: Sanitizador HTML básico para evitar inyección XSS en el PDF
             const escapeHTML = (str) => {
                 return str.replace(/[&<>'"]/g, 
                     tag => ({
@@ -232,7 +228,6 @@
                 );
             };
 
-            // Utilidad: Debounce para optimizar las escrituras a localStorage
             const debounce = (func, wait) => {
                 let timeout;
                 return function executedFunction(...args) {
@@ -245,7 +240,6 @@
                 };
             };
 
-            // INIT: Cargar datos guardados
             const loadSavedData = () => {
                 FORM_FIELDS.forEach(field => {
                     const storedValue = localStorage.getItem(`${STORAGE_PREFIX}${field}`);
@@ -256,116 +250,102 @@
                 });
             };
 
-            // Lógica de guardado automático (Optimizada con Debounce)
             const saveToLocal = debounce(() => {
                 FORM_FIELDS.forEach(field => {
                     const currentVal = document.getElementById(`input-${field}`).value;
                     localStorage.setItem(`${STORAGE_PREFIX}${field}`, currentVal);
                 });
                 
-                statusEl.textContent = "✓ Estado: Respaldo local sincronizado y protegido en el dispositivo móvil.";
+                statusEl.textContent = "✓ Estado: Respaldo local sincronizado.";
                 statusEl.classList.replace('text-green-400', 'text-slate-500');
                 statusEl.classList.replace('opacity-100', 'opacity-60');
             }, 1000);
 
-            // Manejador de eventos de entrada (Feedback visual inmediato, guardado diferido)
             form.addEventListener('input', () => {
-                statusEl.textContent = "● Respaldando entrada en tiempo real...";
+                statusEl.textContent = "● Respaldando entrada...";
                 statusEl.classList.replace('text-slate-500', 'text-green-400');
                 statusEl.classList.replace('opacity-60', 'opacity-100');
                 saveToLocal();
             });
 
-            // Reseteo Seguro
             btnReset.addEventListener('click', () => {
-                if (confirm("¿Está seguro de que desea restablecer la plantilla? Se perderán los datos no enviados.")) {
+                if (confirm("¿Desea restablecer la plantilla? Se perderán los datos no enviados.")) {
                     form.reset();
                     FORM_FIELDS.forEach(field => localStorage.removeItem(`${STORAGE_PREFIX}${field}`));
                     statusEl.textContent = "✓ Estado: Plantilla restablecida.";
                 }
             });
 
-            // Generador de PDF
             btnCompilar.addEventListener('click', async () => {
-                // Prevenir doble click
                 if (btnCompilar.disabled) return;
 
                 const data = {};
                 FORM_FIELDS.forEach(field => {
                     const rawValue = document.getElementById(`input-${field}`).value.trim();
-                    // Sanitización vital aplicada aquí
                     data[field] = rawValue ? escapeHTML(rawValue) : 'No especificado';
                 });
                 
                 const nombreDocumento = data.name !== 'No especificado' ? data.name : 'Nueva_Marca';
 
-                // Estado de carga UI
                 btnCompilar.disabled = true;
                 btnCompilar.classList.add('opacity-50', 'cursor-not-allowed');
-                textBtn.textContent = "Compilando Documento...";
+                textBtn.textContent = "Compilando...";
 
-                // Generación de plantilla de forma más estructurada
                 const pdfCanvas = document.createElement('div');
-                pdfCanvas.style.cssText = "width: 100%; padding: 35px; background: #ffffff; color: #1e293b; font-family: sans-serif; font-size: 12px; line-height: 1.5;";
+                pdfCanvas.style.cssText = "width: 100%; padding: 30px; background: #ffffff; color: #000000; font-family: Arial, sans-serif; font-size: 11px; line-height: 1.4;";
 
-                // Uso de Template Literals limpios
                 pdfCanvas.innerHTML = `
-                    <div style="border-bottom: 3px solid #22c55e; padding-bottom: 12px; margin-bottom: 20px;">
-                        <p style="font-size: 9px; font-weight: bold; color: #22c55e; text-transform: uppercase; margin: 0 0 2px 0; letter-spacing: 1px;">Dossier de Inteligencia Estratégica</p>
-                        <h1 style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0;">BRIEF DE IDENTIDAD CORPORATIVA</h1>
-                        <p style="font-size: 9px; color: #64748b; margin: 4px 0 0 0; font-family: monospace;">EMISIÓN: ${new Date().toLocaleDateString('es-ES')} | STATUS: VALIDADO_MÓVIL</p>
+                    <div style="border-bottom: 2px solid #22c55e; padding-bottom: 10px; margin-bottom: 15px;">
+                        <p style="font-size: 9px; font-weight: bold; color: #22c55e; text-transform: uppercase; margin: 0;">Dossier Estratégico</p>
+                        <h1 style="font-size: 18px; font-weight: bold; color: #000; margin: 5px 0;">BRIEF DE IDENTIDAD CORPORATIVA</h1>
+                        <p style="font-size: 8px; color: #666; margin: 0;">EMISIÓN: ${new Date().toLocaleDateString('es-ES')}</p>
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div>
-                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin: 0 0 6px 0; color: #22c55e;">1. Identificación e Identidad</h3>
-                            <p style="margin: 3px 0;"><strong>Marca:</strong> ${data.name}</p>
-                            <p style="margin: 3px 0;"><strong>Isologo:</strong> ${data.logo}</p>
-                            <p style="margin: 3px 0;"><strong>Cromática:</strong> ${data.colors}</p>
+                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">1. Identificación</h3>
+                            <p style="margin: 2px 0;"><strong>Marca:</strong> ${data.name}</p>
+                            <p style="margin: 2px 0;"><strong>Isologo:</strong> ${data.logo}</p>
+                            <p style="margin: 2px 0;"><strong>Cromática:</strong> ${data.colors}</p>
                         </div>
                         <div>
-                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin: 0 0 6px 0; color: #22c55e;">2. ADN Emocional</h3>
-                            <p style="margin: 0 0 4px 0; text-align: justify;"><strong>Génesis:</strong> ${data.history}</p>
-                            <p style="margin: 0; text-align: justify;"><strong>Voz y Emoción:</strong> ${data.emotions}</p>
+                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">2. ADN Emocional</h3>
+                            <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Génesis:</strong> ${data.history}</p>
+                            <p style="margin: 0; text-align: justify;"><strong>Voz:</strong> ${data.emotions}</p>
                         </div>
                         <div>
-                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin: 0 0 6px 0; color: #22c55e;">3. Producto y Atributos</h3>
-                            <p style="margin: 0 0 4px 0; text-align: justify;"><strong>Líneas:</strong> ${data.product}</p>
+                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">3. Producto</h3>
+                            <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Líneas:</strong> ${data.product}</p>
                             <p style="margin: 0; text-align: justify;"><strong>Diferenciadores:</strong> ${data.attributes}</p>
                         </div>
                         <div>
-                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin: 0 0 6px 0; color: #22c55e;">4. Mercado Objetivo</h3>
-                            <p style="margin: 0 0 4px 0; text-align: justify;"><strong>Nicho:</strong> ${data.niche}</p>
-                            <p style="margin: 0; text-align: justify;"><strong>Cliente Ideal:</strong> ${data.buyer}</p>
+                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">4. Mercado</h3>
+                            <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Nicho:</strong> ${data.niche}</p>
+                            <p style="margin: 0; text-align: justify;"><strong>Cliente:</strong> ${data.buyer}</p>
                         </div>
-                        <div style="background: #f8fafc; padding: 10px; border-left: 3px solid #22c55e;">
-                            <h3 style="font-size: 10px; font-weight: bold; color: #0f172a; text-transform: uppercase; margin: 0 0 2px 0;">5. Propuesta Única de Valor (UVP)</h3>
-                            <p style="margin: 0; font-style: italic; color: #334155; text-align: justify;">"${data.value}"</p>
+                        <div style="background: #f0fdf4; padding: 8px; border-left: 3px solid #22c55e;">
+                            <h3 style="font-size: 10px; font-weight: bold; color: #000; margin: 0 0 2px 0;">5. PROPUESTA DE VALOR (UVP)</h3>
+                            <p style="margin: 0; font-style: italic; color: #333; text-align: justify;">"${data.value}"</p>
                         </div>
                         <div>
-                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 2px; margin: 0 0 6px 0; color: #22c55e;">6. Ecosistema Digital</h3>
-                            <p style="margin: 3px 0;"><strong>Canales:</strong> ${data.media}</p>
-                            <p style="margin: 3px 0;"><strong>URL Auditoría:</strong> ${data.url}</p>
+                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">6. Ecosistema Digital</h3>
+                            <p style="margin: 2px 0;"><strong>Canales:</strong> ${data.media}</p>
+                            <p style="margin: 2px 0;"><strong>URL:</strong> ${data.url}</p>
                         </div>
-                    </div>
-                    <div style="margin-top: 35px; border-top: 1px solid #e2e8f0; padding-top: 6px; text-align: center; font-size: 8px; color: #94a3b8; font-family: monospace;">
-                        PROPIEDAD INDUSTRIAL CONFIDENCIAL • PLATAFORMA DE DIAGNÓSTICO DE MARCA
                     </div>
                 `;
 
                 const opcionesConfig = {
-                    margin:       [0.4, 0.4],
+                    margin:       [0.5, 0.5],
                     filename:     `Brief_${nombreDocumento.replace(/\s+/g, '_')}.pdf`,
-                    image:        { type: 'jpeg', quality: 0.95 },
+                    image:        { type: 'jpeg', quality: 0.90 },
                     html2canvas:  { scale: 2, useCORS: true, logging: false },
-                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
-                    pagebreak:    { mode: ['avoid-all'] }
+                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
                 };
 
                 try {
                     await html2pdf().set(opcionesConfig).from(pdfCanvas).save();
                     
-                    // Limpieza post-envío
                     form.reset();
                     FORM_FIELDS.forEach(field => localStorage.removeItem(`${STORAGE_PREFIX}${field}`));
                     
@@ -374,18 +354,16 @@
                     window.open(`https://api.whatsapp.com/send?phone=${PHONE_NUMBER}&text=${encodeURIComponent(textoMensaje)}`, '_blank');
                     
                 } catch (error) {
-                    console.error("Falla crítica en el compilador de PDF:", error);
-                    alert("Error al compilar el PDF. Verifique los permisos o intente de nuevo.");
+                    console.error("Falla al compilar PDF:", error);
+                    alert("Error al compilar el PDF. Verifique permisos o intente de nuevo.");
                 } finally {
-                    // Restaurar UI
                     btnCompilar.disabled = false;
                     btnCompilar.classList.remove('opacity-50', 'cursor-not-allowed');
                     textBtn.textContent = "Generar PDF y Enviar";
-                    statusEl.textContent = "✓ Estado: Formulario enviado y limpiado exitosamente.";
+                    statusEl.textContent = "✓ Estado: Documento procesado.";
                 }
             });
 
-            // Arrancar la aplicación
             document.addEventListener('DOMContentLoaded', loadSavedData);
             
         })();
