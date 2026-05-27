@@ -3,181 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brief Creativo Interactivo</title>
+    <title>Plataforma de Brief Creativo Profesional</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body {
             background: linear-gradient(135deg, #0b0f19, #131130);
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
-        .glass-card {
+        .glass-container {
             background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        /* Cajas de texto de alta visibilidad */
-        .input-premium {
-            background: rgba(255, 255, 255, 0.07) !important;
-            border: 2px solid rgba(99, 102, 241, 0.4) !important;
+        /* Cajas de entrada con alto contraste y diseño premium */
+        .input-professional {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 2px solid rgba(99, 102, 241, 0.35) !important;
             color: #ffffff !important;
             font-size: 0.95rem;
             width: 100%;
-            padding: 0.75rem 1rem;
-            border-radius: 1rem;
-            transition: all 0.25s ease;
+            padding: 0.85rem 1.2rem;
+            border-radius: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .input-premium:focus {
-            background: rgba(255, 255, 255, 0.12) !important;
+        .input-professional:focus {
+            background: rgba(255, 255, 255, 0.1) !important;
             border-color: #818cf8 !important;
-            box-shadow: 0 0 15px rgba(129, 140, 248, 0.3);
+            box-shadow: 0 0 20px rgba(129, 140, 248, 0.25);
             outline: none;
         }
-        /* Estilo claro para los textos de guía (Placeholders) */
-        .input-premium::placeholder {
-            color: rgba(255, 255, 255, 0.45) !important;
+        /* Placeholders con guías de llenado profesionales */
+        .input-professional::placeholder {
+            color: rgba(255, 255, 255, 0.38) !important;
             font-style: italic;
+            font-size: 0.88rem;
         }
-        /* Estilos limpios y puros para el motor de PDF */
-        .pdf-print {
+        /* Estilos puristas para la renderización del PDF corporativo en blanco */
+        .pdf-render-mode {
             background: #ffffff !important;
-            color: #1e293b !important;
-            padding: 30px !important;
+            color: #0f172a !important;
+            padding: 40px !important;
+            border-radius: 0px !important;
         }
-        .pdf-print .input-premium {
+        .pdf-render-mode .input-professional {
             background: #f8fafc !important;
             border: 1px solid #cbd5e1 !important;
             color: #0f172a !important;
-            border-radius: 0.5rem;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+        }
+        .pdf-render-mode h2, .pdf-render-mode h3 {
+            color: #0f172a !important;
+        }
+        .pdf-render-mode span, .pdf-render-mode label {
+            color: #475569 !important;
         }
     </style>
 </head>
-<body class="text-slate-200 min-h-screen p-4 md:p-8 flex flex-col items-center">
+<body class="text-slate-200 min-h-screen p-4 md:p-12 flex flex-col items-center">
 
     <div class="max-w-4xl w-full">
         
-        <div class="glass-card rounded-3xl p-6 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xl">
+        <div class="glass-container rounded-3xl p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
             <div>
-                <h1 class="text-2xl font-black text-white tracking-tight">Formulario de Brief</h1>
-                <p class="text-xs text-slate-400">Completa los campos guiándote por los ejemplos.</p>
+                <h1 class="text-2xl font-black text-white tracking-tight uppercase">Plataforma de Diagnóstico de Marca</h1>
+                <p class="text-xs text-slate-400 mt-1">Matriz interactiva para la estructuración y validación del ecosistema corporativo.</p>
             </div>
-            <button onclick="generarPDFYWhatsApp()" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-600 text-white font-bold px-6 py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-all transform active:scale-95 shadow-lg shadow-emerald-500/20 cursor-pointer">
-                <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.4.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.328 1.977 13.864 1.05 11.997 1.05c-5.444 0-9.866 4.372-9.87 9.802 0 1.514.404 2.99 1.17 4.305l-.994 3.629 3.734-.972zm11.233-5.334c-.267-.134-1.58-.779-1.825-.869-.244-.089-.423-.134-.599.134-.177.267-.684.869-.838 1.047-.154.177-.308.2-.575.066-.267-.134-1.127-.415-2.147-1.326-.792-.707-1.328-1.58-1.483-1.847-.154-.267-.017-.411.117-.544.121-.119.267-.311.4-.467.134-.156.178-.267.267-.445.089-.178.044-.334-.022-.467-.067-.134-.599-1.444-.821-1.978-.217-.522-.455-.451-.624-.46l-.532-.01c-.183 0-.481.069-.733.344-.252.276-.962.94-9.62 2.294 0 1.354.982 2.66 1.119 2.844.137.183 1.93 2.945 4.677 4.129.654.282 1.164.45 1.562.577.657.21 1.256.18 1.729.11.527-.078 1.58-.646 1.802-1.24.223-.593.223-1.101.156-1.21-.067-.107-.244-.176-.511-.311z"/></svg>
-                Generar y Enviar
+            <button onclick="procesarMatrizCorporativa()" class="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-8 py-4 rounded-2xl flex items-center justify-center gap-3 transition-all transform active:scale-95 shadow-lg shadow-indigo-600/30 cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                Generar PDF y Enviar
             </button>
         </div>
 
-        <div id="brief-area" class="glass-card rounded-3xl p-6 md:p-10 shadow-2xl space-y-6">
+        <div id="brief-master-canvas" class="glass-container rounded-3xl p-6 md:p-12 shadow-2xl space-y-8">
             
-            <div class="border-b border-slate-700/60 pb-4">
-                <h2 class="text-xl font-bold text-white tracking-wide uppercase text-center sm:text-left">Estructura Estratégica del Brief</h2>
-            </div>
-
-            <div class="space-y-3">
-                <h3 class="text-indigo-400 font-bold text-md flex items-center gap-2">🔹 1. Identificación de Marca</h3>
+            <div class="border-b border-slate-700/60 pb-6 flex flex-col sm:flex-row justify-between items-start gap-4">
                 <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Nombre Comercial</label>
-                    <input type="text" id="nombre" class="input-premium" placeholder="Ejemplo: TomyStyle">
+                    <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest block mb-1">Documentación Estratégica</span>
+                    <h2 class="text-3xl font-black text-white tracking-tight">BRIEF DE IDENTIDAD Y DESARROLLO CREATIVO</h2>
                 </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Idea de Logotipo / Isotipo</label>
-                    <input type="text" id="logo" class="input-premium" placeholder="Ejemplo: Logotipo circular minimalista con bordes redondeados">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Colores Corporativos (Mínimo 2)</label>
-                    <input type="text" id="colores" class="input-premium" placeholder="Ejemplo: #0F172A (Negro Azulado) y #25D366 (Verde WhatsApp)">
+                <div class="px-4 py-2 bg-slate-800/60 border border-slate-700 rounded-xl text-xs font-mono text-slate-400">
+                    STATUS: MATRIZ_PLANTILLA
                 </div>
             </div>
 
-            <div class="space-y-3">
-                <h3 class="text-indigo-400 font-bold text-md flex items-center gap-2">🔹 2. Historia y Emociones</h3>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">¿Cómo nació y qué debe transmitir?</label>
-                    <textarea id="historia" rows="3" class="input-premium" placeholder="Ejemplo: Nació para resolver la falta de ropa urbana con identidad startup. Debe evocar confianza, disrupción y alta calidad técnica."></textarea>
-                </div>
-            </div>
-
-            <div class="space-y-3">
-                <h3 class="text-indigo-400 font-bold text-md flex items-center gap-2">🔹 3. Tipo de Producto</h3>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">¿Qué productos específicos elaboran?</label>
-                    <textarea id="producto" rows="3" class="input-premium" placeholder="Ejemplo: Poleras oversized y hoodies premium de algodón pesado con tipografías redondeadas de alta densidad."></textarea>
-                </div>
-            </div>
-
-            <div class="space-y-3">
-                <h3 class="text-indigo-400 font-bold text-md flex items-center gap-2">🔹 4. Nicho de Mercado y Público</h3>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Nicho y Perfil del Buyer Persona (Cliente ideal)</label>
-                    <textarea id="nicho" rows="3" class="input-premium" placeholder="Ejemplo: Diseñadores, desarrolladores de software y apasionados de la tecnología de 20 a 35 años que aprecian la estética limpia."></textarea>
-                </div>
-            </div>
-
-            <div class="space-y-3">
-                <h3 class="text-indigo-400 font-bold text-md flex items-center gap-2">🔹 5. Propuesta de Valor</h3>
-                <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">¿Qué los hace únicos frente a otros?</label>
-                    <textarea id="valor" rows="2" class="input-premium" placeholder="Ejemplo: No vendemos moda rápida; materializamos la cultura de la ingeniería en prendas físicas sofisticadas."></textarea>
-                </div>
-            </div>
-
-            <div class="space-y-3">
-                <h3 class="text-indigo-400 font-bold text-md flex items-center gap-2">🔹 6. Estrategia Publicitaria</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+                    <span class="w-1 h-5 bg-indigo-500 rounded-full"></span> 1. Identificación Básica e Identidad Visual
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Medios donde sentar presencia</label>
-                        <input type="text" id="medios" class="input-premium" placeholder="Ejemplo: Instagram y TikTok Ads">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nombre Comercial Registrado</label>
+                        <input type="text" id="input-name" class="input-professional" placeholder="Ej: TomyStyle (Especifique mayúsculas y nomenclatura comercial)">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-300 mb-1">Enlace de Red Social Activa</label>
-                        <input type="url" id="enlace" class="input-premium" placeholder="Ejemplo: https://instagram.com/tu_marca">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Arquitectura del Logotipo / Isotipo</label>
+                        <input type="text" id="input-logo" class="input-professional" placeholder="Ej: Imagotipo con composición geométrica basado en proporciones áureas">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Cromática Corporativa (Códigos Hexadecimales)</label>
+                        <input type="text" id="input-colors" class="input-professional" placeholder="Ej: #0B0F19 (Fondo de alto contraste), #6366F1 (Acento tecnológico). Definir un mínimo de dos colores.">
                     </div>
                 </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+                    <span class="w-1 h-5 bg-indigo-500 rounded-full"></span> 2. Storytelling, Génesis y ADN Emocional
+                </h3>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Génesis del Proyecto (Origen de la marca)</label>
+                    <textarea id="input-history" rows="4" class="input-professional" placeholder="Directriz de llenado: Describa la necesidad estructural del mercado que inspiró el nacimiento de la marca, los retos técnicos enfrentados en los primeros desarrollos y la filosofía de diseño original."></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Territorio de Conectividad Emocional y Tono de Voz</label>
+                    <textarea id="input-emotions" rows="3" class="input-professional" placeholder="Directriz de llenado: Defina los sentimientos que la marca debe despertar en el usuario de forma inmediata (Ej: Confianza startup, exclusividad industrial). Indique si la comunicación será formal, disruptiva o técnica."></textarea>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+                    <span class="w-1 h-5 bg-indigo-500 rounded-full"></span> 3. Ingeniería de Producto y Atributos Técnicos
+                </h3>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tipología y Línea de Productos en Elaboración</label>
+                    <textarea id="input-product" rows="3" class="input-professional" placeholder="Directriz de llenado: Desglose la tipología exacta de productos que se están fabricando o diseñando (ej: indumentaria oversized de alta densidad, interfaces de usuario de cristal, etc.)."></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Diferenciadores de Manufactura y Texturas</label>
+                    <textarea id="input-attributes" rows="3" class="input-professional" placeholder="Directriz de llenado: Especifique las materias primas exclusivas, terminaciones, detalles de herrajes, tipografías tipológicas redondeadas de autor o técnicas de impresión que otorgan calidad premium al producto."></textarea>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+                    <span class="w-1 h-5 bg-indigo-500 rounded-full"></span> 4. Segmentación Avanzada y Perfil del Buyer Persona
+                </h3>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Nicho de Mercado y Demografía Objetivo</label>
+                    <textarea id="input-niche" rows="3" class="input-professional" placeholder="Directriz de llenado: Defina el micro-nicho al que apunta la marca (Ej: Desarrolladores y diseñadores UX/UI independientes de 20 a 35 años ubicados en capitales corporativas con alta valoración estética)."></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Matriz del Cliente Ideal (Intereses y Puntos de Dolor)</label>
+                    <textarea id="input-buyer" rows="4" class="input-professional" placeholder="Directriz de llenado: Detalle los dolores del cliente (Ej: Frustrado por marcas masivas de baja calidad textil o diseños monótonos) y sus intereses diarios (comunidades de software, layouts limpios, gadgets minimalistas)."></textarea>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+                    <span class="w-1 h-5 bg-indigo-500 rounded-full"></span> 5. Propuesta Única de Valor (UVP)
+                </h3>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Declaración Central de Posicionamiento</label>
+                    <textarea id="input-value" rows="3" class="input-professional" placeholder="Estructura sugerida: Ofrecemos [Solución técnica/Moda premium] para [Nicho tecnológico] mediante [Diferenciador exclusivo de autor], eliminando de raíz la insatisfacción por [Punto de dolor]."></textarea>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <h3 class="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-2">
+                    <span class="w-1 h-5 bg-indigo-500 rounded-full"></span> 6. Arquitectura Publicitaria y Ecosistema Digital
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Canales y Medios Digitales de Enfoque</label>
+                        <input type="text" id="input-media" class="input-professional" placeholder="Ej: Instagram (Catálogo de marca), TikTok (Procesos e ingeniería de diseño)">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Enlaces de Redes Sociales Activas</label>
+                        <input type="url" id="input-url" class="input-professional" placeholder="Ej: https://instagram.com/nombre_marca (Para auditoría de línea visual)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-6 text-center text-xs text-slate-500 font-mono">
+                MATRIZ DE PROPIEDAD ESTRATÉGICA • COCHABAMBA - TARIJA, BOLIVIA
             </div>
 
         </div>
     </div>
 
     <script>
-        function generarPDFYWhatsApp() {
-            const contenedor = document.getElementById('brief-area');
+        function procesarMatrizCorporativa() {
+            const areaBrief = document.getElementById('brief-master-canvas');
+            const nombreMarca = document.getElementById('input-name').value || 'Nueva_Marca';
             
-            // Transformación estética temporal para que el PDF salga impecable y contrastado en blanco
-            contenedor.classList.add('pdf-print');
-            
-            const opciones = {
-                margin:       [0.4, 0.4],
-                filename:     `Brief_${document.getElementById('nombre').value || 'Marca'}.pdf`,
+            // Forzar el estilo corporativo limpio para el motor PDF de WeasyPrint/html2pdf
+            areaBrief.classList.add('pdf-render-mode');
+
+            const opcionesConfig = {
+                margin:       [0.5, 0.5],
+                filename:     `Brief_Creativo_Profesional_${nombreMarca}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, logging: false, useCORS: true },
+                html2canvas:  { scale: 2.5, useCORS: true, logging: false },
                 jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
             };
 
-            // Ejecución del renderizado del PDF
-            html2pdf().set(opciones).from(contenedor).save().then(() => {
-                // Restaurar la visualización premium en modo oscuro original
-                contenedor.classList.remove('pdf-print');
+            // Ejecución del Render del PDF vectorizado
+            html2pdf().set(opcionesConfig).from(areaBrief).save().then(() => {
+                // Devolver el formulario a su diseño Glassmorphic original de pantalla
+                areaBrief.classList.remove('pdf-render-mode');
 
-                const nombreMarca = document.getElementById('nombre').value || "Nueva Marca";
-                const miNumero = "59177173169"; // Tu número exacto integrado
+                // Envío de Datos vía Link directo a tu WhatsApp Personal de Bolivia
+                const numeroDestino = "59177173169";
+                const textoMensaje = `🚀 *¡Matriz de Brief Generada con Éxito!*\n\n• *Marca Registrada:* ${nombreMarca}\n• *Acción:* El documento PDF corporativo con las directrices profesionales ha sido compilado y descargado localmente en el dispositivo. Listo para revisión de diseño.`;
+
+                const whatsappLink = `https://api.whatsapp.com/send?phone=${numeroDestino}&text=${encodeURIComponent(textoMensaje)}`;
                 
-                // Formatear texto limpio para el envío directo a WhatsApp
-                const mensaje = `🚀 *¡Brief Creativo Terminado!*\n\n• *Marca:* ${nombreMarca}\n• *Acción:* El PDF con todas las respuestas y ejemplos se ha descargado de manera local correctamente.`;
-                
-                const urlFinal = `https://api.whatsapp.com/send?phone=${miNumero}&text=${encodeURIComponent(mensaje)}`;
-                
-                // Redirección forzada segura
-                window.open(urlFinal, '_blank');
-            }).catch(err => {
-                console.error("Error generando el PDF: ", err);
-                // Si la descarga falla por permisos del navegador móvil, igual procesa la salida a WhatsApp
-                const miNumero = "59177173169";
-                const mensajeFallback = `🚀 *Notificación:* Formulario completado para la marca: ${document.getElementById('nombre').value || "Nueva Marca"}.`;
-                window.open(`https://api.whatsapp.com/send?phone=${miNumero}&text=${encodeURIComponent(mensajeFallback)}`, '_blank');
+                // Redirección instantánea sin bloqueos
+                window.open(whatsappLink, '_blank');
+            }).catch(error => {
+                console.error("Error en compilación PDF:", error);
+                areaBrief.classList.remove('pdf-render-mode');
             });
         }
     </script>
 </body>
 </html>
+
 
