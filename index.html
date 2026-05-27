@@ -207,7 +207,7 @@
     <script>
         (() => {
             const FORM_FIELDS = ['name', 'logo', 'colors', 'history', 'emotions', 'product', 'attributes', 'niche', 'buyer', 'value', 'media', 'url'];
-            const STORAGE_PREFIX = 'brief_v8_';
+            const STORAGE_PREFIX = 'brief_v9_';
             const PHONE_NUMBER = "59177173169"; 
             
             const statusEl = document.getElementById('save-status');
@@ -291,59 +291,47 @@
                 btnCompilar.classList.add('opacity-50', 'cursor-not-allowed');
                 textBtn.textContent = "Compilando...";
 
-                // SOLUCIÓN MÓVIL: Creamos el contenedor y lo anclamos de forma invisible
-                const pdfCanvas = document.createElement('div');
-                pdfCanvas.style.position = 'absolute';
-                pdfCanvas.style.left = '-9999px'; // Fuera de la vista
-                pdfCanvas.style.top = '0';
-                pdfCanvas.style.width = '800px'; // Ancho fijo para evitar deformaciones en celular
-                pdfCanvas.style.padding = '30px';
-                pdfCanvas.style.background = '#ffffff';
-                pdfCanvas.style.color = '#000000';
-                pdfCanvas.style.fontFamily = 'Arial, sans-serif';
-                pdfCanvas.style.fontSize = '11px';
-                pdfCanvas.style.lineHeight = '1.4';
-                
-                // Lo agregamos al cuerpo de la página para que el navegador lo detecte
-                document.body.appendChild(pdfCanvas);
+                 // SOLUCIÓN DEFINITIVA: Inyectamos el HTML como una cadena de texto puro (String).
+                // Esto evita cualquier problema de renderizado del navegador móvil.
+                const htmlString = `
+                    <div style="width: 100%; padding: 30px; background: #ffffff; color: #000000; font-family: Arial, sans-serif; font-size: 11px; line-height: 1.4;">
+                        <div style="border-bottom: 2px solid #22c55e; padding-bottom: 10px; margin-bottom: 15px;">
+                            <p style="font-size: 9px; font-weight: bold; color: #22c55e; text-transform: uppercase; margin: 0;">Dossier Estratégico</p>
+                            <h1 style="font-size: 18px; font-weight: bold; color: #000; margin: 5px 0;">BRIEF DE IDENTIDAD CORPORATIVA</h1>
+                            <p style="font-size: 8px; color: #666; margin: 0;">EMISIÓN: ${new Date().toLocaleDateString('es-ES')}</p>
+                        </div>
 
-                pdfCanvas.innerHTML = `
-                    <div style="border-bottom: 2px solid #22c55e; padding-bottom: 10px; margin-bottom: 15px;">
-                        <p style="font-size: 9px; font-weight: bold; color: #22c55e; text-transform: uppercase; margin: 0;">Dossier Estratégico</p>
-                        <h1 style="font-size: 18px; font-weight: bold; color: #000; margin: 5px 0;">BRIEF DE IDENTIDAD CORPORATIVA</h1>
-                        <p style="font-size: 8px; color: #666; margin: 0;">EMISIÓN: ${new Date().toLocaleDateString('es-ES')}</p>
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 12px;">
-                        <div>
-                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">1. Identificación</h3>
-                            <p style="margin: 2px 0;"><strong>Marca:</strong> ${data.name}</p>
-                            <p style="margin: 2px 0;"><strong>Isologo:</strong> ${data.logo}</p>
-                            <p style="margin: 2px 0;"><strong>Cromática:</strong> ${data.colors}</p>
-                        </div>
-                        <div>
-                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">2. ADN Emocional</h3>
-                            <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Génesis:</strong> ${data.history}</p>
-                            <p style="margin: 0; text-align: justify;"><strong>Voz:</strong> ${data.emotions}</p>
-                        </div>
-                        <div>
-                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">3. Producto</h3>
-                            <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Líneas:</strong> ${data.product}</p>
-                            <p style="margin: 0; text-align: justify;"><strong>Diferenciadores:</strong> ${data.attributes}</p>
-                        </div>
-                        <div>
-                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">4. Mercado</h3>
-                            <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Nicho:</strong> ${data.niche}</p>
-                            <p style="margin: 0; text-align: justify;"><strong>Cliente:</strong> ${data.buyer}</p>
-                        </div>
-                        <div style="background: #f0fdf4; padding: 8px; border-left: 3px solid #22c55e;">
-                            <h3 style="font-size: 10px; font-weight: bold; color: #000; margin: 0 0 2px 0;">5. PROPUESTA DE VALOR (UVP)</h3>
-                            <p style="margin: 0; font-style: italic; color: #333; text-align: justify;">"${data.value}"</p>
-                        </div>
-                        <div>
-                            <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">6. Ecosistema Digital</h3>
-                            <p style="margin: 2px 0;"><strong>Canales:</strong> ${data.media}</p>
-                            <p style="margin: 2px 0;"><strong>URL:</strong> ${data.url}</p>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div>
+                                <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">1. Identificación</h3>
+                                <p style="margin: 2px 0;"><strong>Marca:</strong> ${data.name}</p>
+                                <p style="margin: 2px 0;"><strong>Isologo:</strong> ${data.logo}</p>
+                                <p style="margin: 2px 0;"><strong>Cromática:</strong> ${data.colors}</p>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">2. ADN Emocional</h3>
+                                <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Génesis:</strong> ${data.history}</p>
+                                <p style="margin: 0; text-align: justify;"><strong>Voz:</strong> ${data.emotions}</p>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">3. Producto</h3>
+                                <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Líneas:</strong> ${data.product}</p>
+                                <p style="margin: 0; text-align: justify;"><strong>Diferenciadores:</strong> ${data.attributes}</p>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">4. Mercado</h3>
+                                <p style="margin: 0 0 2px 0; text-align: justify;"><strong>Nicho:</strong> ${data.niche}</p>
+                                <p style="margin: 0; text-align: justify;"><strong>Cliente:</strong> ${data.buyer}</p>
+                            </div>
+                            <div style="background: #f0fdf4; padding: 8px; border-left: 3px solid #22c55e;">
+                                <h3 style="font-size: 10px; font-weight: bold; color: #000; margin: 0 0 2px 0;">5. PROPUESTA DE VALOR (UVP)</h3>
+                                <p style="margin: 0; font-style: italic; color: #333; text-align: justify;">"${data.value}"</p>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 11px; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #ccc; padding-bottom: 2px; margin: 0 0 4px 0; color: #22c55e;">6. Ecosistema Digital</h3>
+                                <p style="margin: 2px 0;"><strong>Canales:</strong> ${data.media}</p>
+                                <p style="margin: 2px 0;"><strong>URL:</strong> ${data.url}</p>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -356,11 +344,7 @@
                     jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
                 };
 
-                // SOLUCIÓN MÓVIL: Usamos .then() en lugar de await para mantener el contexto del clic
-                html2pdf().set(opcionesConfig).from(pdfCanvas).save().then(() => {
-                    // Limpiamos el DOM oculto una vez generado
-                    document.body.removeChild(pdfCanvas);
-                    
+                html2pdf().set(opcionesConfig).from(htmlString).save().then(() => {
                     form.reset();
                     FORM_FIELDS.forEach(field => localStorage.removeItem(`${STORAGE_PREFIX}${field}`));
                     
@@ -371,13 +355,13 @@
                     btnCompilar.disabled = false;
                     btnCompilar.classList.remove('opacity-50', 'cursor-not-allowed');
                     textBtn.textContent = "Generar PDF y Enviar";
-                    statusEl.textContent = "✓ Estado: Documento procesado.";
+                    statusEl.textContent = "✓ Estado: Documento procesado exitosamente.";
 
                 }).catch(error => {
-                    console.error("Falla al compilar PDF:", error);
-                    // Importante: también limpiar el DOM oculto si hay error
-                    document.body.removeChild(pdfCanvas);
-                    alert("Por favor, permite las descargas en tu navegador (Chrome) para guardar el PDF.");
+                    // Si vuelve a fallar, este mensaje te mostrará el error TÉCNICO real de tu celular
+                    const detalleError = error.message ? error.message : JSON.stringify(error);
+                    alert("Error técnico: " + detalleError + "\nPor favor intenta desde otro navegador.");
+                    console.error(error);
                     
                     btnCompilar.disabled = false;
                     btnCompilar.classList.remove('opacity-50', 'cursor-not-allowed');
